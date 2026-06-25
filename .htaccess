@@ -1,3 +1,9 @@
+# greengeeks PHP version handler
+# set to use PHP 8.4
+<FilesMatch "\.(php4|php5|php3|php2|php|phtml)$">
+ SetHandler application/x-httpd-alt-php84-lsphp
+</FilesMatch>
+
 # Kirby .htaccess
 # revision 2023-07-22
 

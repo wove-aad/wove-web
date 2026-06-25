@@ -1,0 +1,33 @@
+name: Deploy to Staging Server
+
+on:
+  push:
+    branches:
+      - dev
+
+
+jobs:
+  web-deploy:
+    name: 🚀 Deploy Website Every Commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get Latest Code
+        uses: actions/checkout@v6
+      
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTPSTG_HOST }}
+          username: ${{ secrets.FTPSTG_USERNAME }}
+          password: ${{ secrets.FTPSTG_PASSWORD }}
+          server-dir: /public_html/staging.wove.group/
+          timeout: 60000
+          log-level: verbose
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/deploy.yml
+            **/deploy-staging.yml
+            **/deploy-prod.yml
+            **/README.md

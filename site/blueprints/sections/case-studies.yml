@@ -1,0 +1,11 @@
+type: pages
+parent: kirby.page("work")
+size: small
+info: "{{ page.title }} by {{ page.author.name }} on {{ page.date.toDate('d M Y') }}"
+layout: cardlets
+template: case-study
+empty: No case studies yet
+image: 
+  query: page.caseStudyImages.toFile
+  cover: true
+  ratio: 2/3

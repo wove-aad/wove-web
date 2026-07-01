@@ -1,0 +1,123 @@
+title: Case Study
+icon: page
+
+tabs:
+  content:
+    label: Content
+    icon: page
+    columns:
+
+      # main
+      left:
+        width: 2/3
+        sections:
+
+          content:
+            type: fields
+            fields:
+
+              eyebrow:
+                label: Client / Project Name
+                type: text
+                help: Short label shown above the hero title. Used on both WOVE and AAD.
+
+              heroTitle:
+                label: Hero Title
+                type: writer
+                inline: true
+                marks:
+                  - bold
+                  - italic
+                required: true
+
+              # Named to match the `image` query in sections/case-studies.yml
+              # so this also becomes the thumbnail in case study listings.
+              caseStudyImages:
+                label: Hero Image
+                type: files
+                max: 1
+                query: page.images
+                info: Used as the hero image and as the thumbnail in case study listings.
+
+              blocksHeadline:
+                type: headline
+                label: Body Content
+
+              blocks:
+                type: blocks
+                help: Main content of the case study, displayed below the hero.
+
+          # Prev / Next case studies are handled automatically via
+          # $page->prev() / $page->next() from siblings — no field needed.
+
+      # sidebar
+      right:
+        width: 1/3
+        sections:
+
+          details:
+            type: fields
+            headline: Details
+            fields:
+
+              impactAreas:
+                label: Impact Areas
+                type: multiselect
+                options:
+                  peoplepower: People Power
+                  systemchange: System Change
+                  climate: Climate
+                  education: Education
+                  design: Design
+                  whatif: What if
+                  nature: Nature
+
+              services:
+                label: Services
+                type: multiselect
+                options:
+                  strategy: Strategy
+                  labs: Labs
+                  digital: Digital
+                  brand: Brand
+
+              contact:
+                label: Contact Person
+                type: structure
+                max: 1
+                fields:
+                  name:
+                    label: Name
+                    type: text
+                    width: 1/2
+                  email:
+                    label: Email
+                    type: email
+                    width: 1/2
+                  avatar:
+                    label: Avatar
+                    type: files
+                    max: 1
+                    query: page.images
+
+              subStatement:
+                label: Sub-statement (WOVE)
+                type: textarea
+                size: small
+                help: Optional lead line shown on WOVE. Leave blank for AAD.
+
+              ctaPrompt:
+                label: CTA Prompt
+                type: text
+                help: Optional call-to-action text shown in the Details panel.
+
+          files:
+            type: files
+            headline: Files
+            layout: table
+            size: small
+            image:
+              cover: true
+
+  # SEO tab
+  seo: tabs/seo

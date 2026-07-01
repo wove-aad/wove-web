@@ -1,10 +1,10 @@
+title: Home Page
+
 options:
   changeTemplate:
-    - default
-    - home 
-    - wove-mind
-    - work
     # - media-gallery
+    - default
+    # - home 
     # - about-us
     # - our-team
     # - contact-us 
@@ -17,11 +17,11 @@ tabs:
       # main
       left:
         width: 2/3
-        sections:
+        # sections:
 
-          # page content form
-          content: 
-            extends: sections/main-content
+        #   # page content form
+        #   content: 
+            # extends: sections/main-content
 
       # sidebar
       right:
@@ -49,7 +49,6 @@ tabs:
   # SEO tab
   seo: tabs/seo
 
-# title: Default Page
 
 # columns:
 #   main:

@@ -1,0 +1,59 @@
+# SEO tab
+label: SEO / Metadata
+icon: search
+fields:
+  seoTitle:
+    label: Page title
+    type: text
+    maxlength: 60
+    width: 1/2
+    help: Limit to 50-60 characters. [See more info on writing good SEO page titles here](https://moz.com/learn/seo/title-tag).
+  navText:
+    label: Navigation text
+    type: text
+    maxlength: 30
+    width: 1/2
+    help: Optional Navigation / link text for main menu (uses page title as default)
+  seoDescription:
+    label: Meta Description
+    type: textarea
+    buttons: false
+    maxlength: 160
+    width: 1/2
+    size: small
+    help: Limit to 160 characters, [See more info on writing good meta descriptions here](https://moz.com/learn/seo/meta-description).
+  seoKeywords:
+    label: Meta keywords
+    type: textarea
+    buttons: false
+    width: 1/2
+    size: small
+    help: List of comma separated keywords (optional). These bring little or no SEO weight but are still useful in that they provide a reference for your SEO content.
+  robots:
+    label: Robots meta tags
+    type: checkboxes    
+    options:
+      noindex: Noindex - Tells a search engine not to index the page
+      nofollow: Nofollow - Tells a crawler not to follow any links on a page or pass along any link equity;
+      nosnippet: Nosnippet - Tells a search engine not to show a snippet of this page (i.e. meta description) of this page on a SERP.
+    width: 1/2
+    help: Control how page is indexed in search engines. [See more info here](https://moz.com/learn/seo/robots-meta-directives).
+  ogtype:
+    label: Open graph page type
+    type: select
+    default: website
+    options:
+      article
+      book
+      profile
+      website
+      video
+      music
+    width: 1/2
+    help: Tells social media sites what kind of content this is when shared (website is the default). [See more info here](https://ogp.me).
+  ignoreCache:
+    label: Ignore Cache
+    type: toggle
+    help: Turn this on if this page should not be cached, i.e. if it contains random dynamic content.
+    width: 1/2
+    

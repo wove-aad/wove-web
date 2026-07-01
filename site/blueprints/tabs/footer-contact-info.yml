@@ -1,0 +1,77 @@
+# Site Contact & Social info (used in site.yml for global footer)
+type: fields
+headline: Contact / Social
+fields:
+  contactInfo:
+    label: Contact Information
+    type: headline
+
+  # address:
+  #   label: Address
+  #   type: writer
+  #   inline: true
+  companyName:
+    label: Company name
+    type: text
+  addrLine1:
+    label: Address line 1
+    type: text
+  addrLine2:
+    label: Address line 2
+    type: text
+  addrLocality:
+    label: City / Town / Village
+    type: text
+    width: 1/2
+  addrRegion:
+    label: County / State / Province
+    type: text
+    width: 1/2
+  addrPostalcode:
+    label: Post code
+    type: text
+    width: 1/2
+  addrCountry:
+    label: Country
+    type: text
+    width: 1/2
+  email:
+    label: Email
+    type: email
+    width: 1/2
+  phone:
+    label: Phone
+    type: tel  
+    width: 1/2
+  # mapLink:
+  #   label: Map link
+  #   type: url
+  #   placeholder: https://maps.google.com/?q=address
+  #   width: 1/2
+  # mapLinkText:
+  #   label: Map link text
+  #   type: text  
+  #   width: 1/2
+  # openingHours:
+  #   label: Opening hours
+  #   type: textarea
+  #   size: small
+  #   width: 1/2
+  social:
+    label: On the web / Social
+    type: structure
+    columns:
+      platform: true
+    fields:
+      platform:
+        label: Platform
+        type: text
+        width: 1/2
+      url:
+        label: URL
+        type: url
+        width: 1/2
+  copyright:
+    label: Footer copyright notice 
+    type: text
+    width: 1/2

@@ -1,0 +1,11 @@
+type: pages
+parent: kirby.page("wove-mind")
+size: small
+info: "{{ page.title }} by {{ page.author.name }} on {{ page.date.toDate('d M Y') }}"
+layout: cardlets
+template: wove-mind-entry
+empty: No entries yet
+image: 
+  query: page.woveMindImages.toFile
+  cover: true
+  ratio: 2/3

@@ -1,0 +1,120 @@
+title: Wove Mind Entry
+
+tabs:
+  content:
+    label: Content
+    icon: page
+
+    columns:
+      main:
+        width: 2/3
+        sections:
+          content:
+            type: fields
+            fields:
+
+              format:
+                label: Format
+                type: select
+                required: true
+                options:
+                  spark: Spark
+                  thread: Thread
+                  whatif: What if
+                  longread: Long read
+
+              title:
+                label: Title
+                type: text
+                when:
+                  format:
+                    in:
+                      - thread
+                      - whatif
+                      - longread
+
+              body:
+                label: Body
+                type: writer
+                required: true
+                placeholder: Write your entry here.
+                marks:
+                  - bold
+                  - italic
+                  - link
+                nodes:
+                  - bulletList
+                  - orderedList
+                  - quote
+
+      sidebar:
+        width: 1/3
+        sections:
+
+          image_section:
+            type: fields
+            fields:
+              image:
+                label: Featured image
+                type: files
+                max: 1
+                when:
+                  format:
+                    in:
+                      - thread
+                      - whatif
+                      - longread
+
+          display_section:
+            type: fields
+            fields:
+
+              show_author:
+                label: Show author
+                type: toggle
+                default: true
+
+              author:
+                label: Author
+                type: users
+                max: 1
+                when:
+                  show_author: true
+
+              case_study:
+                label: Relate to case study
+                type: pages
+                max: 1
+                query: kirby.collection('case-studies')
+                info: Shows on that case study's page
+
+              services:
+                label: Relate to service
+                type: multiselect
+                options:
+                  strategy: Strategy
+                  labs: Labs
+                  digital: Digital
+                  brand: Brand
+                info: Shows on the selected service page(s)
+
+          tags_section:
+            type: fields
+            fields:
+              tags:
+                label: Tags
+                type: tags
+                accept: all
+                options:
+                  - PeoplePower
+                  - SystemChange
+                  - Climate
+                  - Education
+                  - Design
+                  - WhatIf
+                  - Nature
+
+      # meta:
+      #   type: meta
+  # SEO tab
+  seo: tabs/seo

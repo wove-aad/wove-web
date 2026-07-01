@@ -84,7 +84,7 @@ tabs:
               case_study:
                 label: Relate to case study
                 type: pages
-                max: 1
+                # max: 1
                 query: kirby.collection('case-studies')
                 info: Shows on that case study's page
 

@@ -33,16 +33,29 @@ tabs:
                       - whatif
                       - longread
 
+              blocksHeadline:
+                type: headline
+                label: Body Content
+
+              blocks:
+                type: blocks
+                help: Main content of the case study, displayed below the hero.
+
               body:
                 label: Body
                 type: writer
                 required: true
                 placeholder: Write your entry here.
+                headings:
+                  - 2
+                  - 3
+                  - 4
                 marks:
                   - bold
                   - italic
                   - link
                 nodes:
+                  - heading
                   - bulletList
                   - orderedList
                   - quote

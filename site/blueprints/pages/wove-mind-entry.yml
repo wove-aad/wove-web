@@ -119,13 +119,20 @@ tabs:
                 type: tags
                 accept: all
                 options:
-                  - PeoplePower
-                  - SystemChange
-                  - Climate
-                  - Education
-                  - Design
-                  - WhatIf
-                  - Nature
+                  type: query
+                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  text: "{{ item.name }}"
+                  value: "{{ item.name.slug }}"
+                help: These options are managed in the Site Taxonomies tab of the site settings.
+
+                # options:
+                #   - PeoplePower
+                #   - SystemChange
+                #   - Climate
+                #   - Education
+                #   - Design
+                #   - WhatIf
+                #   - Nature
 
               date:
                 label: Published on

@@ -1,0 +1,28 @@
+# Taxonomies tab
+label: Taxonomies
+icon: tag
+fields:
+  tags:
+    label: Tags
+    type: structure
+    fields:
+      name:
+        label: Tag name
+        type: text
+      slug:
+        label: Tag slug
+        type: slug
+        sync: name
+        required: true
+        help: Used in the URL and for filtering articles by tag.
+      intro:
+        label: Tag Intro
+        type: text
+      active:
+        label: Published
+        type: toggle
+        text:
+          - "No"
+          - "Yes"
+        default: true
+        help: Turn off to hide this tag from the site

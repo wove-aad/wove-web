@@ -61,7 +61,16 @@ tabs:
             image:
               ratio: 1/1
               cover: true
-      
+
+          # fields:
+          #   type: fields
+          #   fields:
+          #     categories:
+          #       type: blocks
+          #       pretty: true
+          #       fieldsets:
+          #         - category
+
   # Menu Navigation tab            
   # tabNavigation:
   #   label: Site Navigation
@@ -73,3 +82,9 @@ tabs:
     label: Site Contact Info
     icon: phone
     extends: tabs/footer-contact-info
+
+  # Site Taxonomies tab
+  tabTaxonomies:
+    label: Site Taxonomies
+    icon: tag
+    extends: tabs/taxonomies

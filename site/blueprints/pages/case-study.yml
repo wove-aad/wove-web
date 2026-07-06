@@ -61,16 +61,23 @@ tabs:
             fields:
 
               impactAreas:
-                label: Impact Areas
+                label: Impact Areas (Tags)
                 type: multiselect
                 options:
-                  peoplepower: People Power
-                  systemchange: System Change
-                  climate: Climate
-                  education: Education
-                  design: Design
-                  whatif: What if
-                  nature: Nature
+                  type: query
+                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  text: "{{ item.name }}"
+                  value: "{{ item.name.slug }}"
+                help: These options are managed in the Site Taxonomies tab of the site settings.
+
+                # options:
+                #   peoplepower: People Power
+                #   systemchange: System Change
+                #   climate: Climate
+                #   education: Education
+                #   design: Design
+                #   whatif: What if
+                #   nature: Nature
 
               services:
                 label: Services

@@ -5,6 +5,7 @@ fields:
   seoTitle:
     label: Page title
     type: text
+    default: '{{ page.title }}'
     maxlength: 60
     width: 1/2
     help: Limit to 50-60 characters. [See more info on writing good SEO page titles here](https://moz.com/learn/seo/title-tag).

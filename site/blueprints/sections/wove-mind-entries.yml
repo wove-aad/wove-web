@@ -4,6 +4,7 @@ size: small
 info: "{{ page.format }}"
 # by {{ page.author.name }} on {{ page.date.toDate('d M Y') }}"
 layout: cardlets
+sortBy: date desc
 template: wove-mind-entry
 empty: No entries yet
 image: 

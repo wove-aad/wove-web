@@ -111,6 +111,13 @@ tabs:
                 type: text
                 help: Optional call-to-action text shown in the Details panel.
 
+              date:
+                label: Published on
+                type: date
+                time: true
+                default: now
+                help: Used for sorting in listings.
+
           files:
             type: files
             headline: Files

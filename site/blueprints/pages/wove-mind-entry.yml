@@ -111,9 +111,9 @@ tabs:
                   brand: Brand
                 info: Shows on the selected service page(s)
 
-          tags_section:
-            type: fields
-            fields:
+          # tags_section:
+          #   type: fields
+          #   fields:
               tags:
                 label: Tags
                 type: tags
@@ -126,6 +126,13 @@ tabs:
                   - Design
                   - WhatIf
                   - Nature
+
+              date:
+                label: Published on
+                type: date
+                time: true
+                default: now
+                help: Used for sorting in listings.
 
       # meta:
       #   type: meta

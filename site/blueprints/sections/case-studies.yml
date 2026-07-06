@@ -3,6 +3,7 @@ parent: kirby.page("work")
 size: small
 info: "{{ page.title }} by {{ page.author.name }} on {{ page.date.toDate('d M Y') }}"
 layout: cardlets
+sortBy: date desc
 template: case-study
 empty: No case studies yet
 image: 

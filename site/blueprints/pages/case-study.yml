@@ -68,7 +68,7 @@ tabs:
                   query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
                   text: "{{ item.name }}"
                   value: "{{ item.name.slug }}"
-                help: These options are managed in the Site Taxonomies tab of the site settings.
+                help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.
 
                 # options:
                 #   peoplepower: People Power

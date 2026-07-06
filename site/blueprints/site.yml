@@ -85,6 +85,6 @@ tabs:
 
   # Site Taxonomies tab
   tabTaxonomies:
-    label: Site Taxonomies
+    label: Global Site Taxonomies
     icon: tag
     extends: tabs/taxonomies

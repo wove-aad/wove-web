@@ -1,5 +1,15 @@
 /* ============================================================
-   DESIGN TOKENS v0.3  (shared with home)
+   DESIGN TOKENS v0.3
+   Migrated from the Labs page's page-scoped subset to the full set in
+   assets/design-tokens.json (the canonical source going forward). Keep
+   this :root in sync by hand with that file — any new page's tokens
+   should be checked/added there first, then mirrored in here.
+
+   Two conflicts between the JSON spec and what's live below were
+   resolved 2026-07-09 (confirmed by Grace): --size-h1's clamp growing
+   past the figma value on large screens is intentional, and --rhythm-*
+   keeps the values already shipped on the service page — the JSON was
+   updated to match rather than the reverse. See inline notes.
    ============================================================ */
 :root {
 
@@ -8,14 +18,24 @@
   --color-white:        #ffffff;
   --color-off-white:    #f9f9f9;
   --color-coral:        #ed8c7c;
-  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal */
+  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal. Not in design-tokens.json. */
   --color-aqua:         #d5faff;
   --color-text-primary: #111111;
   --color-text-muted:   #555555;
   --color-placeholder:  #d9d9d9;
+  --color-border-card:  #aaaaaa;
+  --color-green:        #1D9E75;  /* accent — named "green" in the token export */
+  --color-green-bg:     #E1F5EE;
+  --color-green-text:   #085041;
+  --color-100:          #f5f5f5;
   --color-200:          #eeeeee;
   --color-300:          #dddddd;
   --color-400:          #bbbbbb;
+  --color-500:          #999999;
+  --color-600:          #777777;
+  --color-700:          #555555;
+  --color-800:          #333333;
+  --color-900:          #222222;
 
   /* Font */
   --font:            'Ballinger', sans-serif;
@@ -27,28 +47,45 @@
   --weight-black:    900;
 
   /* Type scale */
-  --size-h1:         clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens */
-  --size-h2:         clamp(2.5rem, 6vw, 4rem);
-  --size-h3:         clamp(2.5rem, 5vw, 3.5rem); /* 56px, weight 800, lh 64px */
-  --size-h5:         1.75rem;    /* 28px, weight 800, lh 36px */
-  --size-quote:      clamp(2.5rem, 6vw, 7rem);   /* 88px @1440, grows to 112px on larger screens */
-  --size-p1:         1.875rem;   /* 30px, weight 400, lh 50px */
-  --size-p2:         1.5rem;     /* 24px, weight 400, lh 36px */
-  --size-p3:         1.375rem;   /* 22px, weight 400, lh 32px */
-  --size-cta:        1.5rem;     /* 24px */
-  --size-btn-sm:     1.125rem;   /* 18px */
-  --size-nav:        1rem;       /* 16px */
-  --size-banner:     clamp(1.75rem, 3vw, 2.5rem); /* 40px contact banner text */
-  --size-attr-name:  2rem;       /* 32px quote attribution */
+  --size-h1:            clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens — intentional growth past the figma spec's fixed 5.5rem, confirmed by Grace 2026-07-09. */
+  --size-h1-xbold:      10.75rem; /* 172px, weight 900, lh 0.51 — homepage hero display only */
+  --size-eyebrow-bold:  5.5rem;   /* 88px, weight 800, lh 1.0 — case study client/project eyebrow */
+  --size-h2:            clamp(2.5rem, 6vw, 4rem);
+  --size-h3:            clamp(2.5rem, 5vw, 3.5rem); /* 56px, weight 800, lh 64px */
+  --size-h3-light:      3.5rem;   /* 56px, weight 300, lh 1.143 — hero subtitle */
+  --size-h4:            2.5rem;   /* 40px, weight 400, lh 1.5 — card titles, smaller section heads */
+  --size-h5:            1.75rem;    /* 28px, weight 800, lh 36px */
+  --size-h6:            1.5rem;   /* 24px, weight 800, lh 1.5 — smallest heading, inline card labels */
+  --size-quote:         clamp(2.5rem, 6vw, 7rem);   /* 88px @1440, grows to 112px on larger screens */
+  --size-p1:            1.875rem;   /* 30px, weight 400, lh 50px */
+  --size-p1-bold:       2rem;     /* 32px, weight 800, lh 1.5 — approach commitments headings */
+  --size-p2:            1.5rem;     /* 24px, weight 400, lh 36px */
+  --size-p2-bold:       1.625rem; /* 26px, weight 800, lh 1.462 */
+  --size-p3:            1.375rem;   /* 22px, weight 400, lh 32px */
+  --size-p4:            1.125rem; /* 18px, weight 400, lh 1.778 — smallest body text */
+  --size-p4-bold:       1.125rem; /* 18px, weight 800, lh 1.778 */
+  --size-subtitle:      1.25rem;  /* 20px, weight 400, lh 1.4 — card titles, taglines */
+  --size-cta:           1.5rem;     /* 24px */
+  --size-btn-lg:        1.5rem;   /* 24px — primary button text */
+  --size-btn-sm:        1.125rem;   /* 18px */
+  --size-nav:           1rem;       /* 16px */
+  --size-banner:        clamp(1.75rem, 3vw, 2.5rem); /* 40px contact banner text */
+  --size-attr-name:     2rem;       /* 32px quote attribution */
 
   /* Line height */
   --lh-h1:        1.0;
+  --lh-h1-xbold:  0.51;
   --lh-h2:        1.125;
   --lh-h3:        1.143;
   --lh-h5:        1.286;
+  --lh-h6:        1.5;
   --lh-p1:        1.667;
+  --lh-p1-bold:   1.5;
   --lh-p2:        1.5;
+  --lh-p2-bold:   1.462;
   --lh-p3:        1.455;
+  --lh-p4:        1.778;
+  --lh-subtitle:  1.4;
 
   /* Spacing */
   --space-12:  0.75rem;
@@ -62,7 +99,8 @@
   --space-96:  6rem;
   --space-128: 8rem;
 
-  /* Vertical rhythm */
+  /* Vertical rhythm — matches the service-page HTML as sent; design-tokens.json's
+     rhythm scale was reconciled to these values (2026-07-09) rather than vice versa. */
   --rhythm-xs: 1.5rem;
   --rhythm-sm: 3rem;
   --rhythm-md: 6rem;
@@ -79,6 +117,7 @@
 
   /* Border */
   --border:      1px solid var(--color-300);
+  --border-card: 1px solid var(--color-border-card);
 
   /* Radius */
   --radius-sm:   0.75rem;   /* 12px */
@@ -86,17 +125,22 @@
   --radius-lg:   2.8125rem; /* 45px */
   --radius-pill: 100px;
 
+  /* Shadow */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+
   /* Transition */
   --transition: 200ms ease;
 
-  /* Card hover — shared system, tune to taste */
+  /* Card hover — shared system, tune to taste. Not in design-tokens.json;
+     implementation-specific to this component, kept as-is. */
   --card-lift:         -4px;
   --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.08);
   --card-transition:   250ms ease;
 
   /* Feature (case study) card — responsive component tokens.
-     Reused across pages; override per breakpoint below.
-     TODO: migrate into shared token file for cross-page reuse. */
+     Reused across pages; override per breakpoint below. */
   --feature-radius:     var(--radius-lg);
   --feature-ratio:      1289 / 664;   /* landscape on desktop */
   --feature-title-size: var(--size-h5);
@@ -123,6 +167,7 @@ a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font-family: inherit; cursor: pointer; }
 
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-light.otf') format('opentype'); font-weight: 300; font-display: swap; }
 @font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-medium.otf') format('opentype'); font-weight: 500; font-display: swap; }
 @font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-bold.otf') format('opentype'); font-weight: 700; font-display: swap; }

@@ -576,8 +576,13 @@ button { font-family: inherit; cursor: pointer; }
 
 
 /* ============================================================
-   WOVEMIND RELATED CARD — image-led placement, 2-col grid
-   Distinct from wovemind-card (main feed/homepage card).
+   WOVEMIND CARDS — "Recent work" grid, image-led placement, 2-col
+   Distinct from wovemind-card (main feed/homepage card). Holds a mix of
+   two card types sharing the same media/body/title/desc treatment:
+     .wovemind-related-card  — linked (thread/whatif/longread), has a
+                               full-card overlay link + internal CTA
+     .wovemind-highlight-card — non-linked (project-highlight), optional
+                               external "Visit website" link instead
    ============================================================ */
 .section__heading {
   font-size: var(--size-h5);
@@ -587,26 +592,30 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: var(--rhythm-md);
   max-width: var(--width-content);
 }
-.wovemind-related-cards {
+.wovemind-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-64);
 }
-.wovemind-related-card {
+.wovemind-related-card,
+.wovemind-highlight-card {
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
 }
-.wovemind-related-card__media {
+.wovemind-related-card__media,
+.wovemind-highlight-card__media {
   aspect-ratio: 636 / 340;
   background: var(--color-black);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
-.wovemind-related-card__media img { width: 100%; height: 100%; object-fit: cover; }
-.wovemind-related-card__body {
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.wovemind-related-card__body,
+.wovemind-highlight-card__body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -614,14 +623,16 @@ button { font-family: inherit; cursor: pointer; }
   padding: var(--space-24);
   text-align: left;
 }
-.wovemind-related-card__title {
+.wovemind-related-card__title,
+.wovemind-highlight-card__title {
   font-size: var(--size-h5);
   font-weight: var(--weight-xbold);
   line-height: var(--lh-h5);
   color: var(--color-black);
   width: 100%;
 }
-.wovemind-related-card__desc {
+.wovemind-related-card__desc,
+.wovemind-highlight-card__desc {
   font-size: var(--size-p3);
   font-weight: var(--weight-regular);
   line-height: var(--lh-p3);
@@ -632,6 +643,10 @@ button { font-family: inherit; cursor: pointer; }
 .wovemind-related-card__link { position: absolute; inset: 0; z-index: 1; }
 .wovemind-related-card:hover .wovemind-related-card__cta { background: var(--color-off-white); }
 .wovemind-related-card:hover .wovemind-related-card__cta:hover { background: var(--color-placeholder); }
+/* Highlight card has no overlay link (nothing to navigate to) — the
+   external link is just a normal in-flow btn, no z-index trick needed. */
+.wovemind-highlight-card:hover .wovemind-highlight-card__external { background: var(--color-off-white); }
+.wovemind-highlight-card:hover .wovemind-highlight-card__external:hover { background: var(--color-placeholder); }
 
 
 /* ============================================================
@@ -793,12 +808,14 @@ button { font-family: inherit; cursor: pointer; }
    ============================================================ */
 .feature-card,
 .offering,
-.wovemind-related-card {
+.wovemind-related-card,
+.wovemind-highlight-card {
   transition: transform var(--card-transition), box-shadow var(--card-transition), opacity var(--card-transition);
 }
 .feature-card:hover,
 .offering:hover,
-.wovemind-related-card:hover {
+.wovemind-related-card:hover,
+.wovemind-highlight-card:hover {
   transform: translateY(var(--card-lift));
   box-shadow: var(--card-shadow-hover);
 }
@@ -814,6 +831,7 @@ button { font-family: inherit; cursor: pointer; }
    ============================================================ */
 .js .offering,
 .js .wovemind-related-card,
+.js .wovemind-highlight-card,
 .js .quote__inner {
   opacity: 0;
   transform: translateY(16px);
@@ -821,6 +839,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .js .offering.is-visible,
 .js .wovemind-related-card.is-visible,
+.js .wovemind-highlight-card.is-visible,
 .js .quote__inner.is-visible {
   opacity: 1;
   transform: none;
@@ -828,18 +847,21 @@ button { font-family: inherit; cursor: pointer; }
 /* Per-row left-to-right stagger on the nine offerings */
 .js .offerings .offering:nth-child(3n+2) { transition-delay: 80ms; }
 .js .offerings .offering:nth-child(3n)   { transition-delay: 160ms; }
-/* Light stagger on the project cards */
-.js .wovemind-related-cards .wovemind-related-card:nth-child(2n) { transition-delay: 100ms; }
+/* Light stagger on the "Recent work" cards (either card type) */
+.js .wovemind-cards > :nth-child(2n) { transition-delay: 100ms; }
 
 /* Gentle image zoom on hover for the image-led cards */
 .feature-card__media img,
-.wovemind-related-card__media img { transition: transform 400ms ease; }
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { transition: transform 400ms ease; }
 .feature-card:hover .feature-card__media img,
-.wovemind-related-card:hover .wovemind-related-card__media img { transform: scale(1.04); }
+.wovemind-related-card:hover .wovemind-related-card__media img,
+.wovemind-highlight-card:hover .wovemind-highlight-card__media img { transform: scale(1.04); }
 
 @media (prefers-reduced-motion: reduce) {
   .js .offering,
   .js .wovemind-related-card,
+  .js .wovemind-highlight-card,
   .js .quote__inner { opacity: 1; transform: none; transition: none; }
 }
 
@@ -883,7 +905,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 959px) {
   :root { --gutter-x: var(--space-24); }
   .indent { margin-left: 0; }
-  .wovemind-related-cards { grid-template-columns: 1fr; gap: var(--space-48); }
+  .wovemind-cards { grid-template-columns: 1fr; gap: var(--space-48); }
   .feature-card__foot { flex-direction: column; align-items: flex-start; }
   .contact__inner { flex-direction: column; }
   .footer__inner { grid-template-columns: 1fr; }
@@ -910,9 +932,12 @@ button { font-family: inherit; cursor: pointer; }
     --feature-btn-pad:    var(--space-16) var(--space-24);
   }
   .offerings { grid-template-columns: 1fr; }
-  .wovemind-related-card__body { align-items: flex-start; text-align: left; }
-  .wovemind-related-card__title { font-size: var(--size-cta); }  /* 24px, was 28 — CMS cards are secondary */
-  .wovemind-related-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
+  .wovemind-related-card__body,
+  .wovemind-highlight-card__body { align-items: flex-start; text-align: left; }
+  .wovemind-related-card__title,
+  .wovemind-highlight-card__title { font-size: var(--size-cta); }  /* 24px, was 28 — CMS cards are secondary */
+  .wovemind-related-card__media,
+  .wovemind-highlight-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
   .quote__role { font-size: 1.375rem; } /* 22px, was 24 */
   .contact__avatar { width: 120px; height: 120px; }
   .footer__inner { grid-template-columns: 1fr; gap: var(--space-32); }

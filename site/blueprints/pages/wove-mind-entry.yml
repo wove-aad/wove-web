@@ -19,6 +19,7 @@ tabs:
                 required: true
                 options:
                   spark: Spark
+                  project-highlight: Project highlight
                   thread: Thread
                   whatif: What if
                   longread: Long read
@@ -29,14 +30,44 @@ tabs:
                 when:
                   format:
                     in:
+                      - project-highlight
                       - thread
                       - whatif
                       - longread
+
+              client:
+                label: Client
+                type: text
+                when:
+                  format: project-highlight
+
+              excerpt:
+                label: Excerpt
+                type: textarea
+                maxlength: 200
+                required: true
+                when:
+                  format: project-highlight
+                info: "200 char cap — flag for Grace: Figma descriptions run ~150–160 chars, confirm this limit is right before relying on it."
+
+              website:
+                label: Website
+                type: url
+                when:
+                  format: project-highlight
+                info: "Optional — client's external site. Front-end shows a \"Visit website\" link (new tab) only when this is set."
 
               body:
                 label: Body
                 type: writer
                 required: true
+                when:
+                  format:
+                    in:
+                      - spark
+                      - thread
+                      - whatif
+                      - longread
                 placeholder: Write your entry here.
                 marks:
                   - bold
@@ -61,6 +92,7 @@ tabs:
                 when:
                   format:
                     in:
+                      - project-highlight
                       - thread
                       - whatif
                       - longread

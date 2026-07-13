@@ -167,12 +167,17 @@ a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font-family: inherit; cursor: pointer; }
 
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-light.otf') format('opentype'); font-weight: 300; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-medium.otf') format('opentype'); font-weight: 500; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-bold.otf') format('opentype'); font-weight: 700; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-xbold.otf') format('opentype'); font-weight: 800; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/ballinger-black.otf') format('opentype'); font-weight: 900; font-display: swap; }
+/* Real files only exist for 400/700/800 + italic (from dev). No file for
+   300/500/900 — deliberately NOT declaring fake @font-face entries for
+   those; per the CSS font-matching spec, an unmatched weight resolves to
+   the nearest weight actually registered in the same family (e.g. 500
+   resolves to 400), so the page stays in Ballinger throughout rather than
+   falling through to the browser's fallback sans-serif for just those
+   elements — that inconsistency was the real "font changes abruptly" bug. */
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('/assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('/assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

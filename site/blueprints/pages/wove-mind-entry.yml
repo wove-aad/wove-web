@@ -27,13 +27,7 @@ tabs:
               title:
                 label: Title
                 type: text
-                when:
-                  format:
-                    in:
-                      - project-highlight
-                      - thread
-                      - whatif
-                      - longread
+                info: "Not used for Spark (feed card only, no title shown on the front end) — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
 
               client:
                 label: Client
@@ -60,14 +54,7 @@ tabs:
               body:
                 label: Body
                 type: writer
-                required: true
-                when:
-                  format:
-                    in:
-                      - spark
-                      - thread
-                      - whatif
-                      - longread
+                info: "Not used for Project highlight (uses Excerpt instead) — same `when` limitation as Title above, so this shows for every format rather than being conditionally hidden. No longer required, since Project highlight entries won't fill it in."
                 placeholder: Write your entry here.
                 marks:
                   - bold
@@ -89,13 +76,7 @@ tabs:
                 label: Featured image
                 type: files
                 max: 1
-                when:
-                  format:
-                    in:
-                      - project-highlight
-                      - thread
-                      - whatif
-                      - longread
+                info: "Not used for Spark — same `when` limitation as Title/Body, shows for every format rather than being conditionally hidden."
 
           display_section:
             type: fields

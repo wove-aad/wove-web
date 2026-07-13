@@ -20,7 +20,7 @@
   <!-- FEATURED CASE STUDIES — first card visible, rest behind "See more" -->
   <?php
     $featuredCaseStudies = kirby()->collection('case-studies')
-      ->filter(fn ($cs) => $cs->services()->split(',')->includes($page->slug()));
+      ->filter(fn ($cs) => in_array($page->slug(), $cs->services()->split(',')));
   ?>
   <?php if ($featuredCaseStudies->count()): ?>
   <section class="section--tight container" aria-labelledby="featured-heading">
@@ -89,11 +89,11 @@
   <?php
     $highlights = $site->find('wove-mind')->children()->listed()
       ->filter(fn ($p) => $p->format()->value() === 'project-highlight'
-        && $p->services()->split(',')->includes($page->slug()))
+        && in_array($page->slug(), $p->services()->split(',')))
       ->limit(12);
     $entries = $site->find('wove-mind')->children()->listed()
       ->filter(fn ($p) => in_array($p->format()->value(), ['thread', 'whatif', 'longread'])
-        && $p->services()->split(',')->includes($page->slug()))
+        && in_array($page->slug(), $p->services()->split(',')))
       ->limit(8);
   ?>
   <?php if ($highlights->count() || $entries->count()): ?>

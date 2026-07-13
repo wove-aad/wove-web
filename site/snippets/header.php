@@ -47,6 +47,8 @@ $ogType = $page->ogtype()->or('website')->value();
 <meta property="og:site_name" content="<?= $site->title()->html() ?>">
 <meta name="twitter:card" content="summary_large_image">
 
+<link rel="preload" href="/assets/fonts/Ballinger-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/Ballinger-X-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>

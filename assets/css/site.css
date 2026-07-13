@@ -174,10 +174,10 @@ button { font-family: inherit; cursor: pointer; }
    resolves to 400), so the page stays in Ballinger throughout rather than
    falling through to the browser's fallback sans-serif for just those
    elements — that inconsistency was the real "font changes abruptly" bug. */
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('/assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('/assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('/assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('/assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: optional; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

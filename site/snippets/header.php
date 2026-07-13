@@ -12,6 +12,17 @@
 
 $uri = '/' . $page->uri();
 $isCurrent = fn ($path) => $uri === $path ? ' aria-current="page"' : '';
+
+// SEO tab fields (site/blueprints/tabs/seo.yml) — all optional, sensible fallbacks.
+$seoTitle       = $page->seoTitle()->or($page->title())->value();
+$seoDescription = $page->seoDescription();
+$robotsFlags    = $page->robots()->split(',');
+$robotsContent  = implode(', ', array_filter([
+  in_array('noindex', $robotsFlags) ? 'noindex' : 'index',
+  in_array('nofollow', $robotsFlags) ? 'nofollow' : 'follow',
+  in_array('nosnippet', $robotsFlags) ? 'nosnippet' : null,
+]));
+$ogType = $page->ogtype()->or('website')->value();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +30,23 @@ $isCurrent = fn ($path) => $uri === $path ? ' aria-current="page"' : '';
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.className += ' js';</script>
-<title><?= $page->title()->html() ?></title>
+
+<title><?= html($seoTitle) ?></title>
+<?php if ($seoDescription->isNotEmpty()): ?>
+  <meta name="description" content="<?= $seoDescription->html() ?>">
+<?php endif ?>
+<meta name="robots" content="<?= html($robotsContent) ?>">
+<link rel="canonical" href="<?= $page->url() ?>">
+
+<meta property="og:title" content="<?= html($seoTitle) ?>">
+<?php if ($seoDescription->isNotEmpty()): ?>
+  <meta property="og:description" content="<?= $seoDescription->html() ?>">
+<?php endif ?>
+<meta property="og:type" content="<?= html($ogType) ?>">
+<meta property="og:url" content="<?= $page->url() ?>">
+<meta property="og:site_name" content="<?= $site->title()->html() ?>">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>

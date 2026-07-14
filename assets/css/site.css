@@ -1,0 +1,955 @@
+/* ============================================================
+   DESIGN TOKENS v0.3
+   Migrated from the Labs page's page-scoped subset to the full set in
+   assets/design-tokens.json (the canonical source going forward). Keep
+   this :root in sync by hand with that file — any new page's tokens
+   should be checked/added there first, then mirrored in here.
+
+   Two conflicts between the JSON spec and what's live below were
+   resolved 2026-07-09 (confirmed by Grace): --size-h1's clamp growing
+   past the figma value on large screens is intentional, and --rhythm-*
+   keeps the values already shipped on the service page — the JSON was
+   updated to match rather than the reverse. See inline notes.
+   ============================================================ */
+:root {
+
+  /* Colour */
+  --color-black:        #111111;
+  --color-white:        #ffffff;
+  --color-off-white:    #f9f9f9;
+  --color-coral:        #ed8c7c;
+  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal. Not in design-tokens.json. */
+  --color-aqua:         #d5faff;
+  --color-text-primary: #111111;
+  --color-text-muted:   #555555;
+  --color-placeholder:  #d9d9d9;
+  --color-border-card:  #aaaaaa;
+  --color-green:        #1D9E75;  /* accent — named "green" in the token export */
+  --color-green-bg:     #E1F5EE;
+  --color-green-text:   #085041;
+  --color-100:          #f5f5f5;
+  --color-200:          #eeeeee;
+  --color-300:          #dddddd;
+  --color-400:          #bbbbbb;
+  --color-500:          #999999;
+  --color-600:          #777777;
+  --color-700:          #555555;
+  --color-800:          #333333;
+  --color-900:          #222222;
+
+  /* Font */
+  --font:            'Ballinger', sans-serif;
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-bold:     700;
+  --weight-xbold:    800;
+  --weight-black:    900;
+
+  /* Type scale */
+  --size-h1:            clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens — intentional growth past the figma spec's fixed 5.5rem, confirmed by Grace 2026-07-09. */
+  --size-h1-xbold:      10.75rem; /* 172px, weight 900, lh 0.51 — homepage hero display only */
+  --size-eyebrow-bold:  5.5rem;   /* 88px, weight 800, lh 1.0 — case study client/project eyebrow */
+  --size-h2:            clamp(2.5rem, 6vw, 4rem);
+  --size-h3:            clamp(2.5rem, 5vw, 3.5rem); /* 56px, weight 800, lh 64px */
+  --size-h3-light:      3.5rem;   /* 56px, weight 300, lh 1.143 — hero subtitle */
+  --size-h4:            2.5rem;   /* 40px, weight 400, lh 1.5 — card titles, smaller section heads */
+  --size-h5:            1.75rem;    /* 28px, weight 800, lh 36px */
+  --size-h6:            1.5rem;   /* 24px, weight 800, lh 1.5 — smallest heading, inline card labels */
+  --size-quote:         clamp(2.5rem, 6vw, 7rem);   /* 88px @1440, grows to 112px on larger screens */
+  --size-p1:            1.875rem;   /* 30px, weight 400, lh 50px */
+  --size-p1-bold:       2rem;     /* 32px, weight 800, lh 1.5 — approach commitments headings */
+  --size-p2:            1.5rem;     /* 24px, weight 400, lh 36px */
+  --size-p2-bold:       1.625rem; /* 26px, weight 800, lh 1.462 */
+  --size-p3:            1.375rem;   /* 22px, weight 400, lh 32px */
+  --size-p4:            1.125rem; /* 18px, weight 400, lh 1.778 — smallest body text */
+  --size-p4-bold:       1.125rem; /* 18px, weight 800, lh 1.778 */
+  --size-subtitle:      1.25rem;  /* 20px, weight 400, lh 1.4 — card titles, taglines */
+  --size-cta:           1.5rem;     /* 24px */
+  --size-btn-lg:        1.5rem;   /* 24px — primary button text */
+  --size-btn-sm:        1.125rem;   /* 18px */
+  --size-nav:           1rem;       /* 16px */
+  --size-banner:        clamp(1.75rem, 3vw, 2.5rem); /* 40px contact banner text */
+  --size-attr-name:     2rem;       /* 32px quote attribution */
+
+  /* Line height */
+  --lh-h1:        1.0;
+  --lh-h1-xbold:  0.51;
+  --lh-h2:        1.125;
+  --lh-h3:        1.143;
+  --lh-h5:        1.286;
+  --lh-h6:        1.5;
+  --lh-p1:        1.667;
+  --lh-p1-bold:   1.5;
+  --lh-p2:        1.5;
+  --lh-p2-bold:   1.462;
+  --lh-p3:        1.455;
+  --lh-p4:        1.778;
+  --lh-subtitle:  1.4;
+
+  /* Spacing */
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+  --space-80:  5rem;
+  --space-96:  6rem;
+  --space-128: 8rem;
+
+  /* Vertical rhythm — matches the service-page HTML as sent; design-tokens.json's
+     rhythm scale was reconciled to these values (2026-07-09) rather than vice versa. */
+  --rhythm-xs: 1.5rem;
+  --rhythm-sm: 3rem;
+  --rhythm-md: 6rem;
+  --rhythm-lg: 8rem;
+
+  /* Content widths */
+  --width-header:  85rem;    /* 1360px */
+  --width-block:   80rem;    /* 1280px */
+  --width-content: 51.25rem; /* 820px */
+  --width-text:    40rem;    /* 640px — long-form paragraph measure */
+
+  /* Horizontal gutter */
+  --gutter-x:  var(--space-32);
+
+  /* Border */
+  --border:      1px solid var(--color-300);
+  --border-card: 1px solid var(--color-border-card);
+
+  /* Radius */
+  --radius-sm:   0.75rem;   /* 12px */
+  --radius-md:   1.25rem;   /* 20px */
+  --radius-lg:   2.8125rem; /* 45px */
+  --radius-pill: 100px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+
+  /* Transition */
+  --transition: 200ms ease;
+
+  /* Card hover — shared system, tune to taste. Not in design-tokens.json;
+     implementation-specific to this component, kept as-is. */
+  --card-lift:         -4px;
+  --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.08);
+  --card-transition:   250ms ease;
+
+  /* Feature (case study) card — responsive component tokens.
+     Reused across pages; override per breakpoint below. */
+  --feature-radius:     var(--radius-lg);
+  --feature-ratio:      1289 / 664;   /* landscape on desktop */
+  --feature-title-size: var(--size-h5);
+  --feature-desc-size:  var(--size-cta);
+  --feature-btn-font:   var(--size-cta);
+  --feature-btn-pad:    var(--space-24) var(--space-32);
+}
+
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  line-height: var(--lh-p2);
+}
+img, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* Real files only exist for 400/700/800 + italic (from dev). No file for
+   300/500/900 — deliberately NOT declaring fake @font-face entries for
+   those; per the CSS font-matching spec, an unmatched weight resolves to
+   the nearest weight actually registered in the same family (e.g. 500
+   resolves to 400), so the page stays in Ballinger throughout rather than
+   falling through to the browser's fallback sans-serif for just those
+   elements — that inconsistency was the real "font changes abruptly" bug. */
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('/assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('/assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: optional; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ============================================================
+   SKIP LINK
+   ============================================================ */
+.skip-link {
+  position: absolute; left: -9999px; top: var(--space-16);
+  background: var(--color-black); color: var(--color-white);
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--size-btn-sm); border-radius: var(--radius-sm);
+  z-index: 9999;
+}
+.skip-link:focus { left: var(--space-16); }
+
+/* Screen-reader-only helper */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--width-block);
+  margin-inline: auto;
+  padding-inline: var(--gutter-x);
+}
+.container--wide { max-width: var(--width-header); }
+.container--narrow { max-width: var(--width-content); }
+
+/* Editorial right-indented text column (intro + "what we can help with") */
+.indent {
+  max-width: var(--width-text);
+  margin-left: auto;
+}
+
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  font-family: var(--font);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+
+.btn--sm { font-size: var(--size-btn-sm); padding: var(--space-12) var(--space-16); border-radius: 3.125rem; }
+.btn--md { font-size: var(--size-cta); padding: var(--space-24) var(--space-32); border-radius: 3.125rem; }
+
+.btn--primary { background: var(--color-black); color: var(--color-white); }
+.btn--primary:hover { opacity: 0.85; }
+
+.btn--ghost { background: transparent; color: var(--color-black); }
+.btn--ghost:hover { background: var(--color-off-white); }
+.btn--ghost:active { background: var(--color-200); }
+
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav-wrap {
+  position: sticky; top: 0; z-index: 100;
+  padding: var(--space-16) var(--gutter-x);
+  background: transparent;
+  transition: transform var(--transition);
+}
+.nav-wrap--hidden { transform: translateY(-100%); }
+.nav {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  background: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+}
+.nav__logo {
+  padding-inline: var(--space-24);
+  font-weight: var(--weight-xbold);
+  font-size: var(--size-cta);
+  color: var(--color-black);
+  letter-spacing: -0.02em;
+}
+.nav__logo:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }
+.nav__links { display: flex; gap: var(--space-12); align-items: center; }
+.nav__links a {
+  padding: var(--space-16) var(--space-24);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  color: var(--color-black);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition);
+}
+.nav__links a:hover { background: var(--color-off-white); }
+.nav__links a, .nav__dropbtn, .nav__cta { white-space: nowrap; }
+/* Current page — heavier weight, distinct from the grey hover state */
+.nav__links a[aria-current="page"],
+.nav__menu a[aria-current="page"] { font-weight: var(--weight-bold); }
+.nav__links a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__cta {
+  background: var(--color-coral);
+  color: var(--color-black);
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-pill);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  transition: opacity var(--transition);
+}
+.nav__cta:hover { opacity: 0.85; }
+.nav__cta:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+
+/* Mobile nav controls (revealed at ≤599px) */
+.nav__toggle,
+.nav__cta-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border: none;
+  border-radius: var(--radius-pill);
+}
+.nav__toggle { background: transparent; color: var(--color-black); }
+.nav__toggle:hover { background: var(--color-off-white); }
+.nav__toggle:focus-visible,
+.nav__cta-icon:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__toggle svg { width: 24px; height: 24px; }
+.nav__cta-icon { background: var(--color-coral); color: var(--color-black); transition: opacity var(--transition); }
+.nav__cta-icon:hover { opacity: 0.85; }
+.nav__cta-icon svg { width: 22px; height: 22px; }
+
+.nav__menu {
+  position: absolute;
+  top: 100%;
+  left: var(--gutter-x);
+  right: var(--gutter-x);
+  margin-top: calc(-1 * var(--space-12));
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: var(--space-12);
+  display: none;
+  z-index: 90;
+}
+.nav__menu[hidden] { display: none; }
+.nav__menu a {
+  display: block;
+  padding: var(--space-16);
+  border-radius: var(--radius-sm);
+  font-size: var(--size-p4);
+  font-weight: var(--weight-medium);
+  color: var(--color-black);
+}
+.nav__menu a:hover { background: var(--color-off-white); }
+.nav__menu a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+/* Services dropdown (desktop) */
+.nav__has-dropdown { position: relative; }
+.nav__dropbtn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: var(--space-16) var(--space-24);
+  font-family: var(--font);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  color: var(--color-black);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition);
+}
+.nav__dropbtn:hover { background: var(--color-off-white); }
+.nav__dropbtn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__dropbtn svg { width: 12px; height: 12px; transition: transform var(--transition); }
+.nav__has-dropdown:hover .nav__dropbtn svg,
+.nav__dropbtn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.nav__dropdown {
+  position: absolute;
+  top: 100%; left: 0;
+  min-width: 220px;
+  margin-top: var(--space-12);
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: var(--space-12);
+  display: none;
+  z-index: 110;
+}
+.nav__has-dropdown:hover .nav__dropdown,
+.nav__has-dropdown:focus-within .nav__dropdown,
+.nav__dropbtn[aria-expanded="true"] + .nav__dropdown { display: block; }
+.nav__dropdown a {
+  display: flex; align-items: center; gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-sm);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  color: var(--color-black);
+  white-space: nowrap;
+  transition: background-color var(--transition);
+}
+.nav__dropdown a:hover { background: var(--color-off-white); }
+.nav__dropdown a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__dropdown img { width: 20px; height: 20px; }
+.nav__links a.nav__link--icon { display: inline-flex; align-items: center; gap: 0.4rem; }
+.nav__link--icon img { width: 20px; height: 20px; }
+
+/* Services submenu (mobile) */
+.nav__menu-sub {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-16);
+  border-radius: var(--radius-sm);
+  background: transparent; border: none;
+  font-family: var(--font);
+  font-size: var(--size-p4); font-weight: var(--weight-medium); color: var(--color-black);
+}
+.nav__menu-sub:hover { background: var(--color-off-white); }
+.nav__menu-sub:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__menu-sub svg { width: 16px; height: 16px; transition: transform var(--transition); }
+.nav__menu-sub[aria-expanded="true"] svg { transform: rotate(180deg); }
+.nav__submenu { padding-left: var(--space-12); }
+.nav__submenu[hidden] { display: none; }
+.nav__menu a.nav__menu-icon { display: flex; align-items: center; gap: var(--space-12); }
+.nav__menu-icon img { width: 20px; height: 20px; }
+
+
+/* ============================================================
+   PAGE HEAD — service name + tagline
+   ============================================================ */
+.page-head {
+  background: transparent;
+  padding-block: var(--rhythm-md) var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+}
+.page-head__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+}
+.page-head__title {
+  font-size: var(--size-h1);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h1);
+  color: var(--color-black);
+}
+.page-head__tagline {
+  font-size: var(--size-h1);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h1);
+  color: var(--color-text-muted);
+  margin-top: var(--space-12);
+}
+
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+.section { padding-block: var(--rhythm-md); }
+.section--tight { padding-block: var(--rhythm-sm); }
+.section--flush-top { padding-top: 0; }
+
+.lead {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.lead strong { font-weight: var(--weight-bold); }
+
+.block-label {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--space-24);
+}
+
+
+/* ============================================================
+   CASE STUDY FEATURE CARD
+   ============================================================ */
+.feature-card {
+  display: block;
+  background: var(--color-white);
+  border-radius: var(--feature-radius);
+  overflow: hidden;
+}
+.feature-card__media {
+  aspect-ratio: var(--feature-ratio);
+  background: var(--color-black);
+  border-radius: var(--feature-radius);
+  overflow: hidden;
+}
+.feature-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.feature-card__foot {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-24);
+  padding: var(--space-24) var(--space-24) var(--space-32);
+}
+.feature-card__text { flex: 1; }
+.feature-card__client {
+  font-size: var(--feature-title-size);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--space-12);
+}
+.feature-card__desc {
+  font-size: var(--feature-desc-size);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+.feature-card__arrow {
+  flex-shrink: 0;
+  font-size: var(--feature-btn-font);
+  padding: var(--feature-btn-pad);
+}
+.feature-card:hover .feature-card__arrow { background: var(--color-off-white); }
+.feature-card:hover .feature-card__arrow:hover { background: var(--color-placeholder); }
+
+
+/* ============================================================
+   SERVICE OFFERINGS — 3-col grid
+   ============================================================ */
+.offerings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-24);
+}
+.offering {
+  background: var(--color-off-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-40);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+.offering__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.offering__body {
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p3);
+  color: var(--color-black);
+}
+
+
+/* ============================================================
+   QUOTE BANNER — full-bleed coral
+   ============================================================ */
+.quote {
+  background: var(--color-coral-bright);
+  padding-block: var(--rhythm-lg);
+  padding-inline: var(--gutter-x);
+}
+.quote__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+.quote__text {
+  font-size: var(--size-quote);
+  font-weight: var(--weight-xbold);
+  line-height: 1.0;
+  color: var(--color-black);
+}
+.quote__text em { font-style: italic; }
+.quote__attr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.quote__name { font-size: var(--size-attr-name); font-weight: var(--weight-bold); color: var(--color-black); }
+.quote__role { font-size: var(--size-cta); font-weight: var(--weight-regular); color: var(--color-black); }
+
+
+/* ============================================================
+   WOVEMIND CARDS — "Recent work" grid, image-led placement, 2-col
+   Distinct from wovemind-card (main feed/homepage card). Holds a mix of
+   two card types sharing the same media/body/title/desc treatment:
+     .wovemind-related-card  — linked (thread/whatif/longread), has a
+                               full-card overlay link + internal CTA
+     .wovemind-highlight-card — non-linked (project-highlight), optional
+                               external "Visit website" link instead
+   ============================================================ */
+.section__heading {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--rhythm-md);
+  max-width: var(--width-content);
+}
+.wovemind-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-64);
+}
+.wovemind-related-card,
+.wovemind-highlight-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.wovemind-related-card__media,
+.wovemind-highlight-card__media {
+  aspect-ratio: 636 / 340;
+  background: var(--color-black);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.wovemind-related-card__body,
+.wovemind-highlight-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  text-align: left;
+}
+.wovemind-related-card__title,
+.wovemind-highlight-card__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  width: 100%;
+}
+.wovemind-related-card__desc,
+.wovemind-highlight-card__desc {
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p3);
+  color: var(--color-black);
+  width: 100%;
+}
+.wovemind-related-card__cta { position: relative; z-index: 2; }
+.wovemind-related-card__link { position: absolute; inset: 0; z-index: 1; }
+.wovemind-related-card:hover .wovemind-related-card__cta { background: var(--color-off-white); }
+.wovemind-related-card:hover .wovemind-related-card__cta:hover { background: var(--color-placeholder); }
+/* Highlight card has no overlay link (nothing to navigate to) — the
+   external link is just a normal in-flow btn, no z-index trick needed. */
+.wovemind-highlight-card:hover .wovemind-highlight-card__external { background: var(--color-off-white); }
+.wovemind-highlight-card:hover .wovemind-highlight-card__external:hover { background: var(--color-placeholder); }
+
+
+/* ============================================================
+   CONTACT BANNER
+   ============================================================ */
+.contact {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+}
+.contact__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  gap: var(--space-40);
+  align-items: flex-start;
+}
+.contact__avatar {
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--color-white);
+}
+.contact__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.contact__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  align-items: flex-start;
+}
+.contact__text {
+  font-size: var(--size-banner);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+
+
+/* ============================================================
+   SERVICE PAGER — prev / next between contact and footer
+   ============================================================ */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-24);
+  padding-block: var(--rhythm-md);
+  border-top: var(--border);
+}
+.pager__link { display: flex; flex-direction: column; gap: var(--space-12); }
+.pager__link--next { align-items: flex-end; text-align: right; }
+.pager__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
+.pager__dir { font-size: var(--size-p4); color: var(--color-text-muted); }
+.pager__name {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.pager__link:hover .pager__name { text-decoration: underline; text-underline-offset: 0.15em; }
+
+
+/* ============================================================
+   TOOLTIP (from Wove Mind)
+   ============================================================ */
+.tooltip { position: relative; display: inline; border-bottom: 1px dashed var(--color-400); cursor: help; }
+.tooltip__text {
+  display: none; position: absolute;
+  bottom: calc(100% + var(--space-12)); left: 50%; transform: translateX(-50%);
+  background: var(--color-black); color: var(--color-white);
+  font-size: var(--size-nav); font-weight: var(--weight-regular);
+  line-height: 1.4; padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-sm); width: 240px; text-align: left;
+  z-index: 300; pointer-events: none;
+}
+.tooltip__text::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: var(--color-black);
+}
+.tooltip:hover .tooltip__text,
+.tooltip:focus-within .tooltip__text { display: block; }
+.tooltip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+
+/* ============================================================
+   FOOTER  (first pass — not from a Figma frame yet)
+   ============================================================ */
+.footer {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding-top: var(--rhythm-lg);
+  margin-top: var(--rhythm-lg);
+}
+.footer a { color: var(--color-white); }
+.footer a:focus-visible { outline: 2px solid var(--color-white); outline-offset: 4px; border-radius: 2px; }
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-48);
+  padding-bottom: var(--rhythm-md);
+}
+.footer__brand { max-width: 22rem; }
+.footer__nav {
+  display: flex;
+  gap: var(--space-48);
+  flex-wrap: wrap;
+}
+.footer__nav .footer__col { flex: 1; min-width: 8rem; }
+.footer__bcorp { display: block; margin-top: var(--space-32); height: 72px; width: auto; filter: brightness(0) invert(1); }
+.footer__logo {
+  font-weight: var(--weight-xbold);
+  font-size: var(--size-attr-name);
+  letter-spacing: -0.02em;
+  color: var(--color-white);
+}
+.footer__tagline {
+  margin-top: var(--space-16);
+  font-size: var(--size-p4);
+  line-height: var(--lh-p4);
+  color: rgba(255,255,255,0.7);
+}
+.footer__heading {
+  font-size: var(--size-btn-sm);
+  font-weight: var(--weight-xbold);
+  color: rgba(255,255,255,0.55);
+  margin-bottom: var(--space-16);
+}
+.footer__col ul { display: flex; flex-direction: column; gap: var(--space-12); }
+.footer__col a,
+.footer__meta a {
+  font-size: var(--size-p4);
+  opacity: 0.8;
+  transition: opacity var(--transition);
+}
+.footer__col a:hover,
+.footer__meta a:hover { opacity: 1; }
+.footer__col ul.footer__social { flex-direction: row; gap: var(--space-16); }
+.footer__social a { display: inline-flex; }
+.footer__social svg { width: 24px; height: 24px; }
+.footer__email { display: inline-block; margin-top: var(--space-16); }
+.footer__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-24);
+  padding-top: var(--space-32);
+  padding-bottom: var(--rhythm-md);
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+.footer__legal { font-size: var(--size-p4); color: rgba(255,255,255,0.7); }
+.footer__meta { display: flex; gap: var(--space-24); }
+
+
+/* ============================================================
+   CARD HOVER — shared system across all card types
+   Same treatment everywhere; dial via --card-lift / --card-shadow-hover.
+   ============================================================ */
+.feature-card,
+.offering,
+.wovemind-related-card,
+.wovemind-highlight-card {
+  transition: transform var(--card-transition), box-shadow var(--card-transition), opacity var(--card-transition);
+}
+.feature-card:hover,
+.offering:hover,
+.wovemind-related-card:hover,
+.wovemind-highlight-card:hover {
+  transform: translateY(var(--card-lift));
+  box-shadow: var(--card-shadow-hover);
+}
+/* Offerings aren't links — hover acts as a reading spotlight:
+   lift the one you're on, gently recede the rest. */
+.offerings:hover .offering { opacity: 0.5; }
+.offerings .offering:hover { opacity: 1; }
+
+
+/* ============================================================
+   MOTION — pared-back, considered
+   Reveal only on the card grids + quote; reduced-motion aware.
+   ============================================================ */
+.js .offering,
+.js .wovemind-related-card,
+.js .wovemind-highlight-card,
+.js .quote__inner {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.js .offering.is-visible,
+.js .wovemind-related-card.is-visible,
+.js .wovemind-highlight-card.is-visible,
+.js .quote__inner.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* Per-row left-to-right stagger on the nine offerings */
+.js .offerings .offering:nth-child(3n+2) { transition-delay: 80ms; }
+.js .offerings .offering:nth-child(3n)   { transition-delay: 160ms; }
+/* Light stagger on the "Recent work" cards (either card type) */
+.js .wovemind-cards > :nth-child(2n) { transition-delay: 100ms; }
+
+/* Gentle image zoom on hover for the image-led cards */
+.feature-card__media img,
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { transition: transform 400ms ease; }
+.feature-card:hover .feature-card__media img,
+.wovemind-related-card:hover .wovemind-related-card__media img,
+.wovemind-highlight-card:hover .wovemind-highlight-card__media img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .offering,
+  .js .wovemind-related-card,
+  .js .wovemind-highlight-card,
+  .js .quote__inner { opacity: 1; transform: none; transition: none; }
+}
+
+/* Mobile: scroll-driven spotlight on offerings (touch analogue of the
+   desktop hover). The card crossing screen-centre lifts; the rest settle back. */
+@media (max-width: 599px) and (prefers-reduced-motion: no-preference) {
+  .offerings.has-focus .offering { opacity: 0.6; }
+  .offerings .offering.is-focus {
+    opacity: 1;
+    transform: translateY(var(--card-lift));
+    box-shadow: var(--card-shadow-hover);
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1439px) {
+  /* Tighten the horizontal nav so it fits down to 1280 (generous spacing kept at 1440+) */
+  .nav__logo { padding-inline: var(--space-12); }
+  .nav__links { gap: 0.5rem; }
+  .nav__links a { padding: var(--space-16) var(--space-16); }
+  .nav__dropbtn { padding: var(--space-16) var(--space-16); }
+  .nav__cta { padding: var(--space-12) var(--space-16); }
+}
+
+@media (max-width: 1279px) {
+  .offerings { grid-template-columns: repeat(2, 1fr); }
+  /* Collapse the horizontal nav to the hamburger below 1280 */
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .nav__links { display: none; }
+  .nav__cta { display: none; }
+  .nav__logo { justify-self: center; padding-inline: 0; }
+  .nav__toggle { display: inline-flex; justify-self: start; }
+  .nav__cta-icon { display: inline-flex; justify-self: end; }
+  .nav__menu { display: block; }
+  .nav__menu[hidden] { display: none; }
+}
+
+@media (max-width: 959px) {
+  :root { --gutter-x: var(--space-24); }
+  .indent { margin-left: 0; }
+  .wovemind-cards { grid-template-columns: 1fr; gap: var(--space-48); }
+  .feature-card__foot { flex-direction: column; align-items: flex-start; }
+  .contact__inner { flex-direction: column; }
+  .footer__inner { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --gutter-x: var(--space-16);
+    --rhythm-md: 3rem;
+    --rhythm-lg: 4.5rem;
+    --size-p1: 1.5rem;     /* 24px, was 30 — kept larger to hold impact */
+    --size-p2: 1.125rem;   /* 18px, was 24 */
+    --size-p3: 1.0625rem;  /* 17px, was 22 */
+    --size-banner: 1.5rem; /* 24px contact banner */
+    --size-quote:     2.5rem;  /* 40px — kept one step higher per request */
+    --size-attr-name: 1.75rem; /* 28px, was 32 */
+
+    /* Feature card — portrait, tighter radius, smaller text + button */
+    --feature-radius:     var(--radius-md);
+    --feature-ratio:      3 / 4;
+    --feature-title-size: var(--size-cta);   /* 24px, was 28 */
+    --feature-desc-size:  1.25rem;           /* 20px, was 24 */
+    --feature-btn-font:   var(--size-btn-sm);
+    --feature-btn-pad:    var(--space-16) var(--space-24);
+  }
+  .offerings { grid-template-columns: 1fr; }
+  .wovemind-related-card__body,
+  .wovemind-highlight-card__body { align-items: flex-start; text-align: left; }
+  .wovemind-related-card__title,
+  .wovemind-highlight-card__title { font-size: var(--size-cta); }  /* 24px, was 28 — CMS cards are secondary */
+  .wovemind-related-card__media,
+  .wovemind-highlight-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
+  .quote__role { font-size: 1.375rem; } /* 22px, was 24 */
+  .contact__avatar { width: 120px; height: 120px; }
+  .footer__inner { grid-template-columns: 1fr; gap: var(--space-32); }
+  .footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-32); }
+  .footer__bar { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
+  /* Step medium buttons down to small on mobile (mirrors home's lg → md),
+     with padding bumped one increment all round for comfortable tap targets */
+  .btn--sm { padding: var(--space-16) var(--space-24); }
+  .btn--md { font-size: var(--size-btn-sm); padding: var(--space-16) var(--space-24); }
+}

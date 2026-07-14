@@ -19,6 +19,7 @@ tabs:
                 required: true
                 options:
                   spark: Spark
+                  project-highlight: Project highlight
                   thread: Thread
                   whatif: What if
                   longread: Long read
@@ -26,12 +27,29 @@ tabs:
               title:
                 label: Title
                 type: text
+                info: "Not used for Spark (feed card only, no title shown on the front end) — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
+
+              client:
+                label: Client
+                type: text
                 when:
-                  format:
-                    in:
-                      - thread
-                      - whatif
-                      - longread
+                  format: project-highlight
+
+              excerpt:
+                label: Excerpt
+                type: textarea
+                maxlength: 200
+                required: true
+                when:
+                  format: project-highlight
+                info: "200 char cap — flag for Grace: Figma descriptions run ~150–160 chars, confirm this limit is right before relying on it."
+
+              website:
+                label: Website
+                type: url
+                when:
+                  format: project-highlight
+                info: "Optional — client's external site. Front-end shows a \"Visit website\" link (new tab) only when this is set."
 
               blocksHeadline:
                 type: headline
@@ -44,7 +62,7 @@ tabs:
               body:
                 label: Body
                 type: writer
-                required: true
+                info: "Not used for Project highlight (uses Excerpt instead) — same `when` limitation as Title above, so this shows for every format rather than being conditionally hidden. No longer required, since Project highlight entries won't fill it in."
                 placeholder: Write your entry here.
                 headings:
                   - 2
@@ -71,12 +89,7 @@ tabs:
                 label: Featured image
                 type: files
                 max: 1
-                when:
-                  format:
-                    in:
-                      - thread
-                      - whatif
-                      - longread
+                info: "Not used for Spark — same `when` limitation as Title/Body, shows for every format rather than being conditionally hidden."
 
           display_section:
             type: fields

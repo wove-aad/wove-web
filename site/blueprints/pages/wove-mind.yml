@@ -19,6 +19,14 @@ tabs:
         width: 1/3
         sections:
 
+          image_section:
+            type: fields
+            fields:
+              image:
+                label: Featured image
+                type: files
+                max: 1
+
           drafts:
             extends: sections/wove-mind-entries
             label: Drafts

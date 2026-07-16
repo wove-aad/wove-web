@@ -47,6 +47,23 @@ tabs:
                 type: blocks
                 help: Main content of the case study, displayed below the hero.
 
+              stats:
+                label: Impact Stats
+                type: structure
+                max: 4
+                help: Up to 4 headline numbers shown below the main content (e.g. "40yr").
+                fields:
+                  value:
+                    label: Value
+                    type: text
+                    width: 1/2
+                    placeholder: e.g. 40yr
+                  label:
+                    label: Label
+                    type: textarea
+                    size: small
+                    width: 1/2
+
           # Prev / Next case studies are handled automatically via
           # $page->prev() / $page->next() from siblings — no field needed.
 
@@ -87,6 +104,22 @@ tabs:
                   labs: Labs
                   digital: Digital
                   brand: Brand
+
+              team:
+                label: Team
+                type: structure
+                help: Project team members shown alongside "The big picture" intro.
+                fields:
+                  name:
+                    label: Name
+                    type: text
+                    width: 1/2
+                  avatar:
+                    label: Avatar
+                    type: files
+                    max: 1
+                    query: page.images
+                    width: 1/2
 
               contact:
                 label: Contact Person

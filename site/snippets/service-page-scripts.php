@@ -31,6 +31,29 @@
     });
   })();
 
+  /* Case study — inject prev/next scroll buttons after each gallery block's
+     image row. Progressive enhancement only: the row already scrolls fine
+     via touch/trackpad without JS. No-ops on pages with no gallery block. */
+  (function () {
+    var lists = document.querySelectorAll('.case-study-blocks figure > ul');
+    if (!lists.length) return;
+    lists.forEach(function (list) {
+      var nav = document.createElement('div');
+      nav.className = 'case-study-gallery-nav';
+      nav.innerHTML =
+        '<button type="button" aria-label="Scroll gallery left">&larr;</button>' +
+        '<button type="button" aria-label="Scroll gallery right">&rarr;</button>';
+      list.insertAdjacentElement('afterend', nav);
+      var buttons = nav.querySelectorAll('button');
+      buttons[0].addEventListener('click', function () {
+        list.scrollBy({ left: -list.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      buttons[1].addEventListener('click', function () {
+        list.scrollBy({ left: list.clientWidth * 0.8, behavior: 'smooth' });
+      });
+    });
+  })();
+
   /* Mobile only: scroll-driven focus on the offerings grid.
      Focuses whichever card sits nearest the vertical centre of the screen. */
   (function () {

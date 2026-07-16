@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wove-web",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "localhost:8010", "kirby/router.php"],
+      "port": 8010
+    }
+  ]
+}

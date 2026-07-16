@@ -147,6 +147,10 @@
   --feature-desc-size:  var(--size-cta);
   --feature-btn-font:   var(--size-cta);
   --feature-btn-pad:    var(--space-24) var(--space-32);
+
+  /* Stat block (case study) — responsive component token, not in
+     design-tokens.json yet. 96px @1440 per Figma, scales down like h1. */
+  --size-stat: clamp(2.5rem, 6vw, 6rem);
 }
 
 
@@ -717,6 +721,142 @@ button { font-family: inherit; cursor: pointer; }
 
 
 /* ============================================================
+   CASE STUDY — hero, tags, team/overview, stats, gallery blocks
+   Figma: Case Study frame (147:402)
+   ============================================================ */
+.case-study-hero {
+  background: var(--color-200);
+  padding-block: var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+}
+.case-study-hero .container { display: flex; flex-direction: column; gap: var(--space-32); }
+.case-study-hero .page-head__tagline { margin-top: 0; }
+
+.case-study-tags { display: flex; flex-wrap: wrap; gap: var(--space-12); }
+.tag {
+  background: var(--color-white);
+  color: var(--color-black);
+  font-size: var(--size-p4);
+  line-height: var(--lh-p4);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-300);
+}
+
+.case-study-overview {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: var(--space-64);
+  align-items: start;
+}
+.team-list__heading {
+  font-size: var(--size-p2);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+  margin-bottom: var(--space-32);
+}
+.team-list ul { display: flex; flex-direction: column; gap: var(--space-16); }
+.team-member { display: flex; align-items: center; gap: var(--space-12); }
+.team-member__avatar { width: 48px; height: 48px; border-radius: var(--radius-pill); object-fit: cover; flex-shrink: 0; }
+.team-member__name { font-size: var(--size-p2); line-height: var(--lh-p2); color: var(--color-black); }
+
+/* Same body-copy measure as the services page's .indent/.lead pattern */
+.case-study-blocks { max-width: var(--width-text); }
+.case-study-blocks > :not(:first-child) { margin-top: var(--space-48); }
+.case-study-blocks h1,
+.case-study-blocks h2,
+.case-study-blocks h3 {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.case-study-blocks p {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+/* Gallery block (Kirby default markup: figure > ul > li > img + figcaption) */
+.case-study-blocks figure { margin: 0; }
+.case-study-blocks figure ul {
+  display: flex;
+  gap: var(--space-24);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  scrollbar-width: none;
+}
+.case-study-blocks figure ul::-webkit-scrollbar { display: none; }
+.case-study-blocks figure li {
+  flex: 0 0 min(32rem, 80vw);
+  scroll-snap-align: start;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.case-study-blocks figure li img { width: 100%; height: 100%; object-fit: cover; }
+.case-study-blocks figure figcaption {
+  margin-top: var(--space-16);
+  font-size: var(--size-p2);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+}
+.case-study-gallery-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+}
+.case-study-gallery-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  background: var(--color-200);
+  border: none;
+  color: var(--color-black);
+  font-size: var(--size-p2);
+}
+.case-study-gallery-nav button:hover { background: var(--color-300); }
+.case-study-gallery-nav button:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+.case-study-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-32);
+  max-width: var(--width-content);
+  margin-left: auto;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  padding: var(--space-32) var(--space-12);
+  border-bottom: 1px solid var(--color-black);
+}
+.stat__value {
+  font-size: var(--size-stat);
+  font-weight: var(--weight-xbold);
+  line-height: 1;
+  color: var(--color-black);
+}
+.stat__label {
+  font-size: var(--size-p2);
+  line-height: 1.4;
+  color: var(--color-black);
+}
+
+.case-study-related-intro { max-width: var(--width-text); margin-bottom: var(--space-48); }
+.case-study-related-intro .lead { margin-top: var(--space-16); }
+
+
+/* ============================================================
    TOOLTIP (from Wove Mind)
    ============================================================ */
 .tooltip { position: relative; display: inline; border-bottom: 1px dashed var(--color-400); cursor: help; }
@@ -914,6 +1054,9 @@ button { font-family: inherit; cursor: pointer; }
   .feature-card__foot { flex-direction: column; align-items: flex-start; }
   .contact__inner { flex-direction: column; }
   .footer__inner { grid-template-columns: 1fr; }
+  .case-study-overview { grid-template-columns: 1fr; gap: var(--space-48); }
+  .case-study-blocks { max-width: none; }
+  .case-study-stats { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 599px) {
@@ -952,4 +1095,5 @@ button { font-family: inherit; cursor: pointer; }
      with padding bumped one increment all round for comfortable tap targets */
   .btn--sm { padding: var(--space-16) var(--space-24); }
   .btn--md { font-size: var(--size-btn-sm); padding: var(--space-16) var(--space-24); }
+  .case-study-blocks figure li { flex-basis: 85vw; aspect-ratio: 3 / 4; }
 }

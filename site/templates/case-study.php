@@ -15,8 +15,9 @@ $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digi
 $serviceSlugs  = array_filter($page->services()->split(','));
 $serviceTags   = array_map(fn ($slug) => $serviceLabels[$slug] ?? ucfirst($slug), $serviceSlugs);
 
-$team    = $page->team()->toStructure();
-$stats   = $page->stats()->toStructure();
+$team   = $page->team()->toStructure();
+$blocks = $page->blocks()->toBlocks();
+$stats  = $page->stats()->toStructure();
 $contact = $page->contact()->toStructure()->first();
 
 $prev = $page->prevListed();
@@ -52,32 +53,36 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
 
 
   <!-- OVERVIEW — team roster + main narrative blocks -->
-  <section class="section container" aria-label="Overview">
-    <div class="case-study-overview">
+  <?php if ($team->count() || $blocks->isNotEmpty()): ?>
+    <section class="section container" aria-label="Overview">
+      <div class="case-study-overview">
 
-      <?php if ($team->count()): ?>
-        <aside class="team-list">
-          <p class="team-list__heading">Team</p>
-          <ul role="list">
-            <?php foreach ($team as $member): ?>
-              <?php $avatar = $member->avatar()->toFile() ?>
-              <li class="team-member">
-                <?php if ($avatar): ?>
-                  <img src="<?= $avatar->url() ?>" alt="" class="team-member__avatar" width="48" height="48" loading="lazy">
-                <?php endif ?>
-                <span class="team-member__name"><?= $member->name()->html() ?></span>
-              </li>
-            <?php endforeach ?>
-          </ul>
-        </aside>
-      <?php endif ?>
+        <?php if ($team->count()): ?>
+          <aside class="team-list">
+            <p class="team-list__heading">Team</p>
+            <ul role="list">
+              <?php foreach ($team as $member): ?>
+                <?php $avatar = $member->avatar()->toFile() ?>
+                <li class="team-member">
+                  <?php if ($avatar): ?>
+                    <img src="<?= $avatar->url() ?>" alt="" class="team-member__avatar" width="48" height="48" loading="lazy">
+                  <?php endif ?>
+                  <span class="team-member__name"><?= $member->name()->html() ?></span>
+                </li>
+              <?php endforeach ?>
+            </ul>
+          </aside>
+        <?php endif ?>
 
-      <div class="case-study-blocks">
-        <?= $page->blocks()->toBlocks() ?>
+        <?php if ($blocks->isNotEmpty()): ?>
+          <div class="case-study-blocks">
+            <?= $blocks ?>
+          </div>
+        <?php endif ?>
+
       </div>
-
-    </div>
-  </section>
+    </section>
+  <?php endif ?>
 
 
   <!-- IMPACT STATS -->
@@ -99,8 +104,10 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
   <?php if ($relatedEntries->count()): ?>
     <section class="section container" aria-labelledby="related-heading">
       <div class="case-study-related-intro">
-        <h2 class="section__heading" id="related-heading">Design at multiple layers</h2>
-        <p class="lead">Given the scale and complexity of this work, the articles below explore specific aspects&mdash;from building strategic frameworks right through to launching a national campaign. Each demonstrates how strategic design helps organisations navigate complexity, align diverse stakeholders and change how things work for the better.</p>
+        <h2 class="section__heading" id="related-heading"><?= $page->relatedHeading()->or('Design at multiple layers')->html() ?></h2>
+        <?php if ($page->relatedIntro()->isNotEmpty()): ?>
+          <p class="lead"><?= $page->relatedIntro()->html() ?></p>
+        <?php endif ?>
       </div>
       <div class="wovemind-cards">
         <?php foreach ($relatedEntries as $entry): ?>
@@ -134,7 +141,10 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
 
   <!-- CONTACT BANNER -->
   <?php if ($contact): ?>
-    <?php $avatar = $contact->avatar()->toFile() ?>
+    <?php
+      $avatar = $contact->avatar()->toFile();
+      $ctaFallback = $contact->name()->isNotEmpty() ? 'Talk to ' . $contact->name()->value() . ' today' : 'Get in touch today';
+    ?>
     <section class="contact" aria-labelledby="contact-heading">
       <div class="contact__inner">
         <?php if ($avatar): ?>
@@ -147,7 +157,7 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
             <?= $page->subStatement()->or('Have a project in mind? Curious about ways we could bring value to your organisation?')->html() ?>
           </p>
           <a href="/contact" class="btn btn--primary btn--md">
-            <?= $page->ctaPrompt()->or('Talk to ' . $contact->name()->value() . ' today')->html() ?> <span aria-hidden="true">&rarr;</span>
+            <?= $page->ctaPrompt()->or($ctaFallback)->html() ?> <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
       </div>

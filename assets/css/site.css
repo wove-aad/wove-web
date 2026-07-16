@@ -745,8 +745,9 @@ button { font-family: inherit; cursor: pointer; }
 
 .case-study-overview {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  grid-template-columns: minmax(200px, 260px) minmax(0, var(--width-text));
   gap: var(--space-64);
+  justify-content: end;
   align-items: start;
 }
 .team-list__heading {

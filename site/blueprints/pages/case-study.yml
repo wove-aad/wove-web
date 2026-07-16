@@ -45,7 +45,14 @@ tabs:
 
               blocks:
                 type: blocks
-                help: Main content of the case study, displayed below the hero.
+                help: "Main content of the case study, displayed below the hero. Use a Gallery block for the image carousel."
+                fieldsets:
+                  - heading
+                  - text
+                  - gallery
+                  - image
+                  - quote
+                  - list
 
               stats:
                 label: Impact Stats
@@ -63,6 +70,19 @@ tabs:
                     type: textarea
                     size: small
                     width: 1/2
+
+              relatedHeading:
+                label: Related Work — Heading
+                type: text
+                default: Design at multiple layers
+                help: Heading shown above the related Wove Mind entries, if any are linked.
+
+              relatedIntro:
+                label: Related Work — Intro
+                type: textarea
+                size: small
+                default: Given the scale and complexity of this work, the articles below explore specific aspects—from building strategic frameworks right through to launching a national campaign. Each demonstrates how strategic design helps organisations navigate complexity, align diverse stakeholders and change how things work for the better.
+                help: Optional intro text shown above the related Wove Mind entries.
 
           # Prev / Next case studies are handled automatically via
           # $page->prev() / $page->next() from siblings — no field needed.

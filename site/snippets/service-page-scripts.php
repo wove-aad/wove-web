@@ -1,7 +1,7 @@
 <script>
   /* Reveal on scroll */
   (function () {
-    var targets = document.querySelectorAll('.offering, .wovemind-related-card, .wovemind-highlight-card, .quote__inner');
+    var targets = document.querySelectorAll('.offering, .wovemind-related-card, .wovemind-highlight-card, .quote__inner, .team-member, .stat, .case-study-gallery');
     if (!targets.length) return;
     if (!('IntersectionObserver' in window)) {
       targets.forEach(function (el) { el.classList.add('is-visible'); });
@@ -35,7 +35,7 @@
      image row. Progressive enhancement only: the row already scrolls fine
      via touch/trackpad without JS. No-ops on pages with no gallery block. */
   (function () {
-    var lists = document.querySelectorAll('.case-study-blocks figure > ul');
+    var lists = document.querySelectorAll('.case-study-gallery figure > ul');
     if (!lists.length) return;
     lists.forEach(function (list) {
       var nav = document.createElement('div');

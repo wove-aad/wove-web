@@ -51,7 +51,7 @@ $ogType = $page->ogtype()->or('website')->value();
 <link rel="preload" href="/assets/fonts/Ballinger-X-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
-<body>
+<body class="tpl-<?= $page->template()->name() ?>">
 
 <a href="#main" class="skip-link">Skip to main content</a>
 
@@ -109,30 +109,6 @@ $ogType = $page->ogtype()->or('website')->value();
 </div>
 
 <script>
-  /* Hide header on scroll down, reveal on scroll up */
-  (function () {
-    var nav = document.querySelector('.nav-wrap');
-    if (!nav) return;
-    var menu = document.getElementById('mobile-menu');
-    var toggle = document.querySelector('.nav__toggle');
-    var last = window.scrollY;
-    var threshold = 8;
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      if (Math.abs(y - last) < threshold) return;
-      if (y > last && y > nav.offsetHeight) {
-        nav.classList.add('nav-wrap--hidden');
-        if (menu && !menu.hidden) {
-          menu.hidden = true;
-          if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open menu'); }
-        }
-      } else {
-        nav.classList.remove('nav-wrap--hidden');
-      }
-      last = y;
-    }, { passive: true });
-  })();
-
   /* Mobile menu toggle */
   (function () {
     var toggle = document.querySelector('.nav__toggle');

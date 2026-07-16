@@ -15,8 +15,17 @@ $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digi
 $serviceSlugs  = array_filter($page->services()->split(','));
 $serviceTags   = array_map(fn ($slug) => $serviceLabels[$slug] ?? ucfirst($slug), $serviceSlugs);
 
-$team   = $page->team()->toStructure();
-$blocks = $page->blocks()->toBlocks();
+$team       = $page->team()->toStructure();
+$allBlocks  = $page->blocks()->toBlocks();
+$narrativeBlocks = [];
+$galleryBlocks    = [];
+foreach ($allBlocks as $block) {
+  if ($block->type() === 'gallery') {
+    $galleryBlocks[] = $block;
+  } else {
+    $narrativeBlocks[] = $block;
+  }
+}
 $stats  = $page->stats()->toStructure();
 $contact = $page->contact()->toStructure()->first();
 
@@ -53,7 +62,7 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
 
 
   <!-- OVERVIEW — team roster + main narrative blocks -->
-  <?php if ($team->count() || $blocks->isNotEmpty()): ?>
+  <?php if ($team->count() || $narrativeBlocks): ?>
     <section class="section container" aria-label="Overview">
       <div class="case-study-overview">
 
@@ -74,13 +83,27 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
           </aside>
         <?php endif ?>
 
-        <?php if ($blocks->isNotEmpty()): ?>
+        <?php if ($narrativeBlocks): ?>
           <div class="case-study-blocks">
-            <?= $blocks ?>
+            <?php foreach ($narrativeBlocks as $block): ?>
+              <?= $block ?>
+            <?php endforeach ?>
           </div>
         <?php endif ?>
 
       </div>
+    </section>
+  <?php endif ?>
+
+
+  <!-- IMAGE GALLERY — breaks out to full width -->
+  <?php if ($galleryBlocks): ?>
+    <section class="section--tight container container--wide" aria-label="Gallery">
+      <?php foreach ($galleryBlocks as $block): ?>
+        <div class="case-study-gallery">
+          <?= $block ?>
+        </div>
+      <?php endforeach ?>
     </section>
   <?php endif ?>
 
@@ -102,17 +125,19 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
 
   <!-- RELATED WOVE MIND ENTRIES -->
   <?php if ($relatedEntries->count()): ?>
-    <section class="section container" aria-labelledby="related-heading">
-      <div class="case-study-related-intro">
-        <h2 class="section__heading" id="related-heading"><?= $page->relatedHeading()->or('Design at multiple layers')->html() ?></h2>
-        <?php if ($page->relatedIntro()->isNotEmpty()): ?>
-          <p class="lead"><?= $page->relatedIntro()->html() ?></p>
-        <?php endif ?>
-      </div>
-      <div class="wovemind-cards">
-        <?php foreach ($relatedEntries as $entry): ?>
-          <?php snippet('wovemind-related-card', ['post' => $entry]) ?>
-        <?php endforeach ?>
+    <section class="case-study-related" aria-labelledby="related-heading">
+      <div class="container">
+        <div class="case-study-related-intro">
+          <h2 class="section__heading" id="related-heading"><?= $page->relatedHeading()->or('Design at multiple layers')->html() ?></h2>
+          <?php if ($page->relatedIntro()->isNotEmpty()): ?>
+            <p class="lead"><?= $page->relatedIntro()->html() ?></p>
+          <?php endif ?>
+        </div>
+        <div class="wovemind-cards">
+          <?php foreach ($relatedEntries as $entry): ?>
+            <?php snippet('wovemind-related-card', ['post' => $entry]) ?>
+          <?php endforeach ?>
+        </div>
       </div>
     </section>
   <?php endif ?>

@@ -264,9 +264,11 @@ button { font-family: inherit; cursor: pointer; }
   position: sticky; top: 0; z-index: 100;
   padding: var(--space-16) var(--gutter-x);
   background: transparent;
-  transition: transform var(--transition);
 }
-.nav-wrap--hidden { transform: translateY(-100%); }
+/* Case study: nav sits before the hero in document flow (not overlapping
+   it), so a transparent header shows plain white above the hero on load,
+   not the hero's gray — match it explicitly instead. */
+.tpl-case-study .nav-wrap { background: var(--color-200); }
 .nav {
   max-width: var(--width-header);
   margin-inline: auto;
@@ -387,6 +389,17 @@ button { font-family: inherit; cursor: pointer; }
   padding: var(--space-12);
   display: none;
   z-index: 110;
+}
+/* Invisible hit-area bridging the visual gap above the dropdown — without
+   this, the mouse crosses dead space moving from the trigger down into the
+   menu and :hover drops before the pointer arrives. */
+.nav__dropdown::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--space-12));
+  left: 0;
+  right: 0;
+  height: var(--space-12);
 }
 .nav__has-dropdown:hover .nav__dropdown,
 .nav__has-dropdown:focus-within .nav__dropdown,
@@ -727,7 +740,6 @@ button { font-family: inherit; cursor: pointer; }
 .case-study-hero {
   background: var(--color-200);
   padding-block: var(--rhythm-md);
-  padding-inline: var(--gutter-x);
 }
 .case-study-hero .container { display: flex; flex-direction: column; gap: var(--space-32); }
 .case-study-hero .page-head__tagline { margin-top: 0; }
@@ -740,14 +752,13 @@ button { font-family: inherit; cursor: pointer; }
   line-height: var(--lh-p4);
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-300);
+  border: var(--border);
 }
 
 .case-study-overview {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, var(--width-text));
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
   gap: var(--space-64);
-  justify-content: end;
   align-items: start;
 }
 .team-list__heading {
@@ -758,11 +769,12 @@ button { font-family: inherit; cursor: pointer; }
 }
 .team-list ul { display: flex; flex-direction: column; gap: var(--space-16); }
 .team-member { display: flex; align-items: center; gap: var(--space-12); }
-.team-member__avatar { width: 48px; height: 48px; border-radius: var(--radius-pill); object-fit: cover; flex-shrink: 0; }
+.team-member__avatar { width: var(--space-48); height: var(--space-48); border-radius: var(--radius-pill); object-fit: cover; flex-shrink: 0; }
 .team-member__name { font-size: var(--size-p2); line-height: var(--lh-p2); color: var(--color-black); }
 
-/* Same body-copy measure as the services page's .indent/.lead pattern */
-.case-study-blocks { max-width: var(--width-text); }
+/* Same body-copy measure as the services page's .indent/.lead pattern —
+   right-aligned within its grid column, same convention as .indent. */
+.case-study-blocks { max-width: var(--width-text); margin-left: auto; }
 .case-study-blocks > :not(:first-child) { margin-top: var(--space-48); }
 .case-study-blocks h1,
 .case-study-blocks h2,
@@ -778,9 +790,11 @@ button { font-family: inherit; cursor: pointer; }
   line-height: var(--lh-p1);
   color: var(--color-black);
 }
-/* Gallery block (Kirby default markup: figure > ul > li > img + figcaption) */
-.case-study-blocks figure { margin: 0; }
-.case-study-blocks figure ul {
+
+/* Gallery block — breaks out to full container width (Kirby default
+   markup: figure > ul > li > img + figcaption) */
+.case-study-gallery figure { margin: 0; }
+.case-study-gallery figure ul {
   display: flex;
   gap: var(--space-24);
   overflow-x: auto;
@@ -790,17 +804,17 @@ button { font-family: inherit; cursor: pointer; }
   margin: 0;
   scrollbar-width: none;
 }
-.case-study-blocks figure ul::-webkit-scrollbar { display: none; }
-.case-study-blocks figure li {
-  flex: 0 0 min(32rem, 80vw);
+.case-study-gallery figure ul::-webkit-scrollbar { display: none; }
+.case-study-gallery figure li {
+  flex: 0 0 min(40rem, 80vw);
   scroll-snap-align: start;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 2;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--color-black);
 }
-.case-study-blocks figure li img { width: 100%; height: 100%; object-fit: cover; }
-.case-study-blocks figure figcaption {
+.case-study-gallery figure li img { width: 100%; height: 100%; object-fit: cover; }
+.case-study-gallery figure figcaption {
   margin-top: var(--space-16);
   font-size: var(--size-p2);
   line-height: var(--lh-p2);
@@ -816,8 +830,8 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: var(--space-64);
+  height: var(--space-64);
   border-radius: var(--radius-pill);
   background: var(--color-200);
   border: none;
@@ -844,15 +858,19 @@ button { font-family: inherit; cursor: pointer; }
 .stat__value {
   font-size: var(--size-stat);
   font-weight: var(--weight-xbold);
-  line-height: 1;
+  line-height: var(--lh-h1);
   color: var(--color-black);
 }
 .stat__label {
   font-size: var(--size-p2);
-  line-height: 1.4;
+  line-height: var(--lh-subtitle);
   color: var(--color-black);
 }
 
+.case-study-related {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-md);
+}
 .case-study-related-intro { max-width: var(--width-text); margin-bottom: var(--space-48); }
 .case-study-related-intro .lead { margin-top: var(--space-16); }
 
@@ -978,7 +996,10 @@ button { font-family: inherit; cursor: pointer; }
 .js .offering,
 .js .wovemind-related-card,
 .js .wovemind-highlight-card,
-.js .quote__inner {
+.js .quote__inner,
+.js .team-member,
+.js .stat,
+.js .case-study-gallery {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 600ms ease, transform 600ms ease;
@@ -986,7 +1007,10 @@ button { font-family: inherit; cursor: pointer; }
 .js .offering.is-visible,
 .js .wovemind-related-card.is-visible,
 .js .wovemind-highlight-card.is-visible,
-.js .quote__inner.is-visible {
+.js .quote__inner.is-visible,
+.js .team-member.is-visible,
+.js .stat.is-visible,
+.js .case-study-gallery.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -995,6 +1019,11 @@ button { font-family: inherit; cursor: pointer; }
 .js .offerings .offering:nth-child(3n)   { transition-delay: 160ms; }
 /* Light stagger on the "Recent work" cards (either card type) */
 .js .wovemind-cards > :nth-child(2n) { transition-delay: 100ms; }
+/* Light stagger on the team list and stat grid */
+.js .team-list .team-member:nth-child(2) { transition-delay: 80ms; }
+.js .team-list .team-member:nth-child(3) { transition-delay: 160ms; }
+.js .team-list .team-member:nth-child(4) { transition-delay: 240ms; }
+.js .case-study-stats .stat:nth-child(2n) { transition-delay: 100ms; }
 
 /* Gentle image zoom on hover for the image-led cards */
 .feature-card__media img,
@@ -1008,7 +1037,10 @@ button { font-family: inherit; cursor: pointer; }
   .js .offering,
   .js .wovemind-related-card,
   .js .wovemind-highlight-card,
-  .js .quote__inner { opacity: 1; transform: none; transition: none; }
+  .js .quote__inner,
+  .js .team-member,
+  .js .stat,
+  .js .case-study-gallery { opacity: 1; transform: none; transition: none; }
 }
 
 /* Mobile: scroll-driven spotlight on offerings (touch analogue of the

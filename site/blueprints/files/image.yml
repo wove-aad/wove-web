@@ -11,7 +11,7 @@ accept:
   mime: image/*
   type: image
   # maxwidth: 3000
-  minwidth: 1200
+  # minwidth: 1200
 
 create:
   strip: true

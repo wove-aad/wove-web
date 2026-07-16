@@ -1,0 +1,5 @@
+Title: Strategy
+
+----
+
+Template: strategy

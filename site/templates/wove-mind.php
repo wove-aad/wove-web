@@ -74,8 +74,7 @@ $formats = [
 
   <!-- NEWSLETTER (static placeholder — not wired up yet) -->
   <section class="newsletter" id="newsletter" aria-labelledby="newsletter-heading">
-    <div class="container newsletter__inner">
-      <p class="newsletter__eyebrow">Newsletter</p>
+    <div class="container">
       <div class="newsletter__content">
         <h2 class="newsletter__heading" id="newsletter-heading">Get the thinking in your inbox</h2>
         <p class="newsletter__desc">We send a curated selection of Wove Mind entries every few weeks. No schedule, no filler — just when there's something worth sharing.</p>

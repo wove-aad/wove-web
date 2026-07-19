@@ -1603,17 +1603,9 @@ button { font-family: inherit; cursor: pointer; }
   border-top: var(--border);
   padding-block: var(--rhythm-md);
 }
-.newsletter__inner {
-  display: grid;
-  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
-  gap: var(--space-48);
-}
-.newsletter__eyebrow {
-  font-size: var(--size-p4);
-  color: var(--color-400);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
+/* No gap to the footer that follows — this page's last section should
+   flow straight into it, not leave a strip of page background showing. */
+.tpl-wove-mind .footer { margin-top: 0; }
 .newsletter__content { max-width: var(--width-content); }
 .newsletter__heading {
   font-size: var(--size-h5);
@@ -1666,7 +1658,6 @@ button { font-family: inherit; cursor: pointer; }
   .work-cards { grid-template-columns: repeat(2, 1fr); }
   .home-hero__media { width: 12rem; }
   .wovemind-feed__grid { grid-template-columns: repeat(2, 1fr); }
-  .newsletter__inner { grid-template-columns: 1fr; }
   /* Collapse the horizontal nav to the hamburger below 1280 */
   .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
   .nav__links { display: none; }

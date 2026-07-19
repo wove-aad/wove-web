@@ -15,7 +15,10 @@
  * part of the built Kirby templates).
  */
 
-$image = $post->image();
+// $post->image() hits Kirby's built-in HasFiles::image() (first file
+// uploaded to the page), not the "Featured image" content field —
+// content()->get() is needed to reach the actual field value.
+$image = $post->content()->get('image')->toFile();
 ?>
 
 <article class="wovemind-related-card">

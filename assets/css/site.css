@@ -151,6 +151,17 @@
   /* Stat block (case study) — responsive component token, not in
      design-tokens.json yet. 96px @1440 per Figma, scales down like h1. */
   --size-stat: clamp(2.5rem, 6vw, 6rem);
+
+  /* Home hero tagline — Figma-measured (48px/regular/lh 64px). Distinct from
+     the h3-light token (56px/300) design-tokens.json reserves for the same
+     "hero subtitle" use-case; kept separate rather than overloading a value
+     that doesn't match what's actually in the Home frame. Not yet in
+     design-tokens.json. */
+  --size-hero-tagline: 3rem;
+  --lh-hero-tagline: 1.333;
+
+  /* Testimonial banner background — not in design-tokens.json, confirm w/ Fergal. */
+  --color-lavender: #e0bdff;
 }
 
 
@@ -973,13 +984,17 @@ button { font-family: inherit; cursor: pointer; }
 .feature-card,
 .offering,
 .wovemind-related-card,
-.wovemind-highlight-card {
+.wovemind-highlight-card,
+.service-card,
+.work-card {
   transition: transform var(--card-transition), box-shadow var(--card-transition), opacity var(--card-transition);
 }
 .feature-card:hover,
 .offering:hover,
 .wovemind-related-card:hover,
-.wovemind-highlight-card:hover {
+.wovemind-highlight-card:hover,
+.service-card:hover,
+.work-card:hover {
   transform: translateY(var(--card-lift));
   box-shadow: var(--card-shadow-hover);
 }
@@ -987,6 +1002,8 @@ button { font-family: inherit; cursor: pointer; }
    lift the one you're on, gently recede the rest. */
 .offerings:hover .offering { opacity: 0.5; }
 .offerings .offering:hover { opacity: 1; }
+.services-grid:hover .service-card { opacity: 0.5; }
+.services-grid .service-card:hover { opacity: 1; }
 
 
 /* ============================================================
@@ -999,7 +1016,10 @@ button { font-family: inherit; cursor: pointer; }
 .js .quote__inner,
 .js .team-member,
 .js .stat,
-.js .case-study-gallery {
+.js .case-study-gallery,
+.js .service-card,
+.js .work-card,
+.js .testimonial__inner {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 600ms ease, transform 600ms ease;
@@ -1010,7 +1030,10 @@ button { font-family: inherit; cursor: pointer; }
 .js .quote__inner.is-visible,
 .js .team-member.is-visible,
 .js .stat.is-visible,
-.js .case-study-gallery.is-visible {
+.js .case-study-gallery.is-visible,
+.js .service-card.is-visible,
+.js .work-card.is-visible,
+.js .testimonial__inner.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -1024,6 +1047,13 @@ button { font-family: inherit; cursor: pointer; }
 .js .team-list .team-member:nth-child(3) { transition-delay: 160ms; }
 .js .team-list .team-member:nth-child(4) { transition-delay: 240ms; }
 .js .case-study-stats .stat:nth-child(2n) { transition-delay: 100ms; }
+/* Stagger on the home services grid + work cards */
+.js .services-grid .service-card:nth-child(2) { transition-delay: 80ms; }
+.js .services-grid .service-card:nth-child(3) { transition-delay: 160ms; }
+.js .services-grid .service-card:nth-child(4) { transition-delay: 240ms; }
+.js .work-cards .work-card:nth-child(2) { transition-delay: 80ms; }
+.js .work-cards .work-card:nth-child(3) { transition-delay: 160ms; }
+.js .work-cards .work-card:nth-child(4) { transition-delay: 240ms; }
 
 /* Gentle image zoom on hover for the image-led cards */
 .feature-card__media img,
@@ -1040,7 +1070,10 @@ button { font-family: inherit; cursor: pointer; }
   .js .quote__inner,
   .js .team-member,
   .js .stat,
-  .js .case-study-gallery { opacity: 1; transform: none; transition: none; }
+  .js .case-study-gallery,
+  .js .service-card,
+  .js .work-card,
+  .js .testimonial__inner { opacity: 1; transform: none; transition: none; }
 }
 
 /* Mobile: scroll-driven spotlight on offerings (touch analogue of the
@@ -1056,9 +1089,319 @@ button { font-family: inherit; cursor: pointer; }
 
 
 /* ============================================================
+   HOME — hero, section-title, service cards, work cards (case study
+   embed), client marquee, testimonial, about teaser
+   Figma: Home frame (147:190)
+   ============================================================ */
+.home-hero {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-lg) var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+  overflow: hidden;
+}
+.home-hero__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-64);
+}
+.home-hero__text { flex: 1; min-width: 0; }
+.home-hero__title {
+  font-size: var(--size-h1-xbold);
+  font-weight: var(--weight-black);
+  line-height: var(--lh-h1-xbold);
+  color: var(--color-black);
+}
+.home-hero__tagline {
+  margin-top: var(--space-32);
+  font-size: var(--size-hero-tagline);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-hero-tagline);
+  color: var(--color-black);
+  max-width: 32rem;
+}
+.home-hero__media { flex-shrink: 0; width: 16rem; }
+.home-hero__media img { width: 100%; height: auto; }
+
+/* Section title — reusable eyebrow + heading pattern used across the
+   "What we do" / "Recent work" / "Who we work with" / "Who we are"
+   sections (Figma's repeated "Section title" component). */
+.section-title { max-width: var(--width-content); margin-bottom: var(--rhythm-md); }
+.section-title__eyebrow {
+  font-size: var(--size-h4);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+.section-title__heading {
+  margin-top: var(--space-12);
+  font-size: var(--size-h2);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h2);
+  color: var(--color-black);
+}
+
+/* Services grid — 2x2, links out to the four service pages */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-40);
+}
+.service-card {
+  display: flex;
+  align-items: stretch;
+  background: var(--color-white);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.service-card__media {
+  flex: 0 0 15.3125rem; /* 245px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-24);
+  background: var(--color-aqua);
+}
+.service-card__media img { width: 100%; max-width: 11.3rem; height: auto; }
+.service-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+}
+.service-card__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.service-card__desc {
+  font-size: var(--size-p2);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+}
+.service-card__cta { align-self: flex-end; margin-top: auto; }
+.services-cta { display: flex; justify-content: center; margin-top: var(--rhythm-sm); }
+
+/* Work cards — "Recent work", a Kirby case-studies collection embed
+   (site/collections/case-studies.php), 4 most recent, image-led */
+.work-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-24);
+}
+.work-card { display: block; }
+.work-card__media {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.work-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.work-card__body {
+  margin-top: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+}
+.work-card__title {
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-subtitle);
+  color: var(--color-black);
+}
+
+/* Client marquee — "Who we work with" logo strip */
+.client-marquee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-48) var(--space-64);
+}
+.client-marquee img {
+  max-height: 3.5rem;
+  width: auto;
+  filter: grayscale(1);
+  opacity: 0.8;
+}
+
+/* Testimonial banner — full-bleed lavender, avatar + CTA */
+.testimonial {
+  position: relative;
+  background: var(--color-lavender);
+  padding-block: var(--rhythm-lg);
+  padding-inline: var(--gutter-x);
+  overflow: hidden;
+}
+.testimonial__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+.testimonial__quote {
+  font-size: var(--size-quote);
+  font-weight: var(--weight-xbold);
+  line-height: 1.0;
+  color: var(--color-black);
+  max-width: 62rem;
+}
+.testimonial__quote em { font-style: italic; }
+.testimonial__attr { display: flex; align-items: center; gap: var(--space-24); }
+.testimonial__avatar {
+  width: 5.375rem; height: 5.375rem;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.testimonial__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.testimonial__name { font-size: var(--size-h6); font-weight: var(--weight-xbold); color: var(--color-black); }
+.testimonial__role { font-size: var(--size-p2); font-weight: var(--weight-regular); color: var(--color-black); }
+.testimonial__cta { align-self: flex-start; }
+.testimonial__media {
+  position: absolute;
+  right: 5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14rem;
+  pointer-events: none;
+}
+.testimonial__media img { width: 100%; height: auto; }
+
+/* About teaser — "Who we are" text + closing image, before the footer */
+.about-closing-image {
+  margin-top: var(--rhythm-md);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 1143 / 723;
+  background: var(--color-black);
+}
+.about-closing-image img { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* ============================================================
+   WOVE MIND — single post (Thread / What if / Long read)
+   Figma: Wove Mind post frame (379:5120), reuses .case-study-hero /
+   .team-member / .pager / .contact / .case-study-gallery / .tag
+   ============================================================ */
+.wovemind-post__format {
+  font-size: var(--size-p4);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.wovemind-post__title {
+  margin-top: var(--space-16);
+  font-size: var(--size-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--lh-h1);
+  color: var(--color-black);
+}
+.wovemind-post__lead {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-text-muted);
+  max-width: var(--width-content);
+}
+.wovemind-post__lead p:not(:first-child) { margin-top: var(--space-24); }
+.wovemind-post__meta { display: flex; align-items: center; gap: var(--space-24); }
+.wovemind-post__date { font-size: var(--size-p4); color: var(--color-text-muted); }
+
+/* Featured image (dedicated field) — left-aligned with the centred body
+   column below, but allowed to break out wider to the right. */
+.wovemind-post-featured {
+  margin-left: calc((100% - var(--width-content)) / 2);
+  width: calc((100% + var(--width-content)) / 2);
+  aspect-ratio: 1053 / 658;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.wovemind-post-featured img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Body copy — centred, snapped to the content-width token */
+.wovemind-post-blocks { max-width: var(--width-content); margin-inline: auto; }
+.wovemind-post-blocks > :not(:first-child) { margin-top: var(--space-48); }
+.wovemind-post-blocks h1,
+.wovemind-post-blocks h2,
+.wovemind-post-blocks h3,
+.wovemind-post-blocks h4,
+.wovemind-post-blocks h5,
+.wovemind-post-blocks h6 {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.wovemind-post-blocks p {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.wovemind-post-blocks p a { text-decoration: underline; text-underline-offset: 0.15em; }
+.wovemind-post-blocks blockquote {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  border-left: 4px solid var(--color-black);
+  padding-left: var(--space-24);
+}
+.wovemind-post-blocks blockquote footer {
+  margin-top: var(--space-16);
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+.wovemind-post-blocks ul,
+.wovemind-post-blocks ol {
+  padding-left: var(--space-24);
+  font-size: var(--size-p1);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.wovemind-post-blocks ul { list-style: disc; }
+.wovemind-post-blocks ol { list-style: decimal; }
+.wovemind-post-blocks li + li { margin-top: var(--space-12); }
+
+/* Image / gallery blocks — full width, explicit responsive HEIGHT (not
+   aspect-ratio): taller on mobile and large desktop, shorter in between. */
+.wovemind-post-media {
+  height: 28rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.wovemind-post-media figure { height: 100%; }
+.wovemind-post-media > figure > img,
+.wovemind-post-media > figure > a > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wovemind-post-media figcaption {
+  margin-top: var(--space-16);
+  font-size: var(--size-p2);
+  color: var(--color-black);
+}
+.wovemind-post-media--gallery ul { height: 100%; }
+.wovemind-post-media--gallery li { border-radius: var(--radius-md); }
+
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1439px) {
+  .wovemind-post-media { height: 20rem; }
   /* Tighten the horizontal nav so it fits down to 1280 (generous spacing kept at 1440+) */
   .nav__logo { padding-inline: var(--space-12); }
   .nav__links { gap: 0.5rem; }
@@ -1069,6 +1412,8 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 1279px) {
   .offerings { grid-template-columns: repeat(2, 1fr); }
+  .work-cards { grid-template-columns: repeat(2, 1fr); }
+  .home-hero__media { width: 12rem; }
   /* Collapse the horizontal nav to the hamburger below 1280 */
   .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
   .nav__links { display: none; }
@@ -1090,6 +1435,16 @@ button { font-family: inherit; cursor: pointer; }
   .case-study-overview { grid-template-columns: 1fr; gap: var(--space-48); }
   .case-study-blocks { max-width: none; }
   .case-study-stats { grid-template-columns: 1fr; }
+
+  .home-hero__inner { flex-direction: column; align-items: flex-start; gap: var(--space-40); }
+  .home-hero__media { width: 10rem; align-self: flex-end; }
+  .home-hero__title { font-size: clamp(4rem, 16vw, 7rem); }
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card { flex-direction: column; }
+  .service-card__media { flex-basis: auto; }
+  .testimonial__media { display: none; }
+
+  .wovemind-post-media { height: 18rem; }
 }
 
 @media (max-width: 599px) {
@@ -1113,6 +1468,13 @@ button { font-family: inherit; cursor: pointer; }
     --feature-btn-pad:    var(--space-16) var(--space-24);
   }
   .offerings { grid-template-columns: 1fr; }
+  .work-cards { grid-template-columns: 1fr; }
+  .home-hero { padding-block: var(--rhythm-md); }
+  .home-hero__title { font-size: clamp(3rem, 20vw, 5rem); }
+  .home-hero__tagline { font-size: 1.75rem; }
+  .home-hero__media { width: 7rem; }
+  .client-marquee { justify-content: flex-start; gap: var(--space-32) var(--space-40); }
+  .client-marquee img { max-height: 2.25rem; }
   .wovemind-related-card__body,
   .wovemind-highlight-card__body { align-items: flex-start; text-align: left; }
   .wovemind-related-card__title,
@@ -1129,4 +1491,8 @@ button { font-family: inherit; cursor: pointer; }
   .btn--sm { padding: var(--space-16) var(--space-24); }
   .btn--md { font-size: var(--size-btn-sm); padding: var(--space-16) var(--space-24); }
   .case-study-blocks figure li { flex-basis: 85vw; aspect-ratio: 3 / 4; }
+
+  .wovemind-post__title { font-size: clamp(2.5rem, 12vw, 4rem); }
+  .wovemind-post-featured { margin-left: 0; width: 100%; aspect-ratio: 4 / 3; }
+  .wovemind-post-media { height: 22rem; }
 }

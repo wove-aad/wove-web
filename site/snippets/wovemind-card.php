@@ -10,7 +10,10 @@
 $format      = $post->format()->value();
 $isHighlight = $format === 'project-highlight';
 $hasTitle    = in_array($format, ['thread', 'whatif', 'longread']);
-$image       = in_array($format, ['project-highlight', 'thread', 'whatif', 'longread']) ? $post->image() : null;
+// $post->image() hits Kirby's built-in HasFiles::image() (first file
+// uploaded to the page), not the "Featured image" content field —
+// content()->get() is needed to reach the actual field value.
+$image       = in_array($format, ['project-highlight', 'thread', 'whatif', 'longread']) ? $post->content()->get('image')->toFile() : null;
 $showAuthor  = $post->show_author()->isTrue();
 $author      = $showAuthor ? $post->author()->toUser() : null;
 

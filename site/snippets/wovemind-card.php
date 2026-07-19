@@ -13,7 +13,9 @@
  *  - spark:              icon + body text only, not linked (no single
  *                         page view — same as project-highlight below)
  *  - thread:              standard card — contained media (if present) +
- *                         title + date/arrow meta row, linked
+ *                         title + a meta row (format label bottom-left +
+ *                         arrow bottom-right, same as every other linked
+ *                         format below), linked
  *  - whatif:              full-bleed card — photo bleeds to the card's
  *                         edges, title below it, then a meta row with the
  *                         format label bottom-left + arrow bottom-right.
@@ -106,7 +108,7 @@ $formatLabels = [
     <?php endif ?>
     <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
     <div class="wovemind-card__meta">
-      <time datetime="<?= $post->date('Y-m-d') ?>"><?= $post->date('F Y') ?></time>
+      <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
       <span class="card-arrow" aria-hidden="true">&rarr;</span>
     </div>
 

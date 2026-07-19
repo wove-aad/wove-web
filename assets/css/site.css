@@ -1560,7 +1560,6 @@ button { font-family: inherit; cursor: pointer; }
   justify-content: space-between;
   gap: var(--space-16);
 }
-.wovemind-card__meta time { font-size: var(--size-p4); color: var(--color-black); }
 
 .wovemind-card--spark .wovemind-card__icon { width: 4rem; height: auto; }
 .wovemind-card__spark-text {

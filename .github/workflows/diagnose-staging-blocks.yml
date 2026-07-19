@@ -34,3 +34,15 @@ jobs:
           curl --silent --list-only -u "$FTP_USER:$FTP_PASS" \
             "ftp://$FTP_HOST/public_html/staging.wove.group/site/config/" \
             || echo "(listing failed, empty, or directory not found)"
+
+      - name: Print contents of site/config/config.php
+        run: |
+          curl --silent -u "$FTP_USER:$FTP_PASS" \
+            "ftp://$FTP_HOST/public_html/staging.wove.group/site/config/config.php" \
+            || echo "(fetch failed or file not found)"
+
+      - name: Print contents of site/config/config.staging.wove.group.php
+        run: |
+          curl --silent -u "$FTP_USER:$FTP_PASS" \
+            "ftp://$FTP_HOST/public_html/staging.wove.group/site/config/config.staging.wove.group.php" \
+            || echo "(fetch failed or file not found)"

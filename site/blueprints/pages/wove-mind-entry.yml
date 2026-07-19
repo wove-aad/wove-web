@@ -60,9 +60,9 @@ tabs:
                 help: Main content of the case study, displayed below the hero.
 
               body:
-                label: Body
+                label: Excerpt
                 type: writer
-                info: "Not used for Project highlight (uses Excerpt instead) — same `when` limitation as Title above, so this shows for every format rather than being conditionally hidden. No longer required, since Project highlight entries won't fill it in."
+                info: "For Thread / What if / Long read only. Not used for Project highlight, which has its own separate Excerpt field above — same `when` limitation as Title above means this can't be conditionally hidden per format, so it still shows there too (and for Spark, where it isn't used either). No longer required, since Project highlight entries won't fill it in."
                 placeholder: Write your entry here.
                 headings:
                   - 2

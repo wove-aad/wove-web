@@ -1570,9 +1570,9 @@ button { font-family: inherit; cursor: pointer; }
 
 .wovemind-card--spark .wovemind-card__icon { width: 4rem; height: auto; }
 .wovemind-card__spark-text {
-  font-size: var(--size-p3);
+  font-size: var(--size-p4);
   font-weight: var(--weight-regular);
-  line-height: var(--lh-p3);
+  line-height: var(--lh-p4);
   color: var(--color-black);
   flex: 1;
 }

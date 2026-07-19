@@ -66,7 +66,12 @@ $next = $pagerSiblings->nth($pagerIndex + 1);
   <!-- HERO -->
   <header class="case-study-hero">
     <div class="container container--wide">
-      <p class="wovemind-post__format"><?= $formatLabels[$format] ?? $format ?></p>
+      <nav class="wovemind-post__breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/wove-mind">Wove Mind</a></li>
+          <li aria-current="page"><?= $formatLabels[$format] ?? $format ?></li>
+        </ol>
+      </nav>
 
       <?php if ($page->title()->isNotEmpty()): ?>
         <h1 class="wovemind-post__title"><?= $page->title()->html() ?></h1>

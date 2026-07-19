@@ -1294,13 +1294,13 @@ button { font-family: inherit; cursor: pointer; }
    Figma: Wove Mind post frame (379:5120), reuses .case-study-hero /
    .team-member / .pager / .contact / .case-study-gallery / .tag
    ============================================================ */
-.wovemind-post__format {
-  font-size: var(--size-p4);
-  font-weight: var(--weight-medium);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
+.wovemind-post__breadcrumbs { font-size: var(--size-p4); color: var(--color-text-muted); }
+.wovemind-post__breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.wovemind-post__breadcrumbs li { display: flex; align-items: center; gap: 0.5rem; }
+.wovemind-post__breadcrumbs li:not(:last-child)::after { content: '>'; color: var(--color-400); }
+.wovemind-post__breadcrumbs a { color: var(--color-text-muted); text-decoration: underline; text-underline-offset: 0.15em; }
+.wovemind-post__breadcrumbs a:hover { color: var(--color-black); }
+.wovemind-post__breadcrumbs li[aria-current="page"] { color: var(--color-black); font-weight: var(--weight-medium); }
 .wovemind-post__title {
   margin-top: var(--space-16);
   font-size: var(--size-h1);

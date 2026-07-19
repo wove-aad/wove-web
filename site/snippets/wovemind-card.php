@@ -8,14 +8,21 @@
  * excludes it (project-highlight isn't one of the feed's filter tabs —
  * it only ever appears embedded on service pages).
  *
- * Three visual treatments per Figma (Wove Mind frame, 165:568):
+ * Four visual treatments per Figma (Wove Mind frame, 165:568) + Grace's
+ * follow-up notes (2026-07-19):
  *  - spark:              icon + body text only, not linked (no single
  *                         page view — same as project-highlight below)
- *  - thread/whatif:       standard card — contained media (if present) +
- *                         title + date, linked
+ *  - thread:              standard card — contained media (if present) +
+ *                         title + date/arrow meta row, linked
+ *  - whatif + image:      full-bleed card — photo bleeds to the card's
+ *                         edges, title below it, then a meta row with the
+ *                         format label bottom-left + arrow bottom-right.
+ *                         Falls back to the standard "thread" treatment
+ *                         when there's no image to bleed.
  *  - longread:            featured card — cream bg + big title + excerpt
- *                         when no image; full-bleed photo + eyebrow only
- *                         when an image IS set (matches Figma literally;
+ *                         + a meta row (eyebrow + arrow) when no image;
+ *                         full-bleed photo + eyebrow only, no arrow, when
+ *                         an image IS set (matches Figma literally;
  *                         Grace flagged this for review later)
  *  - project-highlight:   client name + excerpt + optional external link,
  *                         not linked (kept for wovemind-feed-home.php)
@@ -64,8 +71,21 @@ $formatLabels = [
 
     <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
     <p class="wovemind-card__excerpt"><?= $post->body()->excerpt(160) ?></p>
-    <span class="card-arrow" aria-hidden="true">&rarr;</span>
-    <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
+    <div class="wovemind-card__meta">
+      <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
+      <span class="card-arrow" aria-hidden="true">&rarr;</span>
+    </div>
+
+  <?php elseif ($format === 'whatif' && $image): ?>
+
+    <div class="wovemind-card__media wovemind-card__media--bleed">
+      <img src="<?= $image->url() ?>" alt="" loading="lazy">
+    </div>
+    <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
+    <div class="wovemind-card__meta">
+      <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
+      <span class="card-arrow" aria-hidden="true">&rarr;</span>
+    </div>
 
   <?php elseif ($isHighlight): ?>
 
@@ -82,7 +102,7 @@ $formatLabels = [
       </a>
     <?php endif ?>
 
-  <?php else: /* thread / whatif */ ?>
+  <?php else: /* thread, or whatif with no image to bleed */ ?>
 
     <?php if ($image): ?>
       <div class="wovemind-card__media">

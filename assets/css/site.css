@@ -1488,7 +1488,7 @@ button { font-family: inherit; cursor: pointer; }
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 34rem;
+  min-height: 26rem;
   border-radius: var(--radius-md);
   overflow: hidden;
   transition: transform var(--card-transition), box-shadow var(--card-transition);
@@ -1511,6 +1511,13 @@ button { font-family: inherit; cursor: pointer; }
   gap: var(--space-32);
   justify-content: space-between;
 }
+
+/* What if, with an image: bleeds edge-to-edge instead of the standard
+   thread/whatif contained-media treatment above */
+.wovemind-card--whatif.has-image { padding: 0; gap: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__media { border-radius: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__title { padding: var(--space-24) var(--space-32) 0; }
+.wovemind-card--whatif.has-image .wovemind-card__meta { padding: 0 var(--space-32) var(--space-32); margin-top: auto; }
 
 .wovemind-card__media {
   flex: 1;
@@ -1746,6 +1753,5 @@ button { font-family: inherit; cursor: pointer; }
   .wovemind-post-media { height: 22rem; }
 
   .wovemind-feed__grid { grid-template-columns: 1fr; }
-  .wovemind-card { min-height: 26rem; }
   .newsletter__form { flex-direction: column; align-items: stretch; }
 }

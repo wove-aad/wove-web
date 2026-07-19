@@ -57,7 +57,7 @@
   --size-h5:            1.75rem;    /* 28px, weight 800, lh 36px */
   --size-h6:            1.5rem;   /* 24px, weight 800, lh 1.5 — smallest heading, inline card labels */
   --size-quote:         clamp(2.5rem, 6vw, 7rem);   /* 88px @1440, grows to 112px on larger screens */
-  --size-p1:            1.875rem;   /* 30px, weight 400, lh 50px */
+  --size-p1:            clamp(1.5rem, 2vw, 1.625rem);   /* was flat 30px; now responsive, capping at 26px @1440, floor 24px matches the old mobile override below (now redundant) */
   --size-p1-bold:       2rem;     /* 32px, weight 800, lh 1.5 — approach commitments headings */
   --size-p2:            1.5rem;     /* 24px, weight 400, lh 36px */
   --size-p2-bold:       1.625rem; /* 26px, weight 800, lh 1.462 */
@@ -1452,7 +1452,6 @@ button { font-family: inherit; cursor: pointer; }
     --gutter-x: var(--space-16);
     --rhythm-md: 3rem;
     --rhythm-lg: 4.5rem;
-    --size-p1: 1.5rem;     /* 24px, was 30 — kept larger to hold impact */
     --size-p2: 1.125rem;   /* 18px, was 24 */
     --size-p3: 1.0625rem;  /* 17px, was 22 */
     --size-banner: 1.5rem; /* 24px contact banner */

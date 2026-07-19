@@ -9,21 +9,22 @@
  * it only ever appears embedded on service pages).
  *
  * Four visual treatments per Figma (Wove Mind frame, 165:568) + Grace's
- * follow-up notes (2026-07-19):
+ * follow-up notes (2026-07-19 and 2026-07-20):
  *  - spark:              icon + body text only, not linked (no single
  *                         page view — same as project-highlight below)
  *  - thread:              standard card — contained media (if present) +
  *                         title + date/arrow meta row, linked
- *  - whatif + image:      full-bleed card — photo bleeds to the card's
+ *  - whatif:              full-bleed card — photo bleeds to the card's
  *                         edges, title below it, then a meta row with the
  *                         format label bottom-left + arrow bottom-right.
  *                         Falls back to the standard "thread" treatment
  *                         when there's no image to bleed.
  *  - longread:            featured card — cream bg + big title + excerpt
- *                         + a meta row (eyebrow + arrow) when no image;
- *                         full-bleed photo + eyebrow only, no arrow, when
- *                         an image IS set (matches Figma literally;
- *                         Grace flagged this for review later)
+ *                         + a meta row (eyebrow + arrow). Always this
+ *                         treatment regardless of whether an image is
+ *                         set — the image field isn't used on this card
+ *                         at all (2026-07-20: dropped the full-bleed
+ *                         photo variant this format had briefly).
  *  - project-highlight:   client name + excerpt + optional external link,
  *                         not linked (kept for wovemind-feed-home.php)
  */
@@ -37,7 +38,8 @@ $isLinked    = in_array($format, ['thread', 'whatif', 'longread']);
 // $post->image() hits Kirby's built-in HasFiles::image() (first file
 // uploaded to the page), not the "Featured image" content field —
 // content()->get() is needed to reach the actual field value.
-$image = in_array($format, ['project-highlight', 'thread', 'whatif', 'longread'])
+// Longread doesn't use an image on its card at all, so it's excluded here.
+$image = in_array($format, ['project-highlight', 'thread', 'whatif'])
   ? $post->content()->get('image')->toFile()
   : null;
 
@@ -59,13 +61,6 @@ $formatLabels = [
          pattern already established on the homepage service cards. -->
     <img src="/assets/illustrations/lightbulb.png" alt="" class="wovemind-card__icon" width="64" height="68" loading="lazy">
     <div class="wovemind-card__spark-text"><?= $post->body() ?></div>
-
-  <?php elseif ($isLongread && $image): ?>
-
-    <div class="wovemind-card__media">
-      <img src="<?= $image->url() ?>" alt="" loading="lazy">
-    </div>
-    <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
 
   <?php elseif ($isLongread): ?>
 

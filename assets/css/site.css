@@ -1504,8 +1504,7 @@ button { font-family: inherit; cursor: pointer; }
   gap: var(--space-16);
 }
 .wovemind-card--spark { padding: var(--space-32); gap: var(--space-16); }
-.wovemind-card--longread.has-image { padding: 0; }
-.wovemind-card--longread:not(.has-image) {
+.wovemind-card--longread {
   background: var(--color-cream);
   padding: var(--space-32);
   gap: var(--space-32);
@@ -1528,35 +1527,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 .wovemind-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Long Read with an image: photo fills the whole card edge-to-edge,
-   eyebrow overlaid on a gradient for legibility */
-.wovemind-card--longread.has-image .wovemind-card__media {
-  position: absolute;
-  inset: 0;
-  border-radius: 0;
-  z-index: 0;
-}
-.wovemind-card--longread.has-image .wovemind-card__media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0) 55%);
-}
-.wovemind-card--longread.has-image .wovemind-card__eyebrow {
-  position: relative;
-  z-index: 1;
-  margin-top: auto;
-  padding: var(--space-32);
-  color: var(--color-white);
-}
-
 .wovemind-card__title {
   font-size: var(--size-p2-bold);
   font-weight: var(--weight-xbold);
   line-height: var(--lh-p2-bold);
   color: var(--color-black);
 }
-.wovemind-card--longread:not(.has-image) .wovemind-card__title {
+.wovemind-card--longread .wovemind-card__title {
   font-size: var(--size-h3);
   font-weight: var(--weight-xbold);
   line-height: var(--lh-h3);

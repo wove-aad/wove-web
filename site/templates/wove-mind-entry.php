@@ -90,8 +90,8 @@ $next = $pagerSiblings->nth($pagerIndex + 1);
             <span class="team-member__name"><?= $author->name()->html() ?></span>
           </div>
         <?php endif ?>
-        <time class="wovemind-post__date" datetime="<?= $page->date('Y-m-d') ?>">
-          <?= $page->date('j M Y') ?>
+        <time class="wovemind-post__date" datetime="<?= $page->date()->toDate('Y-m-d') ?>">
+          <?= $page->date()->toDate('j M Y') ?>
         </time>
       </div>
     </div>

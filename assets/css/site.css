@@ -1515,7 +1515,8 @@ button { font-family: inherit; cursor: pointer; }
    thread/whatif contained-media treatment above */
 .wovemind-card--whatif.has-image { padding: 0; gap: 0; }
 .wovemind-card--whatif.has-image .wovemind-card__media { border-radius: 0; }
-.wovemind-card--whatif.has-image .wovemind-card__title { padding: var(--space-24) var(--space-32) 0; }
+.wovemind-card--whatif.has-image .wovemind-card__date { padding: var(--space-24) var(--space-32) 0; margin-bottom: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__title { padding: var(--space-12) var(--space-32) 0; }
 .wovemind-card--whatif.has-image .wovemind-card__meta { padding: 0 var(--space-32) var(--space-32); margin-top: auto; }
 
 .wovemind-card__media {
@@ -1553,6 +1554,12 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: var(--weight-xbold);
   line-height: var(--lh-p4);
   color: var(--color-black);
+}
+.wovemind-card__date {
+  display: block;
+  font-size: var(--size-p4);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-12);
 }
 .wovemind-card__meta {
   display: flex;

@@ -52,6 +52,17 @@ $formatLabels = [
   'whatif'            => 'What if',
   'longread'          => 'The Long Read',
 ];
+
+// Relative for the last 7 days (today, yesterday, "Last <Weekday>"),
+// absolute ("11 May 25") beyond that.
+$postMidnight  = strtotime('midnight', $post->date()->toTimestamp());
+$daysAgo       = (int) round((strtotime('today') - $postMidnight) / 86400);
+$dateLabel     = match (true) {
+  $daysAgo === 0 => 'Today',
+  $daysAgo === 1 => 'Yesterday',
+  $daysAgo <= 6  => 'Last ' . date('l', $postMidnight),
+  default        => date('j M y', $postMidnight),
+};
 ?>
 
 <article class="wovemind-card wovemind-card--<?= $format ?><?= $image ? ' has-image' : '' ?>" data-format="<?= $format ?>">
@@ -62,10 +73,12 @@ $formatLabels = [
          asset on every Spark card, matching the illustration reuse
          pattern already established on the homepage service cards. -->
     <img src="/assets/illustrations/lightbulb.png" alt="" class="wovemind-card__icon" width="64" height="68" loading="lazy">
+    <time class="wovemind-card__date" datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     <div class="wovemind-card__spark-text"><?= $post->body() ?></div>
 
   <?php elseif ($isLongread): ?>
 
+    <time class="wovemind-card__date" datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
     <p class="wovemind-card__excerpt"><?= $post->body()->excerpt(160) ?></p>
     <div class="wovemind-card__meta">
@@ -78,6 +91,7 @@ $formatLabels = [
     <div class="wovemind-card__media wovemind-card__media--bleed">
       <img src="<?= $image->url() ?>" alt="" loading="lazy">
     </div>
+    <time class="wovemind-card__date" datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
     <div class="wovemind-card__meta">
       <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
@@ -91,6 +105,7 @@ $formatLabels = [
         <img src="<?= $image->url() ?>" alt="" loading="lazy">
       </div>
     <?php endif ?>
+    <time class="wovemind-card__date" datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     <h2 class="wovemind-card__title"><?= $post->client()->html() ?></h2>
     <p class="wovemind-card__excerpt"><?= $post->excerpt()->html() ?></p>
     <?php if ($post->website()->isNotEmpty()): ?>
@@ -106,6 +121,7 @@ $formatLabels = [
         <img src="<?= $image->url() ?>" alt="" loading="lazy">
       </div>
     <?php endif ?>
+    <time class="wovemind-card__date" datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
     <div class="wovemind-card__meta">
       <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>

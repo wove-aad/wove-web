@@ -1,7 +1,7 @@
 <script>
   /* Reveal on scroll */
   (function () {
-    var targets = document.querySelectorAll('.offering, .wovemind-related-card, .wovemind-highlight-card, .quote__inner, .team-member, .stat, .case-study-gallery, .service-card, .work-card, .testimonial__inner');
+    var targets = document.querySelectorAll('.offering, .wovemind-related-card, .wovemind-highlight-card, .quote__inner, .team-member, .stat, .case-study-gallery, .service-card, .work-card, .testimonial__inner, .wovemind-card');
     if (!targets.length) return;
     if (!('IntersectionObserver' in window)) {
       targets.forEach(function (el) { el.classList.add('is-visible'); });

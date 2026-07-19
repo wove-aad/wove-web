@@ -1,70 +1,104 @@
 <?php
 /**
- * Wove Mind — post card snippet
+ * Wove Mind — feed card snippet
  * Usage: <?php snippet('wovemind-card', ['post' => $post]) ?>
- * Used unfiltered by the main Wove Mind feed and the homepage feed, so it
- * has to handle every format including project-highlight — which has no
- * page/URL and uses client()/excerpt() instead of title()/body().
+ * Used unfiltered by the main Wove Mind feed (wovemind.php) and the
+ * orphaned wovemind-feed-home.php, so it still has to handle every format
+ * including project-highlight, even though the main feed's own query now
+ * excludes it (project-highlight isn't one of the feed's filter tabs —
+ * it only ever appears embedded on service pages).
+ *
+ * Three visual treatments per Figma (Wove Mind frame, 165:568):
+ *  - spark:              icon + body text only, not linked (no single
+ *                         page view — same as project-highlight below)
+ *  - thread/whatif:       standard card — contained media (if present) +
+ *                         title + date, linked
+ *  - longread:            featured card — cream bg + big title + excerpt
+ *                         when no image; full-bleed photo + eyebrow only
+ *                         when an image IS set (matches Figma literally;
+ *                         Grace flagged this for review later)
+ *  - project-highlight:   client name + excerpt + optional external link,
+ *                         not linked (kept for wovemind-feed-home.php)
  */
 
 $format      = $post->format()->value();
 $isHighlight = $format === 'project-highlight';
-$hasTitle    = in_array($format, ['thread', 'whatif', 'longread']);
+$isSpark     = $format === 'spark';
+$isLongread  = $format === 'longread';
+$isLinked    = in_array($format, ['thread', 'whatif', 'longread']);
+
 // $post->image() hits Kirby's built-in HasFiles::image() (first file
 // uploaded to the page), not the "Featured image" content field —
 // content()->get() is needed to reach the actual field value.
-$image       = in_array($format, ['project-highlight', 'thread', 'whatif', 'longread']) ? $post->content()->get('image')->toFile() : null;
-$showAuthor  = $post->show_author()->isTrue();
-$author      = $showAuthor ? $post->author()->toUser() : null;
+$image = in_array($format, ['project-highlight', 'thread', 'whatif', 'longread'])
+  ? $post->content()->get('image')->toFile()
+  : null;
 
 $formatLabels = [
   'spark'             => 'Spark',
   'project-highlight' => 'Project highlight',
   'thread'            => 'Thread',
   'whatif'            => 'What if',
-  'longread'          => 'Long read',
+  'longread'          => 'The Long Read',
 ];
 ?>
 
-<article class="wovemind-card wovemind-card--<?= $format ?>">
+<article class="wovemind-card wovemind-card--<?= $format ?><?= $image ? ' has-image' : '' ?>" data-format="<?= $format ?>">
 
-  <?php if ($image): ?>
-    <div class="wovemind-card__image">
-      <img src="<?= $image->url() ?>" alt="<?= $image->alt()->html() ?>">
+  <?php if ($isSpark): ?>
+
+    <!-- Decorative illustration, not a per-entry field — same static
+         asset on every Spark card, matching the illustration reuse
+         pattern already established on the homepage service cards. -->
+    <img src="/assets/illustrations/lightbulb.png" alt="" class="wovemind-card__icon" width="64" height="68" loading="lazy">
+    <div class="wovemind-card__spark-text"><?= $post->body() ?></div>
+
+  <?php elseif ($isLongread && $image): ?>
+
+    <div class="wovemind-card__media">
+      <img src="<?= $image->url() ?>" alt="" loading="lazy">
     </div>
-  <?php endif ?>
+    <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
 
-  <div class="wovemind-card__body">
+  <?php elseif ($isLongread): ?>
 
-    <span class="wovemind-card__format"><?= $formatLabels[$format] ?? $format ?></span>
+    <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
+    <p class="wovemind-card__excerpt"><?= $post->body()->excerpt(160) ?></p>
+    <span class="card-arrow" aria-hidden="true">&rarr;</span>
+    <p class="wovemind-card__eyebrow"><?= $formatLabels[$format] ?></p>
 
-    <?php if ($hasTitle && $post->title()->isNotEmpty()): ?>
-      <h2 class="wovemind-card__title">
-        <a href="<?= $post->url() ?>"><?= $post->title()->html() ?></a>
-      </h2>
-    <?php elseif ($isHighlight): ?>
-      <h2 class="wovemind-card__title"><?= $post->client()->html() ?></h2>
+  <?php elseif ($isHighlight): ?>
+
+    <?php if ($image): ?>
+      <div class="wovemind-card__media">
+        <img src="<?= $image->url() ?>" alt="" loading="lazy">
+      </div>
     <?php endif ?>
-
-    <div class="wovemind-card__excerpt">
-      <?= $isHighlight ? $post->excerpt()->html() : $post->body()->excerpt(160) ?>
-    </div>
-
-    <?php if ($isHighlight && $post->website()->isNotEmpty()): ?>
-      <a href="<?= $post->website() ?>" class="wovemind-card__external" target="_blank" rel="noopener noreferrer">
+    <h2 class="wovemind-card__title"><?= $post->client()->html() ?></h2>
+    <p class="wovemind-card__excerpt"><?= $post->excerpt()->html() ?></p>
+    <?php if ($post->website()->isNotEmpty()): ?>
+      <a href="<?= $post->website() ?>" class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer">
         Visit website <span aria-hidden="true">&#8599;</span><span class="visually-hidden"> (opens in a new tab)</span>
       </a>
     <?php endif ?>
 
-    <footer class="wovemind-card__footer">
-      <?php if ($author): ?>
-        <span class="wovemind-card__author"><?= $author->name()->html() ?></span>
-      <?php endif ?>
-      <time class="wovemind-card__date" datetime="<?= $post->date('Y-m-d') ?>">
-        <?= $post->date('j M Y') ?>
-      </time>
-    </footer>
+  <?php else: /* thread / whatif */ ?>
 
-  </div>
+    <?php if ($image): ?>
+      <div class="wovemind-card__media">
+        <img src="<?= $image->url() ?>" alt="" loading="lazy">
+      </div>
+    <?php endif ?>
+    <h2 class="wovemind-card__title"><?= $post->title()->html() ?></h2>
+    <div class="wovemind-card__meta">
+      <time datetime="<?= $post->date('Y-m-d') ?>"><?= $post->date('F Y') ?></time>
+      <span class="card-arrow" aria-hidden="true">&rarr;</span>
+    </div>
+
+  <?php endif ?>
+
+  <?php if ($isLinked): ?>
+    <a href="<?= $post->url() ?>" class="wovemind-card__link" tabindex="-1" aria-hidden="true"></a>
+  <?php endif ?>
 
 </article>

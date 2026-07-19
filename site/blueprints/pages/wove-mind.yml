@@ -10,6 +10,15 @@ tabs:
         width: 2/3
         sections:
 
+          hero:
+            type: fields
+            fields:
+              tagline:
+                label: Hero tagline
+                type: text
+                default: The studio thinking out loud
+                help: Shown under the page title in the hero.
+
           listed:
             extends: sections/wove-mind-entries
             label: Published

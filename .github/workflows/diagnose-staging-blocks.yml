@@ -1,0 +1,36 @@
+name: Diagnose staging blocks (read-only)
+
+# Manual-only — never runs on push. Purely lists file names on the staging
+# server via the same FTP credentials the real deploy uses, to check for
+# custom block blueprints / a config.php that aren't tracked in this repo
+# (see the Gallery-block-missing investigation, 2026-07-20). No downloads,
+# no deletions — just directory listings.
+on:
+  workflow_dispatch:
+
+jobs:
+  list-staging-files:
+    name: List site/blueprints/blocks/ and site/config/ on staging
+    runs-on: ubuntu-latest
+    env:
+      FTP_HOST: ${{ secrets.FTPSTG_HOST }}
+      FTP_USER: ${{ secrets.FTPSTG_USERNAME }}
+      FTP_PASS: ${{ secrets.FTPSTG_PASSWORD }}
+    steps:
+      - name: List site/blueprints/blocks/
+        run: |
+          curl --silent --list-only -u "$FTP_USER:$FTP_PASS" \
+            "ftp://$FTP_HOST/public_html/staging.wove.group/site/blueprints/blocks/" \
+            || echo "(listing failed or directory not found)"
+
+      - name: List site/blueprints/ (top level, to catch any other stray dirs)
+        run: |
+          curl --silent --list-only -u "$FTP_USER:$FTP_PASS" \
+            "ftp://$FTP_HOST/public_html/staging.wove.group/site/blueprints/" \
+            || echo "(listing failed or directory not found)"
+
+      - name: Check for site/config/ (a config.php here would explain the missing Gallery block)
+        run: |
+          curl --silent --list-only -u "$FTP_USER:$FTP_PASS" \
+            "ftp://$FTP_HOST/public_html/staging.wove.group/site/config/" \
+            || echo "(listing failed, empty, or directory not found)"

@@ -29,6 +29,9 @@
  */
 return [
     'debug' => true,
+    'auth' => [
+      'methods' => ['password', 'password-reset']
+    ],
     'blocks' => [
         'fieldsets' => [
             'text' => [

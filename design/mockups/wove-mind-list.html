@@ -1,0 +1,788 @@
+<title>Wove Mind entries</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+<style>
+  @font-face { font-family: 'Ballinger'; src: url('ballinger-light.otf') format('opentype'); font-weight: 300; font-display: swap; }
+  @font-face { font-family: 'Ballinger'; src: url('ballinger-regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Ballinger'; src: url('ballinger-bold.otf') format('opentype'); font-weight: 700; font-display: swap; }
+  @font-face { font-family: 'Ballinger'; src: url('ballinger-xbold.otf') format('opentype'); font-weight: 800; font-display: swap; }
+
+  :root {
+    --ground: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F2;
+    --ink: #111111;
+    --ink-2: #3D3D3B;
+    --muted: #6B6B67;
+    --faint: #A6A49E;
+    --rule: #EAEAE4;
+    --rule-2: #D9D6CC;
+    --accent: #2A50F3;
+    --accent-tint: #EBF0FE;
+    --accent-ink: #1535A8;
+    --spark: #C6841E;
+    --spark-tint: #F7ECD3;
+    --thread: #2F7A57;
+    --thread-tint: #E1EEE7;
+    --whatif: #2A50F3;
+    --whatif-tint: #EBF0FE;
+    --longread: #6B3EC2;
+    --longread-tint: #EDE6F8;
+    --draft: #B45D0B;
+    --draft-tint: #FBEDD6;
+
+    --sans: 'Ballinger', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow-pop: 0 10px 30px rgba(20, 18, 10, 0.10), 0 2px 6px rgba(20, 18, 10, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14140F; --surface: #1B1B15; --surface-2: #22221B;
+      --ink: #F2EFE6; --ink-2: #D8D4C6; --muted: #9A968A; --faint: #6E6A5F;
+      --rule: #2A2A22; --rule-2: #3A3A31;
+      --accent: #6A85F7; --accent-tint: #1F2647; --accent-ink: #C7D0FA;
+      --spark-tint: #3A2E17; --thread-tint: #1B2C22;
+      --whatif-tint: #1F2647; --longread-tint: #2A1F3D;
+      --draft-tint: #3A2A11;
+      --shadow-pop: 0 10px 30px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14140F; --surface: #1B1B15; --surface-2: #22221B;
+    --ink: #F2EFE6; --ink-2: #D8D4C6; --muted: #9A968A; --faint: #6E6A5F;
+    --rule: #2A2A22; --rule-2: #3A3A31;
+    --accent: #6A85F7; --accent-tint: #1F2647; --accent-ink: #C7D0FA;
+    --spark-tint: #3A2E17; --thread-tint: #1B2C22;
+    --whatif-tint: #1F2647; --longread-tint: #2A1F3D;
+    --draft-tint: #3A2A11;
+    --shadow-pop: 0 10px 30px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--ground);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; color: inherit; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  /* Topbar */
+  .top {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: var(--ground);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top__left { display: flex; align-items: center; gap: 12px; }
+  .brand { font-weight: 700; letter-spacing: -0.01em; }
+  .brand .dot { color: var(--faint); margin: 0 8px; }
+  .crumb { color: var(--muted); }
+
+  .top__right { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-tint); color: var(--accent-ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid transparent; background: transparent;
+    cursor: pointer; color: var(--muted);
+    transition: background 120ms, color 120ms;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* Page frame */
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  /* Page header */
+  .page-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .page-head__eyebrow {
+    color: var(--muted);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .page-head h1 {
+    font-size: 44px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .page-head__sub {
+    color: var(--muted); font-size: 14px;
+    margin-top: 14px;
+  }
+
+  /* New entry button + chooser */
+  .new-wrap { position: relative; }
+  .new-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    background: var(--ink); color: var(--ground);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 120ms;
+  }
+  .new-btn:hover { opacity: 0.86; }
+  .new-btn__plus { font-size: 15px; line-height: 1; }
+  .new-btn__caret { font-size: 10px; opacity: 0.7; margin-left: 2px; }
+
+  .new-menu {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-pop);
+    padding: 8px;
+    display: none;
+    z-index: 30;
+  }
+  .new-menu.open { display: block; }
+  .new-menu__label {
+    display: block;
+    padding: 8px 12px 6px;
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .new-item {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 14px; align-items: start;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    width: 100%; text-align: left;
+    background: transparent; border: none;
+  }
+  .new-item:hover { background: var(--surface-2); }
+  .new-item__swatch { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; }
+  .new-item__name { font-weight: 700; font-size: 14px; letter-spacing: -0.01em; }
+  .new-item__desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .new-item__perfect {
+    color: var(--type-color);
+    font-size: 12.5px; margin-top: 6px;
+    letter-spacing: -0.005em;
+  }
+
+  /* Filter row */
+  .filters {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .filters__group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .filters__spacer { flex: 1; }
+
+  .fchip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px 5px 10px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: border-color 120ms, background 120ms, color 120ms;
+  }
+  .fchip:hover { border-color: var(--rule-2); color: var(--ink); }
+  .fchip[aria-pressed="true"] {
+    background: var(--ink); color: var(--ground); border-color: var(--ink);
+  }
+  .fchip__count {
+    font-variant-numeric: tabular-nums;
+    color: var(--faint);
+    font-size: 11px;
+  }
+  .fchip[aria-pressed="true"] .fchip__count { color: rgba(255,255,255,0.55); }
+  .fchip__dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--type-color, var(--faint));
+  }
+
+  .search {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--surface);
+    min-width: 220px;
+  }
+  .search__glyph { color: var(--faint); font-size: 12px; }
+  .search input {
+    border: none; outline: none;
+    background: transparent;
+    font-size: 13px;
+    width: 100%;
+  }
+  .search input::placeholder { color: var(--faint); }
+
+  /* Section headers within list */
+  .section-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 28px 0 6px;
+    padding-bottom: 8px;
+  }
+  .section-head:first-child { margin-top: 0; }
+  .section-head__title {
+    font-size: 12px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .section-head__count {
+    color: var(--faint); font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-head__rule {
+    flex: 1; height: 1px; background: var(--rule);
+    align-self: center;
+  }
+
+  /* List */
+  .list { display: flex; flex-direction: column; }
+  .entry {
+    display: grid;
+    grid-template-columns: 92px 1fr auto;
+    gap: 22px;
+    align-items: start;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .entry:hover { background: var(--surface-2); }
+  .entry:last-child { border-bottom: none; }
+
+  /* Type column */
+  .entry__type {
+    display: flex; flex-direction: column;
+    padding-top: 2px;
+  }
+  .entry__typelabel {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700;
+    color: var(--type-color);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .entry__typelabel::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--type-color);
+  }
+  .entry__date {
+    color: var(--faint); font-size: 12px;
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Body column */
+  .entry__body { min-width: 0; }
+  .entry__title {
+    font-size: 20px; font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em; line-height: 1.25;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .entry__spark {
+    font-size: 17px; font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.01em; line-height: 1.4;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .entry__meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .entry__author {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--ink-2);
+  }
+  .entry__author-avatar {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent-tint); color: var(--accent-ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+  }
+  .entry__sep { color: var(--rule-2); }
+  .entry__stat { color: var(--faint); font-variant-numeric: tabular-nums; }
+
+  .entry__tags {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 8px;
+  }
+  .entry__tag {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  /* Right column */
+  .entry__aside {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 10px;
+    text-align: right;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    background: var(--draft-tint); color: var(--draft);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .status-pill--published {
+    background: var(--thread-tint); color: var(--thread);
+  }
+  .entry__thumb {
+    width: 72px; height: 72px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    background-image: var(--thumb-bg, none);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .entry__thumb--photo {
+    background: linear-gradient(135deg, #d5d0c4, #8f8b7c);
+  }
+  .entry__thumb--tree {
+    background: linear-gradient(160deg, #4b7d63, #223c30);
+  }
+  .entry__thumb--paper {
+    background: linear-gradient(155deg, #eee8d5, #c9c2ab);
+  }
+
+  /* Type color per row */
+  .entry[data-type="spark"]    { --type-color: var(--spark); }
+  .entry[data-type="thread"]   { --type-color: var(--thread); }
+  .entry[data-type="whatif"]   { --type-color: var(--whatif); }
+  .entry[data-type="longread"] { --type-color: var(--longread); }
+
+  .new-item[data-type="spark"]    { --type-color: var(--spark); }
+  .new-item[data-type="thread"]   { --type-color: var(--thread); }
+  .new-item[data-type="whatif"]   { --type-color: var(--whatif); }
+  .new-item[data-type="longread"] { --type-color: var(--longread); }
+
+  .fchip[data-type="spark"]    { --type-color: var(--spark); }
+  .fchip[data-type="thread"]   { --type-color: var(--thread); }
+  .fchip[data-type="whatif"]   { --type-color: var(--whatif); }
+  .fchip[data-type="longread"] { --type-color: var(--longread); }
+
+  /* Empty state stub */
+  .empty {
+    padding: 40px 0;
+    color: var(--faint);
+    text-align: center;
+    font-size: 13px;
+  }
+
+  /* Responsive */
+  @media (max-width: 780px) {
+    .page { padding: 32px 20px 60px; }
+    .page-head { grid-template-columns: 1fr; }
+    .page-head h1 { font-size: 34px; }
+    .entry {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .entry__type { flex-direction: row; align-items: center; gap: 12px; }
+    .entry__aside { flex-direction: row-reverse; align-items: center; }
+    .entry__thumb { width: 56px; height: 56px; }
+  }
+</style>
+
+<div class="top">
+  <div class="top__left">
+    <span class="brand">Wove Mind<span class="dot">/</span><span class="crumb">Entries</span></span>
+  </div>
+  <div class="top__right">
+    <button class="icon-btn" title="Notifications" aria-label="Notifications">◔</button>
+    <span class="avatar" title="Scott">SC</span>
+  </div>
+</div>
+
+<main class="page">
+  <header class="page-head">
+    <div>
+      <div class="page-head__eyebrow">The studio's thinking</div>
+      <h1>Everything we've been writing.</h1>
+      <div class="page-head__sub">
+        <span id="totalCount">10 entries</span> · <span id="draftCount">3 drafts</span> · Last activity 4 min ago
+      </div>
+    </div>
+    <div class="new-wrap">
+      <button class="new-btn" id="newBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="new-btn__plus">＋</span>
+        Write something
+        <span class="new-btn__caret">▾</span>
+      </button>
+      <div class="new-menu" id="newMenu" role="menu">
+        <span class="new-menu__label">Start a…</span>
+        <button class="new-item" data-type="spark">
+          <span class="new-item__swatch" style="background: var(--spark)"></span>
+          <span>
+            <div class="new-item__name">Spark</div>
+            <div class="new-item__desc">One thought. Add an image if it needs one.</div>
+            <div class="new-item__perfect">Perfect for a sharp observation — or a photo with a caption.</div>
+          </span>
+        </button>
+        <button class="new-item" data-type="thread">
+          <span class="new-item__swatch" style="background: var(--thread)"></span>
+          <span>
+            <div class="new-item__name">Thread</div>
+            <div class="new-item__desc">A short piece with room to breathe.</div>
+            <div class="new-item__perfect">Perfect for reflections and half-formed ideas.</div>
+          </span>
+        </button>
+        <button class="new-item" data-type="whatif">
+          <span class="new-item__swatch" style="background: var(--whatif)"></span>
+          <span>
+            <div class="new-item__name">What if</div>
+            <div class="new-item__desc">A structured provocation — premise, tension, question.</div>
+            <div class="new-item__perfect">Perfect for challenging an assumption.</div>
+          </span>
+        </button>
+        <button class="new-item" data-type="longread">
+          <span class="new-item__swatch" style="background: var(--longread)"></span>
+          <span>
+            <div class="new-item__name">Long read</div>
+            <div class="new-item__desc">A full piece — essay, research, worked-up argument.</div>
+            <div class="new-item__perfect">Perfect for a considered piece you'd be happy to see cited.</div>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <div class="filters__group" id="filterGroup">
+      <button class="fchip" aria-pressed="true" data-filter="all">All <span class="fchip__count">10</span></button>
+      <button class="fchip" aria-pressed="false" data-filter="mine">My entries <span class="fchip__count">4</span></button>
+      <button class="fchip" aria-pressed="false" data-filter="drafts">Drafts <span class="fchip__count">3</span></button>
+      <button class="fchip" data-filter="type-spark" data-type="spark" aria-pressed="false"><span class="fchip__dot"></span>Sparks <span class="fchip__count">2</span></button>
+      <button class="fchip" data-filter="type-thread" data-type="thread" aria-pressed="false"><span class="fchip__dot"></span>Threads <span class="fchip__count">2</span></button>
+      <button class="fchip" data-filter="type-whatif" data-type="whatif" aria-pressed="false"><span class="fchip__dot"></span>What ifs <span class="fchip__count">3</span></button>
+      <button class="fchip" data-filter="type-longread" data-type="longread" aria-pressed="false"><span class="fchip__dot"></span>Long reads <span class="fchip__count">3</span></button>
+    </div>
+    <div class="filters__spacer"></div>
+    <div class="search">
+      <span class="search__glyph">⌕</span>
+      <input type="search" placeholder="Search titles, tags, authors…">
+    </div>
+  </div>
+
+  <!-- Drafts first -->
+  <div class="section-head">
+    <span class="section-head__title">In progress</span>
+    <span class="section-head__count">3</span>
+    <span class="section-head__rule"></span>
+  </div>
+
+  <div class="list">
+    <a class="entry" data-type="longread" data-status="draft" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Long read</span>
+        <span class="entry__date">Today, 11:04</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">Slowness as competitive advantage</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar">SC</span> Scott</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">1,240 words</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">Edited 4 min ago</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Strategy</span>
+          <span class="entry__tag">#PeoplePower</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill">Draft</span>
+        <div class="entry__thumb entry__thumb--paper"></div>
+      </div>
+    </a>
+
+    <a class="entry" data-type="whatif" data-status="draft" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">What if</span>
+        <span class="entry__date">Today, 09:41</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">What if the brief was the deliverable?</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #F7ECD3; color: #7a4d0e">GM</span> Grace</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">Only the premise so far</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill">Draft</span>
+      </div>
+    </a>
+
+    <a class="entry" data-type="thread" data-status="draft" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Thread</span>
+        <span class="entry__date">2 days ago</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">Notes from a week of no meetings</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar">SC</span> Scott</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">380 words</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Focus</span>
+          <span class="entry__tag">#Team</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill">Draft</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Published -->
+  <div class="section-head">
+    <span class="section-head__title">Published</span>
+    <span class="section-head__count">7</span>
+    <span class="section-head__rule"></span>
+  </div>
+
+  <div class="list">
+    <a class="entry" data-type="spark" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Spark</span>
+        <span class="entry__date">4h ago</span>
+      </div>
+      <div class="entry__body">
+        <p class="entry__spark">Spent an hour just watching how people cross the street here. It's a language.</p>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #E1EEE7; color: #1a4d33">ZA</span> Zara</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">12 reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Cities</span>
+          <span class="entry__tag">#Observation</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+      </div>
+    </a>
+
+    <a class="entry" data-type="spark" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Spark</span>
+        <span class="entry__date">Yesterday</span>
+      </div>
+      <div class="entry__body">
+        <p class="entry__spark">Studio Friday. This whiteboard is now a landmark.</p>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #F7ECD3; color: #7a4d0e">GM</span> Grace</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">Photo</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">28 reads</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+        <div class="entry__thumb entry__thumb--photo"></div>
+      </div>
+    </a>
+
+    <a class="entry" data-type="longread" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Long read</span>
+        <span class="entry__date">3 days ago</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">The quiet economics of care work</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar">SC</span> Scott</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">2,110 words · 9 min read</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">184 reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Care</span>
+          <span class="entry__tag">#Economics</span>
+          <span class="entry__tag">#Systems</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+        <div class="entry__thumb entry__thumb--tree"></div>
+      </div>
+    </a>
+
+    <a class="entry" data-type="whatif" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">What if</span>
+        <span class="entry__date">Last week</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">What if brand was a verb, not a noun?</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #F7ECD3; color: #7a4d0e">GM</span> Grace</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">Related to <em>Vast &amp; Wild</em></span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">312 reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Brand</span>
+          <span class="entry__tag">#Strategy</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+      </div>
+    </a>
+
+    <a class="entry" data-type="thread" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Thread</span>
+        <span class="entry__date">Last week</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">Three things clients keep asking that they don't need</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #E1EEE7; color: #1a4d33">ZA</span> Zara</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">540 words</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">96 reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Practice</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+      </div>
+    </a>
+
+    <a class="entry" data-type="whatif" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">What if</span>
+        <span class="entry__date">2 weeks ago</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">What if we designed for rest?</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar" style="background: #F7ECD3; color: #7a4d0e">GM</span> Grace</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">420 reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#WhatIf</span>
+          <span class="entry__tag">#Wellbeing</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+      </div>
+    </a>
+
+    <a class="entry" data-type="longread" data-status="published" href="#">
+      <div class="entry__type">
+        <span class="entry__typelabel">Long read</span>
+        <span class="entry__date">2 weeks ago</span>
+      </div>
+      <div class="entry__body">
+        <h3 class="entry__title">Why we stopped pitching against agencies</h3>
+        <div class="entry__meta">
+          <span class="entry__author"><span class="entry__author-avatar">SC</span> Scott</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">1,820 words · 8 min read</span>
+          <span class="entry__sep">·</span>
+          <span class="entry__stat">1.2k reads</span>
+        </div>
+        <div class="entry__tags">
+          <span class="entry__tag">#Practice</span>
+          <span class="entry__tag">#Business</span>
+        </div>
+      </div>
+      <div class="entry__aside">
+        <span class="status-pill status-pill--published">Live</span>
+        <div class="entry__thumb entry__thumb--paper"></div>
+      </div>
+    </a>
+  </div>
+</main>
+
+<script>
+  const newBtn = document.getElementById('newBtn');
+  const newMenu = document.getElementById('newMenu');
+  newBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = newMenu.classList.toggle('open');
+    newBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', () => {
+    newMenu.classList.remove('open');
+    newBtn.setAttribute('aria-expanded', 'false');
+  });
+  newMenu.addEventListener('click', (e) => e.stopPropagation());
+
+  // Filter chips (visual only)
+  const chips = document.querySelectorAll('#filterGroup .fchip');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.setAttribute('aria-pressed', 'false'));
+      chip.setAttribute('aria-pressed', 'true');
+      const filter = chip.dataset.filter;
+      const entries = document.querySelectorAll('.entry');
+      entries.forEach(e => {
+        let show = true;
+        if (filter === 'drafts') show = e.dataset.status === 'draft';
+        else if (filter === 'mine') show = e.querySelector('.entry__author').textContent.includes('Scott');
+        else if (filter && filter.startsWith('type-')) show = e.dataset.type === filter.slice(5);
+        e.style.display = show ? '' : 'none';
+      });
+      // Hide section heads if their sections are empty
+      document.querySelectorAll('.section-head').forEach(h => {
+        const list = h.nextElementSibling;
+        const anyVisible = list && [...list.querySelectorAll('.entry')].some(e => e.style.display !== 'none');
+        h.style.display = anyVisible ? '' : 'none';
+      });
+    });
+  });
+</script>

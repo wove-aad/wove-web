@@ -1,0 +1,8 @@
+title: Admin
+description: Full access to everything.
+
+# Kirby treats the "admin" role specially — it always has all permissions.
+# We define it here to give admins their own login home.
+home: /panel
+
+permissions: true

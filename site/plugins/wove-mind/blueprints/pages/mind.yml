@@ -1,0 +1,23 @@
+title: Wove Mind
+
+# Admin-only view of the container itself; contributors reach entries via /panel/mind.
+options:
+  changeTemplate: false
+  changeSlug: false
+  delete: false
+  duplicate: false
+
+status:
+  draft: false
+  unlisted: false
+  listed: true
+
+sections:
+  entries:
+    headline: Entries
+    type: pages
+    template: mind_entry
+    layout: list
+    info: "{{ page.format }} · {{ page.status }} · {{ page.modified.toDate('M j, Y') }}"
+    sortBy: modified desc
+    empty: No entries yet.

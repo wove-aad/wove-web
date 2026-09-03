@@ -1,0 +1,116 @@
+title: Mind entry
+
+options:
+  changeTemplate: false
+  changeSlug: true
+  delete: true
+  duplicate: true
+
+status:
+  draft:
+    label: Draft
+    text: Only you and admins can see this.
+  listed:
+    label: Live
+    text: Published to the site.
+
+# Fields the editor UI renders. The Vue editor splits these into
+# "main compose column" vs. "settings rail" — see EntryEditorView.vue.
+fields:
+
+  # ── Main compose column ───────────────────────────────────────
+  format:
+    label: Format
+    type: select
+    default: whatif
+    required: true
+    options:
+      spark: Spark — one thought
+      thread: Thread — short piece
+      whatif: What if — structured provocation
+      longread: Long read — full piece
+    help: You can change this later.
+
+  title:
+    label: Title
+    type: text
+    required: true
+    when:
+      format: [thread, whatif, longread]
+
+  deck:
+    label: Deck
+    type: text
+    when:
+      format: longread
+    help: One sentence that draws the reader in.
+
+  cover:
+    label: Cover image
+    type: files
+    layout: cards
+    max: 1
+    query: page.images
+    uploads: cover
+    when:
+      format: [thread, whatif, longread]
+    help: Shown in the feed and at the top of the post.
+
+  body:
+    label: Body
+    type: writer
+    marks:
+      - bold
+      - italic
+      - link
+      - code
+    nodes:
+      - heading
+      - bulletList
+      - orderedList
+      - quote
+    required: true
+
+  # ── Settings rail ─────────────────────────────────────────────
+  tags:
+    label: Tags
+    type: tags
+    accept: options
+    separator: ","
+    options:
+      type: query
+      query: site.find('mind').children.pluck('tags', ',', true)
+
+  showByline:
+    label: Show byline
+    type: toggle
+    default: true
+    text: Author name is visible on the post
+
+  service:
+    label: Relate to a service
+    type: multiselect
+    options:
+      strategy: Strategy
+      labs: Labs
+      digital: Digital
+      brand: Brand
+    help: Also surfaces the post on that service's page.
+
+  caseStudy:
+    label: Relate to a case study
+    type: text
+    help: Slug of the case study (placeholder — will become a pages picker once case studies exist).
+
+  metaTitle:
+    label: Meta title
+    type: text
+    help: Defaults to the post title if empty.
+
+  metaDescription:
+    label: Meta description
+    type: textarea
+    size: small
+    maxlength: 160
+    counter: true
+    help: Recommended for long reads.

@@ -314,14 +314,22 @@ export default {
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
   },
   methods: {
-    // Apply any per-field Panel-side tweaks (label overrides, etc.)
-    // without mutating the original field object.
+    // Apply any per-field Panel-side tweaks without mutating the
+    // original field object:
+    //   - override the visible label when we want one different from
+    //     the shared blueprint's;
+    //   - drop the blueprint's `when` condition since we control
+    //     field visibility per-format via MAIN/RAIL_FIELDS_BY_FORMAT
+    //     ourselves. Kirby's k-fieldset otherwise silently hides
+    //     fields whose `when` clause doesn't match the current values
+    //     (e.g. `excerpt` gated to project-highlight in the blueprint
+    //     wouldn't render for whatif/longread).
     decorate(name, field) {
       const label = LABEL_OVERRIDES[name];
-      if (label && field.label !== label) {
-        return { ...field, label };
-      }
-      return field;
+      const patch = {};
+      if (label && field.label !== label) patch.label = label;
+      if (field.when) patch.when = null;
+      return Object.keys(patch).length ? { ...field, ...patch } : field;
     },
     onInput(values) {
       // Merge — k-form's emitted payload only carries fields it knows about,

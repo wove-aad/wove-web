@@ -27,6 +27,14 @@
           Back
         </button>
         <button
+          class="wove-btn wove-btn--danger"
+          :disabled="isSaving || isDeleting"
+          @click="confirmDelete"
+          title="Delete this entry"
+        >
+          Delete
+        </button>
+        <button
           v-if="isDraft"
           class="wove-btn"
           :disabled="isSaving"
@@ -42,6 +50,25 @@
         >
           Unpublish
         </button>
+      </div>
+    </div>
+
+    <div v-if="deleteOpen" class="wove-confirm-overlay" @click.self="deleteOpen = false">
+      <div class="wove-confirm" role="dialog" aria-modal="true">
+        <h3 class="wove-confirm__title">Delete this entry?</h3>
+        <p class="wove-confirm__body">
+          This removes
+          <strong>{{ values.title || "the entry" }}</strong>
+          permanently. It can't be undone from here.
+        </p>
+        <div class="wove-confirm__actions">
+          <button class="wove-btn wove-btn--ghost" @click="deleteOpen = false" :disabled="isDeleting">
+            Cancel
+          </button>
+          <button class="wove-btn wove-btn--danger" @click="doDelete" :disabled="isDeleting">
+            {{ isDeleting ? "Deleting…" : "Delete" }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -135,6 +162,8 @@ export default {
     return {
       values: { ...this.initialContent },
       isSaving: false,
+      isDeleting: false,
+      deleteOpen: false,
       dirty: false,
       lastSavedAt: this.isNew ? null : new Date(),
       autosaveTimer: null,
@@ -281,6 +310,26 @@ export default {
       if (!this.dirty) return proceed();
       // Flush pending autosave then leave.
       this.save({ silent: true }).finally(proceed);
+    },
+    confirmDelete() {
+      this.deleteOpen = true;
+    },
+    async doDelete() {
+      if (this.isDeleting) return;
+      this.isDeleting = true;
+      // Cancel any pending autosave — the page is about to be gone.
+      if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+      try {
+        await this.$api.delete(`pages/${this.apiId}`);
+        this.$panel.notification.success("Entry deleted");
+        this.deleteOpen = false;
+        this.$go("mind");
+      } catch (error) {
+        this.isDeleting = false;
+        this.$panel.notification.error(
+          "Couldn't delete: " + this.errorText(error)
+        );
+      }
     },
   },
 };

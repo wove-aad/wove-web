@@ -1,88 +1,209 @@
 /*
- * Wove design tokens — scoped source of truth.
- * Expand to cover the frontend site in a future pass.
+ * Ballinger — the project typeface.
+ * Files live at site/plugins/wove-mind/assets/fonts/ and are served
+ * by Kirby's plugin asset route. Filenames match the shipped OTF
+ * pack (Ballinger 1.901) exactly, capitalised — case matters on
+ * Linux servers. Every weight + italic variant is declared so the
+ * whole family is available; the plugin uses 300 / 400 / 500 / 700
+ * / 800 today.
+ */
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Thin.otf")         format("opentype"); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-ThinItalic.otf")   format("opentype"); font-weight: 100; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XLight.otf")       format("opentype"); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XLightItalic.otf") format("opentype"); font-weight: 200; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Light.otf")        format("opentype"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-LightItalic.otf")  format("opentype"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Regular.otf")      format("opentype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Italic.otf")       format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Medium.otf")       format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-MediumItalic.otf") format("opentype"); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Bold.otf")         format("opentype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-BoldItalic.otf")   format("opentype"); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XBold.otf")        format("opentype"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XBoldItalic.otf")  format("opentype"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Black.otf")        format("opentype"); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-BlackItalic.otf")  format("opentype"); font-weight: 900; font-style: italic; font-display: swap; }
+
+/*
+ * Wove design tokens — Panel-scoped mirror of wove-design-tokens.json v0.4.
+ *
+ * Source of truth: wove-design-tokens.json (project root, TBC).
+ * When the frontend build wires that JSON into a project-wide CSS
+ * output, this file should be replaced with an @import from there.
+ *
+ * Naming: --wm-* (wove-mind scope, avoids clashing with any global
+ * --color / --space tokens Kirby's Panel or the frontend site already
+ * define). The Panel CSS below reads only these.
  */
 .k-panel-view.wove-mind {
-  --wove-ground: #ffffff;
-  --wove-surface: #ffffff;
-  --wove-surface-2: #f5f5f2;
-  --wove-ink: #111111;
-  --wove-ink-2: #3d3d3b;
-  --wove-muted: #6b6b67;
-  --wove-faint: #a6a49e;
-  --wove-rule: #eaeae4;
-  --wove-rule-2: #d9d6cc;
+  /* Colour ------------------------------------------------------ */
+  --wm-black:            #111111;
+  --wm-white:            #ffffff;
+  --wm-off-white:        #f9f9f9;
+  --wm-coral:            #ed8c7c;
+  --wm-aqua:             #d5faff;
+  --wm-blue:             #2a50f3;
+  --wm-blue-tint:        #ebf0fe;
+  --wm-blue-ink:         #1535a8;
+  --wm-placeholder:      #d9d9d9;
+  --wm-border-card:      #aaaaaa;
 
-  --wove-accent: #2a50f3;
-  --wove-accent-tint: #ebf0fe;
-  --wove-accent-ink: #1535a8;
+  --wm-100: #f5f5f5;
+  --wm-200: #eeeeee;
+  --wm-300: #dddddd;
+  --wm-400: #bbbbbb;
+  --wm-500: #999999;
+  --wm-600: #777777; /* fails WCAG AA on white — never use for body/label text */
+  --wm-700: #555555; /* AA-safe muted text */
+  --wm-800: #333333;
+  --wm-900: #222222;
 
-  --wove-spark: #c6841e;
-  --wove-spark-tint: #f7ecd3;
-  --wove-thread: #2f7a57;
-  --wove-thread-tint: #e1eee7;
-  --wove-whatif: #2a50f3;
-  --wove-whatif-tint: #ebf0fe;
-  --wove-longread: #6b3ec2;
-  --wove-longread-tint: #ede6f8;
-  --wove-draft: #b45d0b;
-  --wove-draft-tint: #fbedd6;
+  /* Semantic roles used across the Panel UI */
+  --wm-ground:      var(--wm-white);
+  --wm-surface:     var(--wm-white);
+  --wm-surface-2:   var(--wm-off-white);
+  --wm-ink:         var(--wm-black);
+  --wm-ink-2:       var(--wm-800);
+  --wm-muted:       var(--wm-700);
+  --wm-faint:       var(--wm-500);
+  --wm-rule:        var(--wm-300);
+  --wm-rule-2:      var(--wm-border-card);
 
-  --wove-radius: 10px;
-  --wove-radius-sm: 6px;
-  --wove-shadow-pop:
-    0 10px 30px rgba(20, 18, 10, 0.1),
-    0 2px 6px rgba(20, 18, 10, 0.06);
+  --wm-accent:      var(--wm-blue);
+  --wm-accent-tint: var(--wm-blue-tint);
+  --wm-accent-ink:  var(--wm-blue-ink);
 
-  --wove-sans:
-    "Ballinger", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Post-type accents — spark = coral (project accent), thread =
+     green from the published/success family, whatif = blue, longread
+     = a violet held locally. */
+  --wm-spark:         var(--wm-coral);
+  --wm-spark-tint:    #fbe5df;
+  --wm-thread:        #1d9e75;
+  --wm-thread-tint:   #e1f5ee;
+  --wm-thread-ink:    #085041;
+  --wm-whatif:        var(--wm-blue);
+  --wm-whatif-tint:   var(--wm-blue-tint);
+  --wm-longread:      #6b3ec2;
+  --wm-longread-tint: #ede6f8;
+
+  /* Status pills */
+  --wm-draft:      #b45d0b;
+  --wm-draft-tint: #fbedd6;
+  --wm-live:       var(--wm-thread);
+  --wm-live-tint:  #c3eb90; /* published tag colour from Wove Mind brief */
+  --wm-live-ink:   var(--wm-thread-ink);
+
+  /* Typography ------------------------------------------------- */
+  --wm-font: "Ballinger", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --wm-weight-light: 300;
+  --wm-weight-reg:   400;
+  --wm-weight-bold:  700;
+  --wm-weight-xbold: 800;
+  --wm-weight-black: 900;
+
+  /* Type scale — from Figma named styles (px → rem). The Panel view
+     runs at a compressed scale (Kirby Panel base font is 14px, not
+     16px), so we alias the ones used here rather than importing the
+     whole scale wholesale. */
+  --wm-h1:  5.5rem;   /* 88px */
+  --wm-h2:  4rem;     /* 64px */
+  --wm-h3:  3.5rem;   /* 56px */
+  --wm-h4:  2.5rem;   /* 40px */
+  --wm-h5:  1.75rem;  /* 28px */
+  --wm-h6:  1.5rem;   /* 24px */
+  --wm-p1:  1.875rem; /* 30px */
+  --wm-p2:  1.5rem;   /* 24px */
+  --wm-p3:  1.375rem; /* 22px */
+  --wm-p4:  1.125rem; /* 18px */
+
+  /* Spacing --------------------------------------------------- */
+  --wm-space-12:  0.75rem;
+  --wm-space-16:  1rem;
+  --wm-space-24:  1.5rem;
+  --wm-space-32:  2rem;
+  --wm-space-48:  3rem;
+  --wm-space-80:  5rem;
+  --wm-space-96:  6rem;
+  --wm-space-128: 8rem;
+
+  --wm-rhythm-xs: var(--wm-space-32);
+  --wm-rhythm-sm: var(--wm-space-48);
+  --wm-rhythm-md: var(--wm-space-80);
+  --wm-rhythm-lg: var(--wm-space-96);
+  --wm-rhythm-xl: var(--wm-space-128);
+
+  /* Layout ---------------------------------------------------- */
+  --wm-max-width: 80rem; /* 1280 */
+
+  /* Border & radius ------------------------------------------- */
+  --wm-border-width: 1px;
+  --wm-border:       var(--wm-border-width) solid var(--wm-rule);
+  --wm-border-card:  var(--wm-border-width) solid var(--wm-border-card);
+  --wm-radius-sm:    0.75rem;   /* 12 */
+  --wm-radius-md:    1.25rem;   /* 20 */
+  --wm-radius-lg:    2.8125rem; /* 45 */
+  --wm-radius-pill:  100px;
+
+  /* Shadow ---------------------------------------------------- */
+  --wm-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --wm-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --wm-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+
+  /* Motion ---------------------------------------------------- */
+  --wm-transition: 200ms ease;
 }
 
+/* Dark theme — the Panel viewer decides, we invert the semantic roles.
+   Brand colours (coral, aqua, blue) stay so identity stays constant. */
 @media (prefers-color-scheme: dark) {
-  .k-panel[data-theme="dark"] .k-panel-view.wove-mind,
   .k-panel:not([data-theme="light"]) .k-panel-view.wove-mind {
-    --wove-ground: #14140f;
-    --wove-surface: #1b1b15;
-    --wove-surface-2: #22221b;
-    --wove-ink: #f2efe6;
-    --wove-ink-2: #d8d4c6;
-    --wove-muted: #9a968a;
-    --wove-faint: #6e6a5f;
-    --wove-rule: #2a2a22;
-    --wove-rule-2: #3a3a31;
-    --wove-accent: #6a85f7;
-    --wove-accent-tint: #1f2647;
-    --wove-accent-ink: #c7d0fa;
-    --wove-spark-tint: #3a2e17;
-    --wove-thread-tint: #1b2c22;
-    --wove-whatif-tint: #1f2647;
-    --wove-longread-tint: #2a1f3d;
-    --wove-draft-tint: #3a2a11;
-    --wove-shadow-pop:
-      0 10px 30px rgba(0, 0, 0, 0.5),
-      0 2px 6px rgba(0, 0, 0, 0.35);
+    --wm-ground:      #14140f;
+    --wm-surface:     #1b1b15;
+    --wm-surface-2:   #22221b;
+    --wm-ink:         #f2efe6;
+    --wm-ink-2:       #d8d4c6;
+    --wm-muted:       #9a968a;
+    --wm-faint:       #6e6a5f;
+    --wm-rule:        #2a2a22;
+    --wm-rule-2:      #3a3a31;
+    --wm-accent:      #6a85f7;
+    --wm-accent-tint: #1f2647;
+    --wm-accent-ink:  #c7d0fa;
+
+    --wm-spark-tint:    #3a2417;
+    --wm-thread-tint:   #1b2c22;
+    --wm-whatif-tint:   #1f2647;
+    --wm-longread-tint: #2a1f3d;
+    --wm-draft-tint:    #3a2a11;
+    --wm-live-tint:     #24391a;
+
+    --wm-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --wm-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 }
 
 .k-panel[data-theme="dark"] .k-panel-view.wove-mind {
-  --wove-ground: #14140f;
-  --wove-surface: #1b1b15;
-  --wove-surface-2: #22221b;
-  --wove-ink: #f2efe6;
-  --wove-ink-2: #d8d4c6;
-  --wove-muted: #9a968a;
-  --wove-faint: #6e6a5f;
-  --wove-rule: #2a2a22;
-  --wove-rule-2: #3a3a31;
-  --wove-accent: #6a85f7;
-  --wove-accent-tint: #1f2647;
-  --wove-accent-ink: #c7d0fa;
-  --wove-spark-tint: #3a2e17;
-  --wove-thread-tint: #1b2c22;
-  --wove-whatif-tint: #1f2647;
-  --wove-longread-tint: #2a1f3d;
-  --wove-draft-tint: #3a2a11;
-  --wove-shadow-pop:
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    0 2px 6px rgba(0, 0, 0, 0.35);
+  --wm-ground:      #14140f;
+  --wm-surface:     #1b1b15;
+  --wm-surface-2:   #22221b;
+  --wm-ink:         #f2efe6;
+  --wm-ink-2:       #d8d4c6;
+  --wm-muted:       #9a968a;
+  --wm-faint:       #6e6a5f;
+  --wm-rule:        #2a2a22;
+  --wm-rule-2:      #3a3a31;
+  --wm-accent:      #6a85f7;
+  --wm-accent-tint: #1f2647;
+  --wm-accent-ink:  #c7d0fa;
+
+  --wm-spark-tint:    #3a2417;
+  --wm-thread-tint:   #1b2c22;
+  --wm-whatif-tint:   #1f2647;
+  --wm-longread-tint: #2a1f3d;
+  --wm-draft-tint:    #3a2a11;
+  --wm-live-tint:     #24391a;
+
+  --wm-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --wm-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
 }

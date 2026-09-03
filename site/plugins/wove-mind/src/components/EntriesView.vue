@@ -100,7 +100,7 @@
                   <span>{{ entry.author }}</span>
                   <span
                     v-if="entry.wordCount"
-                    style="color: var(--wove-faint)"
+                    style="color: var(--wm-faint)"
                   >
                     · {{ entry.wordCount }} words
                   </span>

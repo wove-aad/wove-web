@@ -181,8 +181,8 @@ const MAIN_FIELDS_BY_FORMAT = {
   longread: ["title", "image", "blocks"],
 };
 const RAIL_FIELDS_BY_FORMAT = {
-  spark:    ["tags", "seotitle", "seodescription"],
-  thread:   ["tags", "seotitle", "seodescription"],
+  spark:    ["tags", "case_study", "services", "seotitle", "seodescription"],
+  thread:   ["tags", "case_study", "services", "seotitle", "seodescription"],
   whatif:   ["tags", "case_study", "services", "seotitle", "seodescription"],
   longread: null,
 };

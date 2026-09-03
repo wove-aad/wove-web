@@ -178,7 +178,7 @@ const MAIN_FIELDS_BY_FORMAT = {
   spark:    ["image", "body"],
   thread:   ["title", "image", "body"],
   whatif:   ["title", "image", "body"],
-  longread: ["title", "image", "blocks"],
+  longread: ["title", "image", "body"],
 };
 const RAIL_FIELDS_BY_FORMAT = {
   spark:    ["tags", "case_study", "services", "seotitle", "seodescription"],

@@ -18,6 +18,11 @@ permissions:
     delete: true
     replace: true
   pages:
+    # `access` gates whether the user can see the page at all via the
+    # API (Find::page → isAccessible). New in Kirby v5, separate from
+    # `read`. Without it POST pages/mind/children 404s for contributors
+    # with "The page 'mind' cannot be found" even though read is true.
+    access: true
     create: true
     read: true
     update: true

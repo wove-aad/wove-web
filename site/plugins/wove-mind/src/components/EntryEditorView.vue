@@ -108,10 +108,10 @@ const CHIP_FIELDS = ["format"];
 // Which compose-column fields each format uses (in render order).
 // The Vue shell owns this — Kirby's `when:` doesn't handle arrays.
 const MAIN_FIELDS_BY_FORMAT = {
-  spark:    ["body"],
+  spark:    ["body", "cover"],
   thread:   ["cover", "title", "body"],
   whatif:   ["cover", "title", "premise", "tension", "question"],
-  longread: ["cover", "title", "deck", "body"],
+  longread: ["cover", "title", "deck", "content"],
 };
 
 const AUTOSAVE_DELAY_MS = 1500;
@@ -123,6 +123,13 @@ export default {
     initialContent: { type: Object, default: () => ({}) },
     fields: { type: Object, default: null },
     status: { type: String, default: "draft" },
+    // Standard k-page-view scaffolding — Kirby's content/changes
+    // system reads these when fields do uploads / autosave.
+    api: { type: String, default: null },
+    id: { type: String, default: null },
+    lock: { type: [Object, null], default: null },
+    permissions: { type: [Object, null], default: null },
+    versions: { type: [Object, null], default: null },
   },
   data() {
     return {
@@ -244,11 +251,12 @@ export default {
     async publish() {
       await this.save({ silent: true });
       try {
-        await this.$api.post(`pages/${this.apiId}/status`, {
+        await this.$api.patch(`pages/${this.apiId}/status`, {
           status: "listed",
         });
         this.$panel.notification.success("Published");
-        this.$emit("status-changed", "listed");
+        // Refresh view props so file URLs, status pill, etc. reflect the new state.
+        this.$reload();
       } catch (error) {
         this.$panel.notification.error(
           "Couldn't publish: " + (error.message || "unknown error")
@@ -257,11 +265,11 @@ export default {
     },
     async unpublish() {
       try {
-        await this.$api.post(`pages/${this.apiId}/status`, {
+        await this.$api.patch(`pages/${this.apiId}/status`, {
           status: "draft",
         });
         this.$panel.notification.success("Moved back to draft");
-        this.$emit("status-changed", "draft");
+        this.$reload();
       } catch (error) {
         this.$panel.notification.error(
           "Couldn't unpublish: " + (error.message || "unknown error")

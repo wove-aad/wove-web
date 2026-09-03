@@ -53,12 +53,30 @@ fields:
     type: text
     help: One sentence that draws the reader in.
 
-  # Spark / Thread / Long read use `body`.
+  # Spark / Thread use `body` — a light writer field.
   body:
     label: Body
     type: writer
     marks: [bold, italic, link, code]
     nodes: [heading, bulletList, orderedList, quote]
+
+  # Long read uses `content` — a blocks editor so authors can mix
+  # paragraphs, headings, images, quotes, code, video inline as they
+  # write. Requires the standard page-view scaffolding (versions /
+  # lock / permissions) which we now pass through.
+  content:
+    label: Content
+    type: blocks
+    fieldsets:
+      - text
+      - heading
+      - image
+      - quote
+      - list
+      - code
+      - video
+      - markdown
+      - line
 
   # What if uses three scaffolded writer fields instead of `body`.
   premise:

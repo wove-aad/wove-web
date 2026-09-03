@@ -2,6 +2,7 @@
 
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
+use Kirby\Form\Form;
 
 /**
  * Wove Mind — custom Panel plugin for authoring team posts.
@@ -78,15 +79,22 @@ App::plugin('wove/mind', [
 								];
 							}
 
-							$blueprintFields = $page->blueprint()->fields();
-							$content         = $page->content()->toArray();
+							// Use the Form's parsed field instances — each field's
+							// ->toArray() runs its own type-specific props() method, so
+							// specialised fields (blocks, files, tags, structure) return
+							// fully-resolved specs (blocks fieldsets, tag options, etc.).
+							// Raw $page->blueprint()->fields() leaves them as skeletons
+							// and the blocks field then crashes on `fieldset.wysiwyg`.
+							$form    = Form::for($page);
+							$content = $form->values();
 
 							// k-fieldset spreads each field spec as props on the field
 							// component, so file/section endpoints must live INSIDE each
 							// field definition (Kirby's built-in k-page-view does the same).
 							$apiId = str_replace('/', '+', $page->id());
 							$fieldsWithEndpoints = [];
-							foreach ($blueprintFields as $name => $field) {
+							foreach ($form->fields() as $name => $fieldObj) {
+								$field = $fieldObj->toArray();
 								$field['endpoints'] = [
 									'model'   => 'pages/' . $apiId,
 									'field'   => 'pages/' . $apiId . '/fields/' . $name,
@@ -95,10 +103,22 @@ App::plugin('wove/mind', [
 								$fieldsWithEndpoints[$name] = $field;
 							}
 
+							// Standard page-view scaffolding — the content/changes system
+							// uses these props (versions.changes, lock, permissions, api)
+							// when fields do things like uploads, autosave, etc.
+							$panelPage = $page->panel();
+							$standardProps = $panelPage->props();
+
 							return [
 								'component' => 'k-mind-editor-view',
 								'title'     => $page->title()->value() ?: 'New entry',
 								'props'     => [
+									'api'         => $standardProps['api']         ?? 'pages/' . $apiId,
+									'id'          => $standardProps['id']          ?? $page->id(),
+									'lock'        => $standardProps['lock']        ?? null,
+									'permissions' => $standardProps['permissions'] ?? null,
+									'versions'    => $standardProps['versions']    ?? null,
+
 									'entryId'        => $page->id(),
 									'isNew'          => empty(trim($page->content()->body()->value() ?? '')),
 									'initialContent' => $content,

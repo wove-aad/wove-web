@@ -177,8 +177,18 @@ const HIDDEN_FIELDS = [
 const MAIN_FIELDS_BY_FORMAT = {
   spark:    ["image", "body"],
   thread:   ["title", "image", "body"],
-  whatif:   ["title", "image", "body"],
-  longread: ["title", "image", "body"],
+  whatif:   ["title", "image", "excerpt", "body"],
+  longread: ["title", "image", "excerpt", "body"],
+};
+
+// Blueprint labels we override for the Panel view. The shared
+// wove-mind-entry.yml uses "Excerpt" as the label for the `body`
+// writer field (a naming holdover); in this authoring flow it's the
+// post body, so we relabel it. Also override the actual `excerpt`
+// field's label so the two don't collide visually.
+const LABEL_OVERRIDES = {
+  body:    "Body",
+  excerpt: "Excerpt (short summary)",
 };
 const RAIL_FIELDS_BY_FORMAT = {
   spark:    ["tags", "case_study", "services", "seotitle", "seodescription"],
@@ -242,7 +252,7 @@ export default {
         // doesn't define.
         const out = {};
         for (const name of allow) {
-          if (this.fields[name]) out[name] = this.fields[name];
+          if (this.fields[name]) out[name] = this.decorate(name, this.fields[name]);
         }
         return out;
       }
@@ -250,17 +260,19 @@ export default {
       // in blueprint order. `image` gets spliced in after `title`
       // (magazine-style cover under the title) since the blueprint
       // itself puts image in a sidebar section.
-      const entries = Object.entries(this.fields).filter(
-        ([name]) =>
-          !RAIL_FIELDS.includes(name) &&
-          !CHIP_FIELDS.includes(name) &&
-          !HIDDEN_FIELDS.includes(name) &&
-          name !== "image"
-      );
+      const entries = Object.entries(this.fields)
+        .filter(
+          ([name]) =>
+            !RAIL_FIELDS.includes(name) &&
+            !CHIP_FIELDS.includes(name) &&
+            !HIDDEN_FIELDS.includes(name) &&
+            name !== "image"
+        )
+        .map(([name, field]) => [name, this.decorate(name, field)]);
       if (this.fields.image) {
         const titleIdx = entries.findIndex(([n]) => n === "title");
         const insertAt = titleIdx >= 0 ? titleIdx + 1 : 0;
-        entries.splice(insertAt, 0, ["image", this.fields.image]);
+        entries.splice(insertAt, 0, ["image", this.decorate("image", this.fields.image)]);
       }
       return Object.fromEntries(entries);
     },
@@ -272,15 +284,15 @@ export default {
         const out = {};
         for (const name of allow) {
           if (this.fields[name] && filterHidden(name)) {
-            out[name] = this.fields[name];
+            out[name] = this.decorate(name, this.fields[name]);
           }
         }
         return out;
       }
       return Object.fromEntries(
-        Object.entries(this.fields).filter(
-          ([name]) => RAIL_FIELDS.includes(name) && filterHidden(name)
-        )
+        Object.entries(this.fields)
+          .filter(([name]) => RAIL_FIELDS.includes(name) && filterHidden(name))
+          .map(([name, field]) => [name, this.decorate(name, field)])
       );
     },
     hasSeoFields() {
@@ -302,6 +314,15 @@ export default {
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
   },
   methods: {
+    // Apply any per-field Panel-side tweaks (label overrides, etc.)
+    // without mutating the original field object.
+    decorate(name, field) {
+      const label = LABEL_OVERRIDES[name];
+      if (label && field.label !== label) {
+        return { ...field, label };
+      }
+      return field;
+    },
     onInput(values) {
       // Merge — k-form's emitted payload only carries fields it knows about,
       // so we preserve `format` (topbar chip) and any other fields not

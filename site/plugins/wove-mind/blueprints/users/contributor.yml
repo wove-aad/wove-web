@@ -1,0 +1,48 @@
+title: Contributor
+description: Team members who write for Wove Mind.
+
+# On login, contributors go straight to the Wove Mind list view.
+home: /panel/mind
+
+permissions:
+  access:
+    panel: true
+    site: false
+    system: false
+    users: false
+    languages: false
+  files:
+    create: true
+    read: true
+    update: true
+    delete: true
+    replace: true
+  pages:
+    create: true
+    read: true
+    update: true
+    delete: true
+    changeSlug: true
+    changeStatus: true
+    changeTemplate: false
+    changeTitle: true
+    duplicate: true
+    move: false
+    preview: true
+    sort: false
+  user:
+    changeEmail: true
+    changeLanguage: true
+    changeName: true
+    changePassword: true
+    changeRole: false
+    delete: false
+  users:
+    changeEmail: false
+    changeLanguage: false
+    changeName: false
+    changePassword: false
+    changeRole: false
+    create: false
+    delete: false
+    update: false

@@ -138,3 +138,8 @@ Icon
 # ---------------
 /backup
 /backup/*
+
+# Panel plugin manifests (needed for Vite builds inside plugin folders)
+# These re-includes must come after the earlier `package.json` ignore.
+!site/plugins/*/package.json
+!site/plugins/*/package-lock.json

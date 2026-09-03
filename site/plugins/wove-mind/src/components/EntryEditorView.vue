@@ -141,6 +141,30 @@ const RAIL_FIELDS = [
 // Never rendered by k-form — presented as the topbar chip.
 const CHIP_FIELDS = ["format"];
 
+// Never rendered anywhere. Kept out of both main and rail regardless
+// of format. Robots meta tags, open-graph type, and the ignore-cache
+// toggle come from the shared SEO tab (site/blueprints/tabs/seo.yml)
+// and aren't part of this authoring flow.
+const HIDDEN_FIELDS = ["robots", "ogtype", "ignoreCache"];
+
+// Per-format field visibility. Kirby's `when:` can't express these
+// (single-value scalar match only), so the Panel view enforces it.
+// A value of `null` means "no restriction — show whatever the
+// blueprint defines". Restricted lists are matched against the
+// blueprint fields, so extras we don't know about get skipped.
+const MAIN_FIELDS_BY_FORMAT = {
+  spark:    ["blocks"],
+  thread:   ["title", "blocks"],
+  whatif:   null,
+  longread: null,
+};
+const RAIL_FIELDS_BY_FORMAT = {
+  spark:    ["image", "tags"],
+  thread:   ["image", "tags"],
+  whatif:   null,
+  longread: null,
+};
+
 const AUTOSAVE_DELAY_MS = 1500;
 
 export default {
@@ -189,21 +213,43 @@ export default {
     },
     mainFields() {
       if (!this.fields) return {};
-      // Everything that isn't in the rail or the topbar chip goes in
-      // the main compose column, in blueprint order. Grace's blueprint
-      // controls structure; the shell reflects it rather than dictating.
+      const allow = MAIN_FIELDS_BY_FORMAT[this.currentFormat];
+      if (allow) {
+        // Preserve the allowlist's order; skip anything the blueprint
+        // doesn't define.
+        const out = {};
+        for (const name of allow) {
+          if (this.fields[name]) out[name] = this.fields[name];
+        }
+        return out;
+      }
+      // Unrestricted: everything not in the rail, chip, or hidden set,
+      // in blueprint order.
       return Object.fromEntries(
         Object.entries(this.fields).filter(
           ([name]) =>
-            !RAIL_FIELDS.includes(name) && !CHIP_FIELDS.includes(name)
+            !RAIL_FIELDS.includes(name) &&
+            !CHIP_FIELDS.includes(name) &&
+            !HIDDEN_FIELDS.includes(name)
         )
       );
     },
     railFields() {
       if (!this.fields) return {};
+      const allow = RAIL_FIELDS_BY_FORMAT[this.currentFormat];
+      const filterHidden = (name) => !HIDDEN_FIELDS.includes(name);
+      if (allow) {
+        const out = {};
+        for (const name of allow) {
+          if (this.fields[name] && filterHidden(name)) {
+            out[name] = this.fields[name];
+          }
+        }
+        return out;
+      }
       return Object.fromEntries(
-        Object.entries(this.fields).filter(([name]) =>
-          RAIL_FIELDS.includes(name)
+        Object.entries(this.fields).filter(
+          ([name]) => RAIL_FIELDS.includes(name) && filterHidden(name)
         )
       );
     },

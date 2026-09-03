@@ -116,10 +116,8 @@
           </span>
           <k-mind-serp-preview
             :title="values.title"
-            :seo-title="values.seoTitle"
-            :seo-description="values.seoDescription"
-            :meta-title="values.metaTitle"
-            :meta-description="values.metaDescription"
+            :seo-title="values.seotitle"
+            :seo-description="values.seodescription"
             :slug="slug"
           />
         </div>
@@ -131,25 +129,19 @@
 <script>
 import { FORMAT_MAP } from "../formats.js";
 
-// Rail (settings sidebar). Uses Grace's site/blueprints field names
-// so we render whatever the blueprint defines without a mapping layer.
+// Kirby lowercases blueprint field keys, so every name in the lists
+// below is lowercase — `navText` in YAML becomes `navtext` here.
+//
+// Rail (settings sidebar). Uses Grace's site/blueprints field names.
 const RAIL_FIELDS = [
   "show_author",
-  "author",
   "case_study",
   "services",
   "tags",
   "date",
-  "seoTitle",
-  "seoDescription",
-  "seoKeywords",
-  // Also carry across our old-name fallbacks in case a blueprint we
-  // don't own still defines them.
-  "showByline",
-  "service",
-  "caseStudy",
-  "metaTitle",
-  "metaDescription",
+  "seotitle",
+  "seodescription",
+  "seokeywords",
 ];
 
 // Never rendered by k-form — presented as the topbar chip.
@@ -157,17 +149,20 @@ const CHIP_FIELDS = ["format"];
 
 // Never rendered anywhere. Kept out of both main and rail regardless
 // of format.
-//   robots / ogtype / ignoreCache — from tabs/seo.yml, not part of
+//   robots / ogtype / ignorecache — from tabs/seo.yml, not part of
 //     this authoring flow.
-//   navText — navigation label from tabs/seo.yml, not needed here.
+//   navtext — navigation label from tabs/seo.yml, not needed here.
 //   author — hidden because entries are auto-attributed to the signed
 //     -in contributor on create (see EntriesView.createEntry).
+//   blocksheadline — decorative section heading in the blueprint;
+//     nothing to author.
 const HIDDEN_FIELDS = [
   "robots",
   "ogtype",
-  "ignoreCache",
-  "navText",
+  "ignorecache",
+  "navtext",
   "author",
+  "blocksheadline",
 ];
 
 // Per-format field visibility. Kirby's `when:` can't express these
@@ -175,16 +170,20 @@ const HIDDEN_FIELDS = [
 // A value of `null` means "no restriction — show whatever the
 // blueprint defines". Restricted lists are matched against the
 // blueprint fields, so extras we don't know about get skipped.
+//
+// Spark / Thread / What if use `body` (a simple writer field), so
+// authoring feels like plain form boxes. Long read uses `blocks` for
+// the embedded WYSIWYG block editor.
 const MAIN_FIELDS_BY_FORMAT = {
-  spark:    ["image", "blocks"],
-  thread:   ["title", "image", "blocks"],
-  whatif:   null,
-  longread: null,
+  spark:    ["image", "body"],
+  thread:   ["title", "image", "body"],
+  whatif:   ["title", "image", "body"],
+  longread: ["title", "image", "blocks"],
 };
 const RAIL_FIELDS_BY_FORMAT = {
-  spark:    ["tags", "seoTitle", "seoDescription"],
-  thread:   ["tags", "seoTitle", "seoDescription"],
-  whatif:   null,
+  spark:    ["tags", "seotitle", "seodescription"],
+  thread:   ["tags", "seotitle", "seodescription"],
+  whatif:   ["tags", "case_study", "services", "seotitle", "seodescription"],
   longread: null,
 };
 
@@ -285,12 +284,7 @@ export default {
       );
     },
     hasSeoFields() {
-      return (
-        this.railFields.seoTitle ||
-        this.railFields.seoDescription ||
-        this.railFields.metaTitle ||
-        this.railFields.metaDescription
-      );
+      return this.railFields.seotitle || this.railFields.seodescription;
     },
     saveStateClass() {
       if (this.isSaving) return "is-saving";

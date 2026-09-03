@@ -333,7 +333,28 @@ export default {
       if (label && field.label !== label) patch.label = label;
       if (field.when) patch.when = null;
       if (name === "body" && field.type === "writer") {
-        patch.toolbar = { inline: false };
+        // Render the body as a textarea instead of a writer so
+        // contributors get the same permanent toolbar (with an image
+        // button) they see on the Excerpt field. Kirby's writer field
+        // has no native image node; textarea buttons include `file`
+        // which inserts a KirbyText image tag from the file picker.
+        // Content saved by both types is KirbyText-compatible, so the
+        // frontend renders it either way.
+        patch.type = "textarea";
+        patch.size = "large";
+        patch.font = "sans";
+        patch.buttons = [
+          "headlines",
+          "|",
+          "bold",
+          "italic",
+          "link",
+          "|",
+          "ul",
+          "ol",
+          "|",
+          "file",
+        ];
       }
       return Object.keys(patch).length ? { ...field, ...patch } : field;
     },

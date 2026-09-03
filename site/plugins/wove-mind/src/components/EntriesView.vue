@@ -247,6 +247,9 @@ export default {
       try {
         // Kirby Panel API encodes ids by swapping "/" for "+".
         const parentId = this.parent.replace(/\//g, "+");
+        // Auto-attribute the entry to the signed-in contributor so the
+        // Author field in the blueprint doesn't need to be edited.
+        const authorId = this.$panel?.user?.id;
         const response = await this.$api.post(
           `pages/${parentId}/children`,
           {
@@ -255,6 +258,7 @@ export default {
             content: {
               title: format === "spark" ? "Spark" : "Untitled",
               format: format,
+              ...(authorId ? { author: [authorId] } : {}),
             },
           }
         );

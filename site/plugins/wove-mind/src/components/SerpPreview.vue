@@ -11,13 +11,17 @@
 export default {
   props: {
     title: { type: String, default: "" },
-    metaTitle: { type: String, default: "" },
-    description: { type: String, default: "" },
+    seoTitle: { type: String, default: "" },
+    seoDescription: { type: String, default: "" },
     slug: { type: String, default: "" },
+    // Old-name fallbacks in case the blueprint uses camelCase.
+    metaTitle: { type: String, default: "" },
+    metaDescription: { type: String, default: "" },
   },
   computed: {
     displayTitle() {
       return (
+        (this.seoTitle || "").trim() ||
         (this.metaTitle || "").trim() ||
         (this.title || "").trim() ||
         "Untitled entry"
@@ -28,7 +32,9 @@ export default {
       return `wove.group/wove-mind/${s}`;
     },
     displayDesc() {
-      const d = (this.description || "").trim();
+      const d =
+        (this.seoDescription || "").trim() ||
+        (this.metaDescription || "").trim();
       if (d) return d;
       return "Add a meta description to preview how this post appears in search results.";
     },

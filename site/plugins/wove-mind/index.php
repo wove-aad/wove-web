@@ -119,6 +119,7 @@ App::plugin('wove/mind', [
 									'lock'        => $standardProps['lock']        ?? null,
 									'permissions' => $standardProps['permissions'] ?? null,
 									'versions'    => $standardProps['versions']    ?? null,
+									'previewUrl'  => $page->previewUrl(),
 
 									'entryId'        => $page->id(),
 									'isNew'          => empty(trim((string) $page->content()->get('excerpt')->value())) &&

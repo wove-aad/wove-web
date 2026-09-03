@@ -8,9 +8,15 @@ use Kirby\Form\Form;
  * Wove Mind — custom Panel plugin for authoring team posts.
  *
  * Registers:
- *   - a "mind" Panel area with a list view and an entry editor view
- *   - blueprint bindings for the mind_entry template
+ *   - a "wove-mind" Panel area with a list view and an entry editor view
+ *     living at /panel/wove-mind
  *   - user role blueprints (admin, contributor)
+ *
+ * Deliberately does NOT ship page blueprints — those live in
+ * site/blueprints/pages/wove-mind{,-entry}.yml and are the single
+ * source of truth for the Wove Mind content model, shared with the
+ * frontend templates. This plugin adapts to whatever fields those
+ * blueprints define.
  *
  * Contributor users are redirected here on login via the "home" option
  * in their role blueprint.
@@ -19,20 +25,20 @@ use Kirby\Form\Form;
 App::plugin('wove/mind', [
 
 	'areas' => [
-		'mind' => function ($kirby) {
+		'wove-mind' => function ($kirby) {
 			return [
 				'label'  => 'Wove Mind',
 				'icon'   => 'edit',
 				'menu'   => true,
-				'link'   => 'mind',
+				'link'   => 'wove-mind',
 				'search' => null,
 				'views'  => [
 
 					// Entries list
 					[
-						'pattern' => 'mind',
+						'pattern' => 'wove-mind',
 						'action'  => function () use ($kirby) {
-							$parent = $kirby->page('mind');
+							$parent = $kirby->page('wove-mind');
 
 							if ($parent === null) {
 								return [
@@ -40,7 +46,8 @@ App::plugin('wove/mind', [
 									'title'     => 'Wove Mind',
 									'props'     => [
 										'entries' => [],
-										'parent'  => 'mind',
+										'parent'  => 'wove-mind',
+										'error'   => 'The Wove Mind page does not exist on this site yet. Create /wove-mind in the Panel first.',
 									],
 								];
 							}
@@ -52,22 +59,18 @@ App::plugin('wove/mind', [
 								'component' => 'k-mind-entries-view',
 								'title'     => 'Wove Mind',
 								'props'     => [
-									'parent'  => 'mind',
+									'parent'  => 'wove-mind',
 									'entries' => $entries->values(fn ($entry) => wove_mind_entry_summary($entry, $user)),
 								],
 							];
 						},
 					],
 
-					// New entry — the format is chosen client-side, then a POST creates the page.
-					// We land people directly on the editor by way of the list view's chooser,
-					// so no distinct new-view route is needed.
-
 					// Entry editor
 					[
-						'pattern' => 'mind/entry/(:any)',
+						'pattern' => 'wove-mind/entry/(:any)',
 						'action'  => function ($id) use ($kirby) {
-							$page = $kirby->page('mind/' . $id);
+							$page = $kirby->page('wove-mind/' . $id);
 
 							if ($page === null) {
 								return [
@@ -83,8 +86,6 @@ App::plugin('wove/mind', [
 							// ->toArray() runs its own type-specific props() method, so
 							// specialised fields (blocks, files, tags, structure) return
 							// fully-resolved specs (blocks fieldsets, tag options, etc.).
-							// Raw $page->blueprint()->fields() leaves them as skeletons
-							// and the blocks field then crashes on `fieldset.wysiwyg`.
 							$form    = Form::for($page);
 							$content = $form->values();
 
@@ -120,7 +121,8 @@ App::plugin('wove/mind', [
 									'versions'    => $standardProps['versions']    ?? null,
 
 									'entryId'        => $page->id(),
-									'isNew'          => empty(trim($page->content()->body()->value() ?? '')),
+									'isNew'          => empty(trim((string) $page->content()->get('excerpt')->value())) &&
+									                    empty(trim((string) $page->content()->get('blocks')->value())),
 									'initialContent' => $content,
 									'fields'         => $fieldsWithEndpoints,
 									'status'         => $page->status(),
@@ -134,32 +136,41 @@ App::plugin('wove/mind', [
 	],
 
 	'blueprints' => [
-		'pages/mind'       => __DIR__ . '/blueprints/pages/mind.yml',
-		'pages/mind_entry' => __DIR__ . '/blueprints/pages/mind_entry.yml',
-		'users/admin'      => __DIR__ . '/blueprints/users/admin.yml',
-		'users/contributor'=> __DIR__ . '/blueprints/users/contributor.yml',
+		'users/admin'       => __DIR__ . '/blueprints/users/admin.yml',
+		'users/contributor' => __DIR__ . '/blueprints/users/contributor.yml',
 	],
 
 ]);
 
 /**
  * Build a compact summary of an entry for the list view.
+ *
+ * Reads Grace's wove-mind-entry field names (excerpt, blocks) rather
+ * than the plugin's original body field.
  */
 function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): array
 {
-	$format = $entry->content()->get('format')->value() ?: 'thread';
-	$body   = trim(strip_tags((string) $entry->content()->get('body')->value()));
-	$words  = $body === '' ? 0 : count(preg_split('/\s+/u', $body));
+	$content = $entry->content();
+	$format  = $content->get('format')->value() ?: 'thread';
+
+	// Prefer the intentional excerpt if present, otherwise fall back to
+	// stripped blocks content, so the list card has something to show.
+	$excerpt = trim((string) $content->get('excerpt')->value());
+	if ($excerpt === '') {
+		$blocks  = trim(strip_tags((string) $content->get('blocks')->value()));
+		$excerpt = $blocks;
+	}
+	$words = $excerpt === '' ? 0 : count(preg_split('/\s+/u', $excerpt));
 
 	$user   = $entry->createdBy() ?? $entry->authors()->toUsers()->first();
 	$author = $user ? ($user->name()->value() ?? $user->email()) : 'Anonymous';
 
-	$tags = $entry->content()->get('tags')->split(',');
+	$tags = $content->get('tags')->split(',');
 
 	return [
 		'id'        => $entry->uri(),
 		'title'     => $entry->title()->value(),
-		'excerpt'   => mb_substr($body, 0, 160),
+		'excerpt'   => mb_substr($excerpt, 0, 160),
 		'format'    => $format,
 		'status'    => $entry->status(),
 		'author'    => $author,
@@ -167,7 +178,7 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 		'mine'      => $viewer && $user && $viewer->id() === $user->id(),
 		'wordCount' => $words > 0 ? $words : null,
 		'dateLabel' => wove_mind_date_label($entry->modified()),
-		'editUrl'   => 'mind/entry/' . $entry->slug(),
+		'editUrl'   => 'wove-mind/entry/' . $entry->slug(),
 	];
 }
 

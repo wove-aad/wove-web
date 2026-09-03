@@ -119,9 +119,18 @@
 <script>
 import { FORMAT_MAP } from "../formats.js";
 
-// Fields shown in the rail (rest go in the main compose column).
+// Rail (settings sidebar). Uses Grace's site/blueprints field names
+// so we render whatever the blueprint defines without a mapping layer.
 const RAIL_FIELDS = [
+  "image",
+  "show_author",
+  "author",
+  "case_study",
+  "services",
   "tags",
+  "date",
+  // Also carry across our old-name fallbacks in case a blueprint we
+  // don't own still defines them.
   "showByline",
   "service",
   "caseStudy",
@@ -131,15 +140,6 @@ const RAIL_FIELDS = [
 
 // Never rendered by k-form — presented as the topbar chip.
 const CHIP_FIELDS = ["format"];
-
-// Which compose-column fields each format uses (in render order).
-// The Vue shell owns this — Kirby's `when:` doesn't handle arrays.
-const MAIN_FIELDS_BY_FORMAT = {
-  spark:    ["body", "cover"],
-  thread:   ["cover", "title", "body"],
-  whatif:   ["cover", "title", "premise", "tension", "question"],
-  longread: ["cover", "title", "deck", "content"],
-};
 
 const AUTOSAVE_DELAY_MS = 1500;
 
@@ -189,13 +189,15 @@ export default {
     },
     mainFields() {
       if (!this.fields) return {};
-      const wanted = MAIN_FIELDS_BY_FORMAT[this.currentFormat] || [];
-      // Preserve the requested order; skip any missing from the blueprint.
-      const out = {};
-      for (const name of wanted) {
-        if (this.fields[name]) out[name] = this.fields[name];
-      }
-      return out;
+      // Everything that isn't in the rail or the topbar chip goes in
+      // the main compose column, in blueprint order. Grace's blueprint
+      // controls structure; the shell reflects it rather than dictating.
+      return Object.fromEntries(
+        Object.entries(this.fields).filter(
+          ([name]) =>
+            !RAIL_FIELDS.includes(name) && !CHIP_FIELDS.includes(name)
+        )
+      );
     },
     railFields() {
       if (!this.fields) return {};
@@ -306,7 +308,7 @@ export default {
       }
     },
     backToList() {
-      const proceed = () => this.$go("mind");
+      const proceed = () => this.$go("wove-mind");
       if (!this.dirty) return proceed();
       // Flush pending autosave then leave.
       this.save({ silent: true }).finally(proceed);
@@ -323,7 +325,7 @@ export default {
         await this.$api.delete(`pages/${this.apiId}`);
         this.$panel.notification.success("Entry deleted");
         this.deleteOpen = false;
-        this.$go("mind");
+        this.$go("wove-mind");
       } catch (error) {
         this.isDeleting = false;
         this.$panel.notification.error(

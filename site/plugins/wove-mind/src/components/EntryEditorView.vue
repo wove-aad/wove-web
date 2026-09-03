@@ -324,11 +324,17 @@ export default {
     //     fields whose `when` clause doesn't match the current values
     //     (e.g. `excerpt` gated to project-highlight in the blueprint
     //     wouldn't render for whatif/longread).
+    //   - the `body` writer field gets a permanent top toolbar
+    //     (writer's default is `toolbar: {inline: true}`, which
+    //     floats on selection — Grace wants it always visible).
     decorate(name, field) {
       const label = LABEL_OVERRIDES[name];
       const patch = {};
       if (label && field.label !== label) patch.label = label;
       if (field.when) patch.when = null;
+      if (name === "body" && field.type === "writer") {
+        patch.toolbar = { inline: false };
+      }
       return Object.keys(patch).length ? { ...field, ...patch } : field;
     },
     onInput(values) {

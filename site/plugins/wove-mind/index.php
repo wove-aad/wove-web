@@ -70,8 +70,11 @@ App::plugin('wove/mind', [
 
 							if ($page === null) {
 								return [
-									'component' => 'k-not-found-view',
+									'component' => 'k-error-view',
 									'title'     => 'Entry not found',
+									'props'     => [
+										'error' => 'This Mind entry could not be found.',
+									],
 								];
 							}
 

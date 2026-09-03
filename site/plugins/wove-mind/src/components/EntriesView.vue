@@ -214,20 +214,25 @@ export default {
     },
     async createEntry(format) {
       try {
-        const response = await this.$api.post("pages", {
-          parent: this.parent,
-          template: "mind_entry",
-          slug: this.generateSlug(format),
-          content: {
-            title: format === "spark" ? "Spark" : "Untitled",
-            format: format,
-          },
-        });
-        this.$go(`mind/entry/${response.id}`);
+        const response = await this.$api.post(
+          `pages/${this.parent}/children`,
+          {
+            template: "mind_entry",
+            slug: this.generateSlug(format),
+            content: {
+              title: format === "spark" ? "Spark" : "Untitled",
+              format: format,
+            },
+          }
+        );
+        // Response.id is the full page id, e.g. "mind/spark-2026-09-03-abcd"
+        const slug = response.slug || response.id.split("/").pop();
+        this.$go(`mind/entry/${slug}`);
       } catch (error) {
-        this.$panel.notification.error({
-          message: "Couldn't create the entry: " + (error.message || "unknown error"),
-        });
+        this.$panel.notification.error(
+          "Couldn't create the entry: " +
+            (error.message || error.details || "unknown error")
+        );
       }
     },
     generateSlug(format) {

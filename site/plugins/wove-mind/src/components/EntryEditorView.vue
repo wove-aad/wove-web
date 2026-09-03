@@ -158,7 +158,7 @@ export default {
     async publish() {
       await this.save();
       try {
-        await this.$api.post(`pages/${this.entryId}/changeStatus`, {
+        await this.$api.post(`pages/${this.entryId}/status`, {
           status: "listed",
         });
         this.$panel.notification.success("Published");
@@ -171,7 +171,7 @@ export default {
     },
     async unpublish() {
       try {
-        await this.$api.post(`pages/${this.entryId}/changeStatus`, {
+        await this.$api.post(`pages/${this.entryId}/status`, {
           status: "draft",
         });
         this.$panel.notification.success("Moved back to draft");

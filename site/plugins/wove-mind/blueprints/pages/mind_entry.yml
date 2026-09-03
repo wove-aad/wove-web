@@ -120,8 +120,11 @@ fields:
 
   caseStudy:
     label: Relate to a case study
-    type: text
-    help: Slug of the case study (placeholder — will become a pages picker once case studies exist).
+    type: pages
+    max: 1
+    query: site.index.filterBy('intendedTemplate', 'in', ['case-study', 'case_study'])
+    empty: No case studies to pick from yet.
+    help: Also surfaces the post on that case study's page.
 
   metaTitle:
     label: Meta title

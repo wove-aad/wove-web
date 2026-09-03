@@ -2,7 +2,7 @@ title: Contributor
 description: Team members who write for Wove Mind.
 
 # On login, contributors go straight to the Wove Mind list view.
-home: /panel/mind
+home: /panel/wove-mind
 
 permissions:
   access:

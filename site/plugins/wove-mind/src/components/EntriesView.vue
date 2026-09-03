@@ -118,6 +118,9 @@
           </div>
         </template>
       </template>
+      <div v-else-if="error" class="wove-empty">
+        {{ error }}
+      </div>
       <div v-else class="wove-empty">
         Nothing here yet. Click "Write something" to get started.
       </div>
@@ -134,6 +137,7 @@ export default {
   props: {
     entries: { type: Array, default: () => [] },
     parent: { type: String, required: true },
+    error: { type: String, default: null },
   },
   data() {
     return {
@@ -246,7 +250,7 @@ export default {
         const response = await this.$api.post(
           `pages/${parentId}/children`,
           {
-            template: "mind_entry",
+            template: "wove-mind-entry",
             slug: this.generateSlug(format),
             content: {
               title: format === "spark" ? "Spark" : "Untitled",
@@ -254,9 +258,9 @@ export default {
             },
           }
         );
-        // Response.id is the full page id, e.g. "mind/spark-2026-09-03-abcd"
+        // Response.id is the full page id, e.g. "wove-mind/spark-2026-09-03-abcd"
         const slug = response.slug || response.id.split("/").pop();
-        this.$go(`mind/entry/${slug}`);
+        this.$go(`wove-mind/entry/${slug}`);
       } catch (error) {
         this.$panel.notification.error(
           "Couldn't create the entry: " +

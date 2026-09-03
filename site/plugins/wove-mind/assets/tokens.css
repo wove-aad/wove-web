@@ -1,28 +1,28 @@
 /*
  * Ballinger — the project typeface.
  * Files live at site/plugins/wove-mind/assets/fonts/ and are served
- * by Kirby's plugin asset route. Filenames match the shipped OTF
- * pack (Ballinger 1.901) exactly, capitalised — case matters on
- * Linux servers. Every weight + italic variant is declared so the
- * whole family is available; the plugin uses 300 / 400 / 500 / 700
- * / 800 today.
+ * by Kirby's plugin asset route at /media/plugins/wove/mind/fonts/.
+ * Absolute paths so Vite doesn't try to inline the OTF pack as
+ * base64 into the plugin bundle (~2MB CSS blow-up otherwise).
+ * Filenames match the shipped OTF pack (Ballinger 1.901) exactly,
+ * capitalised — case matters on Linux servers.
  */
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Thin.otf")         format("opentype"); font-weight: 100; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-ThinItalic.otf")   format("opentype"); font-weight: 100; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XLight.otf")       format("opentype"); font-weight: 200; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XLightItalic.otf") format("opentype"); font-weight: 200; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Light.otf")        format("opentype"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-LightItalic.otf")  format("opentype"); font-weight: 300; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Regular.otf")      format("opentype"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Italic.otf")       format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Medium.otf")       format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-MediumItalic.otf") format("opentype"); font-weight: 500; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Bold.otf")         format("opentype"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-BoldItalic.otf")   format("opentype"); font-weight: 700; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XBold.otf")        format("opentype"); font-weight: 800; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-XBoldItalic.otf")  format("opentype"); font-weight: 800; font-style: italic; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-Black.otf")        format("opentype"); font-weight: 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Ballinger"; src: url("./fonts/Ballinger-BlackItalic.otf")  format("opentype"); font-weight: 900; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Thin.otf")         format("opentype"); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-ThinItalic.otf")   format("opentype"); font-weight: 100; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-XLight.otf")       format("opentype"); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-XLightItalic.otf") format("opentype"); font-weight: 200; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Light.otf")        format("opentype"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-LightItalic.otf")  format("opentype"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Regular.otf")      format("opentype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Italic.otf")       format("opentype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Medium.otf")       format("opentype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-MediumItalic.otf") format("opentype"); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Bold.otf")         format("opentype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-BoldItalic.otf")   format("opentype"); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-XBold.otf")        format("opentype"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-XBoldItalic.otf")  format("opentype"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-Black.otf")        format("opentype"); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Ballinger"; src: url("/media/plugins/wove/mind/fonts/Ballinger-BlackItalic.otf")  format("opentype"); font-weight: 900; font-style: italic; font-display: swap; }
 
 /*
  * Wove design tokens — Panel-scoped mirror of wove-design-tokens.json v0.4.

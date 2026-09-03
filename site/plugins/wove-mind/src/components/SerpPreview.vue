@@ -25,7 +25,7 @@ export default {
     },
     displayUrl() {
       const s = (this.slug || "").trim() || "your-post";
-      return `wove.group/mind/${s}`;
+      return `wove.group/wove-mind/${s}`;
     },
     displayDesc() {
       const d = (this.description || "").trim();

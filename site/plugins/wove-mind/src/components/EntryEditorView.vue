@@ -11,8 +11,12 @@
             isNew ? "New entry" : "Edit"
           }}</span>
         </span>
+        <k-mind-format-chip
+          :value="currentFormat"
+          @input="onFormatChange"
+        />
       </div>
-      <div style="flex: 1; text-align: center">
+      <div class="wove-topbar__center">
         <span class="wove-save-status" :class="saveStateClass">
           <span class="wove-save-status__dot" />
           <span>{{ saveLabel }}</span>
@@ -21,9 +25,6 @@
       <div class="wove-topbar__right">
         <button class="wove-btn wove-btn--ghost" @click="backToList">
           Back
-        </button>
-        <button class="wove-btn" :disabled="isSaving" @click="save">
-          {{ isDraft ? "Save draft" : "Update" }}
         </button>
         <button
           v-if="isDraft"
@@ -54,7 +55,7 @@
           </div>
 
           <k-form
-            v-if="fields"
+            v-if="fields && Object.keys(mainFields).length"
             :fields="mainFields"
             :value="values"
             @input="onInput"
@@ -70,6 +71,18 @@
           :value="values"
           @input="onInput"
         />
+
+        <div v-if="hasSeoFields" class="wove-rail__preview">
+          <span class="wove-rail__label wove-rail__label--muted">
+            Search preview
+          </span>
+          <k-mind-serp-preview
+            :title="values.title"
+            :meta-title="values.metaTitle"
+            :description="values.metaDescription"
+            :slug="slug"
+          />
+        </div>
       </aside>
     </div>
   </k-panel-inside>
@@ -78,7 +91,20 @@
 <script>
 import { FORMAT_MAP } from "../formats.js";
 
-const RAIL_FIELDS = ["tags", "showByline", "service", "caseStudy", "metaTitle", "metaDescription"];
+// Fields shown in the rail (rest go in the main compose column).
+const RAIL_FIELDS = [
+  "tags",
+  "showByline",
+  "service",
+  "caseStudy",
+  "metaTitle",
+  "metaDescription",
+];
+
+// Never rendered by k-form — presented as the topbar chip.
+const CHIP_FIELDS = ["format"];
+
+const AUTOSAVE_DELAY_MS = 1500;
 
 export default {
   props: {
@@ -94,6 +120,7 @@ export default {
       isSaving: false,
       dirty: false,
       lastSavedAt: this.isNew ? null : new Date(),
+      autosaveTimer: null,
     };
   },
   computed: {
@@ -106,11 +133,16 @@ export default {
     isDraft() {
       return this.status === "draft";
     },
+    slug() {
+      // entryId is the full page id like "mind/spark-2026-09-03-abcd"
+      return this.entryId.split("/").pop();
+    },
     mainFields() {
       if (!this.fields) return {};
       return Object.fromEntries(
         Object.entries(this.fields).filter(
-          ([name]) => !RAIL_FIELDS.includes(name)
+          ([name]) =>
+            !RAIL_FIELDS.includes(name) && !CHIP_FIELDS.includes(name)
         )
       );
     },
@@ -122,6 +154,11 @@ export default {
         )
       );
     },
+    hasSeoFields() {
+      return (
+        this.railFields.metaTitle || this.railFields.metaDescription
+      );
+    },
     saveStateClass() {
       if (this.isSaving) return "is-saving";
       if (this.dirty) return "is-dirty";
@@ -130,33 +167,50 @@ export default {
     saveLabel() {
       if (this.isSaving) return "Saving…";
       if (this.dirty) return "Unsaved changes";
-      if (this.lastSavedAt) return "Saved just now";
+      if (this.lastSavedAt) return "Saved · autosaves as you type";
       return "Not saved yet";
     },
+  },
+  beforeDestroy() {
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
   },
   methods: {
     onInput(values) {
       this.values = values;
       this.dirty = true;
+      this.scheduleAutosave();
     },
-    async save() {
+    onFormatChange(newFormat) {
+      this.values = { ...this.values, format: newFormat };
+      this.dirty = true;
+      this.scheduleAutosave();
+    },
+    scheduleAutosave() {
+      if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+      this.autosaveTimer = setTimeout(() => {
+        if (this.dirty && !this.isSaving) {
+          this.save({ silent: true });
+        }
+      }, AUTOSAVE_DELAY_MS);
+    },
+    async save({ silent = false } = {}) {
       if (this.isSaving) return;
       this.isSaving = true;
       try {
         await this.$api.patch(`pages/${this.entryId}`, this.values);
         this.dirty = false;
         this.lastSavedAt = new Date();
-        this.$panel.notification.success("Saved");
+        if (!silent) this.$panel.notification.success("Saved");
       } catch (error) {
-        this.$panel.notification.error({
-          message: "Couldn't save: " + (error.message || "unknown error"),
-        });
+        this.$panel.notification.error(
+          "Couldn't save: " + (error.message || "unknown error")
+        );
       } finally {
         this.isSaving = false;
       }
     },
     async publish() {
-      await this.save();
+      await this.save({ silent: true });
       try {
         await this.$api.post(`pages/${this.entryId}/status`, {
           status: "listed",
@@ -164,9 +218,9 @@ export default {
         this.$panel.notification.success("Published");
         this.$emit("status-changed", "listed");
       } catch (error) {
-        this.$panel.notification.error({
-          message: "Couldn't publish: " + (error.message || "unknown error"),
-        });
+        this.$panel.notification.error(
+          "Couldn't publish: " + (error.message || "unknown error")
+        );
       }
     },
     async unpublish() {
@@ -177,16 +231,16 @@ export default {
         this.$panel.notification.success("Moved back to draft");
         this.$emit("status-changed", "draft");
       } catch (error) {
-        this.$panel.notification.error({
-          message: "Couldn't unpublish: " + (error.message || "unknown error"),
-        });
+        this.$panel.notification.error(
+          "Couldn't unpublish: " + (error.message || "unknown error")
+        );
       }
     },
     backToList() {
-      if (this.dirty) {
-        if (!confirm("You have unsaved changes. Leave anyway?")) return;
-      }
-      this.$go("mind");
+      const proceed = () => this.$go("mind");
+      if (!this.dirty) return proceed();
+      // Flush pending autosave then leave.
+      this.save({ silent: true }).finally(proceed);
     },
   },
 };

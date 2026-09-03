@@ -50,6 +50,16 @@
             <span class="wove-fchip__count">{{ f.count }}</span>
           </button>
         </div>
+        <div class="wove-filters__spacer" />
+        <label class="wove-search">
+          <span class="wove-search__glyph" aria-hidden="true">⌕</span>
+          <input
+            v-model="searchTerm"
+            type="search"
+            placeholder="Search titles, tags, authors…"
+            aria-label="Search entries"
+          />
+        </label>
       </div>
 
       <template v-if="filteredEntries.length">
@@ -128,6 +138,7 @@ export default {
   data() {
     return {
       activeFilter: "all",
+      searchTerm: "",
     };
   },
   computed: {
@@ -175,13 +186,29 @@ export default {
     },
     filteredEntries() {
       const f = this.activeFilter;
-      if (f === "all") return this.entries;
-      if (f === "mine") return this.entries.filter((e) => e.mine);
-      if (f === "drafts")
-        return this.entries.filter((e) => e.status === "draft");
-      if (f.startsWith("type-"))
-        return this.entries.filter((e) => e.format === f.slice(5));
-      return this.entries;
+      let list = this.entries;
+      if (f === "mine") list = list.filter((e) => e.mine);
+      else if (f === "drafts")
+        list = list.filter((e) => e.status === "draft");
+      else if (f.startsWith("type-"))
+        list = list.filter((e) => e.format === f.slice(5));
+
+      const q = this.searchTerm.trim().toLowerCase();
+      if (q) {
+        list = list.filter((e) => {
+          const hay = [
+            e.title,
+            e.excerpt,
+            e.author,
+            (e.tags || []).join(" "),
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return hay.includes(q);
+        });
+      }
+      return list;
     },
     grouped() {
       return [

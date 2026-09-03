@@ -120,6 +120,8 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 	$user   = $entry->createdBy() ?? $entry->authors()->toUsers()->first();
 	$author = $user ? ($user->name()->value() ?? $user->email()) : 'Anonymous';
 
+	$tags = $entry->content()->get('tags')->split(',');
+
 	return [
 		'id'        => $entry->uri(),
 		'title'     => $entry->title()->value(),
@@ -127,6 +129,7 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 		'format'    => $format,
 		'status'    => $entry->status(),
 		'author'    => $author,
+		'tags'      => $tags,
 		'mine'      => $viewer && $user && $viewer->id() === $user->id(),
 		'wordCount' => $words > 0 ? $words : null,
 		'dateLabel' => wove_mind_date_label($entry->modified()),

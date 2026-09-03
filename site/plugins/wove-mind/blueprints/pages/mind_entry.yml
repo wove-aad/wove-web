@@ -14,14 +14,14 @@ status:
     label: Live
     text: Published to the site.
 
-# Fields the editor renders. The Vue shell:
-#   - hides `format` from k-form (it's the topbar chip instead)
-#   - lifts `cover` to the top of the compose column above the title
-#   - splits the remainder into main column vs. settings rail
-# See EntryEditorView.vue.
+# Fields are all defined here without `when:` conditions. The Vue
+# editor shell decides which fields render in the compose column
+# based on `values.format`, because Kirby's `when:` only supports
+# scalar matches (not arrays like [spark, thread, longread]).
+# See EntryEditorView.vue → mainFieldsForFormat().
 fields:
 
-  # ── Post type — hidden from k-form; presented as a topbar chip ─
+  # Type — driven by the topbar chip, never rendered via k-form.
   format:
     label: Format
     type: select
@@ -33,76 +33,56 @@ fields:
       whatif: What if
       longread: Long read
 
-  # ── Compose column — cover first (magazine style) ─────────────
+  # Compose column — cover first (magazine style), then title/deck/body.
   cover:
     label: Cover image
     type: files
     layout: cards
     max: 1
     query: page.images
-    uploads: cover
-    when:
-      format: [thread, whatif, longread]
+    uploads: true
     help: Shown in the feed and at the top of the post.
 
   title:
     label: Title
     type: text
-    required: true
-    when:
-      format: [thread, whatif, longread]
+    required: false
 
   deck:
     label: Deck
     type: text
-    when:
-      format: longread
     help: One sentence that draws the reader in.
 
-  # ── Body variants ────────────────────────────────────────────
-  # Spark / Thread / Long read: single writer field.
+  # Spark / Thread / Long read use `body`.
   body:
     label: Body
     type: writer
     marks: [bold, italic, link, code]
     nodes: [heading, bulletList, orderedList, quote]
-    when:
-      format: [spark, thread, longread]
 
-  # What if: three scaffolded fields that teach the format.
+  # What if uses three scaffolded writer fields instead of `body`.
   premise:
     label: The premise
     type: writer
     marks: [bold, italic, link]
-    when:
-      format: whatif
     help: What's the starting assumption you want to poke at?
 
   tension:
     label: The tension
     type: writer
     marks: [bold, italic, link]
-    when:
-      format: whatif
     help: Where does that assumption start to break down?
 
   question:
     label: The question
     type: writer
     marks: [bold, italic, link]
-    when:
-      format: whatif
     help: What do you want the reader chewing on?
 
-  # ── Settings rail ─────────────────────────────────────────────
+  # Settings rail.
   tags:
     label: Tags
     type: tags
-    accept: options
-    separator: ","
-    options:
-      type: query
-      query: site.find('mind').children.pluck('tags', ',', true)
 
   showByline:
     label: Show byline

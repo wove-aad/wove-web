@@ -69,6 +69,7 @@
           v-if="fields"
           :fields="railFields"
           :value="values"
+          :endpoints="endpoints"
           @input="onInput"
         />
 
@@ -104,6 +105,15 @@ const RAIL_FIELDS = [
 // Never rendered by k-form — presented as the topbar chip.
 const CHIP_FIELDS = ["format"];
 
+// Which compose-column fields each format uses (in render order).
+// The Vue shell owns this — Kirby's `when:` doesn't handle arrays.
+const MAIN_FIELDS_BY_FORMAT = {
+  spark:    ["body"],
+  thread:   ["cover", "title", "body"],
+  whatif:   ["cover", "title", "premise", "tension", "question"],
+  longread: ["cover", "title", "deck", "body"],
+};
+
 const AUTOSAVE_DELAY_MS = 1500;
 
 export default {
@@ -124,6 +134,10 @@ export default {
     };
   },
   computed: {
+    // Kirby Panel API encodes page ids by swapping "/" for "+".
+    apiId() {
+      return this.entryId.replace(/\//g, "+");
+    },
     currentFormat() {
       return this.values.format || "whatif";
     },
@@ -139,12 +153,13 @@ export default {
     },
     mainFields() {
       if (!this.fields) return {};
-      return Object.fromEntries(
-        Object.entries(this.fields).filter(
-          ([name]) =>
-            !RAIL_FIELDS.includes(name) && !CHIP_FIELDS.includes(name)
-        )
-      );
+      const wanted = MAIN_FIELDS_BY_FORMAT[this.currentFormat] || [];
+      // Preserve the requested order; skip any missing from the blueprint.
+      const out = {};
+      for (const name of wanted) {
+        if (this.fields[name]) out[name] = this.fields[name];
+      }
+      return out;
     },
     railFields() {
       if (!this.fields) return {};
@@ -176,7 +191,10 @@ export default {
   },
   methods: {
     onInput(values) {
-      this.values = values;
+      // Merge — k-form's emitted payload only carries fields it knows about,
+      // so we preserve `format` (topbar chip) and any other fields not
+      // currently rendered by this k-form instance.
+      this.values = { ...this.values, ...values };
       this.dirty = true;
       this.scheduleAutosave();
     },
@@ -197,22 +215,36 @@ export default {
       if (this.isSaving) return;
       this.isSaving = true;
       try {
-        await this.$api.patch(`pages/${this.entryId}`, this.values);
+        await this.$api.patch(`pages/${this.apiId}`, this.values);
         this.dirty = false;
         this.lastSavedAt = new Date();
         if (!silent) this.$panel.notification.success("Saved");
       } catch (error) {
+        console.error("[wove-mind] save failed:", error);
         this.$panel.notification.error(
-          "Couldn't save: " + (error.message || "unknown error")
+          "Couldn't save: " + this.errorText(error)
         );
       } finally {
         this.isSaving = false;
       }
     },
+    errorText(error) {
+      if (!error) return "unknown error";
+      if (typeof error === "string") return error;
+      const parts = [];
+      if (error.message) parts.push(error.message);
+      if (error.key) parts.push(`[${error.key}]`);
+      if (error.details) {
+        try {
+          parts.push(JSON.stringify(error.details));
+        } catch (_) {}
+      }
+      return parts.length ? parts.join(" ") : "unknown error";
+    },
     async publish() {
       await this.save({ silent: true });
       try {
-        await this.$api.post(`pages/${this.entryId}/status`, {
+        await this.$api.post(`pages/${this.apiId}/status`, {
           status: "listed",
         });
         this.$panel.notification.success("Published");
@@ -225,7 +257,7 @@ export default {
     },
     async unpublish() {
       try {
-        await this.$api.post(`pages/${this.entryId}/status`, {
+        await this.$api.post(`pages/${this.apiId}/status`, {
           status: "draft",
         });
         this.$panel.notification.success("Moved back to draft");

@@ -81,6 +81,20 @@ App::plugin('wove/mind', [
 							$blueprintFields = $page->blueprint()->fields();
 							$content         = $page->content()->toArray();
 
+							// k-fieldset spreads each field spec as props on the field
+							// component, so file/section endpoints must live INSIDE each
+							// field definition (Kirby's built-in k-page-view does the same).
+							$apiId = str_replace('/', '+', $page->id());
+							$fieldsWithEndpoints = [];
+							foreach ($blueprintFields as $name => $field) {
+								$field['endpoints'] = [
+									'model'   => 'pages/' . $apiId,
+									'field'   => 'pages/' . $apiId . '/fields/' . $name,
+									'section' => 'pages/' . $apiId . '/sections/' . $name,
+								];
+								$fieldsWithEndpoints[$name] = $field;
+							}
+
 							return [
 								'component' => 'k-mind-editor-view',
 								'title'     => $page->title()->value() ?: 'New entry',
@@ -88,7 +102,7 @@ App::plugin('wove/mind', [
 									'entryId'        => $page->id(),
 									'isNew'          => empty(trim($page->content()->body()->value() ?? '')),
 									'initialContent' => $content,
-									'fields'         => $blueprintFields,
+									'fields'         => $fieldsWithEndpoints,
 									'status'         => $page->status(),
 								],
 							];

@@ -241,8 +241,10 @@ export default {
     },
     async createEntry(format) {
       try {
+        // Kirby Panel API encodes ids by swapping "/" for "+".
+        const parentId = this.parent.replace(/\//g, "+");
         const response = await this.$api.post(
-          `pages/${this.parent}/children`,
+          `pages/${parentId}/children`,
           {
             template: "mind_entry",
             slug: this.generateSlug(format),

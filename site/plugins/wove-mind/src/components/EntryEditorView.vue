@@ -26,6 +26,16 @@
         <button class="wove-btn wove-btn--ghost" @click="backToList">
           Back
         </button>
+        <a
+          v-if="previewUrl"
+          class="wove-btn wove-btn--ghost"
+          :href="previewUrl"
+          target="_blank"
+          rel="noopener"
+          :title="isDraft ? 'Preview draft on the site' : 'View live on the site'"
+        >
+          View
+        </a>
         <button
           class="wove-btn wove-btn--danger"
           :disabled="isSaving || isDeleting"
@@ -106,8 +116,10 @@
           </span>
           <k-mind-serp-preview
             :title="values.title"
+            :seo-title="values.seoTitle"
+            :seo-description="values.seoDescription"
             :meta-title="values.metaTitle"
-            :description="values.metaDescription"
+            :meta-description="values.metaDescription"
             :slug="slug"
           />
         </div>
@@ -122,13 +134,15 @@ import { FORMAT_MAP } from "../formats.js";
 // Rail (settings sidebar). Uses Grace's site/blueprints field names
 // so we render whatever the blueprint defines without a mapping layer.
 const RAIL_FIELDS = [
-  "image",
   "show_author",
   "author",
   "case_study",
   "services",
   "tags",
   "date",
+  "seoTitle",
+  "seoDescription",
+  "seoKeywords",
   // Also carry across our old-name fallbacks in case a blueprint we
   // don't own still defines them.
   "showByline",
@@ -142,10 +156,19 @@ const RAIL_FIELDS = [
 const CHIP_FIELDS = ["format"];
 
 // Never rendered anywhere. Kept out of both main and rail regardless
-// of format. Robots meta tags, open-graph type, and the ignore-cache
-// toggle come from the shared SEO tab (site/blueprints/tabs/seo.yml)
-// and aren't part of this authoring flow.
-const HIDDEN_FIELDS = ["robots", "ogtype", "ignoreCache"];
+// of format.
+//   robots / ogtype / ignoreCache — from tabs/seo.yml, not part of
+//     this authoring flow.
+//   navText — navigation label from tabs/seo.yml, not needed here.
+//   author — hidden because entries are auto-attributed to the signed
+//     -in contributor on create (see EntriesView.createEntry).
+const HIDDEN_FIELDS = [
+  "robots",
+  "ogtype",
+  "ignoreCache",
+  "navText",
+  "author",
+];
 
 // Per-format field visibility. Kirby's `when:` can't express these
 // (single-value scalar match only), so the Panel view enforces it.
@@ -153,14 +176,14 @@ const HIDDEN_FIELDS = ["robots", "ogtype", "ignoreCache"];
 // blueprint defines". Restricted lists are matched against the
 // blueprint fields, so extras we don't know about get skipped.
 const MAIN_FIELDS_BY_FORMAT = {
-  spark:    ["blocks"],
-  thread:   ["title", "blocks"],
+  spark:    ["image", "blocks"],
+  thread:   ["title", "image", "blocks"],
   whatif:   null,
   longread: null,
 };
 const RAIL_FIELDS_BY_FORMAT = {
-  spark:    ["image", "tags"],
-  thread:   ["image", "tags"],
+  spark:    ["tags", "seoTitle", "seoDescription"],
+  thread:   ["tags", "seoTitle", "seoDescription"],
   whatif:   null,
   longread: null,
 };
@@ -181,6 +204,7 @@ export default {
     lock: { type: [Object, null], default: null },
     permissions: { type: [Object, null], default: null },
     versions: { type: [Object, null], default: null },
+    previewUrl: { type: String, default: null },
   },
   data() {
     return {
@@ -224,15 +248,22 @@ export default {
         return out;
       }
       // Unrestricted: everything not in the rail, chip, or hidden set,
-      // in blueprint order.
-      return Object.fromEntries(
-        Object.entries(this.fields).filter(
-          ([name]) =>
-            !RAIL_FIELDS.includes(name) &&
-            !CHIP_FIELDS.includes(name) &&
-            !HIDDEN_FIELDS.includes(name)
-        )
+      // in blueprint order. `image` gets spliced in after `title`
+      // (magazine-style cover under the title) since the blueprint
+      // itself puts image in a sidebar section.
+      const entries = Object.entries(this.fields).filter(
+        ([name]) =>
+          !RAIL_FIELDS.includes(name) &&
+          !CHIP_FIELDS.includes(name) &&
+          !HIDDEN_FIELDS.includes(name) &&
+          name !== "image"
       );
+      if (this.fields.image) {
+        const titleIdx = entries.findIndex(([n]) => n === "title");
+        const insertAt = titleIdx >= 0 ? titleIdx + 1 : 0;
+        entries.splice(insertAt, 0, ["image", this.fields.image]);
+      }
+      return Object.fromEntries(entries);
     },
     railFields() {
       if (!this.fields) return {};
@@ -255,7 +286,10 @@ export default {
     },
     hasSeoFields() {
       return (
-        this.railFields.metaTitle || this.railFields.metaDescription
+        this.railFields.seoTitle ||
+        this.railFields.seoDescription ||
+        this.railFields.metaTitle ||
+        this.railFields.metaDescription
       );
     },
     saveStateClass() {

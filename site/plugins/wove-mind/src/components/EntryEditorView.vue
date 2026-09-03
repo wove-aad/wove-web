@@ -334,13 +334,16 @@ export default {
       if (field.when) patch.when = null;
       if (name === "body" && field.type === "writer") {
         // Force the writer toolbar to be permanent at the top rather
-        // than the default floating-on-selection behaviour. Kirby's
-        // writer has no native image node — for inline images, either
-        // paste the KirbyText `(image: filename.jpg)` tag after
-        // uploading via the site's regular file dialog, or use the
-        // Featured image field at the top. A proper inline-image
-        // writer node is a Phase 3 job.
+        // than the default floating-on-selection behaviour, and make
+        // sure the custom `image` writer node (registered in
+        // src/index.js) is in the field's active node list so its
+        // toolbar button appears.
         patch.toolbar = { inline: false };
+        const nodes = Array.isArray(field.nodes)
+          ? [...field.nodes]
+          : ["heading", "bulletList", "orderedList", "quote"];
+        if (!nodes.includes("image")) nodes.push("image");
+        patch.nodes = nodes;
       }
       return Object.keys(patch).length ? { ...field, ...patch } : field;
     },

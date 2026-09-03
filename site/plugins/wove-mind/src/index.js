@@ -6,6 +6,7 @@ import EntryEditorView from "./components/EntryEditorView.vue";
 import FormatChooser from "./components/FormatChooser.vue";
 import FormatChip from "./components/FormatChip.vue";
 import SerpPreview from "./components/SerpPreview.vue";
+import imageWriterNode from "./writerNodes/image.js";
 
 panel.plugin("wove/mind", {
   components: {
@@ -14,5 +15,8 @@ panel.plugin("wove/mind", {
     "k-mind-format-chooser": FormatChooser,
     "k-mind-format-chip": FormatChip,
     "k-mind-serp-preview": SerpPreview,
+  },
+  writerNodes: {
+    image: imageWriterNode,
   },
 });

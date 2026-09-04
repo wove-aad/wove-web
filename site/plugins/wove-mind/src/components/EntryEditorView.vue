@@ -123,6 +123,10 @@
         </div>
       </aside>
     </div>
+
+    <!-- Mounted once. Referenced globally so the writer-node image
+         command can open() it and await a payload. -->
+    <k-mind-image-picker ref="imagePicker" />
   </k-panel-inside>
 </template>
 
@@ -310,8 +314,18 @@ export default {
       return "Not saved yet";
     },
   },
+  mounted() {
+    // Expose the image picker to the custom writer image node, which
+    // needs an async open()→Promise handshake but doesn't otherwise
+    // have a way to reach a mounted Vue component. Cleared on
+    // destroy so we don't leak across view transitions.
+    window.__woveMindImagePicker = this.$refs.imagePicker;
+  },
   beforeDestroy() {
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+    if (window.__woveMindImagePicker === this.$refs.imagePicker) {
+      window.__woveMindImagePicker = null;
+    }
   },
   methods: {
     // Apply any per-field Panel-side tweaks without mutating the

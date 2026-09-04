@@ -106,12 +106,17 @@ export default {
       }
 
       picker.open(api).then((payload) => {
-        if (!payload || !editor) return;
-        const { state, dispatch } = editor;
+        if (!payload || !editor?.view) return;
+        // Kirby's writer editor uses prosemirror's EditorView under
+        // the hood — dispatch lives on `editor.view.dispatch`, not
+        // `editor.dispatch`.
+        const { state } = editor;
         const nodeType = state.schema.nodes.image;
         if (!nodeType) return;
         const node = nodeType.create(payload);
-        dispatch(state.tr.replaceSelectionWith(node).scrollIntoView());
+        editor.view.dispatch(
+          state.tr.replaceSelectionWith(node).scrollIntoView()
+        );
       });
 
       return true;

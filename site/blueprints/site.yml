@@ -29,10 +29,11 @@ tabs:
             # headline: Draft pages
             type: pages
             status: draft
-            create: 
+            create:
               - default
               - wove-mind
               - work
+              - artefact-1
             #   # - media-gallery
             #   - contact
             #   - employer faq

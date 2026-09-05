@@ -17,9 +17,20 @@ foreach ($children as $entry) {
     $format = (string) $entry->format();
     if ($format === '') { continue; }
 
-    // Cover image (files field, max 1)
-    $cover = $entry->cover()->toFile();
-    $imageUrl = $cover ? $cover->resize(1200)->url() : null;
+    // Featured image (files field, max 1). Must go via content()->get('image')
+    // because $entry->image() hits Kirby's built-in HasFiles::image() (first
+    // uploaded file on the page), not the content field. Falls back to a
+    // legacy `cover` field name for older entries.
+    $file = $entry->content()->get('image')->toFile()
+        ?? $entry->content()->get('cover')->toFile();
+    $imageUrl = null;
+    if ($file) {
+        try {
+            $imageUrl = $file->resize(1200)->url();
+        } catch (\Throwable $e) {
+            $imageUrl = $file->url();
+        }
+    }
 
     // Excerpt: prefer Deck, else strip Body to first ~180 chars.
     $deck = trim((string) $entry->deck());

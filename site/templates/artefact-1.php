@@ -126,8 +126,36 @@ $allServices = array_keys($allServices); sort($allServices);
 <title><?= $page->title()->html() ?> — Wove</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
+  /* Ballinger — real weights on disk are 400 / 700 / 800 (+ italic 400).
+     Any other weight resolves to the nearest registered one via CSS
+     font-matching, keeping text in Ballinger rather than falling back. */
+  @font-face {
+    font-family: 'Ballinger';
+    src: url('<?= url('assets/fonts/Ballinger-Regular.woff2') ?>') format('woff2'),
+         url('<?= url('assets/fonts/Ballinger-Regular.woff') ?>') format('woff');
+    font-weight: 400; font-style: normal; font-display: optional;
+  }
+  @font-face {
+    font-family: 'Ballinger';
+    src: url('<?= url('assets/fonts/Ballinger-Italic.woff2') ?>') format('woff2'),
+         url('<?= url('assets/fonts/Ballinger-Italic.woff') ?>') format('woff');
+    font-weight: 400; font-style: italic; font-display: optional;
+  }
+  @font-face {
+    font-family: 'Ballinger';
+    src: url('<?= url('assets/fonts/Ballinger-Bold.woff2') ?>') format('woff2'),
+         url('<?= url('assets/fonts/Ballinger-Bold.woff') ?>') format('woff');
+    font-weight: 700; font-style: normal; font-display: optional;
+  }
+  @font-face {
+    font-family: 'Ballinger';
+    src: url('<?= url('assets/fonts/Ballinger-XBold.woff2') ?>') format('woff2'),
+         url('<?= url('assets/fonts/Ballinger-XBold.woff') ?>') format('woff');
+    font-weight: 800; font-style: normal; font-display: optional;
+  }
+
   :root {
     --ground: #FFFFFF;
     --surface: #FFFFFF;
@@ -150,7 +178,7 @@ $allServices = array_keys($allServices); sort($allServices);
     --highlight:     #B45D0B; --highlight-tint:#FBEDD6; --highlight-ink: #6E3A08;
 
     --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --serif: 'Fraunces', Georgia, serif;
+    --display: 'Ballinger', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
     --radius: 8px;
     --radius-sm: 4px;
@@ -232,7 +260,7 @@ $allServices = array_keys($allServices); sort($allServices);
   main { max-width: 1200px; margin: 0 auto; padding: 40px 32px 96px; }
   .page-head { margin-bottom: 40px; }
   .page-head h1 {
-    font-family: var(--serif); font-weight: 500; font-size: 32px;
+    font-family: var(--display); font-weight: 400; font-size: 32px;
     letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 8px; text-wrap: balance;
   }
   .page-head p { color: var(--muted); max-width: 62ch; margin: 0; font-size: 14px; }
@@ -243,7 +271,7 @@ $allServices = array_keys($allServices); sort($allServices);
     padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--rule);
   }
   .eyebrow { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .block__title { font-family: var(--serif); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; margin: 4px 0 0; color: var(--ink); }
+  .block__title { font-family: var(--display); font-weight: 400; font-size: 20px; letter-spacing: -0.01em; margin: 4px 0 0; color: var(--ink); }
   .block__meta { color: var(--faint); font-size: 12px; }
 
   .carousel {
@@ -307,7 +335,7 @@ $allServices = array_keys($allServices); sort($allServices);
   .card--longread .swatch { background: var(--longread); }
   .card--highlight .swatch { background: var(--highlight); }
 
-  .card__title { font-family: var(--serif); font-weight: 500; font-size: 17px; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); margin: 0; text-wrap: balance; }
+  .card__title { font-family: var(--display); font-weight: 400; font-size: 17px; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); margin: 0; text-wrap: balance; }
   .card__excerpt {
     font-size: 13px; line-height: 1.5; color: var(--muted); margin: 0;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
@@ -334,7 +362,7 @@ $allServices = array_keys($allServices); sort($allServices);
   .card--spark-image .card__body { position: relative; color: #FDFCF7; background: transparent; padding: 16px; z-index: 1; justify-content: flex-end; }
   .card--spark-image .card__format { color: rgba(255,255,255,0.85); }
   .card--spark-image .card__format .swatch { background: rgba(255,255,255,0.9); }
-  .card--spark-image .card__quote { font-family: var(--serif); font-weight: 500; font-size: 17px; line-height: 1.3; letter-spacing: -0.005em; margin: 0; text-wrap: balance; color: #FDFCF7; }
+  .card--spark-image .card__quote { font-family: var(--display); font-weight: 400; font-size: 17px; line-height: 1.3; letter-spacing: -0.005em; margin: 0; text-wrap: balance; color: #FDFCF7; }
   .card--spark-image .card__byline { color: rgba(255,255,255,0.8); }
   .card--spark-image .card__byline .who { color: #fff; }
   .card--spark-image .card__byline .avatar { background: rgba(255,255,255,0.16); color: #fff; }
@@ -344,7 +372,7 @@ $allServices = array_keys($allServices); sort($allServices);
   .card--spark-block .card__format { color: var(--spark-ink); }
   .card--spark-block .card__body { padding: 20px; justify-content: space-between; gap: 16px; }
   .card--spark-block .card__quote {
-    font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1.22;
+    font-family: var(--display); font-weight: 400; font-size: 22px; line-height: 1.22;
     letter-spacing: -0.015em; margin: 0; color: var(--spark-ink); text-wrap: balance;
   }
   .card--spark-block .card__byline { color: color-mix(in oklab, var(--spark-ink) 65%, transparent); }

@@ -2,6 +2,9 @@
 /**
  * Case Study — single page template
  * File: site/templates/case-study.php
+ *
+ * Blueprint: site/blueprints/pages/case-study.yml
+ * Layout: breadcrumb, hero, image, stats, testimonial, body, related, team, footer
  */
 
 $tagStructure = $site->tags()->toStructure();
@@ -15,32 +18,7 @@ $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digi
 $serviceSlugs  = array_filter($page->services()->split(','));
 $serviceTags   = array_map(fn ($slug) => $serviceLabels[$slug] ?? ucfirst($slug), $serviceSlugs);
 
-$team       = $page->team()->toStructure();
-$allBlocks  = $page->blocks()->toBlocks();
-$narrativeBlocks = [];
-$galleryBlocks    = [];
-foreach ($allBlocks as $block) {
-  if ($block->type() === 'gallery') {
-    $galleryBlocks[] = $block;
-  } else {
-    $narrativeBlocks[] = $block;
-  }
-}
-$stats  = $page->stats()->toStructure();
-$contact = $page->contact()->toStructure()->first();
-
-$prev = $page->prevListed();
-$next = $page->nextListed();
-
-// WoveMind entries that link back to this case study via their `case_study` field.
-$relatedEntries = $site->find('wove-mind')->children()->listed()
-  ->filter(fn ($p) => $p->case_study()->toPages()->findBy('id', $page->id()) !== null);
-
-// Testimonial
-$testimonial = $page->testimonial()->toStructure()->first();
-
-// Sectors for this case study
-$sectorSlugs = array_filter($page->sectors()->split(','));
+$sectorSlugs  = array_filter($page->sectors()->split(','));
 $sectorLabels = [
   'arts-and-culture'  => 'Arts and Culture',
   'public-service'    => 'Public Service',
@@ -49,7 +27,19 @@ $sectorLabels = [
   'founders-ventures' => 'Founders and Ventures',
 ];
 
-// Sibling case studies in the same sector(s) for sector navigation
+$heroImage  = $page->caseStudyImages()->toFile();
+$stats      = $page->stats()->toStructure();
+$testimonial = $page->testimonial()->toStructure()->first();
+$allBlocks  = $page->blocks()->toBlocks();
+$team       = $page->team()->toStructure();
+
+$relatedEntries = $site->find('wove-mind')
+  ? $site->find('wove-mind')->children()->listed()
+      ->filter(fn ($p) => $p->case_study()->toPages()->findBy('id', $page->id()) !== null)
+      ->sortBy('date', 'desc')
+      ->limit(6)
+  : new \Kirby\Cms\Pages();
+
 $sectorSiblings = [];
 if ($sectorSlugs) {
   $firstSector = $sectorSlugs[0];
@@ -58,208 +48,162 @@ if ($sectorSlugs) {
     ->not($page)
     ->limit(4);
 }
+
+$prev = $page->prevListed();
+$next = $page->nextListed();
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
 
-<main class="case-study">
+<div class="feed-wrap">
+
+  <!-- BREADCRUMB -->
+  <nav class="cs-breadcrumb" aria-label="Breadcrumb">
+    <a href="/wove-mind">Feed</a>
+    <span class="cs-breadcrumb__sep">/</span>
+    <a href="/our-work">Our Work</a>
+    <span class="cs-breadcrumb__sep">/</span>
+    <span><?= $page->eyebrow()->or($page->title())->html() ?></span>
+  </nav>
 
   <!-- HERO -->
-  <header class="case-study-hero">
-    <div class="container container--wide">
-      <h1 class="page-head__title"><?= $page->eyebrow()->html() ?></h1>
-      <div class="page-head__tagline"><?= $page->heroTitle() ?></div>
+  <div class="cs-hero">
+    <div class="cs-hero__eyebrow"><?= $page->eyebrow()->html() ?></div>
+    <h1 class="cs-hero__title"><?= $page->heroTitle() ?></h1>
 
-      <?php if ($impactLabels || $serviceTags): ?>
-        <ul class="case-study-tags" role="list">
-          <?php foreach ($impactLabels as $label): ?>
-            <li class="tag"><?= html($label) ?></li>
-          <?php endforeach ?>
-          <?php foreach ($serviceTags as $label): ?>
-            <li class="tag"><?= html($label) ?></li>
-          <?php endforeach ?>
-        </ul>
-      <?php endif ?>
-
-      <?php if ($sectorSlugs): ?>
-        <div class="cs-hero-filters">
-          <?php foreach ($sectorSlugs as $slug): ?>
-            <a href="/sector/<?= $slug ?>" class="cs-sector-nav__chip"><?= html($sectorLabels[$slug] ?? $slug) ?></a>
-          <?php endforeach ?>
-          <?php foreach ($serviceSlugs as $slug): ?>
-            <a href="/services/<?= $slug ?>" class="cs-sector-nav__chip"><?= html($serviceLabels[$slug] ?? ucfirst($slug)) ?></a>
-          <?php endforeach ?>
-        </div>
-      <?php endif ?>
-    </div>
-  </header>
-
-
-  <!-- OVERVIEW — team roster + main narrative blocks -->
-  <?php if ($team->count() || $narrativeBlocks): ?>
-    <section class="section container" aria-label="Overview">
-      <div class="case-study-overview">
-
-        <?php if ($team->count()): ?>
-          <aside class="team-list">
-            <p class="team-list__heading">Team</p>
-            <ul role="list">
-              <?php foreach ($team as $member): ?>
-                <?php $avatar = $member->avatar()->toFile() ?>
-                <li class="team-member">
-                  <?php if ($avatar): ?>
-                    <img src="<?= $avatar->url() ?>" alt="" class="team-member__avatar" width="48" height="48" loading="lazy">
-                  <?php endif ?>
-                  <span class="team-member__name"><?= $member->name()->html() ?></span>
-                </li>
-              <?php endforeach ?>
-            </ul>
-          </aside>
-        <?php endif ?>
-
-        <?php if ($narrativeBlocks): ?>
-          <div class="case-study-blocks">
-            <?php foreach ($narrativeBlocks as $block): ?>
-              <?= $block ?>
-            <?php endforeach ?>
-          </div>
-        <?php endif ?>
-
-      </div>
-    </section>
-  <?php endif ?>
-
-
-  <!-- IMAGE GALLERY — breaks out to full width -->
-  <?php if ($galleryBlocks): ?>
-    <section class="section--tight container container--wide" aria-label="Gallery">
-      <?php foreach ($galleryBlocks as $block): ?>
-        <div class="case-study-gallery">
-          <?= $block ?>
-        </div>
-      <?php endforeach ?>
-    </section>
-  <?php endif ?>
-
-
-  <!-- IMPACT STATS -->
-  <?php if ($stats->count()): ?>
-    <section class="section--tight container" aria-label="Impact stats">
-      <div class="case-study-stats">
-        <?php foreach ($stats as $stat): ?>
-          <div class="stat">
-            <p class="stat__value"><?= $stat->value()->html() ?></p>
-            <p class="stat__label"><?= $stat->label()->html() ?></p>
-          </div>
+    <?php if ($serviceTags): ?>
+      <div class="cs-hero__services">
+        <?php foreach ($serviceTags as $label): ?>
+          <span class="cs-hero__service"><?= html($label) ?></span>
         <?php endforeach ?>
       </div>
-    </section>
+    <?php endif ?>
+
+    <?php if ($sectorSlugs || $serviceSlugs): ?>
+      <div class="cs-hero__filters">
+        <?php foreach ($sectorSlugs as $slug): ?>
+          <a href="/sector/<?= $slug ?>" class="cs-hero__filter"><?= html($sectorLabels[$slug] ?? $slug) ?></a>
+        <?php endforeach ?>
+        <?php foreach ($serviceSlugs as $slug): ?>
+          <a href="/<?= $slug ?>" class="cs-hero__filter"><?= html($serviceLabels[$slug] ?? ucfirst($slug)) ?></a>
+        <?php endforeach ?>
+      </div>
+    <?php endif ?>
+  </div>
+
+  <!-- HERO IMAGE -->
+  <?php if ($heroImage): ?>
+    <div class="cs-hero-image">
+      <div class="cs-hero-image__inner">
+        <img src="<?= $heroImage->url() ?>" alt="<?= $page->eyebrow()->html() ?>" loading="eager">
+      </div>
+    </div>
   <?php endif ?>
 
+  <!-- STATS -->
+  <?php if ($stats->count()): ?>
+    <div class="cs-stats">
+      <?php foreach ($stats as $stat): ?>
+        <div class="cs-stat">
+          <div class="cs-stat__value"><?= $stat->value()->html() ?></div>
+          <div class="cs-stat__label"><?= $stat->label()->html() ?></div>
+        </div>
+      <?php endforeach ?>
+    </div>
+  <?php endif ?>
 
   <!-- TESTIMONIAL -->
   <?php if ($testimonial): ?>
-    <section class="cs-testimonial" aria-label="Client testimonial">
-      <blockquote class="cs-testimonial__quote">&ldquo;<?= $testimonial->quote()->html() ?>&rdquo;</blockquote>
-      <p class="cs-testimonial__attribution">
-        <?= $testimonial->name()->html() ?>
-        <?php if ($testimonial->role()->isNotEmpty()): ?>, <?= $testimonial->role()->html() ?><?php endif ?>
-        <?php if ($testimonial->organisation()->isNotEmpty()): ?>, <?= $testimonial->organisation()->html() ?><?php endif ?>
-      </p>
-      <?php if ($testimonial->reference_available()->toBool()): ?>
-        <p class="cs-testimonial__reference">References available on request from the commissioning Chair or Director.</p>
-      <?php endif ?>
-    </section>
-  <?php elseif ($page->testimonial()->toStructure()->count() === 0): ?>
-    <?php
-      $refCheck = $page->content()->get('testimonial');
-      if ($refCheck->isEmpty()):
-    ?>
-    <?php endif ?>
-  <?php endif ?>
-
-  <!-- IN THIS COLLECTION (renamed from "Related") -->
-  <?php if ($relatedEntries->count()): ?>
-    <section class="case-study-related" aria-labelledby="related-heading">
-      <div class="container">
-        <div class="case-study-related-intro">
-          <p class="label">Explore</p>
-          <h2 class="section__heading" id="related-heading">In this collection</h2>
-          <?php if ($page->relatedIntro()->isNotEmpty()): ?>
-            <p class="lead"><?= $page->relatedIntro()->html() ?></p>
-          <?php endif ?>
-        </div>
-        <div class="wovemind-cards">
-          <?php foreach ($relatedEntries as $entry): ?>
-            <?php snippet('wovemind-related-card', ['post' => $entry]) ?>
-          <?php endforeach ?>
-        </div>
+    <div class="cs-testimonial">
+      <p class="cs-testimonial__quote"><?= $testimonial->quote()->html() ?></p>
+      <div class="cs-testimonial__attribution">
+        <span class="cs-testimonial__name"><?= $testimonial->name()->html() ?></span><?php
+        if ($testimonial->role()->isNotEmpty()): ?>, <?= $testimonial->role()->html() ?><?php endif ?><?php
+        if ($testimonial->organisation()->isNotEmpty()): ?>, <?= $testimonial->organisation()->html() ?><?php endif ?>
       </div>
-    </section>
+      <?php if ($testimonial->reference_available()->toBool()): ?>
+        <p class="cs-testimonial__reference">Available as a reference on request</p>
+      <?php endif ?>
+    </div>
   <?php endif ?>
 
-  <!-- SECTOR NAVIGATION -->
-  <?php if ($sectorSlugs && $sectorSiblings && $sectorSiblings->count()): ?>
-    <section class="cs-sector-nav" aria-label="Other collections in this sector">
-      <p class="cs-sector-nav__label">Other collections in <?= html($sectorLabels[$firstSector] ?? $firstSector) ?></p>
-      <div class="cs-sector-nav__links">
-        <?php foreach ($sectorSiblings as $sibling): ?>
-          <a href="<?= $sibling->url() ?>" class="cs-sector-nav__chip"><?= $sibling->eyebrow()->or($sibling->title())->html() ?></a>
+  <!-- BODY (blocks content) -->
+  <?php if ($allBlocks->count()): ?>
+    <div class="cs-body">
+      <div class="cs-body__inner">
+        <div class="cs-body__label">Case Study</div>
+        <?php foreach ($allBlocks as $block): ?>
+          <?= $block ?>
         <?php endforeach ?>
       </div>
-    </section>
+    </div>
   <?php endif ?>
 
-
-  <!-- PREV / NEXT -->
-  <?php if ($prev || $next): ?>
-    <nav class="pager container" aria-label="Case studies">
-      <?php if ($prev): ?>
-        <a href="<?= $prev->url() ?>" class="pager__link pager__link--prev" rel="prev">
-          <span class="pager__dir"><span aria-hidden="true">&larr;</span> Previous project</span>
-          <span class="pager__name"><?= $prev->eyebrow()->or($prev->title())->html() ?></span>
-        </a>
-      <?php else: ?>
-        <span></span>
-      <?php endif ?>
-      <?php if ($next): ?>
-        <a href="<?= $next->url() ?>" class="pager__link pager__link--next" rel="next">
-          <span class="pager__dir">Next project <span aria-hidden="true">&rarr;</span></span>
-          <span class="pager__name"><?= $next->eyebrow()->or($next->title())->html() ?></span>
-        </a>
-      <?php endif ?>
-    </nav>
-  <?php endif ?>
-
-
-  <!-- CONTACT BANNER -->
-  <?php if ($contact): ?>
-    <?php
-      $avatar = $contact->avatar()->toFile();
-      $ctaFallback = $contact->name()->isNotEmpty() ? 'Talk to ' . $contact->name()->value() . ' today' : 'Get in touch today';
-    ?>
-    <section class="contact" aria-labelledby="contact-heading">
-      <div class="contact__inner">
-        <?php if ($avatar): ?>
-          <div class="contact__avatar">
-            <img src="<?= $avatar->url() ?>" alt="<?= $contact->name()->html() ?>" width="200" height="200" loading="lazy">
-          </div>
-        <?php endif ?>
-        <div class="contact__body">
-          <p class="contact__text" id="contact-heading">
-            <?= $page->subStatement()->or('Have a project in mind? Curious about ways we could bring value to your organisation?')->html() ?>
-          </p>
-          <a href="/contact" class="btn btn--primary btn--md">
-            <?= $page->ctaPrompt()->or($ctaFallback)->html() ?> <span aria-hidden="true">&rarr;</span>
-          </a>
+  <!-- RELATED ENTRIES -->
+  <?php if ($relatedEntries->count()): ?>
+    <div class="cs-related">
+      <div class="cs-related__header">
+        <div>
+          <div class="cs-related__label">Explore</div>
+          <h2 class="cs-related__title">In this collection</h2>
         </div>
+        <a href="/our-work" class="cs-related__link">View all &rarr;</a>
       </div>
-    </section>
+
+      <div class="feed-cards">
+        <?php foreach ($relatedEntries as $entry): ?>
+          <?php snippet('feed-card', ['post' => $entry]) ?>
+        <?php endforeach ?>
+      </div>
+
+      <?php if ($sectorSlugs && $sectorSiblings && $sectorSiblings->count()): ?>
+        <div class="cs-sector-nav">
+          <div class="cs-sector-nav__label">Other collections in <?= html($sectorLabels[$firstSector] ?? $firstSector) ?></div>
+          <div class="cs-sector-nav__links">
+            <?php foreach ($sectorSiblings as $sibling): ?>
+              <a href="<?= $sibling->url() ?>" class="cs-sector-nav__link"><?= $sibling->eyebrow()->or($sibling->title())->html() ?></a>
+            <?php endforeach ?>
+          </div>
+        </div>
+      <?php endif ?>
+    </div>
   <?php endif ?>
 
-</main>
+  <!-- TEAM -->
+  <?php if ($team->count()): ?>
+    <div class="cs-team">
+      <div class="cs-team__label">Project Team</div>
+      <div class="cs-team__grid">
+        <?php foreach ($team as $member): ?>
+          <?php $avatar = $member->avatar()->toFile() ?>
+          <div class="cs-team__member">
+            <div class="cs-team__avatar">
+              <?php if ($avatar): ?>
+                <img src="<?= $avatar->url() ?>" alt="" width="40" height="40" loading="lazy">
+              <?php endif ?>
+            </div>
+            <div class="cs-team__name"><?= $member->name()->html() ?></div>
+          </div>
+        <?php endforeach ?>
+      </div>
+    </div>
+  <?php endif ?>
 
-<?php snippet('service-page-scripts') ?>
+  <!-- FOOTER -->
+  <footer class="feed-footer">
+    <div class="feed-footer__inner">
+      <span class="feed-footer__brand"><?= $site->title()->html() ?> &mdash; Strategic Design &amp; Technology</span>
+      <div class="feed-footer__links">
+        <a href="/contact#enquiries" class="feed-footer__link">Enquiries</a>
+        <a href="/contact#tenders" class="feed-footer__link">Tenders</a>
+        <a href="/contact#strategy" class="feed-footer__link">Strategy</a>
+      </div>
+      <span>&copy; <?= date('Y') ?></span>
+    </div>
+  </footer>
+
+</div>
+
 <script>
 (function() {
   var h = new Date().getHours();
@@ -268,4 +212,5 @@ if ($sectorSlugs) {
   }
 })();
 </script>
+
 <?php snippet('footer') ?>

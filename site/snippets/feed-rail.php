@@ -1,31 +1,79 @@
 <?php
 /**
- * Feed facet rail — sidebar with explainer, tag cloud, and services
+ * Feed facet rail — sidebar with explainer and merged tag cloud
  * Usage: <?php snippet('feed-rail') ?>
  *
- * Data sources:
- *   Explainer → hardcoded (site-level, not editable yet)
- *   Tags      → site.tags structure (tabs/taxonomies.yml)
- *   Services  → hardcoded list matching blueprint multiselect options
- *   Featured  → TBC (will be configurable, e.g. mark-as-featured)
+ * Cloud items are tags, services, and case studies merged into one flat
+ * list, sorted by most recent usage (the publish date of the newest
+ * entry each item appears on).
  */
 
-$tags = $site->tags()->toStructure()->filterBy('active', 'true')->sortBy('name', 'asc');
-$tagLimit = 12;
-$totalTags = $tags->count();
+$allEntries = $site->index()
+  ->filter(fn ($p) => in_array($p->intendedTemplate()->name(), ['wove-mind-entry', 'case-study']))
+  ->listed()
+  ->sortBy('date', 'desc');
 
-$services = [
+$siteTags = $site->tags()->toStructure()->filterBy('active', 'true');
+$tagSlugMap = [];
+foreach ($siteTags as $t) {
+  $tagSlugMap[strtolower($t->name()->value())] = $t->slug()->value();
+}
+
+$serviceLabels = [
   'strategy' => 'Strategy',
   'labs'     => 'Labs',
   'digital'  => 'Digital',
   'brand'    => 'Brand',
 ];
 
-$caseStudies = $site->index()
-  ->filterBy('intendedTemplate', 'case-study')
-  ->listed()
-  ->sortBy('date', 'desc')
-  ->limit(4);
+$cloud = [];
+
+foreach ($allEntries as $entry) {
+  $entryDate = $entry->date()->toDate('U') ?: 0;
+
+  foreach ($entry->tags()->split(',') as $t) {
+    $t = trim($t);
+    if ($t === '') continue;
+    $key = 'tag:' . strtolower($t);
+    if (!isset($cloud[$key]) || $entryDate > $cloud[$key]['date']) {
+      $slug = $tagSlugMap[strtolower($t)] ?? Str::slug($t);
+      $cloud[$key] = [
+        'label' => $t,
+        'url'   => '/tag/' . $slug,
+        'date'  => $entryDate,
+      ];
+    }
+  }
+
+  foreach ($entry->services()->split(',') as $s) {
+    $s = trim($s);
+    if ($s === '' || !isset($serviceLabels[$s])) continue;
+    $key = 'svc:' . $s;
+    if (!isset($cloud[$key]) || $entryDate > $cloud[$key]['date']) {
+      $cloud[$key] = [
+        'label' => $serviceLabels[$s],
+        'url'   => '/' . $s,
+        'date'  => $entryDate,
+      ];
+    }
+  }
+
+  if ($entry->intendedTemplate()->name() === 'case-study') {
+    $key = 'cs:' . $entry->slug();
+    if (!isset($cloud[$key])) {
+      $cloud[$key] = [
+        'label' => $entry->eyebrow()->or($entry->title())->value(),
+        'url'   => $entry->url(),
+        'date'  => $entryDate,
+      ];
+    }
+  }
+}
+
+usort($cloud, fn ($a, $b) => $b['date'] <=> $a['date']);
+
+$cloudLimit = 16;
+$totalCloud = count($cloud);
 ?>
 
 <aside class="feed-rail" aria-label="Filter">
@@ -35,40 +83,16 @@ $caseStudies = $site->index()
     <p class="feed-explainer__body">We use strategic design to help organisations move from insight to delivery — across services, systems, and culture.</p>
   </div>
 
-  <div class="feed-rail__group">
-    <span class="feed-rail__group-label label">Services</span>
-    <div class="feed-rail__tags">
-      <?php foreach ($services as $slug => $name): ?>
-        <a href="/<?= $slug ?>" class="feed-rail__tag"><?= $name ?></a>
-      <?php endforeach ?>
-    </div>
+  <div class="feed-rail__tags">
+    <?php $i = 0; foreach ($cloud as $item):
+      if ($i >= $cloudLimit) break;
+    ?>
+      <a href="<?= $item['url'] ?>" class="feed-rail__tag"><?= html($item['label']) ?></a>
+    <?php $i++; endforeach ?>
   </div>
-
-  <div class="feed-rail__group">
-    <span class="feed-rail__group-label label">Topics</span>
-    <div class="feed-rail__tags">
-      <?php $i = 0; foreach ($tags as $tag):
-        if ($i >= $tagLimit) break;
-        $slug = $tag->slug()->value();
-      ?>
-        <a href="/tag/<?= $slug ?>" class="feed-rail__tag"><?= $tag->name()->html() ?></a>
-      <?php $i++; endforeach ?>
-    </div>
-    <?php if ($totalTags > $tagLimit): ?>
-      <div class="feed-rail__tag-more">
-        <a href="/topics">All <?= $totalTags ?> topics &rarr;</a>
-      </div>
-    <?php endif ?>
-  </div>
-
-  <?php if ($caseStudies->count()): ?>
-    <div class="feed-rail__group">
-      <span class="feed-rail__group-label label">Case studies</span>
-      <div class="feed-rail__tags">
-        <?php foreach ($caseStudies as $cs): ?>
-          <a href="<?= $cs->url() ?>" class="feed-rail__tag"><?= $cs->eyebrow()->or($cs->title())->html() ?></a>
-        <?php endforeach ?>
-      </div>
+  <?php if ($totalCloud > $cloudLimit): ?>
+    <div class="feed-rail__tag-more">
+      <a href="/topics">All <?= $totalCloud ?> topics &rarr;</a>
     </div>
   <?php endif ?>
 

@@ -196,17 +196,6 @@
   color: var(--feed-text-dim);
 }
 
-.feed-rail__group {
-  margin-bottom: var(--feed-space-24);
-}
-.feed-rail__group-label {
-  display: block;
-  margin-bottom: var(--feed-space-8);
-  color: var(--feed-text-dim);
-  font-size: var(--feed-fs-meta);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 .feed-rail__tags {
   display: flex;
   flex-wrap: wrap;

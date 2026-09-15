@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feed IA — 1b Tag Destination</title>
+
+<!-- Ballinger (project fonts) -->
+<style>
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+</style>
+
+<style>
+/* ================================================================
+   TOKENS  (shared across all feed mockups)
+   ================================================================ */
+:root {
+  --color-bg:          #131310;
+  --color-surface:     #1b1b17;
+  --color-raised:      #22221d;
+  --color-border:      #2a2a22;
+  --color-border-subtle: rgba(255,255,255,0.06);
+  --color-rule:        rgba(255,255,255,0.08);
+  --color-text:        #f1efe8;
+  --color-text-body:   #fdfcf7;
+  --color-text-muted:  #9a968a;
+  --color-text-dim:    #6e6a5f;
+  --color-text-inverse:#131310;
+  --color-coral:       #ed8c7c;
+  --color-gold:        #e8c888;
+  --color-green:       #9cd3b7;
+  --color-blue:        #c7d0fa;
+  --color-purple:      #c7b4ee;
+
+  --ff:             'Ballinger', sans-serif;
+  --fw-regular:     400;
+  --fw-medium:      500;
+  --fw-semibold:    600;
+  --fw-bold:        700;
+
+  --fs-format:      0.625rem;
+  --fs-label:       0.6875rem;
+  --fs-chip:        0.75rem;
+  --fs-meta:        0.75rem;
+  --fs-excerpt:     0.8125rem;
+  --fs-body:        0.875rem;
+  --fs-nav:         0.9375rem;
+  --fs-card-title:  1.0625rem;
+  --fs-rail-item:   1.0625rem;
+  --fs-feed-h2:     1.25rem;
+  --fs-rail-brand:  1.25rem;
+  --fs-feed-h1:     2rem;
+
+  --lh-body:        1.5;
+  --lh-tight:       1.25;
+  --lh-heading:     1.15;
+  --ls-label:       0.08em;
+
+  --space-4:   0.25rem;
+  --space-8:   0.5rem;
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+
+  --page-px:   2rem;
+  --page-py:   2rem;
+  --max-w:     80rem;
+
+  --radius-sm:   0.5rem;
+  --radius-md:   0.75rem;
+  --radius-pill: 999px;
+
+  --border:      1px solid var(--color-border);
+  --border-subtle: 1px solid var(--color-border-subtle);
+  --rule:        1px solid var(--color-rule);
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.2);
+  --transition: 200ms ease;
+}
+
+@media (min-width: 960px)  { :root { --page-px: 3rem; --page-py: 2.5rem; } }
+@media (min-width: 1280px) { :root { --page-px: 5rem; } }
+
+/* RESET */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+ul { list-style: none; }
+
+/* NAV (identical to 1a) */
+.nav {
+  display: flex; align-items: center; gap: var(--space-32);
+  padding: var(--space-16) var(--page-px);
+  border-bottom: var(--border);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.nav__logo { font-size: var(--fs-rail-brand); font-weight: var(--fw-regular); letter-spacing: -0.01em; }
+.nav__links { display: flex; gap: var(--space-24); font-size: var(--fs-nav); font-weight: var(--fw-medium); }
+.nav__links a { transition: opacity var(--transition); }
+.nav__links a:hover { opacity: 0.6; }
+.nav__cta {
+  margin-left: auto; font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 0.5rem 1.125rem; border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill); transition: all var(--transition);
+}
+.nav__cta:hover { background: rgba(255,255,255,0.06); }
+
+/* BREADCRUMB */
+.breadcrumb {
+  padding: var(--space-16) var(--page-px) 0;
+  max-width: var(--max-w); margin: 0 auto;
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+  display: flex; align-items: center; gap: var(--space-8);
+}
+.breadcrumb a { color: var(--color-text-muted); transition: color var(--transition); }
+.breadcrumb a:hover { color: var(--color-text); }
+.breadcrumb__sep { color: var(--color-text-dim); }
+
+/* ================================================================
+   TAG HERO
+   Kirby data source:
+     site()->tags()->toStructure()->findBy('slug', $slug)
+     Fields from tabs/taxonomies.yml:
+       name  → tag name
+       slug  → URL slug
+       intro → tag description
+       active → toggle
+   ================================================================ */
+.tag-hero {
+  padding: var(--space-40) var(--page-px) var(--space-32);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.tag-hero__label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: var(--space-12);
+}
+.tag-hero__name {
+  font-size: var(--fs-feed-h1);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-16);
+}
+.tag-hero__intro {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text-muted);
+  max-width: 40rem;
+}
+.tag-hero__meta {
+  margin-top: var(--space-16);
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+
+/* CHIP FILTERS */
+.filters {
+  padding: 0 var(--page-px) var(--space-24);
+  max-width: var(--max-w); margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: var(--space-8);
+}
+.chip {
+  font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  border: 1px solid transparent; background: var(--color-raised);
+  color: var(--color-text-muted); cursor: pointer;
+  transition: all var(--transition);
+}
+.chip:hover { color: var(--color-text); }
+.chip--active {
+  background: var(--color-text); color: var(--color-text-inverse);
+  border-color: var(--color-text);
+}
+
+/* ================================================================
+   CARD GRID
+   Kirby query:
+     $entries = $site->index()
+       ->filterBy('intendedTemplate', 'wove-mind-entry')
+       ->filterBy('tags', $tag->name(), ',')
+       ->listed()
+       ->sortBy('date', 'desc');
+   ================================================================ */
+.grid-section {
+  padding: 0 var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.cards {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-16);
+}
+@media (min-width: 600px)  { .cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px)  { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+.card {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm); overflow: hidden;
+  display: flex; flex-direction: column; cursor: pointer;
+  transition: border-color var(--transition);
+}
+.card:hover { border-color: rgba(255,255,255,0.12); }
+
+.card__media {
+  aspect-ratio: 16 / 10; background: var(--color-raised); position: relative;
+}
+.card__media img { width: 100%; height: 100%; object-fit: cover; }
+.card__media-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+
+.card__body {
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px; flex: 1;
+}
+
+.card__format {
+  font-size: var(--fs-format); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+}
+.card__format--whatif    { color: var(--color-blue); }
+.card__format--longread  { color: var(--color-purple); }
+
+.card__title {
+  font-size: var(--fs-card-title); font-weight: var(--fw-regular);
+  line-height: var(--lh-tight); letter-spacing: -0.01em;
+  color: var(--color-text-body);
+}
+.card__excerpt {
+  font-size: var(--fs-excerpt); color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+.card__meta {
+  display: flex; align-items: center; gap: var(--space-8);
+  margin-top: auto; padding-top: var(--space-4);
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.card__author { color: var(--color-text-muted); }
+.card__dot { color: var(--color-text-dim); }
+
+.card__tags { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.card__tag { font-size: var(--fs-meta); color: var(--color-text-dim); }
+.card__tag + .card__tag::before { content: '\00b7'; margin-right: var(--space-4); }
+
+.card--compact {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--transition);
+}
+.card--compact:hover { border-color: rgba(255,255,255,0.12); }
+
+.card--spark {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--transition);
+}
+.card--spark:hover { border-color: rgba(255,255,255,0.12); }
+.card--spark .card__quote {
+  font-size: var(--fs-card-title); font-weight: var(--fw-regular);
+  line-height: 1.3; letter-spacing: -0.005em;
+  color: var(--color-text-body);
+}
+
+/* ================================================================
+   RELATED TAGS
+   ================================================================ */
+.related {
+  padding: var(--space-48) var(--page-px) var(--space-32);
+  max-width: var(--max-w); margin: 0 auto;
+  border-top: var(--rule);
+}
+.related__label {
+  font-size: var(--fs-label); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--color-text-dim); margin-bottom: var(--space-16);
+}
+.related__tags {
+  display: flex; flex-wrap: wrap; gap: var(--space-8);
+}
+.related__tag {
+  font-size: var(--fs-body); color: var(--color-text-muted);
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-color: var(--color-border);
+  transition: text-decoration-color var(--transition);
+}
+.related__tag:hover { text-decoration-color: var(--color-text-muted); }
+
+/* PAGINATION */
+.pagination {
+  padding: var(--space-32) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  display: flex; justify-content: center; gap: var(--space-8);
+}
+.pagination__btn {
+  font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 6px 14px; border-radius: var(--radius-pill);
+  border: var(--border); background: transparent;
+  color: var(--color-text-muted); cursor: pointer;
+  font-family: var(--ff);
+  transition: all var(--transition);
+}
+.pagination__btn:hover { background: rgba(255,255,255,0.06); color: var(--color-text); }
+.pagination__btn--active {
+  background: var(--color-text); color: var(--color-text-inverse);
+  border-color: var(--color-text);
+}
+
+/* FOOTER */
+.footer {
+  border-top: var(--rule);
+  padding: var(--space-40) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.footer__inner {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: var(--space-24);
+}
+.footer__brand {
+  font-weight: var(--fw-semibold); letter-spacing: var(--ls-label);
+  text-transform: uppercase; font-size: var(--fs-label);
+}
+.footer__links { display: flex; gap: var(--space-24); }
+.footer__link {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  transition: color var(--transition);
+}
+.footer__link:hover { color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav__logo">wove</a>
+  <ul class="nav__links">
+    <li><a href="/our-work">Our Work</a></li>
+    <li><a href="/our-people">Our People</a></li>
+  </ul>
+  <a href="/contact" class="nav__cta">Get in touch</a>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="/feed">Feed</a>
+  <span class="breadcrumb__sep">/</span>
+  <span>Education</span>
+</div>
+
+<!-- ============================================================
+     TAG HERO
+     Kirby data:
+       $tag = site()->tags()->toStructure()->findBy('slug', 'education')
+       $tag->name()   → "Education"
+       $tag->intro()  → tag description
+     Entry count:
+       $entries = $site->index()
+         ->filterBy('intendedTemplate', 'wove-mind-entry')
+         ->filterBy('tags', 'Education', ',')
+         ->listed()
+         ->count()
+     ============================================================ -->
+<div class="tag-hero">
+  <div class="tag-hero__label">Topic</div>
+  <h1 class="tag-hero__name">Education</h1>
+  <p class="tag-hero__intro">How strategic design and technology are reshaping learning experiences, from primary schools to third-level institutions and lifelong education.</p>
+  <div class="tag-hero__meta">18 entries &middot; 4 case studies</div>
+</div>
+
+<!-- ============================================================
+     ENTRIES GRID
+     Kirby query:
+       $site->index()
+         ->filterBy('intendedTemplate', 'wove-mind-entry')
+         ->filterBy('tags', 'Education', ',')
+         ->listed()
+         ->sortBy('date', 'desc')
+         ->paginate(9)
+     ============================================================ -->
+<div class="grid-section">
+  <div class="cards">
+
+    <!-- thread -->
+    <article class="card--compact">
+      <div class="card__tags">
+        <span class="card__tag">Education</span>
+        <span class="card__tag">Futures</span>
+      </div>
+      <h3 class="card__title">The hidden curriculum: what schools teach without meaning to</h3>
+      <p class="card__excerpt">How spatial design and service patterns shape student behaviour before a lesson begins.</p>
+      <div class="card__meta">
+        <span class="card__author">Grace Mc Ginn</span>
+        <span class="card__dot">&middot;</span>
+        <span>Aug 20</span>
+      </div>
+    </article>
+
+    <!-- whatif -->
+    <article class="card--compact">
+      <span class="card__format card__format--whatif">What If</span>
+      <div class="card__tags">
+        <span class="card__tag">Education</span>
+        <span class="card__tag">Co-design</span>
+      </div>
+      <h3 class="card__title">What if every school had a design residency?</h3>
+      <p class="card__excerpt">Exploring what happens when designers embed in educational settings for a full term.</p>
+      <div class="card__meta">
+        <span class="card__author">Scott Burnett</span>
+        <span class="card__dot">&middot;</span>
+        <span>Aug 12</span>
+      </div>
+    </article>
+
+    <!-- spark — no format label, no tags -->
+    <article class="card--spark">
+      <p class="card__quote">"The best learning environments don't feel designed. They feel inevitable."</p>
+      <div class="card__meta">
+        <span class="card__author">Karl Twomey</span>
+        <span class="card__dot">&middot;</span>
+        <span>Aug 5</span>
+      </div>
+    </article>
+
+    <!-- longread -->
+    <article class="card">
+      <div class="card__media"><div class="card__media-ph">image</div></div>
+      <div class="card__body">
+        <span class="card__format card__format--longread">Long Read</span>
+        <div class="card__tags">
+          <span class="card__tag">Education</span>
+          <span class="card__tag">Public sector</span>
+        </div>
+        <h3 class="card__title">Reimagining the student journey for a post-pandemic campus</h3>
+        <p class="card__excerpt">An extended look at how universities are rethinking physical and digital touchpoints.</p>
+        <div class="card__meta">
+          <span class="card__author">Grace Mc Ginn</span>
+          <span class="card__dot">&middot;</span>
+          <span>Jul 28</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- thread (with image) -->
+    <article class="card">
+      <div class="card__media"><div class="card__media-ph">image</div></div>
+      <div class="card__body">
+        <div class="card__tags">
+          <span class="card__tag">Education</span>
+          <span class="card__tag">Digital</span>
+        </div>
+        <h3 class="card__title">Designing a digital learning platform for rural communities</h3>
+        <p class="card__excerpt">How we approached accessibility and connectivity challenges in underserved areas.</p>
+        <div class="card__meta">
+          <span class="card__author">Scott Burnett</span>
+          <span class="card__dot">&middot;</span>
+          <span>Jul 15</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- thread -->
+    <article class="card--compact">
+      <div class="card__tags">
+        <span class="card__tag">Education</span>
+        <span class="card__tag">Strategy</span>
+      </div>
+      <h3 class="card__title">What Irish design students told us about the future of education</h3>
+      <p class="card__excerpt">May be somewhat familiar with us either through a pre TDR referral or framework.</p>
+      <div class="card__meta">
+        <span class="card__author">Karl Twomey</span>
+        <span class="card__dot">&middot;</span>
+        <span>Sep 3</span>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination">
+  <button class="pagination__btn pagination__btn--active">1</button>
+  <button class="pagination__btn">2</button>
+  <button class="pagination__btn">Next &rarr;</button>
+</div>
+
+<!-- RELATED TAGS -->
+<div class="related">
+  <div class="related__label">Related Topics</div>
+  <div class="related__tags">
+    <a href="/tag/futures" class="related__tag">Futures</a>
+    <a href="/tag/public-sector" class="related__tag">Public sector</a>
+    <a href="/tag/co-design" class="related__tag">Co-design</a>
+    <a href="/tag/culture" class="related__tag">Culture</a>
+    <a href="/tag/ai" class="related__tag">AI</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__brand">Wove &mdash; Strategic Design &amp; Technology</span>
+    <div class="footer__links">
+      <a href="/contact#enquiries" class="footer__link">Enquiries</a>
+      <a href="/contact#tenders" class="footer__link">Tenders</a>
+      <a href="/contact#strategy" class="footer__link">Strategy</a>
+    </div>
+    <span>&copy; 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

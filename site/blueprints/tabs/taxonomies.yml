@@ -18,6 +18,15 @@ fields:
       intro:
         label: Tag Intro
         type: text
+      subtitle:
+        label: Subtitle
+        type: text
+        help: Optional tagline shown beneath the tag name on the tag destination page.
+      meta:
+        label: Meta description
+        type: textarea
+        size: small
+        help: Optional SEO/social description for the tag landing page.
       active:
         label: Published
         type: toggle

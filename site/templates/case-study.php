@@ -35,9 +35,32 @@ $next = $page->nextListed();
 // WoveMind entries that link back to this case study via their `case_study` field.
 $relatedEntries = $site->find('wove-mind')->children()->listed()
   ->filter(fn ($p) => $p->case_study()->toPages()->findBy('id', $page->id()) !== null);
+
+// Testimonial
+$testimonial = $page->testimonial()->toStructure()->first();
+
+// Sectors for this case study
+$sectorSlugs = array_filter($page->sectors()->split(','));
+$sectorLabels = [
+  'arts-and-culture'  => 'Arts and Culture',
+  'public-service'    => 'Public Service',
+  'higher-education'  => 'Higher Education',
+  'non-profit'        => 'Non-profit and Mission-led',
+  'founders-ventures' => 'Founders and Ventures',
+];
+
+// Sibling case studies in the same sector(s) for sector navigation
+$sectorSiblings = [];
+if ($sectorSlugs) {
+  $firstSector = $sectorSlugs[0];
+  $sectorSiblings = $page->siblings()->listed()
+    ->filterBy('sectors', $firstSector, ',')
+    ->not($page)
+    ->limit(4);
+}
 ?>
 
-<?php snippet('header') ?>
+<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
 
 <main class="case-study">
 
@@ -56,6 +79,17 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
             <li class="tag"><?= html($label) ?></li>
           <?php endforeach ?>
         </ul>
+      <?php endif ?>
+
+      <?php if ($sectorSlugs): ?>
+        <div class="cs-hero-filters">
+          <?php foreach ($sectorSlugs as $slug): ?>
+            <a href="/sector/<?= $slug ?>" class="cs-sector-nav__chip"><?= html($sectorLabels[$slug] ?? $slug) ?></a>
+          <?php endforeach ?>
+          <?php foreach ($serviceSlugs as $slug): ?>
+            <a href="/services/<?= $slug ?>" class="cs-sector-nav__chip"><?= html($serviceLabels[$slug] ?? ucfirst($slug)) ?></a>
+          <?php endforeach ?>
+        </div>
       <?php endif ?>
     </div>
   </header>
@@ -123,12 +157,34 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
   <?php endif ?>
 
 
-  <!-- RELATED WOVE MIND ENTRIES -->
+  <!-- TESTIMONIAL -->
+  <?php if ($testimonial): ?>
+    <section class="cs-testimonial" aria-label="Client testimonial">
+      <blockquote class="cs-testimonial__quote">&ldquo;<?= $testimonial->quote()->html() ?>&rdquo;</blockquote>
+      <p class="cs-testimonial__attribution">
+        <?= $testimonial->name()->html() ?>
+        <?php if ($testimonial->role()->isNotEmpty()): ?>, <?= $testimonial->role()->html() ?><?php endif ?>
+        <?php if ($testimonial->organisation()->isNotEmpty()): ?>, <?= $testimonial->organisation()->html() ?><?php endif ?>
+      </p>
+      <?php if ($testimonial->reference_available()->toBool()): ?>
+        <p class="cs-testimonial__reference">References available on request from the commissioning Chair or Director.</p>
+      <?php endif ?>
+    </section>
+  <?php elseif ($page->testimonial()->toStructure()->count() === 0): ?>
+    <?php
+      $refCheck = $page->content()->get('testimonial');
+      if ($refCheck->isEmpty()):
+    ?>
+    <?php endif ?>
+  <?php endif ?>
+
+  <!-- IN THIS COLLECTION (renamed from "Related") -->
   <?php if ($relatedEntries->count()): ?>
     <section class="case-study-related" aria-labelledby="related-heading">
       <div class="container">
         <div class="case-study-related-intro">
-          <h2 class="section__heading" id="related-heading"><?= $page->relatedHeading()->or('Design at multiple layers')->html() ?></h2>
+          <p class="label">Explore</p>
+          <h2 class="section__heading" id="related-heading">In this collection</h2>
           <?php if ($page->relatedIntro()->isNotEmpty()): ?>
             <p class="lead"><?= $page->relatedIntro()->html() ?></p>
           <?php endif ?>
@@ -138,6 +194,18 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
             <?php snippet('wovemind-related-card', ['post' => $entry]) ?>
           <?php endforeach ?>
         </div>
+      </div>
+    </section>
+  <?php endif ?>
+
+  <!-- SECTOR NAVIGATION -->
+  <?php if ($sectorSlugs && $sectorSiblings && $sectorSiblings->count()): ?>
+    <section class="cs-sector-nav" aria-label="Other collections in this sector">
+      <p class="cs-sector-nav__label">Other collections in <?= html($sectorLabels[$firstSector] ?? $firstSector) ?></p>
+      <div class="cs-sector-nav__links">
+        <?php foreach ($sectorSiblings as $sibling): ?>
+          <a href="<?= $sibling->url() ?>" class="cs-sector-nav__chip"><?= $sibling->eyebrow()->or($sibling->title())->html() ?></a>
+        <?php endforeach ?>
       </div>
     </section>
   <?php endif ?>
@@ -192,4 +260,12 @@ $relatedEntries = $site->find('wove-mind')->children()->listed()
 </main>
 
 <?php snippet('service-page-scripts') ?>
+<script>
+(function() {
+  var h = new Date().getHours();
+  if (h >= 7 && h < 19) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
 <?php snippet('footer') ?>

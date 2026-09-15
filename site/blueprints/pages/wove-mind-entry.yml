@@ -19,7 +19,6 @@ tabs:
                 required: true
                 options:
                   spark: Spark
-                  project-highlight: Project highlight
                   thread: Thread
                   whatif: What if
                   longread: Long read
@@ -28,28 +27,6 @@ tabs:
                 label: Title
                 type: text
                 info: "Not used for Spark (feed card only, no title shown on the front end) — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
-
-              client:
-                label: Client
-                type: text
-                when:
-                  format: project-highlight
-
-              excerpt:
-                label: Excerpt
-                type: textarea
-                maxlength: 200
-                required: true
-                when:
-                  format: project-highlight
-                info: "200 char cap — flag for Grace: Figma descriptions run ~150–160 chars, confirm this limit is right before relying on it."
-
-              website:
-                label: Website
-                type: url
-                when:
-                  format: project-highlight
-                info: "Optional — client's external site. Front-end shows a \"Visit website\" link (new tab) only when this is set."
 
               blocksHeadline:
                 type: headline
@@ -123,6 +100,17 @@ tabs:
                   digital: Digital
                   brand: Brand
                 info: Shows on the selected service page(s)
+
+              sectors:
+                label: Sector
+                type: multiselect
+                options:
+                  arts-and-culture: Arts and Culture
+                  public-service: Public Service
+                  higher-education: Higher Education
+                  non-profit: Non-profit and Mission-led
+                  founders-ventures: Founders and Ventures
+                info: Used for sector filtering on the feed and sector collection pages.
 
           # tags_section:
           #   type: fields

@@ -134,6 +134,13 @@ Icon
 # so they deploy automatically instead of depending on server-only files.
 !/content/services
 
+# Structural pages: contact + sector collections ship with the repo
+# so they deploy automatically. Editorial fields have sensible defaults
+# and can be edited in the Panel once live.
+!/content/contact
+!/content/sector
+!/content/wove-mind
+
 # Config
 # ---------------
 /site/config/config.php

@@ -34,10 +34,8 @@ tabs:
               - wove-mind
               - work
               - artefact-1
-            #   # - media-gallery
-            #   - contact
-            #   - employer faq
-            #   # - news
+              - contact
+              - sectors
             help: Draft pages can only be seen by editors with Panel access.
 
           general:

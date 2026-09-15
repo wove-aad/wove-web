@@ -1,0 +1,61 @@
+Title: Contact
+
+----
+
+Headline: Get in touch
+
+----
+
+Intro: Whether you're exploring a project, responding to a tender, or looking for strategic advice — start here.
+
+----
+
+Enquiryheading: Discuss a project
+
+----
+
+Enquirydesc: Tell us about what you're working on and we'll get back to you.
+
+----
+
+Tenderheading: Invite us to tender
+
+----
+
+Tenderdesc: Share the details of your RFT and we'll confirm receipt within one working day.
+
+----
+
+Tenderack: We'll confirm receipt within one working day.
+
+----
+
+Strategyheading: Book a strategy conversation
+
+----
+
+Strategydesc: A 30-minute conversation with our strategy lead to explore how we might help.
+
+----
+
+Strategypartnerintro: Karl works across public sector, cultural institutions, and mission-led organisations. He'll help you figure out whether Wove is the right fit — and if not, point you to someone who is.
+
+----
+
+Strategyresponse: We'll be in touch within 48 hours.
+
+----
+
+Enquiryemail: hello@wove.group
+
+----
+
+Tenderemail: tenders@wove.group
+
+----
+
+Strategyemail:
+
+----
+
+Uuid: contact-page-001

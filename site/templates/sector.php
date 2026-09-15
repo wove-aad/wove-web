@@ -26,7 +26,7 @@ $pageNum   = param('page') ? (int) param('page') : 1;
 <div class="feed-wrap">
 
   <section class="sector-hero">
-    <p class="sector-hero__eyebrow">Sector</p>
+    <p class="sector-hero__eyebrow">Showing results for</p>
     <h1 class="sector-hero__title"><?= $page->headline()->html() ?></h1>
     <?php if ($page->intro()->isNotEmpty()): ?>
       <p class="sector-hero__intro"><?= $page->intro()->html() ?></p>

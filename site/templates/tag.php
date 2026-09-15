@@ -55,7 +55,7 @@ $relatedTags = array_slice(array_keys($entryTags), 0, 6);
 
   <!-- TAG HERO -->
   <div class="tag-hero">
-    <div class="tag-hero__label">Topic</div>
+    <div class="tag-hero__label">Showing results for</div>
     <h1 class="tag-hero__name"><?= html($tagName) ?></h1>
     <?php if ($tagIntro): ?>
       <p class="tag-hero__intro"><?= html($tagIntro) ?></p>

@@ -59,10 +59,10 @@
   --feed-space-48: 3rem;
   --feed-space-64: 4rem;
 
-  --feed-page-px:  2rem;
+  --feed-page-px:  1rem;
   --feed-page-py:  2rem;
   --feed-rail-w:   260px;
-  --feed-max-w:    80rem;
+  --feed-max-w:    85rem;
 
   --feed-radius-sm:   0.5rem;
   --feed-radius-md:   0.75rem;
@@ -96,11 +96,11 @@
   --feed-purple:      #7b5db8;
 }
 
-@media (min-width: 960px) {
-  .feed-wrap { --feed-page-px: 3rem; --feed-page-py: 2.5rem; }
+@media (min-width: 600px) {
+  .feed-wrap { --feed-page-px: 1.5rem; }
 }
-@media (min-width: 1280px) {
-  .feed-wrap { --feed-page-px: 5rem; }
+@media (min-width: 960px) {
+  .feed-wrap { --feed-page-px: 2rem; --feed-page-py: 2.5rem; }
 }
 
 /* --- Base ------------------------------------------------------ */

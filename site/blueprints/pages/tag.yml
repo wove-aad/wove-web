@@ -1,0 +1,8 @@
+title: Tag
+icon: tag
+
+options:
+  changeTemplate: false
+  changeSlug: false
+  changeStatus: false
+  delete: false

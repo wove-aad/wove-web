@@ -24,7 +24,7 @@ $paginated = $entries->paginate($perPage);
 
   <!-- HERO -->
   <section class="feed-hero">
-    <h1 class="feed-hero__title"><?= $site->title()->html() ?></h1>
+    <h1 class="feed-hero__title"><?= $page->headline()->or('Shaping a better Ireland through strategic design and technology')->html() ?></h1>
     <p class="feed-hero__desc"><?= $page->tagline()->or('We help the people running Ireland\'s public services, cultural institutions, and mission-led organisations move from strategy to delivery.')->html() ?></p>
   </section>
 

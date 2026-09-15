@@ -36,6 +36,10 @@ $totalTags = $tags->count();
   <div class="feed-rail__group">
     <div class="feed-rail__group-label">Sectors</div>
     <ul class="feed-rail__list">
+      <li class="feed-rail__item<?= !isset($activeSector) || $activeSector === '' ? ' feed-rail__item--active' : '' ?>">
+        <a href="/wove-mind"><span>All</span></a>
+        <span class="feed-rail__count"><?= $allEntries->count() ?></span>
+      </li>
       <?php foreach ($sectorKeys as $key => $label):
         $count = $allEntries->filterBy('sectors', $key, ',')->count();
         $isActive = isset($activeSector) && $activeSector === $key;

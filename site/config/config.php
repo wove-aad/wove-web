@@ -247,15 +247,19 @@ return [
                 return new Kirby\Cms\Response($content, 'application/xml');
             }
         ],
-        // Team member expertise categories
-        // [
-        //     'pattern' => 'our-team/expertise/(:any)',
-        //     'action' => function ($categorySlug) {
-        //         return page('our-team')->render([
-        //             'categorySlug' => $categorySlug
-        //         ]);
-        //     }
-        // ]
+        [
+            'pattern' => 'tag/(:any)',
+            'action'  => function ($slug) {
+                $tag = site()->tags()->toStructure()->findBy('slug', $slug);
+                if (!$tag || $tag->active()->toBool() === false) {
+                    return false;
+                }
+                return page('tag')->render([
+                    'tagSlug' => $slug,
+                    'tagData' => $tag,
+                ]);
+            }
+        ],
     ],
     // 'k-cookbook.toc.headlines' => ['h2', 'h3', 'h4'],
 ];

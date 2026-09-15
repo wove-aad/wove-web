@@ -32,7 +32,8 @@ $dateLabel    = match (true) {
   default        => date('j M', $postMidnight),
 };
 
-$tags = $post->tags()->split(',');
+$tags     = $post->tags()->split(',');
+$siteTags = $site->tags()->toStructure();
 
 $showFormat = in_array($format, ['whatif', 'longread']);
 $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
@@ -91,8 +92,11 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php endif ?>
       <?php if (!empty($tags)): ?>
         <div class="feed-card__tags">
-          <?php foreach ($tags as $tag): ?>
-            <span class="feed-card__tag"><?= html($tag) ?></span>
+          <?php foreach ($tags as $tag):
+            $tagMatch = $siteTags->findBy('name', $tag);
+            $tagHref  = $tagMatch ? '/tag/' . $tagMatch->slug()->value() : '/tag/' . Str::slug($tag);
+          ?>
+            <a href="<?= $tagHref ?>" class="feed-card__tag"><?= html($tag) ?></a>
           <?php endforeach ?>
         </div>
       <?php endif ?>
@@ -126,8 +130,11 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
     <?php endif ?>
     <?php if (!empty($tags)): ?>
       <div class="feed-card__tags">
-        <?php foreach ($tags as $tag): ?>
-          <span class="feed-card__tag"><?= html($tag) ?></span>
+        <?php foreach ($tags as $tag):
+          $tagMatch = $siteTags->findBy('name', $tag);
+          $tagHref  = $tagMatch ? '/tag/' . $tagMatch->slug()->value() : '/tag/' . Str::slug($tag);
+        ?>
+          <a href="<?= $tagHref ?>" class="feed-card__tag"><?= html($tag) ?></a>
         <?php endforeach ?>
       </div>
     <?php endif ?>

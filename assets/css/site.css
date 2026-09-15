@@ -282,11 +282,12 @@ button { font-family: inherit; cursor: pointer; }
   border-bottom: var(--border);
   max-width: var(--width-header);
   margin: 0 auto;
+  filter: grayscale(1);
 }
 .nav__logo {
-  font-size: var(--size-subtitle);
-  font-weight: var(--weight-regular);
-  letter-spacing: -0.01em;
+  font-weight: var(--weight-xbold);
+  font-size: var(--size-attr-name);
+  letter-spacing: -0.02em;
   color: var(--color-black);
 }
 .nav__logo:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }

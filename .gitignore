@@ -134,13 +134,12 @@ Icon
 # so they deploy automatically instead of depending on server-only files.
 !/content/services
 
-# Structural pages: contact + sector collections ship with the repo
-# so they deploy automatically. Editorial fields have sensible defaults
-# and can be edited in the Panel once live.
+# Structural pages: contact, sector, tag ship with the repo so they
+# deploy automatically. wove-mind is NOT tracked — Karl manages it
+# through the Panel and deploying it caused a duplicate-directory bug.
 !/content/contact
 !/content/sector
 !/content/tag
-!/content/wove-mind
 
 # Config
 # ---------------

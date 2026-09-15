@@ -274,184 +274,44 @@ button { font-family: inherit; cursor: pointer; }
 /* ============================================================
    NAV
    ============================================================ */
-.nav-wrap {
-  position: sticky; top: 0; z-index: 100;
-  padding: var(--space-16) var(--gutter-x);
-  background: transparent;
-}
-/* Case study: nav sits before the hero in document flow (not overlapping
-   it), so a transparent header shows plain white above the hero on load,
-   not the hero's gray — match it explicitly instead. */
-.tpl-case-study .nav-wrap { background: var(--color-200); }
 .nav {
-  max-width: var(--width-header);
-  margin-inline: auto;
-  background: var(--color-white);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-12) var(--space-16);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+  gap: var(--space-32);
+  padding: var(--space-16) var(--gutter-x);
+  border-bottom: var(--border);
+  max-width: var(--width-header);
+  margin: 0 auto;
 }
 .nav__logo {
-  padding-inline: var(--space-24);
-  font-weight: var(--weight-xbold);
-  font-size: var(--size-cta);
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-regular);
+  letter-spacing: -0.01em;
   color: var(--color-black);
-  letter-spacing: -0.02em;
 }
 .nav__logo:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }
-.nav__links { display: flex; gap: var(--space-12); align-items: center; }
+.nav__links { display: flex; gap: var(--space-24); align-items: center; }
 .nav__links a {
-  padding: var(--space-16) var(--space-24);
   font-size: var(--size-nav);
   font-weight: var(--weight-medium);
   color: var(--color-black);
-  border-radius: var(--radius-pill);
-  transition: background-color var(--transition);
-}
-.nav__links a:hover { background: var(--color-off-white); }
-.nav__links a, .nav__dropbtn, .nav__cta { white-space: nowrap; }
-/* Current page — heavier weight, distinct from the grey hover state */
-.nav__links a[aria-current="page"],
-.nav__menu a[aria-current="page"] { font-weight: var(--weight-bold); }
-.nav__links a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.nav__cta {
-  background: var(--color-coral);
-  color: var(--color-black);
-  padding: var(--space-12) var(--space-24);
-  border-radius: var(--radius-pill);
-  font-size: var(--size-nav);
-  font-weight: var(--weight-medium);
   transition: opacity var(--transition);
 }
-.nav__cta:hover { opacity: 0.85; }
+.nav__links a:hover { opacity: 0.6; }
+.nav__links a[aria-current="page"] { font-weight: var(--weight-bold); }
+.nav__links a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__cta {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-weight: var(--weight-medium);
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--color-300);
+  border-radius: var(--radius-pill);
+  color: var(--color-black);
+  transition: all var(--transition);
+}
+.nav__cta:hover { background: var(--color-off-white); }
 .nav__cta:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
-
-/* Mobile nav controls (revealed at ≤599px) */
-.nav__toggle,
-.nav__cta-icon {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 44px; height: 44px;
-  border: none;
-  border-radius: var(--radius-pill);
-}
-.nav__toggle { background: transparent; color: var(--color-black); }
-.nav__toggle:hover { background: var(--color-off-white); }
-.nav__toggle:focus-visible,
-.nav__cta-icon:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.nav__toggle svg { width: 24px; height: 24px; }
-.nav__cta-icon { background: var(--color-coral); color: var(--color-black); transition: opacity var(--transition); }
-.nav__cta-icon:hover { opacity: 0.85; }
-.nav__cta-icon svg { width: 22px; height: 22px; }
-
-.nav__menu {
-  position: absolute;
-  top: 100%;
-  left: var(--gutter-x);
-  right: var(--gutter-x);
-  margin-top: calc(-1 * var(--space-12));
-  background: var(--color-white);
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  padding: var(--space-12);
-  display: none;
-  z-index: 90;
-}
-.nav__menu[hidden] { display: none; }
-.nav__menu a {
-  display: block;
-  padding: var(--space-16);
-  border-radius: var(--radius-sm);
-  font-size: var(--size-p4);
-  font-weight: var(--weight-medium);
-  color: var(--color-black);
-}
-.nav__menu a:hover { background: var(--color-off-white); }
-.nav__menu a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-
-/* Services dropdown (desktop) */
-.nav__has-dropdown { position: relative; }
-.nav__dropbtn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: var(--space-16) var(--space-24);
-  font-family: var(--font);
-  font-size: var(--size-nav);
-  font-weight: var(--weight-medium);
-  color: var(--color-black);
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-pill);
-  transition: background-color var(--transition);
-}
-.nav__dropbtn:hover { background: var(--color-off-white); }
-.nav__dropbtn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.nav__dropbtn svg { width: 12px; height: 12px; transition: transform var(--transition); }
-.nav__has-dropdown:hover .nav__dropbtn svg,
-.nav__dropbtn[aria-expanded="true"] svg { transform: rotate(180deg); }
-.nav__dropdown {
-  position: absolute;
-  top: 100%; left: 0;
-  min-width: 220px;
-  margin-top: var(--space-12);
-  background: var(--color-white);
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  padding: var(--space-12);
-  display: none;
-  z-index: 110;
-}
-/* Invisible hit-area bridging the visual gap above the dropdown — without
-   this, the mouse crosses dead space moving from the trigger down into the
-   menu and :hover drops before the pointer arrives. */
-.nav__dropdown::before {
-  content: '';
-  position: absolute;
-  top: calc(-1 * var(--space-12));
-  left: 0;
-  right: 0;
-  height: var(--space-12);
-}
-.nav__has-dropdown:hover .nav__dropdown,
-.nav__has-dropdown:focus-within .nav__dropdown,
-.nav__dropbtn[aria-expanded="true"] + .nav__dropdown { display: block; }
-.nav__dropdown a {
-  display: flex; align-items: center; gap: var(--space-12);
-  padding: var(--space-12) var(--space-16);
-  border-radius: var(--radius-sm);
-  font-size: var(--size-nav);
-  font-weight: var(--weight-medium);
-  color: var(--color-black);
-  white-space: nowrap;
-  transition: background-color var(--transition);
-}
-.nav__dropdown a:hover { background: var(--color-off-white); }
-.nav__dropdown a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.nav__dropdown img { width: 20px; height: 20px; }
-.nav__links a.nav__link--icon { display: inline-flex; align-items: center; gap: 0.4rem; }
-.nav__link--icon img { width: 20px; height: 20px; }
-
-/* Services submenu (mobile) */
-.nav__menu-sub {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--space-12);
-  width: 100%;
-  padding: var(--space-16);
-  border-radius: var(--radius-sm);
-  background: transparent; border: none;
-  font-family: var(--font);
-  font-size: var(--size-p4); font-weight: var(--weight-medium); color: var(--color-black);
-}
-.nav__menu-sub:hover { background: var(--color-off-white); }
-.nav__menu-sub:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.nav__menu-sub svg { width: 16px; height: 16px; transition: transform var(--transition); }
-.nav__menu-sub[aria-expanded="true"] svg { transform: rotate(180deg); }
-.nav__submenu { padding-left: var(--space-12); }
-.nav__submenu[hidden] { display: none; }
-.nav__menu a.nav__menu-icon { display: flex; align-items: center; gap: var(--space-12); }
-.nav__menu-icon img { width: 20px; height: 20px; }
 
 
 /* ============================================================
@@ -1628,12 +1488,6 @@ button { font-family: inherit; cursor: pointer; }
    ============================================================ */
 @media (max-width: 1439px) {
   .wovemind-post-media { height: 20rem; }
-  /* Tighten the horizontal nav so it fits down to 1280 (generous spacing kept at 1440+) */
-  .nav__logo { padding-inline: var(--space-12); }
-  .nav__links { gap: 0.5rem; }
-  .nav__links a { padding: var(--space-16) var(--space-16); }
-  .nav__dropbtn { padding: var(--space-16) var(--space-16); }
-  .nav__cta { padding: var(--space-12) var(--space-16); }
 }
 
 @media (max-width: 1279px) {
@@ -1641,15 +1495,6 @@ button { font-family: inherit; cursor: pointer; }
   .work-cards { grid-template-columns: repeat(2, 1fr); }
   .home-hero__media { width: 12rem; }
   .wovemind-feed__grid { grid-template-columns: repeat(2, 1fr); }
-  /* Collapse the horizontal nav to the hamburger below 1280 */
-  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-  .nav__links { display: none; }
-  .nav__cta { display: none; }
-  .nav__logo { justify-self: center; padding-inline: 0; }
-  .nav__toggle { display: inline-flex; justify-self: start; }
-  .nav__cta-icon { display: inline-flex; justify-self: end; }
-  .nav__menu { display: block; }
-  .nav__menu[hidden] { display: none; }
 }
 
 @media (max-width: 959px) {

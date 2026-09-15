@@ -10,7 +10,7 @@
  *   - Spark card (.feed-card--spark): text-only quote — sparks without image
  *
  * Format labels shown only for "What If" (blue) and "Long Read" (purple).
- * Editorial tags shown on all types except sparks.
+ * Excerpts shown on whatif and longread cards, omitted from threads.
  */
 
 $format  = $post->format()->value();
@@ -31,9 +31,6 @@ $dateLabel    = match (true) {
   $daysAgo <= 6  => 'Last ' . date('l', $postMidnight),
   default        => date('j M', $postMidnight),
 };
-
-$tags     = $post->tags()->split(',');
-$siteTags = $site->tags()->toStructure();
 
 $showFormat = in_array($format, ['whatif', 'longread']);
 $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
@@ -90,18 +87,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php if ($showFormat): ?>
         <span class="feed-card__format feed-card__format--<?= $format ?>"><?= $formatLabels[$format] ?></span>
       <?php endif ?>
-      <?php if (!empty($tags)): ?>
-        <div class="feed-card__tags">
-          <?php foreach ($tags as $tag):
-            $tagMatch = $siteTags->findBy('name', $tag);
-            $tagHref  = $tagMatch ? '/tag/' . $tagMatch->slug()->value() : '/tag/' . Str::slug($tag);
-          ?>
-            <a href="<?= $tagHref ?>" class="feed-card__tag"><?= html($tag) ?></a>
-          <?php endforeach ?>
-        </div>
-      <?php endif ?>
       <h3 class="feed-card__title"><?= $post->title()->html() ?></h3>
-      <?php if ($post->body()->isNotEmpty()): ?>
+      <?php if ($format !== 'thread' && $post->body()->isNotEmpty()): ?>
         <p class="feed-card__excerpt"><?= $post->body()->excerpt(120) ?></p>
       <?php endif ?>
       <div class="feed-card__meta">
@@ -128,18 +115,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
     <?php if ($showFormat): ?>
       <span class="feed-card__format feed-card__format--<?= $format ?>"><?= $formatLabels[$format] ?></span>
     <?php endif ?>
-    <?php if (!empty($tags)): ?>
-      <div class="feed-card__tags">
-        <?php foreach ($tags as $tag):
-          $tagMatch = $siteTags->findBy('name', $tag);
-          $tagHref  = $tagMatch ? '/tag/' . $tagMatch->slug()->value() : '/tag/' . Str::slug($tag);
-        ?>
-          <a href="<?= $tagHref ?>" class="feed-card__tag"><?= html($tag) ?></a>
-        <?php endforeach ?>
-      </div>
-    <?php endif ?>
     <h3 class="feed-card__title"><?= $post->title()->html() ?></h3>
-    <?php if ($post->body()->isNotEmpty()): ?>
+    <?php if ($format !== 'thread' && $post->body()->isNotEmpty()): ?>
       <p class="feed-card__excerpt"><?= $post->body()->excerpt(120) ?></p>
     <?php endif ?>
     <div class="feed-card__meta">

@@ -1,13 +1,29 @@
 <?php
 /**
- * One-time diagnostic + fix for the duplicate wove-mind directory.
+ * One-time fix for the duplicate wove-mind directory.
  * Visit: https://staging.wove.group/_fix-content.php
  *
- * GET  → shows what's in content/ (diagnosis only)
- * GET ?fix=1 → removes the empty content/wove-mind/ directory
+ * GET       → diagnosis
+ * GET ?fix=1 → removes content/wove-mind/ (the git-deployed duplicate)
  *
  * DELETE THIS FILE after the fix is confirmed.
  */
+
+function rrmdir($dir) {
+    $removed = [];
+    foreach (array_diff(scandir($dir), ['.', '..']) as $item) {
+        $path = $dir . '/' . $item;
+        if (is_dir($path)) {
+            $removed = array_merge($removed, rrmdir($path));
+        } else {
+            unlink($path);
+            $removed[] = $path;
+        }
+    }
+    rmdir($dir);
+    $removed[] = $dir;
+    return $removed;
+}
 
 $contentDir = __DIR__ . '/content';
 $dirs = [];
@@ -29,7 +45,7 @@ header('Content-Type: text/plain; charset=utf-8');
 echo "=== Wove Mind directory diagnosis ===\n\n";
 
 if (empty($dirs)) {
-    echo "No wove-mind directories found in content/. Something else is going on.\n";
+    echo "No wove-mind directories found in content/.\n";
     exit;
 }
 
@@ -41,34 +57,26 @@ foreach ($dirs as $name => $info) {
     echo "\n";
 }
 
-$emptyDraft = isset($dirs['wove-mind']) && $dirs['wove-mind']['count'] <= 1;
-$numbered   = array_filter(array_keys($dirs), fn($d) => preg_match('/^\d+_wove-mind$/', $d));
+$numbered = array_filter(array_keys($dirs), fn($d) => preg_match('/^\d+_wove-mind$/', $d));
+$hasPlain = isset($dirs['wove-mind']);
 
-if ($emptyDraft && !empty($numbered)) {
+if ($hasPlain && !empty($numbered)) {
     $numberedName = reset($numbered);
-    echo "DIAGNOSIS: content/wove-mind/ is the empty duplicate (created by deploy).\n";
-    echo "           content/{$numberedName}/ is Karl's real page with entries.\n\n";
+    echo "DIAGNOSIS: content/{$numberedName}/ is Karl's real page ({$dirs[$numberedName]['count']} entries).\n";
+    echo "           content/wove-mind/ is the git-deployed duplicate ({$dirs['wove-mind']['count']} items — test entries).\n";
+    echo "           Removing content/wove-mind/ will let Kirby resolve to Karl's page.\n\n";
 
     if (isset($_GET['fix']) && $_GET['fix'] === '1') {
         $target = $contentDir . '/wove-mind';
-        $removed = [];
-        foreach (array_diff(scandir($target), ['.', '..']) as $f) {
-            unlink($target . '/' . $f);
-            $removed[] = $f;
-        }
-        if (rmdir($target)) {
-            echo "FIXED: Removed content/wove-mind/ (deleted files: " . implode(', ', $removed) . ")\n";
-            echo "Karl's entries in content/{$numberedName}/ should now be visible.\n";
-            echo "\nReload the Panel and check /wove-mind on the public site.\n";
-        } else {
-            echo "ERROR: Could not remove content/wove-mind/ — it may have subdirectories.\n";
-        }
+        $removed = rrmdir($target);
+        echo "FIXED: Removed content/wove-mind/ (" . count($removed) . " files/dirs deleted)\n\n";
+        echo "Karl's entries in content/{$numberedName}/ should now be visible.\n";
+        echo "Reload the Panel and check /wove-mind on the public site.\n";
     } else {
-        echo "To fix: visit this URL with ?fix=1 appended:\n";
-        echo "  " . strtok($_SERVER['REQUEST_URI'], '?') . "?fix=1\n";
+        echo "To fix: visit this URL with ?fix=1\n";
     }
-} elseif (!$emptyDraft && !empty($numbered)) {
-    echo "DIAGNOSIS: content/wove-mind/ has content too — manual inspection needed.\n";
+} elseif (!$hasPlain && !empty($numbered)) {
+    echo "Only the numbered directory exists — no duplicate. Entries should be working.\n";
 } else {
-    echo "DIAGNOSIS: Only one wove-mind directory found. The issue may be something else.\n";
+    echo "Unexpected state — manual inspection needed.\n";
 }

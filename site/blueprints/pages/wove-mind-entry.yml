@@ -1,0 +1,148 @@
+title: Wove Mind Entry
+
+tabs:
+  content:
+    label: Content
+    icon: page
+
+    columns:
+      main:
+        width: 2/3
+        sections:
+          content:
+            type: fields
+            fields:
+
+              format:
+                label: Format
+                type: select
+                required: true
+                options:
+                  spark: Spark
+                  thread: Thread
+                  whatif: What if
+                  longread: Long read
+
+              title:
+                label: Title
+                type: text
+                info: "Not used for Spark (feed card only, no title shown on the front end) — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
+
+              blocksHeadline:
+                type: headline
+                label: Body Content
+
+              blocks:
+                type: blocks
+                help: Main content of the case study, displayed below the hero.
+
+              body:
+                label: Excerpt
+                type: writer
+                info: "For Thread / What if / Long read only. Not used for Project highlight, which has its own separate Excerpt field above — same `when` limitation as Title above means this can't be conditionally hidden per format, so it still shows there too (and for Spark, where it isn't used either). No longer required, since Project highlight entries won't fill it in."
+                placeholder: Write your entry here.
+                headings:
+                  - 2
+                  - 3
+                  - 4
+                marks:
+                  - bold
+                  - italic
+                  - link
+                nodes:
+                  - heading
+                  - bulletList
+                  - orderedList
+                  - quote
+
+      sidebar:
+        width: 1/3
+        sections:
+
+          image_section:
+            type: fields
+            fields:
+              image:
+                label: Featured image
+                type: files
+                max: 1
+                info: "Not used for Spark — same `when` limitation as Title/Body, shows for every format rather than being conditionally hidden."
+
+          display_section:
+            type: fields
+            fields:
+
+              show_author:
+                label: Show author
+                type: toggle
+                default: true
+
+              author:
+                label: Author
+                type: users
+                max: 1
+                when:
+                  show_author: true
+
+              case_study:
+                label: Relate to case study
+                type: pages
+                # max: 1
+                query: kirby.collection('case-studies')
+                info: Shows on that case study's page
+
+              services:
+                label: Relate to service
+                type: multiselect
+                options:
+                  strategy: Strategy
+                  labs: Labs
+                  digital: Digital
+                  brand: Brand
+                info: Shows on the selected service page(s)
+
+              sectors:
+                label: Sector
+                type: multiselect
+                options:
+                  arts-and-culture: Arts and Culture
+                  public-service: Public Service
+                  higher-education: Higher Education
+                  non-profit: Non-profit and Mission-led
+                  founders-ventures: Founders and Ventures
+                info: Used for sector filtering on the feed and sector collection pages.
+
+          # tags_section:
+          #   type: fields
+          #   fields:
+              tags:
+                label: Tags
+                type: tags
+                accept: all
+                options:
+                  type: query
+                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  text: "{{ item.name }}"
+                  value: "{{ item.name.slug }}"
+                help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.
+
+                # options:
+                #   - PeoplePower
+                #   - SystemChange
+                #   - Climate
+                #   - Education
+                #   - Design
+                #   - WhatIf
+                #   - Nature
+
+              date:
+                label: Published on
+                type: date
+                time: true
+                default: now
+                help: Used for sorting in listings.
+
+      # meta:
+      #   type: meta
+  # SEO tab
+  seo: tabs/seo

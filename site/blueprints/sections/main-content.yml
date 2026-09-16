@@ -1,0 +1,39 @@
+# Main content section
+type: fields
+fields:
+  sectionHeadline:
+    type: headline
+    label: Header Section 
+
+  headline:
+    label: Main page heading (h1)
+    type: text
+    placeholder: "{{ page.title }}"
+    maxlength: 80
+    help: Recommend no more than 50 characters. Leave empty to use the title as headline
+  intro:
+    type: writer
+    placeholder: "Intro or summary paragraph not displayed on the news detail pages, only on news item cards in the listing pages and at the top of regular pages using the default template."
+    maxlength: 500
+    help: Short summary / intro paragraph of approx. 50 words — required for news and podcast listing pages.
+  # background:
+  #   type: toggle
+  #   label: Background color
+  #   text:
+  #     - "dark"
+  #     - "light"
+  #   width: 1/2
+  # addBottomBorder:
+  #   type: toggle
+  #   label: Add bottom border
+  #   text:
+  #     - "no"
+  #     - "yes"
+  #   width: 1/2 
+
+  blocksHeadline:
+    type: headline
+    label: Main content
+  blocks:
+    type: blocks
+    help: Content displayed on the article detail page.

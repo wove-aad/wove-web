@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feed IA — 1c Case Study Collection</title>
+
+<!-- Ballinger (project fonts) -->
+<style>
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+</style>
+
+<style>
+/* ================================================================
+   TOKENS  (shared across all feed mockups)
+   ================================================================ */
+:root {
+  --color-bg:          #131310;
+  --color-surface:     #1b1b17;
+  --color-raised:      #22221d;
+  --color-border:      #2a2a22;
+  --color-border-subtle: rgba(255,255,255,0.06);
+  --color-rule:        rgba(255,255,255,0.08);
+  --color-text:        #f1efe8;
+  --color-text-body:   #fdfcf7;
+  --color-text-muted:  #9a968a;
+  --color-text-dim:    #6e6a5f;
+  --color-text-inverse:#131310;
+  --color-coral:       #ed8c7c;
+  --color-gold:        #e8c888;
+  --color-green:       #9cd3b7;
+  --color-blue:        #c7d0fa;
+  --color-purple:      #c7b4ee;
+
+  --ff:             'Ballinger', sans-serif;
+  --fw-regular:     400;
+  --fw-medium:      500;
+  --fw-semibold:    600;
+  --fw-bold:        700;
+
+  --fs-format:      0.625rem;
+  --fs-label:       0.6875rem;
+  --fs-chip:        0.75rem;
+  --fs-meta:        0.75rem;
+  --fs-excerpt:     0.8125rem;
+  --fs-body:        0.875rem;
+  --fs-nav:         0.9375rem;
+  --fs-card-title:  1.0625rem;
+  --fs-rail-item:   1.0625rem;
+  --fs-feed-h2:     1.25rem;
+  --fs-rail-brand:  1.25rem;
+  --fs-feed-h1:     2rem;
+  --fs-hero:        2.5rem;
+
+  --lh-body:        1.5;
+  --lh-tight:       1.25;
+  --lh-heading:     1.15;
+  --ls-label:       0.08em;
+
+  --space-4:   0.25rem;
+  --space-8:   0.5rem;
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+
+  --page-px:   2rem;
+  --page-py:   2rem;
+  --max-w:     80rem;
+
+  --radius-sm:   0.5rem;
+  --radius-md:   0.75rem;
+  --radius-pill: 999px;
+
+  --border:      1px solid var(--color-border);
+  --border-subtle: 1px solid var(--color-border-subtle);
+  --rule:        1px solid var(--color-rule);
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.2);
+  --transition: 200ms ease;
+}
+
+@media (min-width: 960px)  { :root { --page-px: 3rem; --page-py: 2.5rem; } }
+@media (min-width: 1280px) { :root { --page-px: 5rem; } }
+
+/* RESET */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+ul { list-style: none; }
+
+/* NAV */
+.nav {
+  display: flex; align-items: center; gap: var(--space-32);
+  padding: var(--space-16) var(--page-px);
+  border-bottom: var(--border);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.nav__logo { font-size: var(--fs-rail-brand); font-weight: var(--fw-regular); letter-spacing: -0.01em; }
+.nav__links { display: flex; gap: var(--space-24); font-size: var(--fs-nav); font-weight: var(--fw-medium); }
+.nav__links a { transition: opacity var(--transition); }
+.nav__links a:hover { opacity: 0.6; }
+.nav__cta {
+  margin-left: auto; font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 0.5rem 1.125rem; border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill); transition: all var(--transition);
+}
+.nav__cta:hover { background: rgba(255,255,255,0.06); }
+
+/* BREADCRUMB */
+.breadcrumb {
+  padding: var(--space-16) var(--page-px) 0;
+  max-width: var(--max-w); margin: 0 auto;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  display: flex; align-items: center; gap: var(--space-8);
+}
+.breadcrumb a { color: var(--color-text-muted); transition: color var(--transition); }
+.breadcrumb a:hover { color: var(--color-text); }
+.breadcrumb__sep { color: var(--color-text-dim); }
+
+/* ================================================================
+   CASE STUDY HERO
+   Kirby fields (case-study.yml):
+     eyebrow     → text
+     heroTitle   → text
+     caseStudyImages → files
+     services    → multiselect (strategy, labs, digital, brand)
+     impactAreas → tags multiselect from site taxonomy
+     date        → date
+   ================================================================ */
+.hero {
+  padding: var(--space-40) var(--page-px) 0;
+  max-width: var(--max-w); margin: 0 auto;
+}
+.hero__eyebrow {
+  font-size: var(--fs-label); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--color-coral); margin-bottom: var(--space-12);
+}
+.hero__title {
+  font-size: var(--fs-hero); font-weight: var(--fw-regular);
+  line-height: var(--lh-heading); letter-spacing: -0.02em;
+  max-width: 36rem;
+}
+.hero__services {
+  display: flex; flex-wrap: wrap; gap: var(--space-8);
+  margin-top: var(--space-24);
+}
+.hero__service {
+  font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  background: var(--color-raised); color: var(--color-text-muted);
+}
+
+/* HERO IMAGE */
+.hero__image {
+  margin-top: var(--space-32);
+  padding: 0 var(--page-px);
+  max-width: var(--max-w); margin-left: auto; margin-right: auto;
+}
+.hero__image-inner {
+  aspect-ratio: 21 / 9;
+  background: var(--color-raised);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  overflow: hidden;
+}
+.hero__image-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ================================================================
+   STATS
+   Kirby fields (case-study.yml):
+     stats → structure field:
+       - label: "Schools reached"
+         value: "147"
+       - label: "Students engaged"
+         value: "12,000+"
+   ================================================================ */
+.stats {
+  padding: var(--space-40) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-24);
+}
+.stat {
+  padding: var(--space-16) 0;
+  border-top: var(--border-subtle);
+}
+.stat__value {
+  font-size: var(--fs-feed-h1); font-weight: var(--fw-regular);
+  line-height: var(--lh-heading); letter-spacing: -0.02em;
+  color: var(--color-text-body);
+}
+.stat__label {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  margin-top: var(--space-4);
+}
+
+/* ================================================================
+   TESTIMONIAL
+   Kirby fields (case-study.yml):
+     testimonial → structure field:
+       quote         → textarea
+       name          → text
+       role          → text
+       organisation  → text
+       reference_available → toggle (default true)
+   If testimonial is empty but reference_available is true,
+   render fallback: "References available on request..."
+   ================================================================ */
+.testimonial {
+  padding: var(--space-40) var(--page-px) var(--space-48);
+  max-width: var(--max-w); margin: 0 auto;
+  border-top: var(--rule);
+}
+.testimonial__quote {
+  font-size: var(--fs-feed-h2);
+  font-weight: var(--fw-regular);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--color-text-body);
+  max-width: 42rem;
+  margin-bottom: var(--space-24);
+}
+.testimonial__quote::before { content: '\201C'; }
+.testimonial__quote::after  { content: '\201D'; }
+.testimonial__attribution {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+.testimonial__name { color: var(--color-text-body); }
+.testimonial__reference {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+  margin-top: var(--space-12);
+}
+.testimonial--fallback {
+  padding: var(--space-32) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  border-top: var(--rule);
+}
+.testimonial--fallback p {
+  font-size: var(--fs-body);
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+
+/* ================================================================
+   CASE STUDY BODY (placeholder)
+   Kirby fields: blocks (builder field)
+   ================================================================ */
+.body-section {
+  padding: 0 var(--page-px) var(--space-48);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.body-section__inner {
+  max-width: 42rem;
+}
+.body-section__label {
+  font-size: var(--fs-label); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--color-text-dim); margin-bottom: var(--space-16);
+}
+.body-placeholder {
+  padding: var(--space-48); border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm); text-align: center;
+  color: var(--color-text-dim); font-size: var(--fs-meta);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+}
+
+/* ================================================================
+   RELATED ENTRIES — Wove Mind entries linked to this case study
+   Kirby query:
+     $related = $site->index()
+       ->filterBy('intendedTemplate', 'wove-mind-entry')
+       ->filterBy('case_study', '*=', $page->uri())
+       ->listed()
+       ->sortBy('date', 'desc')
+   Also: entries sharing the same services or impactAreas
+   ================================================================ */
+.related-entries {
+  padding: var(--space-48) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  border-top: var(--rule);
+}
+.related-entries__header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: var(--space-24);
+}
+.related-entries__label {
+  font-size: var(--fs-label); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+.related-entries__title {
+  font-size: var(--fs-feed-h2); font-weight: var(--fw-regular);
+  line-height: var(--lh-tight); letter-spacing: -0.01em;
+}
+.related-entries__link {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  transition: color var(--transition);
+}
+.related-entries__link:hover { color: var(--color-text-muted); }
+
+/* Sector siblings — other collections in the same sector */
+.sector-nav {
+  margin-top: var(--space-40);
+  padding-top: var(--space-24);
+  border-top: var(--border-subtle);
+}
+.sector-nav__label {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+  margin-bottom: var(--space-12);
+}
+.sector-nav__links {
+  display: flex; flex-wrap: wrap; gap: var(--space-8);
+}
+.sector-nav__link {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-border);
+  transition: text-decoration-color var(--transition);
+}
+.sector-nav__link:hover { text-decoration-color: var(--color-text-muted); }
+
+/* Filter chips — sector + services below hero */
+.hero__filters {
+  display: flex; flex-wrap: wrap; gap: var(--space-8);
+  margin-top: var(--space-16);
+}
+.hero__filter {
+  font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  border: var(--border); color: var(--color-text-muted);
+  transition: all var(--transition); cursor: pointer;
+}
+.hero__filter:hover { border-color: var(--color-text-dim); color: var(--color-text); }
+
+.cards {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-16);
+}
+@media (min-width: 600px)  { .cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px)  { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+/* Card styles (shared) */
+.card {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm); overflow: hidden;
+  display: flex; flex-direction: column; cursor: pointer;
+  transition: border-color var(--transition);
+}
+.card:hover { border-color: rgba(255,255,255,0.12); }
+
+.card__media {
+  aspect-ratio: 16 / 10; background: var(--color-raised); position: relative;
+}
+.card__media-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.card__body {
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px; flex: 1;
+}
+.card__format {
+  font-size: var(--fs-format); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+}
+.card__format--whatif    { color: var(--color-blue); }
+.card__format--longread  { color: var(--color-purple); }
+
+.card__title {
+  font-size: var(--fs-card-title); font-weight: var(--fw-regular);
+  line-height: var(--lh-tight); letter-spacing: -0.01em;
+  color: var(--color-text-body);
+}
+.card__excerpt {
+  font-size: var(--fs-excerpt); color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+.card__meta {
+  display: flex; align-items: center; gap: var(--space-8);
+  margin-top: auto; padding-top: var(--space-4);
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.card__author { color: var(--color-text-muted); }
+.card__dot { color: var(--color-text-dim); }
+
+.card__tags { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.card__tag { font-size: var(--fs-meta); color: var(--color-text-dim); }
+.card__tag + .card__tag::before { content: '\00b7'; margin-right: var(--space-4); }
+
+.card--compact {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--transition);
+}
+.card--compact:hover { border-color: rgba(255,255,255,0.12); }
+
+.card--spark {
+  background: var(--color-surface); border: var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--transition);
+}
+.card--spark:hover { border-color: rgba(255,255,255,0.12); }
+.card--spark .card__quote {
+  font-size: var(--fs-card-title); font-weight: var(--fw-regular);
+  line-height: 1.3; letter-spacing: -0.005em;
+  color: var(--color-text-body);
+}
+
+/* ================================================================
+   TEAM
+   Kirby fields (case-study.yml):
+     team → structure field:
+       - name: "Karl Twomey"
+         role: "Strategy Lead"
+     contact → text/email field
+   ================================================================ */
+.team {
+  padding: var(--space-48) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  border-top: var(--rule);
+}
+.team__label {
+  font-size: var(--fs-label); font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--color-text-dim); margin-bottom: var(--space-24);
+}
+.team__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-16);
+}
+.team__member {
+  padding: var(--space-16);
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+}
+.team__avatar {
+  width: 40px; height: 40px;
+  background: var(--color-raised);
+  border-radius: 50%;
+  margin-bottom: var(--space-12);
+}
+.team__name {
+  font-size: var(--fs-body); font-weight: var(--fw-regular);
+  color: var(--color-text-body);
+}
+.team__role {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  margin-top: var(--space-4);
+}
+
+/* FOOTER */
+.footer {
+  border-top: var(--rule);
+  padding: var(--space-40) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.footer__inner {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: var(--space-24);
+}
+.footer__brand {
+  font-weight: var(--fw-semibold); letter-spacing: var(--ls-label);
+  text-transform: uppercase; font-size: var(--fs-label);
+}
+.footer__links { display: flex; gap: var(--space-24); }
+.footer__link {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  transition: color var(--transition);
+}
+.footer__link:hover { color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav__logo">wove</a>
+  <ul class="nav__links">
+    <li><a href="/our-work">Our Work</a></li>
+    <li><a href="/our-people">Our People</a></li>
+  </ul>
+  <a href="/contact" class="nav__cta">Get in touch</a>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="/feed">Feed</a>
+  <span class="breadcrumb__sep">/</span>
+  <a href="/our-work">Our Work</a>
+  <span class="breadcrumb__sep">/</span>
+  <span>National Gallery Learning Programme</span>
+</div>
+
+<!-- ============================================================
+     HERO
+     Kirby data (case-study.yml):
+       $page->eyebrow()        → "National Gallery of Ireland"
+       $page->heroTitle()      → "Reimagining learning..."
+       $page->services()       → strategy, digital
+       $page->caseStudyImages() → hero image
+     ============================================================ -->
+<div class="hero">
+  <div class="hero__eyebrow">National Gallery of Ireland</div>
+  <h1 class="hero__title">Reimagining the learning programme for Ireland's national collection</h1>
+  <div class="hero__services">
+    <span class="hero__service">Strategy</span>
+    <span class="hero__service">Digital</span>
+  </div>
+  <div class="hero__filters">
+    <a href="/sector/arts-and-culture" class="hero__filter">Arts and Culture</a>
+    <a href="/our-work?service=strategy" class="hero__filter">Strategy</a>
+    <a href="/our-work?service=digital" class="hero__filter">Digital</a>
+  </div>
+</div>
+
+<div class="hero__image">
+  <div class="hero__image-inner">hero image</div>
+</div>
+
+<!-- ============================================================
+     STATS
+     Kirby data (case-study.yml):
+       $page->stats()->toStructure()
+         - label / value pairs
+     ============================================================ -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat__value">147</div>
+    <div class="stat__label">Schools reached</div>
+  </div>
+  <div class="stat">
+    <div class="stat__value">12,000+</div>
+    <div class="stat__label">Students engaged</div>
+  </div>
+  <div class="stat">
+    <div class="stat__value">94%</div>
+    <div class="stat__label">Teacher satisfaction</div>
+  </div>
+  <div class="stat">
+    <div class="stat__value">3x</div>
+    <div class="stat__label">Repeat visit rate</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TESTIMONIAL
+     Kirby data (case-study.yml):
+       $page->testimonial()->toStructure()->first()
+       Fallback if empty: reference_available toggle
+     ============================================================ -->
+<div class="testimonial">
+  <p class="testimonial__quote">This programme fundamentally changed how we think about access. The team didn't just deliver a strategy — they helped us build the internal capability to sustain it.</p>
+  <div class="testimonial__attribution">
+    <span class="testimonial__name">Catherine Martin</span>, Director of Learning, National Gallery of Ireland
+  </div>
+  <p class="testimonial__reference">Available as a reference on request</p>
+</div>
+
+<!-- BODY PLACEHOLDER (blocks field) -->
+<div class="body-section">
+  <div class="body-section__inner">
+    <div class="body-section__label">Case Study</div>
+    <div class="body-placeholder">
+      Blocks content rendered here &mdash; text, images, gallery, video, stats
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     RELATED ENTRIES
+     Kirby query:
+       $related = $site->index()
+         ->filterBy('intendedTemplate', 'wove-mind-entry')
+         ->filter(fn($e) =>
+           $e->case_study()->toPages()->has($page) ||
+           array_intersect(
+             $e->services()->split(','),
+             $page->services()->split(',')
+           )
+         )
+         ->listed()
+         ->sortBy('date', 'desc')
+         ->limit(6)
+     ============================================================ -->
+<div class="related-entries">
+  <div class="related-entries__header">
+    <div>
+      <div class="related-entries__label">Explore</div>
+      <h2 class="related-entries__title">In this collection</h2>
+    </div>
+    <a href="/our-work" class="related-entries__link">View all &rarr;</a>
+  </div>
+
+  <div class="cards">
+
+    <!-- Linked via case_study field -->
+    <article class="card">
+      <div class="card__media"><div class="card__media-ph">image</div></div>
+      <div class="card__body">
+        <span class="card__format card__format--longread">Long Read</span>
+        <div class="card__tags">
+          <span class="card__tag">Education</span>
+          <span class="card__tag">Public sector</span>
+        </div>
+        <h3 class="card__title">Reimagining the student journey for a post-pandemic campus</h3>
+        <p class="card__excerpt">An extended look at how universities are rethinking physical and digital touchpoints.</p>
+        <div class="card__meta">
+          <span class="card__author">Grace Mc Ginn</span>
+          <span class="card__dot">&middot;</span>
+          <span>Jul 28</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Shared service area match -->
+    <article class="card--compact">
+      <div class="card__tags">
+        <span class="card__tag">Education</span>
+        <span class="card__tag">Culture</span>
+      </div>
+      <h3 class="card__title">The hidden curriculum: what schools teach without meaning to</h3>
+      <p class="card__excerpt">How spatial design and service patterns shape student behaviour.</p>
+      <div class="card__meta">
+        <span class="card__author">Grace Mc Ginn</span>
+        <span class="card__dot">&middot;</span>
+        <span>Aug 20</span>
+      </div>
+    </article>
+
+    <!-- Spark — no format label, no tags -->
+    <article class="card--spark">
+      <p class="card__quote">"The best learning environments don't feel designed. They feel inevitable."</p>
+      <div class="card__meta">
+        <span class="card__author">Karl Twomey</span>
+        <span class="card__dot">&middot;</span>
+        <span>Aug 5</span>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Sector siblings — other client collections in the same sector -->
+  <div class="sector-nav">
+    <div class="sector-nav__label">Other collections in Arts and Culture</div>
+    <div class="sector-nav__links">
+      <a href="/case-study/irish-museum-of-modern-art" class="sector-nav__link">Irish Museum of Modern Art</a>
+      <a href="/case-study/abbey-theatre" class="sector-nav__link">Abbey Theatre</a>
+      <a href="/case-study/dlr-lexicon" class="sector-nav__link">dlr LexIcon</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     TEAM
+     Kirby data (case-study.yml):
+       $page->team()->toStructure()
+         - name / role pairs
+       $page->contact()
+     ============================================================ -->
+<div class="team">
+  <div class="team__label">Project Team</div>
+  <div class="team__grid">
+    <div class="team__member">
+      <div class="team__avatar"></div>
+      <div class="team__name">Karl Twomey</div>
+      <div class="team__role">Strategy Lead</div>
+    </div>
+    <div class="team__member">
+      <div class="team__avatar"></div>
+      <div class="team__name">Grace Mc Ginn</div>
+      <div class="team__role">Design Lead</div>
+    </div>
+    <div class="team__member">
+      <div class="team__avatar"></div>
+      <div class="team__name">Scott Burnett</div>
+      <div class="team__role">Research</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__brand">Wove &mdash; Strategic Design &amp; Technology</span>
+    <div class="footer__links">
+      <a href="/contact#enquiries" class="footer__link">Enquiries</a>
+      <a href="/contact#tenders" class="footer__link">Tenders</a>
+      <a href="/contact#strategy" class="footer__link">Strategy</a>
+    </div>
+    <span>&copy; 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

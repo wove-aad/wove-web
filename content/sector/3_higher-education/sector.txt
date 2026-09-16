@@ -1,0 +1,17 @@
+Title: Higher Education
+
+----
+
+Headline: Higher Education
+
+----
+
+Intro: Working with universities and institutes of technology to reshape how they plan, communicate, and deliver for students and staff.
+
+----
+
+Sectorkey: higher-education
+
+----
+
+Uuid: sector-higher-ed-001

@@ -50,6 +50,16 @@
             <span class="wove-fchip__count">{{ f.count }}</span>
           </button>
         </div>
+        <div class="wove-filters__spacer" />
+        <label class="wove-search">
+          <span class="wove-search__glyph" aria-hidden="true">⌕</span>
+          <input
+            v-model="searchTerm"
+            type="search"
+            placeholder="Search titles, tags, authors…"
+            aria-label="Search entries"
+          />
+        </label>
       </div>
 
       <template v-if="filteredEntries.length">
@@ -90,7 +100,7 @@
                   <span>{{ entry.author }}</span>
                   <span
                     v-if="entry.wordCount"
-                    style="color: var(--wove-faint)"
+                    style="color: var(--wm-faint)"
                   >
                     · {{ entry.wordCount }} words
                   </span>
@@ -108,6 +118,9 @@
           </div>
         </template>
       </template>
+      <div v-else-if="error" class="wove-empty">
+        {{ error }}
+      </div>
       <div v-else class="wove-empty">
         Nothing here yet. Click "Write something" to get started.
       </div>
@@ -124,10 +137,12 @@ export default {
   props: {
     entries: { type: Array, default: () => [] },
     parent: { type: String, required: true },
+    error: { type: String, default: null },
   },
   data() {
     return {
       activeFilter: "all",
+      searchTerm: "",
     };
   },
   computed: {
@@ -175,13 +190,29 @@ export default {
     },
     filteredEntries() {
       const f = this.activeFilter;
-      if (f === "all") return this.entries;
-      if (f === "mine") return this.entries.filter((e) => e.mine);
-      if (f === "drafts")
-        return this.entries.filter((e) => e.status === "draft");
-      if (f.startsWith("type-"))
-        return this.entries.filter((e) => e.format === f.slice(5));
-      return this.entries;
+      let list = this.entries;
+      if (f === "mine") list = list.filter((e) => e.mine);
+      else if (f === "drafts")
+        list = list.filter((e) => e.status === "draft");
+      else if (f.startsWith("type-"))
+        list = list.filter((e) => e.format === f.slice(5));
+
+      const q = this.searchTerm.trim().toLowerCase();
+      if (q) {
+        list = list.filter((e) => {
+          const hay = [
+            e.title,
+            e.excerpt,
+            e.author,
+            (e.tags || []).join(" "),
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return hay.includes(q);
+        });
+      }
+      return list;
     },
     grouped() {
       return [
@@ -214,20 +245,26 @@ export default {
     },
     async createEntry(format) {
       try {
+        // Kirby Panel API encodes ids by swapping "/" for "+".
+        const parentId = this.parent.replace(/\//g, "+");
+        // Auto-attribute the entry to the signed-in contributor so the
+        // Author field in the blueprint doesn't need to be edited.
+        const authorId = this.$panel?.user?.id;
         const response = await this.$api.post(
-          `pages/${this.parent}/children`,
+          `pages/${parentId}/children`,
           {
-            template: "mind_entry",
+            template: "wove-mind-entry",
             slug: this.generateSlug(format),
             content: {
               title: format === "spark" ? "Spark" : "Untitled",
               format: format,
+              ...(authorId ? { author: [authorId] } : {}),
             },
           }
         );
-        // Response.id is the full page id, e.g. "mind/spark-2026-09-03-abcd"
+        // Response.id is the full page id, e.g. "wove-mind/spark-2026-09-03-abcd"
         const slug = response.slug || response.id.split("/").pop();
-        this.$go(`mind/entry/${slug}`);
+        this.$go(`wove-mind/entry/${slug}`);
       } catch (error) {
         this.$panel.notification.error(
           "Couldn't create the entry: " +

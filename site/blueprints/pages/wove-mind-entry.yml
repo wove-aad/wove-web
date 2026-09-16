@@ -26,7 +26,7 @@ tabs:
               title:
                 label: Title
                 type: text
-                info: "Not used for Spark (feed card only, no title shown on the front end) — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
+                info: "Not used for Spark — but Kirby's `when` only supports matching a single value, not a list, so this can't be conditionally hidden per format. Shows for every format."
 
               blocksHeadline:
                 type: headline
@@ -34,13 +34,13 @@ tabs:
 
               blocks:
                 type: blocks
-                help: Main content of the case study, displayed below the hero.
+                help: Main article content displayed below the hero.
 
               body:
-                label: Excerpt
+                label: Excerpt / Lead
                 type: writer
-                info: "For Thread / What if / Long read only. Not used for Project highlight, which has its own separate Excerpt field above — same `when` limitation as Title above means this can't be conditionally hidden per format, so it still shows there too (and for Spark, where it isn't used either). No longer required, since Project highlight entries won't fill it in."
-                placeholder: Write your entry here.
+                info: "Short intro shown below the title in the hero area. Also used as the meta description fallback if the SEO tab is left empty. For Thread / What if / Long read."
+                placeholder: Write a short intro or excerpt.
                 headings:
                   - 2
                   - 3
@@ -66,9 +66,9 @@ tabs:
                 label: Featured image
                 type: files
                 max: 1
-                info: "Not used for Spark — same `when` limitation as Title/Body, shows for every format rather than being conditionally hidden."
+                info: "Used as the hero image and in structured data. Not used for Spark."
 
-          display_section:
+          author_section:
             type: fields
             fields:
 
@@ -84,10 +84,29 @@ tabs:
                 when:
                   show_author: true
 
+              author_role:
+                label: Author role
+                type: text
+                placeholder: e.g. Strategy Director
+                when:
+                  show_author: true
+                info: Shown in the byline and in structured data for search engines.
+
+              author_bio:
+                label: Author bio
+                type: textarea
+                size: small
+                when:
+                  show_author: true
+                info: Short bio shown at the end of the article.
+
+          display_section:
+            type: fields
+            fields:
+
               case_study:
                 label: Relate to case study
                 type: pages
-                # max: 1
                 query: kirby.collection('case-studies')
                 info: Shows on that case study's page
 
@@ -112,9 +131,6 @@ tabs:
                   founders-ventures: Founders and Ventures
                 info: Used for sector filtering on the feed and sector collection pages.
 
-          # tags_section:
-          #   type: fields
-          #   fields:
               tags:
                 label: Tags
                 type: tags
@@ -126,23 +142,11 @@ tabs:
                   value: "{{ item.name.slug }}"
                 help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.
 
-                # options:
-                #   - PeoplePower
-                #   - SystemChange
-                #   - Climate
-                #   - Education
-                #   - Design
-                #   - WhatIf
-                #   - Nature
-
               date:
                 label: Published on
                 type: date
                 time: true
                 default: now
-                help: Used for sorting in listings.
+                help: Used for sorting in listings and shown as the publish date.
 
-      # meta:
-      #   type: meta
-  # SEO tab
   seo: tabs/seo

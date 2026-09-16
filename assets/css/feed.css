@@ -892,6 +892,121 @@
   margin-top: var(--feed-space-4);
 }
 
+/* --- Entry page (Thread / What if / Long read) -------------------- */
+
+.entry-format {
+  font-size: var(--feed-fs-label); font-weight: var(--feed-fw-semibold);
+  letter-spacing: var(--feed-ls-label); text-transform: uppercase;
+  color: var(--feed-text-muted); margin-bottom: var(--feed-space-12);
+}
+.entry-format--thread  { color: var(--feed-coral); }
+.entry-format--whatif  { color: var(--feed-blue); }
+.entry-format--longread { color: var(--feed-purple); }
+
+.entry-lead {
+  font-size: var(--feed-fs-card-title);
+  font-weight: var(--feed-fw-regular);
+  line-height: var(--feed-lh-body);
+  color: var(--feed-text-muted);
+  max-width: 36rem;
+  margin-top: var(--feed-space-16);
+}
+.entry-lead p:not(:first-child) { margin-top: var(--feed-space-12); }
+
+.entry-byline {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: var(--feed-space-24);
+  margin-top: var(--feed-space-24);
+}
+.entry-byline__author {
+  display: flex; align-items: center; gap: var(--feed-space-12);
+}
+.entry-byline__avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--feed-raised); overflow: hidden; flex-shrink: 0;
+  object-fit: cover;
+}
+.entry-byline__info { display: flex; flex-direction: column; }
+.entry-byline__name {
+  font-size: var(--feed-fs-body); font-weight: var(--feed-fw-medium);
+  color: var(--feed-text-body);
+}
+.entry-byline__role {
+  font-size: var(--feed-fs-meta); color: var(--feed-text-dim);
+}
+.entry-byline__meta {
+  display: flex; align-items: center; gap: var(--feed-space-8);
+  font-size: var(--feed-fs-meta); color: var(--feed-text-dim);
+}
+.entry-byline__dot { color: var(--feed-text-dim); }
+
+/* Tags */
+.entry-tags {
+  padding: var(--feed-space-24) var(--feed-page-px);
+  max-width: var(--feed-max-w); margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: var(--feed-space-8);
+}
+.entry-tag {
+  font-size: var(--feed-fs-chip); font-weight: var(--feed-fw-medium);
+  padding: 4px 12px; border-radius: var(--feed-radius-pill);
+  border: var(--feed-border-line); color: var(--feed-text-muted);
+  transition: all var(--feed-transition);
+}
+.entry-tag:hover { border-color: var(--feed-text-dim); color: var(--feed-text); }
+
+/* Author bio */
+.entry-bio {
+  padding: var(--feed-space-40) var(--feed-page-px);
+  max-width: var(--feed-max-w); margin: 0 auto;
+  border-top: var(--feed-rule-line);
+}
+.entry-bio__label {
+  font-size: var(--feed-fs-label); font-weight: var(--feed-fw-semibold);
+  letter-spacing: var(--feed-ls-label); text-transform: uppercase;
+  color: var(--feed-text-dim); margin-bottom: var(--feed-space-16);
+}
+.entry-bio__card {
+  display: flex; gap: var(--feed-space-16); align-items: flex-start;
+}
+.entry-bio__avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--feed-raised); overflow: hidden; flex-shrink: 0;
+  object-fit: cover;
+}
+.entry-bio__name {
+  font-size: var(--feed-fs-body); font-weight: var(--feed-fw-medium);
+  color: var(--feed-text-body);
+}
+.entry-bio__role {
+  font-size: var(--feed-fs-meta); color: var(--feed-text-dim);
+  margin-top: var(--feed-space-4);
+}
+.entry-bio__text {
+  font-size: var(--feed-fs-body); color: var(--feed-text-muted);
+  line-height: var(--feed-lh-body); margin-top: var(--feed-space-8);
+}
+
+/* Prev / Next pager */
+.entry-pager {
+  padding: var(--feed-space-40) var(--feed-page-px);
+  max-width: var(--feed-max-w); margin: 0 auto;
+  border-top: var(--feed-rule-line);
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--feed-space-24);
+}
+.entry-pager__link {
+  display: flex; flex-direction: column; gap: var(--feed-space-4);
+  transition: color var(--feed-transition);
+}
+.entry-pager__link:hover { color: var(--feed-text-body); }
+.entry-pager__link--next { text-align: right; }
+.entry-pager__dir {
+  font-size: var(--feed-fs-meta); color: var(--feed-text-dim);
+}
+.entry-pager__name {
+  font-size: var(--feed-fs-body); font-weight: var(--feed-fw-regular);
+  color: var(--feed-text-muted); line-height: var(--feed-lh-tight);
+}
+
 /* --- Tag destination page ---------------------------------------- */
 
 /* Breadcrumb */

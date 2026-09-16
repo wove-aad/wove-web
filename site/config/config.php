@@ -28,6 +28,7 @@
  * this file, so the reason this was historically gitignored still holds.
  */
 return [
+    'home' => 'wove-mind',
     'debug' => true,
     'auth' => [
       'methods' => ['password', 'password-reset']

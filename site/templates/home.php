@@ -1,4 +1,4 @@
-<?php snippet('header') ?>
+<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
 
 <main id="main">
 
@@ -72,35 +72,104 @@
   </section>
 
 
-  <!-- RECENT WORK — Kirby case-studies collection embed -->
+  <!-- MIXED FEED -->
   <?php
-    $recentCaseStudies = kirby()->collection('case-studies')->limit(4);
-  ?>
-  <?php if ($recentCaseStudies->count()): ?>
-  <section class="section container" aria-labelledby="recent-work-heading">
-    <div class="section-title">
-      <p class="section-title__eyebrow">Recent work</p>
-      <h2 class="section-title__heading" id="recent-work-heading">Delivering change for clients right across Irish society</h2>
-    </div>
+    $caseStudies = kirby()->collection('case-studies');
+    $wmParent    = $site->find('wove-mind');
+    $wmEntries   = $wmParent
+      ? $wmParent->children()->listed()->sortBy('date', 'desc')
+      : new \Kirby\Cms\Pages();
 
-    <div class="work-cards">
-      <?php foreach ($recentCaseStudies as $caseStudy): ?>
-        <?php $image = $caseStudy->caseStudyImages()->toFile() ?>
-        <a href="<?= $caseStudy->url() ?>" class="work-card">
-          <div class="work-card__media">
-            <?php if ($image): ?>
-              <img src="<?= $image->url() ?>" alt="" width="280" height="280" loading="lazy">
-            <?php endif ?>
+    $feedItems = [];
+    foreach ($caseStudies as $cs) {
+      $feedItems[] = ['entry' => $cs, 'date' => $cs->date()->toDate('U') ?: 0];
+    }
+    foreach ($wmEntries as $e) {
+      $feedItems[] = ['entry' => $e, 'date' => $e->date()->toDate('U') ?: 0];
+    }
+    usort($feedItems, fn ($a, $b) => $b['date'] <=> $a['date']);
+
+    $feedMax   = 12;
+    $feedItems = array_slice($feedItems, 0, $feedMax);
+
+    $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
+    $sectorLabels  = [
+      'arts-and-culture'  => 'Arts and Culture',
+      'public-service'    => 'Public Service',
+      'higher-education'  => 'Higher Education',
+      'non-profit'        => 'Non-profit and Mission-led',
+      'founders-ventures' => 'Founders and Ventures',
+    ];
+    $tagStructure  = $site->tags()->toStructure();
+
+    $usedServices = [];
+    $usedSectors  = [];
+    $usedTags     = [];
+    foreach ($feedItems as $item) {
+      $e = $item['entry'];
+      foreach ($e->services()->split(',') as $s) {
+        $s = trim($s);
+        if ($s && isset($serviceLabels[$s])) $usedServices[$s] = $serviceLabels[$s];
+      }
+      foreach ($e->sectors()->split(',') as $s) {
+        $s = trim($s);
+        if ($s && isset($sectorLabels[$s])) $usedSectors[$s] = $sectorLabels[$s];
+      }
+      $tagField = $e->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
+      foreach ($e->content()->get($tagField)->split(',') as $t) {
+        $t = trim($t);
+        if (!$t) continue;
+        $tag = $tagStructure->findBy('slug', $t) ?: $tagStructure->findBy('name', $t);
+        if ($tag && $tag->active()->toBool() !== false) {
+          $usedTags[$tag->slug()->value()] = $tag->name()->value();
+        }
+      }
+    }
+  ?>
+  <div class="feed-wrap home-feed">
+    <section class="home-feed__shell" aria-labelledby="home-feed-heading">
+      <aside class="home-feed__rail" aria-label="Filter">
+        <h2 class="home-feed__rail-title" id="home-feed-heading">Stream</h2>
+        <div class="home-feed__pills">
+          <button class="tag-pill is-active" data-filter="*" type="button">All</button>
+          <?php foreach ($usedServices as $slug => $label): ?>
+            <button class="tag-pill" data-filter="service:<?= $slug ?>" type="button"><?= html($label) ?></button>
+          <?php endforeach ?>
+          <?php foreach ($usedSectors as $slug => $label): ?>
+            <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
+          <?php endforeach ?>
+          <?php foreach ($usedTags as $slug => $label): ?>
+            <button class="tag-pill" data-filter="tag:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+          <?php endforeach ?>
+        </div>
+      </aside>
+
+      <div class="home-feed__main">
+        <div class="home-feed__grid">
+          <?php foreach ($feedItems as $item):
+            $e = $item['entry'];
+            $services = implode(',', array_filter(array_map('trim', $e->services()->split(','))));
+            $sectors  = implode(',', array_filter(array_map('trim', $e->sectors()->split(','))));
+            $tagField = $e->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
+            $eTags    = implode(',', array_filter(array_map('trim', $e->content()->get($tagField)->split(','))));
+          ?>
+            <div class="home-feed__item"
+                 data-services="<?= html($services) ?>"
+                 data-sectors="<?= html($sectors) ?>"
+                 data-tags="<?= html($eTags) ?>">
+              <?php snippet('stream-card', ['post' => $e]) ?>
+            </div>
+          <?php endforeach ?>
+        </div>
+
+        <?php if ($caseStudies->count() + $wmEntries->count() > $feedMax): ?>
+          <div class="home-feed__more">
+            <a href="/our-work" class="home-feed__more-btn">See all work &rarr;</a>
           </div>
-          <div class="work-card__body">
-            <p class="work-card__title"><?= $caseStudy->heroTitle() ?></p>
-            <span class="btn btn--ghost btn--sm">Read more <span aria-hidden="true">&rarr;</span></span>
-          </div>
-        </a>
-      <?php endforeach ?>
-    </div>
-  </section>
-  <?php endif ?>
+        <?php endif ?>
+      </div>
+    </section>
+  </div>
 
 
   <!-- WHO WE WORK WITH -->
@@ -154,6 +223,40 @@
   </section>
 
 </main>
+
+<script>
+(function() {
+  var h = new Date().getHours();
+  if (h >= 7 && h < 19) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var pills = document.querySelectorAll('.home-feed__pills .tag-pill');
+  var items = document.querySelectorAll('.home-feed__item');
+  if (!pills.length || !items.length) return;
+
+  pills.forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      pills.forEach(function (p) { p.classList.remove('is-active'); });
+      pill.classList.add('is-active');
+      var filter = pill.getAttribute('data-filter');
+
+      items.forEach(function (item) {
+        if (filter === '*') { item.hidden = false; return; }
+        var parts = filter.split(':');
+        var type  = parts[0];
+        var value = parts[1];
+        var attr  = item.getAttribute('data-' + type + 's') || '';
+        item.hidden = attr.split(',').indexOf(value) === -1;
+      });
+    });
+  });
+})();
+</script>
 
 <?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

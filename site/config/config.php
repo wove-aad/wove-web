@@ -227,6 +227,12 @@ return [
     // ],
     'routes' => [
         [
+            'pattern' => 'our-work',
+            'action'  => function () {
+                return page('work');
+            }
+        ],
+        [
             'pattern' => 'robots.txt',
             'action'  => function() {
                 $content = snippet('robots', ['production' => true], true);

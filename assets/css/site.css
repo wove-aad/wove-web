@@ -1575,3 +1575,125 @@ button { font-family: inherit; cursor: pointer; }
   .wovemind-feed__grid { grid-template-columns: 1fr; }
   .newsletter__form { flex-direction: column; align-items: stretch; }
 }
+
+
+/* ============================================================
+   OUR WORK — tag-cloud filter pills + 3-col case study grid
+   Template: site/templates/work.php
+   ============================================================ */
+
+/* Filter bar — flat pills, no stroke */
+.our-work-filter {
+  padding-block: var(--space-16);
+  padding-inline: var(--gutter-x);
+}
+.our-work-filter__inner {
+  max-width: var(--width-block);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+.work-pill {
+  font-family: var(--font);
+  font-size: var(--size-btn-sm);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+  background: var(--color-200);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-12) var(--space-24);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+.work-pill:hover { background: var(--color-300); color: var(--color-black); }
+.work-pill:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.work-pill.is-active {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+.work-pill.is-active:hover { opacity: 0.85; }
+
+/* 3-col card grid */
+.our-work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-32);
+}
+.our-work-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--size-p2);
+  padding-block: var(--rhythm-md);
+}
+
+/* Card */
+.work-grid-card {
+  display: block;
+  transition: transform var(--card-transition), box-shadow var(--card-transition);
+}
+.work-grid-card:hover {
+  transform: translateY(var(--card-lift));
+  box-shadow: var(--card-shadow-hover);
+}
+.work-grid-card__media {
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-200);
+}
+.work-grid-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.work-grid-card__body {
+  margin-top: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.work-grid-card__client {
+  font-size: var(--size-p4-bold);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-p4);
+  color: var(--color-black);
+}
+.work-grid-card__desc {
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-subtitle);
+  color: var(--color-text-muted);
+}
+
+/* Reveal animation */
+.js .work-grid-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.js .work-grid-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.js .our-work-grid .work-grid-card:nth-child(2) { transition-delay: 80ms; }
+.js .our-work-grid .work-grid-card:nth-child(3) { transition-delay: 160ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+1) { transition-delay: 0ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+2) { transition-delay: 80ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+3) { transition-delay: 160ms; }
+
+/* Hidden cards (filtered out) */
+.work-grid-card[hidden] { display: none; }
+
+/* Responsive */
+@media (max-width: 1279px) {
+  .our-work-grid { grid-template-columns: repeat(2, 1fr); }
+  .js .our-work-grid .work-grid-card:nth-child(3n+1) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(3n+2) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(3n+3) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(2n+1) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(2n+2) { transition-delay: 80ms; }
+}
+@media (max-width: 599px) {
+  .our-work-grid { grid-template-columns: 1fr; }
+  .our-work-filter__inner { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .our-work-filter__inner::-webkit-scrollbar { display: none; }
+  .work-pill { white-space: nowrap; }
+  .js .our-work-grid .work-grid-card { transition-delay: 0ms; }
+}

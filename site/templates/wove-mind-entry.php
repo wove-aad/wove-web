@@ -136,12 +136,38 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
       <div class="entry-lead"><?= $page->body() ?></div>
     <?php endif ?>
 
-    <?php if ($serviceTags): ?>
-      <div class="cs-hero__services">
-        <?php foreach ($serviceTags as $label): ?>
-          <span class="cs-hero__service"><?= html($label) ?></span>
+    <?php
+      $cloudPills = [];
+      foreach ($serviceSlugs as $sSlug) {
+        $cloudPills[] = ['label' => $serviceLabels[$sSlug] ?? ucfirst($sSlug), 'url' => '/services/' . $sSlug];
+      }
+      $sectorLabels = [
+        'arts-and-culture'  => 'Arts and Culture',
+        'public-service'    => 'Public Service',
+        'higher-education'  => 'Higher Education',
+        'non-profit'        => 'Non-profit and Mission-led',
+        'founders-ventures' => 'Founders and Ventures',
+      ];
+      foreach ($page->sectors()->split(',') as $sec) {
+        $sec = trim($sec);
+        if ($sec && isset($sectorLabels[$sec])) {
+          $cloudPills[] = ['label' => $sectorLabels[$sec], 'url' => '/tag/' . $sec];
+        }
+      }
+      $tagStructureCloud = $site->tags()->toStructure();
+      foreach ($tags as $t) {
+        $tagData = $tagStructureCloud->findBy('slug', Str::slug($t)) ?: $tagStructureCloud->findBy('name', $t);
+        $tagSlug = $tagData ? $tagData->slug()->value() : Str::slug($t);
+        $tagLabel = $tagData ? $tagData->name()->value() : $t;
+        $cloudPills[] = ['label' => $tagLabel, 'url' => '/tag/' . $tagSlug];
+      }
+    ?>
+    <?php if ($cloudPills): ?>
+      <nav class="tag-cloud" aria-label="Tags">
+        <?php foreach ($cloudPills as $pill): ?>
+          <a href="<?= $pill['url'] ?>" class="tag-pill"><?= html($pill['label']) ?></a>
         <?php endforeach ?>
-      </div>
+      </nav>
     <?php endif ?>
 
     <div class="entry-byline">
@@ -186,18 +212,6 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     </div>
   </article>
 
-  <?php if ($tags): ?>
-    <div class="entry-tags">
-      <?php
-        $tagStructure = $site->tags()->toStructure();
-        foreach ($tags as $tag):
-          $tagData = $tagStructure->findBy('slug', Str::slug($tag));
-          $tagSlug = $tagData ? $tagData->slug() : Str::slug($tag);
-      ?>
-        <a href="/tag/<?= $tagSlug ?>" class="entry-tag"><?= html($tag) ?></a>
-      <?php endforeach ?>
-    </div>
-  <?php endif ?>
 
   <?php if ($author): ?>
     <div class="entry-bio">

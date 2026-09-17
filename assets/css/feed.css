@@ -1351,12 +1351,73 @@
 .home-feed__more-btn:hover { color: var(--feed-text); }
 
 /* --- Site footer (4-column info block + legal bar) --------------- */
+/* Self-contained: defines its own tokens so it works outside .feed-wrap */
 .site-footer {
+  --feed-bg:          #131310;
+  --feed-surface:     #1b1b17;
+  --feed-raised:      #22221d;
+  --feed-border:      #2a2a22;
+  --feed-border-subtle: rgba(255,255,255,0.06);
+  --feed-rule:        rgba(255,255,255,0.08);
+  --feed-text:        #f5f4ef;
+  --feed-text-body:   #fefdfb;
+  --feed-text-muted:  #b0ab9f;
+  --feed-text-dim:    #847f73;
+  --feed-text-inverse:#131310;
+  --feed-ff:          'Ballinger', sans-serif;
+  --feed-fw-medium:   500;
+  --feed-fw-semibold: 600;
+  --feed-fw-bold:     700;
+  --feed-fs-meta:     0.8125rem;
+  --feed-fs-body:     0.9375rem;
+  --feed-fs-label:    0.75rem;
+  --feed-fs-card-title: 1.125rem;
+  --feed-ls-label:    0.08em;
+  --feed-lh-tight:    1.3;
+  --feed-space-4:     0.25rem;
+  --feed-space-8:     0.5rem;
+  --feed-space-16:    1rem;
+  --feed-space-24:    1.5rem;
+  --feed-space-32:    2rem;
+  --feed-space-40:    3rem;
+  --feed-space-48:    3.5rem;
+  --feed-space-64:    5rem;
+  --feed-page-px:     1rem;
+  --feed-max-w:       85rem;
+  --feed-radius-sm:   0.5rem;
+  --feed-rule-line:   1px solid var(--feed-rule);
+  --feed-border-subtle-line: 1px solid var(--feed-border-subtle);
+  --feed-transition:  200ms ease;
+
+  background: var(--feed-bg);
+  color: var(--feed-text);
+  font-family: var(--feed-ff);
+  -webkit-font-smoothing: antialiased;
   border-top: var(--feed-rule-line);
   padding: var(--feed-space-64) var(--feed-page-px) 0;
+  max-width: none;
+}
+.site-footer > * {
   max-width: var(--feed-max-w);
   margin: 0 auto;
 }
+.site-footer a { color: inherit; text-decoration: none; }
+[data-theme="light"] .site-footer {
+  --feed-bg:          #f5f4f0;
+  --feed-surface:     #ffffff;
+  --feed-raised:      #eeeee9;
+  --feed-border:      #ddddd5;
+  --feed-border-subtle: rgba(0,0,0,0.06);
+  --feed-rule:        rgba(0,0,0,0.08);
+  --feed-text:        #1b1b17;
+  --feed-text-body:   #0e0e0b;
+  --feed-text-muted:  #555148;
+  --feed-text-dim:    #847f73;
+  --feed-text-inverse:#f1efe8;
+}
+@media (min-width: 600px)  { .site-footer { --feed-page-px: 1.5rem; } }
+@media (min-width: 960px)  { .site-footer { --feed-page-px: 2rem; } }
+@media (min-width: 1280px) { .site-footer { --feed-page-px: 3rem; } }
 .site-footer__main {
   display: grid;
   grid-template-columns: 1fr;

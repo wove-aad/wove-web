@@ -15,7 +15,6 @@ $latestWm = $wmParent
   : null;
 ?>
 
-<div class="feed-wrap">
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__main">
 
@@ -64,7 +63,6 @@ $latestWm = $wmParent
     <span>&copy; <?= date('Y') ?></span>
   </div>
 </footer>
-</div>
 
 </body>
 </html>

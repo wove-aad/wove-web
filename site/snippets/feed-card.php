@@ -15,7 +15,7 @@
 
 $format  = $post->format()->value();
 $isSpark = $format === 'spark';
-$isLinked = in_array($format, ['thread', 'whatif', 'longread']);
+$isLinked = in_array($format, ['thread', 'whatif', 'longread', 'project-highlight']);
 
 $image = $post->content()->get('image')->toFile();
 

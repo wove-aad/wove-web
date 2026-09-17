@@ -146,13 +146,6 @@ $partner = $page->strategy_partner()->toUser();
 
   </div>
 
-  <footer class="feed-footer">
-    <div class="feed-footer__inner">
-      <span class="feed-footer__brand"><?= $site->title()->html() ?> &mdash; Strategic Design &amp; Technology</span>
-      <span>&copy; <?= date('Y') ?></span>
-    </div>
-  </footer>
-
 </div>
 
 <script>

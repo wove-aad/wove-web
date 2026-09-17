@@ -255,18 +255,6 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     </div>
   <?php endif ?>
 
-  <footer class="feed-footer">
-    <div class="feed-footer__inner">
-      <span class="feed-footer__brand"><?= $site->title()->html() ?> &mdash; Strategic Design &amp; Technology</span>
-      <div class="feed-footer__links">
-        <a href="/contact#enquiries" class="feed-footer__link">Enquiries</a>
-        <a href="/contact#tenders" class="feed-footer__link">Tenders</a>
-        <a href="/contact#strategy" class="feed-footer__link">Strategy</a>
-      </div>
-      <span>&copy; <?= date('Y') ?></span>
-    </div>
-  </footer>
-
 </div>
 
 <script>

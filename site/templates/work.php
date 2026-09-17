@@ -41,12 +41,6 @@ foreach ($caseStudies as $cs) {
 
 <div class="feed-wrap">
 
-  <nav class="tag-breadcrumb" aria-label="Breadcrumb">
-    <a href="/wove-mind">Feed</a>
-    <span class="tag-breadcrumb__sep">/</span>
-    <span>Our Work</span>
-  </nav>
-
   <div class="tag-hero">
     <h1 class="tag-hero__name">Our Work</h1>
     <div class="tag-hero__meta">

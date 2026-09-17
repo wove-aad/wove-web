@@ -1,6 +1,6 @@
 <?php
 /**
- * Our Work — case study portfolio grid with tag-cloud filtering
+ * Our Work — mixed feed of case studies + wove mind entries
  * File: site/templates/work.php
  *
  * Uses the feed design system (dark-first, time-of-day light mode).
@@ -8,6 +8,19 @@
  */
 
 $caseStudies = kirby()->collection('case-studies');
+$wmParent    = $site->find('wove-mind');
+$wmEntries   = $wmParent
+  ? $wmParent->children()->listed()->sortBy('date', 'desc')
+  : new \Kirby\Cms\Pages();
+
+$feedItems = [];
+foreach ($caseStudies as $cs) {
+  $feedItems[] = ['entry' => $cs, 'date' => $cs->date()->toDate('U') ?: 0];
+}
+foreach ($wmEntries as $e) {
+  $feedItems[] = ['entry' => $e, 'date' => $e->date()->toDate('U') ?: 0];
+}
+usort($feedItems, fn ($a, $b) => $b['date'] <=> $a['date']);
 
 $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
 $sectorLabels = [
@@ -23,28 +36,38 @@ $usedServices = [];
 $usedSectors  = [];
 $usedTags     = [];
 
-foreach ($caseStudies as $cs) {
-  foreach ($cs->services()->split(',') as $s) {
-    if (isset($serviceLabels[$s])) $usedServices[$s] = $serviceLabels[$s];
+foreach ($feedItems as $item) {
+  $e = $item['entry'];
+  foreach ($e->services()->split(',') as $s) {
+    $s = trim($s);
+    if ($s && isset($serviceLabels[$s])) $usedServices[$s] = $serviceLabels[$s];
   }
-  foreach ($cs->sectors()->split(',') as $s) {
-    if (isset($sectorLabels[$s])) $usedSectors[$s] = $sectorLabels[$s];
+  foreach ($e->sectors()->split(',') as $s) {
+    $s = trim($s);
+    if ($s && isset($sectorLabels[$s])) $usedSectors[$s] = $sectorLabels[$s];
   }
-  foreach ($cs->impactAreas()->split(',') as $slug) {
-    $tag = $tagStructure->findBy('slug', $slug);
-    if ($tag) $usedTags[$slug] = $tag->name()->value();
+  $tagField = $e->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
+  foreach ($e->content()->get($tagField)->split(',') as $t) {
+    $t = trim($t);
+    if (!$t) continue;
+    $tag = $tagStructure->findBy('slug', $t) ?: $tagStructure->findBy('name', $t);
+    if ($tag && $tag->active()->toBool() !== false) {
+      $usedTags[$tag->slug()->value()] = $tag->name()->value();
+    }
   }
 }
+
+$totalCount = count($feedItems);
 ?>
 
-<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
+<?php snippet('header') ?>
 
 <div class="feed-wrap">
 
   <div class="tag-hero">
     <h1 class="tag-hero__name">Our Work</h1>
     <div class="tag-hero__meta">
-      <?= $caseStudies->count() ?> case stud<?= $caseStudies->count() === 1 ? 'y' : 'ies' ?>
+      <?= $totalCount ?> entr<?= $totalCount === 1 ? 'y' : 'ies' ?>
     </div>
   </div>
 
@@ -64,14 +87,25 @@ foreach ($caseStudies as $cs) {
   <?php endif ?>
 
   <div class="tag-grid">
-    <div class="our-work-grid">
-      <?php foreach ($caseStudies as $cs): ?>
-        <?php snippet('work-grid-card', ['caseStudy' => $cs]) ?>
+    <div class="stream-grid">
+      <?php foreach ($feedItems as $item):
+        $e = $item['entry'];
+        $services = implode(',', array_filter(array_map('trim', $e->services()->split(','))));
+        $sectors  = implode(',', array_filter(array_map('trim', $e->sectors()->split(','))));
+        $tagField = $e->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
+        $eTags    = implode(',', array_filter(array_map('trim', $e->content()->get($tagField)->split(','))));
+      ?>
+        <div class="work-feed-item"
+             data-services="<?= html($services) ?>"
+             data-sectors="<?= html($sectors) ?>"
+             data-tags="<?= html($eTags) ?>">
+          <?php snippet('stream-card', ['post' => $e]) ?>
+        </div>
       <?php endforeach ?>
     </div>
 
-    <?php if ($caseStudies->count() === 0): ?>
-      <p class="our-work-empty">No case studies published yet.</p>
+    <?php if ($totalCount === 0): ?>
+      <p class="our-work-empty">No entries published yet.</p>
     <?php endif ?>
   </div>
 
@@ -89,8 +123,8 @@ foreach ($caseStudies as $cs) {
 <script>
 (function () {
   var pills = document.querySelectorAll('.tag-pill');
-  var cards = document.querySelectorAll('.work-grid-card');
-  if (!pills.length || !cards.length) return;
+  var items = document.querySelectorAll('.work-feed-item');
+  if (!pills.length || !items.length) return;
 
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
@@ -98,32 +132,16 @@ foreach ($caseStudies as $cs) {
       pill.classList.add('is-active');
       var filter = pill.getAttribute('data-filter');
 
-      cards.forEach(function (card) {
-        if (filter === '*') { card.hidden = false; return; }
+      items.forEach(function (item) {
+        if (filter === '*') { item.hidden = false; return; }
         var parts = filter.split(':');
-        var type = parts[0];
+        var type  = parts[0];
         var value = parts[1];
-        var attr = card.getAttribute('data-' + type + 's') || '';
-        card.hidden = attr.split(',').indexOf(value) === -1;
+        var attr  = item.getAttribute('data-' + type + 's') || '';
+        item.hidden = attr.split(',').indexOf(value) === -1;
       });
     });
   });
-
-  var revealTargets = document.querySelectorAll('.work-grid-card');
-  if (!revealTargets.length) return;
-  if (!('IntersectionObserver' in window)) {
-    revealTargets.forEach(function (el) { el.classList.add('is-visible'); });
-    return;
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
-  revealTargets.forEach(function (el) { io.observe(el); });
 })();
 </script>
 

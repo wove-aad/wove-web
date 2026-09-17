@@ -772,73 +772,7 @@ button { font-family: inherit; cursor: pointer; }
 .tooltip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 
 
-/* ============================================================
-   FOOTER  (first pass — not from a Figma frame yet)
-   ============================================================ */
-.footer {
-  background: var(--color-black);
-  color: var(--color-white);
-  padding-top: var(--rhythm-lg);
-  margin-top: var(--rhythm-lg);
-}
-.footer a { color: var(--color-white); }
-.footer a:focus-visible { outline: 2px solid var(--color-white); outline-offset: 4px; border-radius: 2px; }
-.footer__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-48);
-  padding-bottom: var(--rhythm-md);
-}
-.footer__brand { max-width: 22rem; }
-.footer__nav {
-  display: flex;
-  gap: var(--space-48);
-  flex-wrap: wrap;
-}
-.footer__nav .footer__col { flex: 1; min-width: 8rem; }
-.footer__bcorp { display: block; margin-top: var(--space-32); height: 72px; width: auto; filter: brightness(0) invert(1); }
-.footer__logo {
-  font-weight: var(--weight-xbold);
-  font-size: var(--size-attr-name);
-  letter-spacing: -0.02em;
-  color: var(--color-white);
-}
-.footer__tagline {
-  margin-top: var(--space-16);
-  font-size: var(--size-p4);
-  line-height: var(--lh-p4);
-  color: rgba(255,255,255,0.7);
-}
-.footer__heading {
-  font-size: var(--size-btn-sm);
-  font-weight: var(--weight-xbold);
-  color: rgba(255,255,255,0.55);
-  margin-bottom: var(--space-16);
-}
-.footer__col ul { display: flex; flex-direction: column; gap: var(--space-12); }
-.footer__col a,
-.footer__meta a {
-  font-size: var(--size-p4);
-  opacity: 0.8;
-  transition: opacity var(--transition);
-}
-.footer__col a:hover,
-.footer__meta a:hover { opacity: 1; }
-.footer__col ul.footer__social { flex-direction: row; gap: var(--space-16); }
-.footer__social a { display: inline-flex; }
-.footer__social svg { width: 24px; height: 24px; }
-.footer__email { display: inline-block; margin-top: var(--space-16); }
-.footer__bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-24);
-  padding-top: var(--space-32);
-  padding-bottom: var(--rhythm-md);
-  border-top: 1px solid rgba(255,255,255,0.15);
-}
-.footer__legal { font-size: var(--size-p4); color: rgba(255,255,255,0.7); }
-.footer__meta { display: flex; gap: var(--space-24); }
+/* Old footer styles removed — now handled by site-footer in feed.css */
 
 
 /* ============================================================
@@ -1449,7 +1383,6 @@ button { font-family: inherit; cursor: pointer; }
 }
 /* No gap to the footer that follows — this page's last section should
    flow straight into it, not leave a strip of page background showing. */
-.tpl-wove-mind .footer { margin-top: 0; }
 .newsletter__content { max-width: var(--width-content); }
 .newsletter__heading {
   font-size: var(--size-h5);
@@ -1504,7 +1437,6 @@ button { font-family: inherit; cursor: pointer; }
   .wovemind-cards { grid-template-columns: 1fr; gap: var(--space-48); }
   .feature-card__foot { flex-direction: column; align-items: flex-start; }
   .contact__inner { flex-direction: column; }
-  .footer__inner { grid-template-columns: 1fr; }
   .case-study-overview { grid-template-columns: 1fr; gap: var(--space-48); }
   .case-study-blocks { max-width: none; }
   .case-study-stats { grid-template-columns: 1fr; }
@@ -1559,9 +1491,6 @@ button { font-family: inherit; cursor: pointer; }
   .wovemind-highlight-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
   .quote__role { font-size: 1.375rem; } /* 22px, was 24 */
   .contact__avatar { width: 120px; height: 120px; }
-  .footer__inner { grid-template-columns: 1fr; gap: var(--space-32); }
-  .footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-32); }
-  .footer__bar { flex-direction: column; align-items: flex-start; gap: var(--space-16); }
   /* Step medium buttons down to small on mobile (mirrors home's lg → md),
      with padding bumped one increment all round for comfortable tap targets */
   .btn--sm { padding: var(--space-16) var(--space-24); }

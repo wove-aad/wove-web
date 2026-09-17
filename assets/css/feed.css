@@ -1215,6 +1215,7 @@
   color: var(--feed-text-muted);
 }
 .feed-wrap .work-grid-card[hidden] { display: none; }
+.work-feed-item[hidden] { display: none; }
 .js .feed-wrap .work-grid-card {
   opacity: 0;
   transform: translateY(16px);

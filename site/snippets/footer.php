@@ -22,7 +22,7 @@ $latestWm = $wmParent
     <div class="site-footer__col site-footer__col--about">
       <p class="site-footer__statement">Over 20 years partnering with clients across the civic, cultural and independent business sectors</p>
       <a href="/" class="site-footer__wordmark" aria-label="Wove, go to homepage">wove</a>
-      <p class="site-footer__sub">strategic design &amp; technology</p>
+      <p class="site-footer__sub">Strategic Design &amp; Technology</p>
     </div>
 
     <div class="site-footer__col site-footer__col--positions">

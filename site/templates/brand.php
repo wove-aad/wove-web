@@ -1,145 +1,76 @@
-<?php snippet('header') ?>
+<?php
+/**
+ * Brand service page — simplified filtered view
+ * File: site/templates/brand.php
+ */
 
-<main id="main">
+$serviceSlug = 'brand';
 
-  <!-- PAGE HEAD -->
-  <header class="page-head">
-    <div class="page-head__inner">
-      <h1 class="page-head__title"><?= $page->title()->html() ?></h1>
-      <p class="page-head__tagline">Identities, content and campaigns that culturally connect.</p>
-    </div>
-  </header>
+$caseStudies = kirby()->collection('case-studies')
+  ->filter(fn ($cs) => in_array($serviceSlug, $cs->services()->split(',')));
 
+$wmParent = $site->find('wove-mind');
+$wmEntries = $wmParent
+  ? $wmParent->children()->listed()
+      ->filter(fn ($p) => in_array($serviceSlug, $p->services()->split(',')))
+      ->sortBy('date', 'desc')
+  : new \Kirby\Cms\Pages();
 
-  <!-- INTRO -->
-  <section class="section section--flush-top container" aria-label="Introduction">
-    <p class="lead indent">Organisations today need more than a logo. <strong>They need a brand and content that earns trust, reflects their values and connects meaningfully with the people they serve.</strong> Whether you're building something new or evolving what you have, Wove brings strategic thinking and creative craft together to build brands, content and communications that deepen customer and audience relationships.</p>
-  </section>
+$allEntries = [];
+foreach ($caseStudies as $cs) $allEntries[] = $cs;
+foreach ($wmEntries as $e) $allEntries[] = $e;
+$totalCount = count($allEntries);
+?>
 
+<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
 
-  <!-- FEATURED CASE STUDIES — first card visible, rest behind "See more" -->
-  <?php
-    $featuredCaseStudies = kirby()->collection('case-studies')
-      ->filter(fn ($cs) => in_array($page->slug(), $cs->services()->split(',')));
-  ?>
-  <?php if ($featuredCaseStudies->count()): ?>
-  <section class="section--tight container" aria-labelledby="featured-heading">
-    <h2 class="section__heading" id="featured-heading">Featured work</h2>
-    <div class="features" id="more-cases">
-      <?php snippet('case-study-feature-card', ['caseStudy' => $featuredCaseStudies->first()]) ?>
-      <?php if ($featuredCaseStudies->count() > 1): ?>
-        <div class="features__extra">
-          <div class="features__extra-inner">
-            <?php foreach ($featuredCaseStudies->slice(1) as $cs): ?>
-              <?php snippet('case-study-feature-card', ['caseStudy' => $cs]) ?>
-            <?php endforeach ?>
-          </div>
-        </div>
-      <?php endif ?>
-    </div>
-    <?php if ($featuredCaseStudies->count() > 1): ?>
-      <button type="button" class="btn btn--ghost btn--md btn--center js-more" aria-controls="more-cases" aria-expanded="false">
-        <span class="js-more-label">See more case studies</span>
-        <svg class="btn__chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-    <?php endif ?>
-  </section>
-  <?php endif ?>
+<div class="feed-wrap">
 
-
-  <!-- WHAT WE CAN HELP WITH -->
-  <section class="section container" aria-labelledby="help-heading">
-    <div class="indent">
-      <h2 class="block-label" id="help-heading">What we can help with</h2>
-      <p class="lead">We offer a full range of brand capabilities, from strategy and identity through to campaigns, content and experience.</p>
-    </div>
-  </section>
-
-
-  <!-- SERVICE OFFERINGS — static, not CMS-managed -->
-  <section class="section container" aria-labelledby="offerings-heading">
-    <h2 id="offerings-heading" class="visually-hidden">What we offer</h2>
-    <div class="offerings">
-      <div class="offering"><h3 class="offering__title">Research and brand strategy</h3><p class="offering__body">Building a clear, holistic picture of the people you serve and defining the strategies that best deliver for them.</p></div>
-      <div class="offering"><h3 class="offering__title">Brand experience and journey design</h3><p class="offering__body">Designing the structures, interactions and details that drive meaningful connections across the whole customer journey.</p></div>
-      <div class="offering"><h3 class="offering__title">Co-design</h3><p class="offering__body">Workshops that deepen understanding, sharpen alignment and unlock opportunities with your teams and users.</p></div>
-      <div class="offering"><h3 class="offering__title">Brand identity</h3><p class="offering__body">Translating what makes you valuable into a meaningful brand idea, story and system.</p></div>
-      <div class="offering"><h3 class="offering__title">Naming and language</h3><p class="offering__body">Brand naming, proposition and UX writing that communicates your value and builds a distinct identity.</p></div>
-      <div class="offering"><h3 class="offering__title">Campaigns and content</h3><p class="offering__body">Creative campaigns and content that deliver impact across channels from TV and radio to social and OOH.</p></div>
-      <div class="offering"><h3 class="offering__title">Motion and video</h3><p class="offering__body">From concept to delivery, bringing your brand story to life with dynamic motion and video content.</p></div>
-      <div class="offering"><h3 class="offering__title">Illustration and image direction</h3><p class="offering__body">Original visual work created in collaboration with local illustrators and image makers.</p></div>
-      <div class="offering"><h3 class="offering__title">Packaging</h3><p class="offering__body">Brand-led packaging design that stands out and treads lightly on the planet.</p></div>
-      <div class="offering"><h3 class="offering__title">Exhibition and environmental design</h3><p class="offering__body">Physical brand experiences, from exhibitions and installations to retail and event environments.</p></div>
-      <div class="offering"><h3 class="offering__title">Sustainability</h3><p class="offering__body">Consultancy and expertise in sustainable brand and packaging, backed by our BCorp commitment.</p></div>
-      <div class="offering"><h3 class="offering__title">Accessibility</h3><p class="offering__body">Designing for everyone, from plain English content to WCAG AA compliant brand and digital assets, as standard.</p></div>
-    </div>
-  </section>
-
-
-  <!-- QUOTE BANNER -->
-  <section class="quote" aria-label="Quote">
-    <figure class="quote__inner">
-      <blockquote class="quote__text">&ldquo;Wove have been essential partners in the Abbey Theatre's brand redevelopment journey. The result has been really successful, with our visual comms cutting through the noise.&rdquo;</blockquote>
-      <figcaption class="quote__attr">
-        <span class="quote__name">John Tierney,</span>
-        <span class="quote__role">Marketing Manager, The Abbey Theatre</span>
-      </figcaption>
-    </figure>
-  </section>
-
-
-  <!-- RECENT WORK (project highlights + WoveMind entries, tagged to this service) -->
-  <?php
-    $highlights = $site->find('wove-mind')->children()->listed()
-      ->filter(fn ($p) => $p->format()->value() === 'project-highlight'
-        && in_array($page->slug(), $p->services()->split(',')))
-      ->limit(12);
-    $entries = $site->find('wove-mind')->children()->listed()
-      ->filter(fn ($p) => in_array($p->format()->value(), ['thread', 'whatif', 'longread'])
-        && in_array($page->slug(), $p->services()->split(',')))
-      ->limit(8);
-  ?>
-  <?php if ($highlights->count() || $entries->count()): ?>
-  <section class="section container" aria-labelledby="work-heading">
-    <h2 class="section__heading" id="work-heading">Recent work</h2>
-    <div class="wovemind-cards">
-      <?php foreach ($highlights as $h): ?>
-        <?php snippet('wovemind-highlight-card', ['post' => $h]) ?>
-      <?php endforeach ?>
-      <?php foreach ($entries as $post): ?>
-        <?php snippet('wovemind-related-card', ['post' => $post]) ?>
-      <?php endforeach ?>
-    </div>
-  </section>
-  <?php endif ?>
-
-
-  <!-- CONTACT BANNER -->
-  <section class="contact" aria-labelledby="contact-heading">
-    <div class="contact__inner">
-      <div class="contact__avatar">
-        <img src="/assets/team/johnny.jpg" alt="Johnny, Wove" width="200" height="200" loading="lazy">
-      </div>
-      <div class="contact__body">
-        <p class="contact__text" id="contact-heading">Have a project in mind? Curious about ways the brand team could bring value to your organisation?</p>
-        <a href="/contact" class="btn btn--primary btn--md">Talk to Johnny today <span aria-hidden="true">&rarr;</span></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVICE PAGER -->
-  <nav class="pager container" aria-label="Service pages">
-    <a href="/services/strategy" class="pager__link pager__link--prev" rel="prev">
-      <span class="pager__dir"><span aria-hidden="true">&larr;</span> Previous service</span>
-      <span class="pager__name">Strategy</span>
-    </a>
-    <a href="/services/digital" class="pager__link pager__link--next" rel="next">
-      <span class="pager__dir">Next service <span aria-hidden="true">&rarr;</span></span>
-      <span class="pager__name">Digital</span>
-    </a>
+  <nav class="tag-breadcrumb" aria-label="Breadcrumb">
+    <a href="/wove-mind">Feed</a>
+    <span class="tag-breadcrumb__sep">/</span>
+    <a href="/our-work">Our Work</a>
+    <span class="tag-breadcrumb__sep">/</span>
+    <span>Brand</span>
   </nav>
 
-</main>
+  <div class="tag-hero">
+    <h1 class="tag-hero__name"><?= $page->title()->html() ?></h1>
+    <p class="tag-hero__intro">Identities, content and campaigns that culturally connect.</p>
+    <div class="tag-hero__meta"><?= $totalCount ?> entr<?= $totalCount === 1 ? 'y' : 'ies' ?></div>
+  </div>
 
-<?php snippet('service-page-scripts') ?>
+  <?php snippet('tag-cloud', ['active' => $serviceSlug, 'activeType' => 'service']) ?>
+
+  <section class="stream-section" aria-label="Brand work">
+    <div class="stream-grid">
+      <?php foreach ($allEntries as $post): ?>
+        <?php snippet('stream-card', ['post' => $post]) ?>
+      <?php endforeach ?>
+    </div>
+  </section>
+
+  <footer class="feed-footer">
+    <div class="feed-footer__inner">
+      <span class="feed-footer__brand"><?= $site->title()->html() ?> &mdash; Strategic Design &amp; Technology</span>
+      <div class="feed-footer__links">
+        <a href="/contact#enquiries" class="feed-footer__link">Enquiries</a>
+        <a href="/contact#tenders" class="feed-footer__link">Tenders</a>
+        <a href="/contact#strategy" class="feed-footer__link">Strategy</a>
+      </div>
+      <span>&copy; <?= date('Y') ?></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function() {
+  var h = new Date().getHours();
+  if (h >= 7 && h < 19) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
 <?php snippet('footer') ?>

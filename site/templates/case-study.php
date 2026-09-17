@@ -7,18 +7,9 @@
  * Layout: breadcrumb, hero, image, stats, testimonial, body, related, team, footer
  */
 
-$tagStructure = $site->tags()->toStructure();
-$impactSlugs  = array_filter($page->impactAreas()->split(','));
-$impactLabels = array_map(
-  fn ($slug) => ($match = $tagStructure->findBy('slug', $slug)) ? $match->name()->value() : $slug,
-  $impactSlugs
-);
-
-$serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
-$serviceSlugs  = array_filter($page->services()->split(','));
-$serviceTags   = array_map(fn ($slug) => $serviceLabels[$slug] ?? ucfirst($slug), $serviceSlugs);
-
+$serviceSlugs = array_filter($page->services()->split(','));
 $sectorSlugs  = array_filter($page->sectors()->split(','));
+$serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
 $sectorLabels = [
   'arts-and-culture'  => 'Arts and Culture',
   'public-service'    => 'Public Service',
@@ -26,6 +17,20 @@ $sectorLabels = [
   'non-profit'        => 'Non-profit and Mission-led',
   'founders-ventures' => 'Founders and Ventures',
 ];
+$tagStructure = $site->tags()->toStructure();
+$impactSlugs  = array_filter($page->impactAreas()->split(','));
+
+$csTags = [];
+foreach ($serviceSlugs as $s) {
+  $csTags[] = ['label' => $serviceLabels[$s] ?? ucfirst($s), 'url' => '/services/' . $s];
+}
+foreach ($sectorSlugs as $s) {
+  $csTags[] = ['label' => $sectorLabels[$s] ?? $s, 'url' => '/tag/' . $s];
+}
+foreach ($impactSlugs as $slug) {
+  $match = $tagStructure->findBy('slug', $slug);
+  if ($match) $csTags[] = ['label' => $match->name()->value(), 'url' => '/tag/' . $slug];
+}
 
 $heroImage  = $page->caseStudyImages()->toFile();
 $stats      = $page->stats()->toStructure();
@@ -71,21 +76,10 @@ $next = $page->nextListed();
     <div class="cs-hero__eyebrow"><?= $page->eyebrow()->html() ?></div>
     <h1 class="cs-hero__title"><?= $page->heroTitle() ?></h1>
 
-    <?php if ($serviceTags): ?>
-      <div class="cs-hero__services">
-        <?php foreach ($serviceTags as $label): ?>
-          <span class="cs-hero__service"><?= html($label) ?></span>
-        <?php endforeach ?>
-      </div>
-    <?php endif ?>
-
-    <?php if ($sectorSlugs || $serviceSlugs): ?>
-      <div class="cs-hero__filters">
-        <?php foreach ($sectorSlugs as $slug): ?>
-          <a href="/sector/<?= $slug ?>" class="cs-hero__filter"><?= html($sectorLabels[$slug] ?? $slug) ?></a>
-        <?php endforeach ?>
-        <?php foreach ($serviceSlugs as $slug): ?>
-          <a href="/<?= $slug ?>" class="cs-hero__filter"><?= html($serviceLabels[$slug] ?? ucfirst($slug)) ?></a>
+    <?php if ($csTags): ?>
+      <div class="cs-hero__tags">
+        <?php foreach ($csTags as $t): ?>
+          <a href="<?= $t['url'] ?>" class="tag-pill"><?= html($t['label']) ?></a>
         <?php endforeach ?>
       </div>
     <?php endif ?>

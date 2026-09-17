@@ -257,14 +257,36 @@ return [
         [
             'pattern' => 'tag/(:any)',
             'action'  => function ($slug) {
+                $sectorLabels = [
+                    'arts-and-culture'  => 'Arts and Culture',
+                    'public-service'    => 'Public Service',
+                    'higher-education'  => 'Higher Education',
+                    'non-profit'        => 'Non-profit and Mission-led',
+                    'founders-ventures' => 'Founders and Ventures',
+                ];
+
                 $tag = site()->tags()->toStructure()->findBy('slug', $slug);
-                if (!$tag || $tag->active()->toBool() === false) {
-                    return false;
+                if ($tag && $tag->active()->toBool() !== false) {
+                    return page('tag')->render([
+                        'tagSlug'      => $slug,
+                        'tagName'      => $tag->name()->value(),
+                        'tagIntro'     => $tag->intro()->value(),
+                        'filterField'  => 'tags',
+                        'filterValue'  => $slug,
+                    ]);
                 }
-                return page('tag')->render([
-                    'tagSlug' => $slug,
-                    'tagData' => $tag,
-                ]);
+
+                if (isset($sectorLabels[$slug])) {
+                    return page('tag')->render([
+                        'tagSlug'      => $slug,
+                        'tagName'      => $sectorLabels[$slug],
+                        'tagIntro'     => '',
+                        'filterField'  => 'sectors',
+                        'filterValue'  => $slug,
+                    ]);
+                }
+
+                return false;
             }
         ],
     ],

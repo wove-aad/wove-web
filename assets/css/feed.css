@@ -715,6 +715,7 @@
 /* Hero image */
 .cs-hero-image {
   margin-top: var(--feed-space-32);
+  margin-bottom: var(--feed-space-40);
   padding: 0 var(--feed-page-px);
   max-width: var(--feed-max-w); margin-left: auto; margin-right: auto;
 }

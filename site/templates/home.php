@@ -1,4 +1,4 @@
-<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
+<?php snippet('header') ?>
 
 <main id="main">
 

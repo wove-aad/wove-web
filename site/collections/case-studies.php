@@ -5,8 +5,10 @@
 // ====================================================================
 // $caseStudies = $page->children()->listed()->sortBy('date', 'desc')->paginate(9);
 return function () {
-    
-    return page('work')
+    $work = page('work');
+    if (!$work) return new \Kirby\Cms\Pages();
+
+    return $work
         ->children()
         ->listed()
         ->sortBy('date', 'desc');

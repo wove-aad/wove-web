@@ -247,6 +247,33 @@ return [
             }
         ],
         [
+            'pattern' => 'services/(:any)',
+            'action'  => function ($slug) {
+                $services = ['digital', 'labs', 'strategy', 'brand'];
+                if (!in_array($slug, $services)) return false;
+
+                $page = page('services/' . $slug);
+                if (!$page) return false;
+
+                $templateFile = kirby()->root('templates') . '/' . $slug . '.php';
+                if (!file_exists($templateFile)) return false;
+
+                $html = \Kirby\Toolkit\Tpl::load($templateFile, [
+                    'kirby' => kirby(),
+                    'site'  => site(),
+                    'page'  => $page,
+                    'pages' => site()->children(),
+                ]);
+                return new \Kirby\Cms\Response($html, 'text/html');
+            }
+        ],
+        [
+            'pattern' => '(digital|labs|strategy|brand)',
+            'action'  => function ($slug) {
+                return go('services/' . $slug);
+            }
+        ],
+        [
             'pattern' => 'our-work',
             'action'  => function () {
                 return page('work');

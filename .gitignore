@@ -138,6 +138,7 @@ Icon
 # deploy automatically. wove-mind is NOT tracked — Karl manages it
 # through the Panel and deploying it caused a duplicate-directory bug.
 !/content/contact
+!/content/error
 !/content/sector
 !/content/tag
 

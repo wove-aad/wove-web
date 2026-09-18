@@ -1541,3 +1541,55 @@
   transition: color var(--feed-transition);
 }
 .site-footer__link:hover { color: var(--feed-text-muted); }
+
+/* --- Error page ------------------------------------------------ */
+.error-page {
+  padding: var(--feed-space-80) var(--feed-page-px) var(--feed-space-64);
+  max-width: var(--feed-max-w);
+  margin: 0 auto;
+}
+.error-page__hero {
+  margin-bottom: var(--feed-space-48);
+}
+.error-page__code {
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: var(--feed-fw-bold);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--feed-text-dim);
+  margin-bottom: var(--feed-space-16);
+}
+.error-page__title {
+  font-size: var(--feed-fs-hero);
+  font-weight: var(--feed-fw-regular);
+  line-height: var(--feed-lh-heading);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--feed-space-16);
+}
+.error-page__message {
+  font-size: var(--feed-fs-card-title);
+  color: var(--feed-text-muted);
+  line-height: var(--feed-lh-body);
+  max-width: 32rem;
+}
+.error-page__nav {
+  margin-bottom: var(--feed-space-32);
+}
+.error-page__nav-label {
+  font-size: var(--feed-fs-label);
+  font-weight: var(--feed-fw-semibold);
+  letter-spacing: var(--feed-ls-label);
+  text-transform: uppercase;
+  color: var(--feed-text-dim);
+  margin-bottom: var(--feed-space-12);
+}
+.error-page__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--feed-space-8);
+}
+.error-page .tag-cloud {
+  padding-left: 0;
+  padding-right: 0;
+  margin-top: var(--feed-space-16);
+}

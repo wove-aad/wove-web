@@ -227,6 +227,26 @@ return [
     // ],
     'routes' => [
         [
+            'pattern' => 'clear-cache/wove2026',
+            'action'  => function () {
+                kirby()->cache('pages')->flush();
+                kirby()->cache('plugins')->flush();
+
+                $cacheDir = kirby()->root('cache');
+                if (is_dir($cacheDir)) {
+                    $files = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($cacheDir, FilesystemIterator::SKIP_DOTS),
+                        RecursiveIteratorIterator::CHILD_FIRST
+                    );
+                    foreach ($files as $file) {
+                        $file->isDir() ? @rmdir($file->getPathname()) : @unlink($file->getPathname());
+                    }
+                }
+
+                return new Kirby\Cms\Response('Cache cleared.', 'text/plain');
+            }
+        ],
+        [
             'pattern' => 'our-work',
             'action'  => function () {
                 return page('work');

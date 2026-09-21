@@ -1,21 +1,43 @@
 <?php
 /**
- * Wove Mind — feed home template (Our Work)
+ * Wove Mind — feed home template
  * File: site/templates/wove-mind.php
  *
- * New feed design: dark-first palette with time-of-day light mode,
- * facet rail (explainer + sectors + topics), flat card grid mixing
- * all entry formats, author avatars, hero above the fold.
- *
- * Loads feed.css alongside site.css via the header snippet's $css slot.
+ * Dark-first palette with time-of-day light mode, facet rail with
+ * filter pills, flat card grid mixing all entry formats.
+ * Client-side filtering: pills filter the grid in place, capped
+ * at 5 items per filter with a "See all" link to /our-work.
  */
 
 $entries = $page->children()->listed()->sortBy('date', 'desc')
   ->filter(fn ($p) => $p->format()->value() !== 'project-highlight');
 
-$perPage   = 10;
-$pageNum   = param('page') ? (int) param('page') : 1;
-$paginated = $entries->paginate($perPage);
+$feedMax     = 20;
+$totalCount  = $entries->count();
+$feedItems   = $entries->limit($feedMax);
+
+$serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
+$siteTags      = $site->tags()->toStructure()->filterBy('active', 'true');
+$tagSlugMap    = [];
+foreach ($siteTags as $t) {
+  $tagSlugMap[strtolower($t->name()->value())] = $t->slug()->value();
+}
+
+$usedServices = [];
+$usedTags     = [];
+foreach ($entries as $e) {
+  foreach ($e->services()->split(',') as $s) {
+    $s = trim($s);
+    if ($s && isset($serviceLabels[$s])) $usedServices[$s] = $serviceLabels[$s];
+  }
+  foreach ($e->tags()->split(',') as $t) {
+    $t = trim($t);
+    if (!$t) continue;
+    $slug = $tagSlugMap[strtolower($t)] ?? Str::slug($t);
+    $tag  = $siteTags->findBy('slug', $slug);
+    if ($tag) $usedTags[$slug] = $tag->name()->value();
+  }
+}
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
@@ -30,33 +52,47 @@ $paginated = $entries->paginate($perPage);
 
   <div class="feed-shell">
 
-    <?php snippet('feed-rail') ?>
+    <aside class="feed-rail" aria-label="Filter">
+      <div class="feed-explainer">
+        <h3 class="feed-explainer__title">Strategic design</h3>
+        <p class="feed-explainer__body">We use strategic design to help organisations move from insight to delivery &mdash; across services, systems, and culture.</p>
+      </div>
+
+      <div class="feed-rail__tags" id="feed-filter-pills">
+        <button class="tag-pill is-active" data-filter="*" type="button">All</button>
+        <?php foreach ($usedServices as $slug => $label): ?>
+          <button class="tag-pill" data-filter="service:<?= $slug ?>" type="button"><?= html($label) ?></button>
+        <?php endforeach ?>
+        <?php foreach ($usedTags as $slug => $label): ?>
+          <button class="tag-pill" data-filter="tag:<?= $slug ?>" type="button"><?= html($label) ?></button>
+        <?php endforeach ?>
+      </div>
+    </aside>
 
     <!-- FEED -->
     <main class="feed" id="main">
 
       <div class="feed__header">
         <h2 class="feed__title">Latest from the studio</h2>
-        <span class="feed__showing label"><?= $entries->count() ?> entries</span>
+        <span class="feed__showing label" id="feed-count"><?= $totalCount ?> entries</span>
       </div>
 
-      <div class="feed-cards">
-        <?php foreach ($paginated as $post): ?>
-          <?php snippet('feed-card', ['post' => $post]) ?>
+      <div class="feed-cards" id="feed-grid">
+        <?php foreach ($feedItems as $post):
+          $services = implode(',', array_filter(array_map('trim', $post->services()->split(','))));
+          $tags     = implode(',', array_filter(array_map('trim', $post->tags()->split(','))));
+        ?>
+          <div class="feed-item"
+               data-services="<?= html($services) ?>"
+               data-tags="<?= html($tags) ?>">
+            <?php snippet('feed-card', ['post' => $post]) ?>
+          </div>
         <?php endforeach ?>
       </div>
 
-      <?php if ($paginated->pagination()->hasPages()): ?>
-        <div class="feed__footer">
-          <?php if ($paginated->pagination()->hasNextPage()): ?>
-            <a href="<?= $paginated->pagination()->nextPageUrl() ?>" class="feed__more">Load more &rarr;</a>
-          <?php endif ?>
-          <?php $remaining = $entries->count() - ($pageNum * $perPage); ?>
-          <?php if ($remaining > 0): ?>
-            <span class="feed__count label"><?= $remaining ?> more entries</span>
-          <?php endif ?>
-        </div>
-      <?php endif ?>
+      <div class="feed__footer" id="feed-more" hidden>
+        <a href="/our-work" class="feed__more" id="feed-more-link">See all work &rarr;</a>
+      </div>
 
     </main>
 
@@ -74,6 +110,87 @@ $paginated = $entries->paginate($perPage);
   </section>
 
 </div>
+
+<script>window.__feedLabels = <?= json_encode(
+  array_merge(
+    array_map(fn ($l) => ['label' => $l, 'type' => 'service'], $usedServices),
+    array_map(fn ($l) => ['label' => $l, 'type' => 'tag'], $usedTags)
+  ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+
+<script>
+(function () {
+  var pills = document.querySelectorAll('#feed-filter-pills .tag-pill');
+  var items = document.querySelectorAll('#feed-grid .feed-item');
+  var moreWrap = document.getElementById('feed-more');
+  var moreLink = document.getElementById('feed-more-link');
+  var countEl  = document.getElementById('feed-count');
+  var labels   = window.__feedLabels || {};
+  if (!pills.length || !items.length) return;
+
+  var LIMIT = 5;
+  var attrMap = { service: 'data-services', tag: 'data-tags' };
+  var totalExceedsFeed = <?= json_encode($totalCount > $feedMax) ?>;
+
+  function entryWord(n) { return n + ' entr' + (n === 1 ? 'y' : 'ies'); }
+
+  function applyFilter(filter) {
+    var matched = [];
+    items.forEach(function (item) {
+      if (filter === '*') {
+        matched.push(item);
+      } else {
+        var parts = filter.split(':');
+        var type  = parts[0];
+        var value = parts.slice(1).join(':');
+        var attr  = item.getAttribute(attrMap[type] || '') || '';
+        if (attr.split(',').indexOf(value) !== -1) {
+          matched.push(item);
+        }
+      }
+    });
+
+    var showAll = filter === '*';
+    var cap = showAll ? items.length : LIMIT;
+    var shown = 0;
+
+    items.forEach(function (item) {
+      if (matched.indexOf(item) !== -1 && shown < cap) {
+        item.hidden = false;
+        shown++;
+      } else {
+        item.hidden = true;
+      }
+    });
+
+    countEl.textContent = entryWord(matched.length);
+
+    if (!showAll && matched.length > LIMIT) {
+      var slug = filter.split(':').slice(1).join(':');
+      var meta = labels[slug];
+      var name = meta ? meta.label : slug;
+      moreLink.href = '/our-work?filter=' + encodeURIComponent(filter);
+      moreLink.textContent = 'See all ' + name + ' →';
+      moreWrap.hidden = false;
+    } else if (showAll && totalExceedsFeed) {
+      moreLink.href = '/our-work';
+      moreLink.textContent = 'See all work →';
+      moreWrap.hidden = false;
+    } else {
+      moreWrap.hidden = true;
+    }
+  }
+
+  pills.forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      pills.forEach(function (p) { p.classList.remove('is-active'); });
+      pill.classList.add('is-active');
+      applyFilter(pill.getAttribute('data-filter'));
+    });
+  });
+
+  applyFilter('*');
+})();
+</script>
 
 <script>
 (function() {

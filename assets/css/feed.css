@@ -1389,6 +1389,7 @@
   margin-top: var(--feed-space-32);
   padding-top: var(--feed-space-24);
   border-top: var(--feed-rule-line);
+  text-align: center;
 }
 .home-feed__more-btn {
   font-size: var(--feed-fs-body);

@@ -243,7 +243,11 @@ return [
                     }
                 }
 
-                return new Kirby\Cms\Response('Cache cleared.', 'text/plain');
+                if (function_exists('opcache_reset')) {
+                    opcache_reset();
+                }
+
+                return new Kirby\Cms\Response('Cache cleared (Kirby + OPcache).', 'text/plain');
             }
         ],
         [

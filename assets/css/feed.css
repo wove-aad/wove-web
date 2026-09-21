@@ -1061,6 +1061,53 @@
   font-size: var(--feed-fs-meta);
   color: var(--feed-text-dim);
 }
+.tag-hero__eyebrow {
+  font-size: var(--feed-fs-label);
+  font-weight: var(--feed-fw-semibold);
+  letter-spacing: var(--feed-ls-label);
+  text-transform: uppercase;
+  color: var(--feed-coral);
+  margin-bottom: var(--feed-space-12);
+}
+.tag-hero__cta {
+  display: inline-block;
+  margin-top: var(--feed-space-16);
+  font-size: var(--feed-fs-meta);
+  font-weight: var(--feed-fw-semibold);
+  color: var(--feed-coral);
+  text-decoration: none;
+}
+.tag-hero__cta:hover { text-decoration: underline; }
+
+/* Feed hero image (case study filter) */
+.feed-hero-image {
+  margin-bottom: var(--feed-space-32);
+  padding: 0 var(--feed-page-px);
+  max-width: var(--feed-max-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+.feed-hero-image__inner {
+  aspect-ratio: 21 / 9;
+  background: var(--feed-raised);
+  border-radius: var(--feed-radius-sm);
+  overflow: hidden;
+}
+.feed-hero-image__inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fade transitions for in-page filtering */
+#feed-hero-content,
+#feed-grid {
+  transition: opacity 180ms ease;
+}
+#feed-hero-content.is-fading,
+#feed-grid.is-fading {
+  opacity: 0;
+}
 
 /* Tag card grid — 3 columns on desktop */
 .tag-grid {

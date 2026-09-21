@@ -27,13 +27,13 @@ foreach ($caseStudies as $cs) {
   foreach ($cs->services()->split(',') as $s) {
     $s = trim($s);
     if ($s && isset($serviceLabels[$s]) && !isset($pills['svc:' . $s])) {
-      $pills['svc:' . $s] = ['label' => $serviceLabels[$s], 'url' => '/services/' . $s, 'slug' => $s, 'type' => 'service'];
+      $pills['svc:' . $s] = ['label' => $serviceLabels[$s], 'url' => '/our-work?filter=service:' . $s, 'slug' => $s, 'type' => 'service'];
     }
   }
   foreach ($cs->sectors()->split(',') as $s) {
     $s = trim($s);
     if ($s && isset($sectorLabels[$s]) && !isset($pills['sec:' . $s])) {
-      $pills['sec:' . $s] = ['label' => $sectorLabels[$s], 'url' => '/tag/' . $s, 'slug' => $s, 'type' => 'sector'];
+      $pills['sec:' . $s] = ['label' => $sectorLabels[$s], 'url' => '/our-work?filter=sector:' . $s, 'slug' => $s, 'type' => 'sector'];
     }
   }
   foreach ($cs->impactAreas()->split(',') as $slug) {
@@ -41,7 +41,7 @@ foreach ($caseStudies as $cs) {
     if ($slug && !isset($pills['tag:' . $slug])) {
       $tag = $tagStructure->findBy('slug', $slug);
       if ($tag && $tag->active()->toBool() !== false) {
-        $pills['tag:' . $slug] = ['label' => $tag->name()->value(), 'url' => '/tag/' . $slug, 'slug' => $slug, 'type' => 'tag'];
+        $pills['tag:' . $slug] = ['label' => $tag->name()->value(), 'url' => '/our-work?filter=tag:' . $slug, 'slug' => $slug, 'type' => 'tag'];
       }
     }
   }
@@ -52,13 +52,13 @@ if ($wmParent) {
     foreach ($entry->services()->split(',') as $s) {
       $s = trim($s);
       if ($s && isset($serviceLabels[$s]) && !isset($pills['svc:' . $s])) {
-        $pills['svc:' . $s] = ['label' => $serviceLabels[$s], 'url' => '/services/' . $s, 'slug' => $s, 'type' => 'service'];
+        $pills['svc:' . $s] = ['label' => $serviceLabels[$s], 'url' => '/our-work?filter=service:' . $s, 'slug' => $s, 'type' => 'service'];
       }
     }
     foreach ($entry->sectors()->split(',') as $s) {
       $s = trim($s);
       if ($s && isset($sectorLabels[$s]) && !isset($pills['sec:' . $s])) {
-        $pills['sec:' . $s] = ['label' => $sectorLabels[$s], 'url' => '/tag/' . $s, 'slug' => $s, 'type' => 'sector'];
+        $pills['sec:' . $s] = ['label' => $sectorLabels[$s], 'url' => '/our-work?filter=sector:' . $s, 'slug' => $s, 'type' => 'sector'];
       }
     }
     foreach ($entry->tags()->split(',') as $t) {
@@ -68,7 +68,7 @@ if ($wmParent) {
       if ($tag && $tag->active()->toBool() !== false) {
         $slug = $tag->slug()->value();
         if (!isset($pills['tag:' . $slug])) {
-          $pills['tag:' . $slug] = ['label' => $tag->name()->value(), 'url' => '/tag/' . $slug, 'slug' => $slug, 'type' => 'tag'];
+          $pills['tag:' . $slug] = ['label' => $tag->name()->value(), 'url' => '/our-work?filter=tag:' . $slug, 'slug' => $slug, 'type' => 'tag'];
         }
       }
     }
@@ -80,7 +80,7 @@ foreach ($caseStudies as $cs) {
   if ($name) {
     $key = 'cs:' . $cs->slug();
     if (!isset($pills[$key])) {
-      $pills[$key] = ['label' => $name, 'url' => $cs->url(), 'slug' => $cs->slug(), 'type' => 'casestudy'];
+      $pills[$key] = ['label' => $name, 'url' => '/our-work?filter=cs:' . $cs->slug(), 'slug' => $cs->slug(), 'type' => 'casestudy'];
     }
   }
 }

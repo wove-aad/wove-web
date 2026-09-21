@@ -24,7 +24,7 @@
     </div>
 
     <div class="services-grid">
-      <a href="/services/labs" class="service-card">
+      <a href="/our-work?filter=service:labs" class="service-card">
         <div class="service-card__media">
           <img src="/assets/illustrations/headcollar.png" alt="" width="983" height="1116" loading="lazy">
         </div>
@@ -34,7 +34,7 @@
           <span class="btn btn--ghost btn--sm service-card__cta">Explore Labs <span aria-hidden="true">&rarr;</span></span>
         </div>
       </a>
-      <a href="/services/strategy" class="service-card">
+      <a href="/our-work?filter=service:strategy" class="service-card">
         <div class="service-card__media">
           <img src="/assets/illustrations/headcollar.png" alt="" width="983" height="1116" loading="lazy">
         </div>
@@ -44,7 +44,7 @@
           <span class="btn btn--ghost btn--sm service-card__cta">Explore Strategy <span aria-hidden="true">&rarr;</span></span>
         </div>
       </a>
-      <a href="/services/brand" class="service-card">
+      <a href="/our-work?filter=service:brand" class="service-card">
         <div class="service-card__media">
           <img src="/assets/illustrations/headcollar.png" alt="" width="983" height="1116" loading="lazy">
         </div>
@@ -54,7 +54,7 @@
           <span class="btn btn--ghost btn--sm service-card__cta">Explore Brand <span aria-hidden="true">&rarr;</span></span>
         </div>
       </a>
-      <a href="/services/digital" class="service-card">
+      <a href="/our-work?filter=service:digital" class="service-card">
         <div class="service-card__media">
           <img src="/assets/illustrations/headcollar.png" alt="" width="983" height="1116" loading="lazy">
         </div>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="services-cta">
-      <a href="/services" class="btn btn--ghost btn--md">Learn more about our services <span aria-hidden="true">&rarr;</span></a>
+      <a href="/our-work" class="btn btn--ghost btn--md">Learn more about our services <span aria-hidden="true">&rarr;</span></a>
     </div>
   </section>
 

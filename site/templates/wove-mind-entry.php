@@ -181,7 +181,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
   <?php
     $cloudPills = [];
     foreach ($serviceSlugs as $sSlug) {
-      $cloudPills[] = ['label' => $serviceLabels[$sSlug] ?? ucfirst($sSlug), 'url' => '/services/' . $sSlug];
+      $cloudPills[] = ['label' => $serviceLabels[$sSlug] ?? ucfirst($sSlug), 'url' => '/our-work?filter=service:' . $sSlug];
     }
     $sectorLabels = [
       'arts-and-culture'  => 'Arts and Culture',
@@ -193,7 +193,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     foreach ($page->sectors()->split(',') as $sec) {
       $sec = trim($sec);
       if ($sec && isset($sectorLabels[$sec])) {
-        $cloudPills[] = ['label' => $sectorLabels[$sec], 'url' => '/tag/' . $sec];
+        $cloudPills[] = ['label' => $sectorLabels[$sec], 'url' => '/our-work?filter=sector:' . $sec];
       }
     }
     $tagStructureCloud = $site->tags()->toStructure();
@@ -201,7 +201,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
       $tagData = $tagStructureCloud->findBy('slug', Str::slug($t)) ?: $tagStructureCloud->findBy('name', $t);
       $tagSlug = $tagData ? $tagData->slug()->value() : Str::slug($t);
       $tagLabel = $tagData ? $tagData->name()->value() : $t;
-      $cloudPills[] = ['label' => $tagLabel, 'url' => '/tag/' . $tagSlug];
+      $cloudPills[] = ['label' => $tagLabel, 'url' => '/our-work?filter=tag:' . $tagSlug];
     }
   ?>
   <?php if ($cloudPills): ?>

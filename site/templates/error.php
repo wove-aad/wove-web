@@ -5,10 +5,10 @@
  */
 
 $serviceLinks = [
-  ['label' => 'Labs',     'url' => '/services/labs'],
-  ['label' => 'Strategy', 'url' => '/services/strategy'],
-  ['label' => 'Brand',    'url' => '/services/brand'],
-  ['label' => 'Digital',  'url' => '/services/digital'],
+  ['label' => 'Labs',     'url' => '/our-work?filter=service:labs'],
+  ['label' => 'Strategy', 'url' => '/our-work?filter=service:strategy'],
+  ['label' => 'Brand',    'url' => '/our-work?filter=service:brand'],
+  ['label' => 'Digital',  'url' => '/our-work?filter=service:digital'],
 ];
 
 $pageLinks = [

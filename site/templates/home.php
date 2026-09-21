@@ -162,11 +162,9 @@
           <?php endforeach ?>
         </div>
 
-        <?php if ($caseStudies->count() + $wmEntries->count() > $feedMax): ?>
-          <div class="home-feed__more">
-            <a href="/our-work" class="home-feed__more-btn">See all work &rarr;</a>
-          </div>
-        <?php endif ?>
+        <div class="home-feed__more" id="home-feed-more" hidden>
+          <a href="/our-work" class="home-feed__more-btn" id="home-feed-more-link">See all work &rarr;</a>
+        </div>
       </div>
     </section>
   </div>
@@ -233,28 +231,79 @@
 })();
 </script>
 
+<script>window.__homeFeedLabels = <?= json_encode(
+  array_merge(
+    array_map(fn ($l) => ['label' => $l, 'filter' => 'service'], $usedServices),
+    array_map(fn ($l) => ['label' => $l, 'filter' => 'sector'], $usedSectors),
+    array_map(fn ($l) => ['label' => $l, 'filter' => 'tag'], $usedTags)
+  ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+
 <script>
 (function () {
   var pills = document.querySelectorAll('.home-feed__pills .tag-pill');
   var items = document.querySelectorAll('.home-feed__item');
+  var moreWrap = document.getElementById('home-feed-more');
+  var moreLink = document.getElementById('home-feed-more-link');
+  var labels = window.__homeFeedLabels || {};
   if (!pills.length || !items.length) return;
+
+  var LIMIT = 5;
+  var attrMap = { service: 'data-services', sector: 'data-sectors', tag: 'data-tags' };
+
+  function applyFilter(filter) {
+    var matched = [];
+    items.forEach(function (item) {
+      if (filter === '*') {
+        matched.push(item);
+      } else {
+        var parts = filter.split(':');
+        var type  = parts[0];
+        var value = parts.slice(1).join(':');
+        var attr  = item.getAttribute(attrMap[type] || '') || '';
+        if (attr.split(',').indexOf(value) !== -1) {
+          matched.push(item);
+        }
+      }
+    });
+
+    var showAll = filter === '*';
+    var cap = showAll ? items.length : LIMIT;
+    var shown = 0;
+
+    items.forEach(function (item) {
+      if (matched.indexOf(item) !== -1 && shown < cap) {
+        item.hidden = false;
+        shown++;
+      } else {
+        item.hidden = true;
+      }
+    });
+
+    if (!showAll && matched.length > LIMIT) {
+      var slug = filter.split(':').slice(1).join(':');
+      var meta = labels[slug];
+      var name = meta ? meta.label : slug;
+      moreLink.href = '/our-work?filter=' + encodeURIComponent(filter);
+      moreLink.textContent = 'See all ' + name + ' →';
+      moreWrap.hidden = false;
+    } else if (showAll && <?= json_encode($caseStudies->count() + $wmEntries->count() > $feedMax) ?>) {
+      moreLink.href = '/our-work';
+      moreLink.textContent = 'See all work →';
+      moreWrap.hidden = false;
+    } else {
+      moreWrap.hidden = true;
+    }
+  }
 
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       pills.forEach(function (p) { p.classList.remove('is-active'); });
       pill.classList.add('is-active');
-      var filter = pill.getAttribute('data-filter');
-
-      items.forEach(function (item) {
-        if (filter === '*') { item.hidden = false; return; }
-        var parts = filter.split(':');
-        var type  = parts[0];
-        var value = parts[1];
-        var attr  = item.getAttribute('data-' + type + 's') || '';
-        item.hidden = attr.split(',').indexOf(value) === -1;
-      });
+      applyFilter(pill.getAttribute('data-filter'));
     });
   });
+
+  applyFilter('*');
 })();
 </script>
 

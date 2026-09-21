@@ -117,7 +117,7 @@ $relatedTags = array_slice(array_keys($entryTags), 0, 6);
           $rtTag = $allTags->findBy('name', $rt);
           $rtSlug = $rtTag ? $rtTag->slug()->value() : Str::slug($rt);
         ?>
-          <a href="/tag/<?= $rtSlug ?>" class="tag-related__tag"><?= html($rt) ?></a>
+          <a href="/our-work?filter=tag:<?= $rtSlug ?>" class="tag-related__tag"><?= html($rt) ?></a>
         <?php endforeach ?>
       </div>
     </div>

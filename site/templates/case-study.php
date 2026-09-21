@@ -22,14 +22,14 @@ $impactSlugs  = array_filter($page->impactAreas()->split(','));
 
 $csTags = [];
 foreach ($serviceSlugs as $s) {
-  $csTags[] = ['label' => $serviceLabels[$s] ?? ucfirst($s), 'url' => '/services/' . $s];
+  $csTags[] = ['label' => $serviceLabels[$s] ?? ucfirst($s), 'url' => '/our-work?filter=service:' . $s];
 }
 foreach ($sectorSlugs as $s) {
-  $csTags[] = ['label' => $sectorLabels[$s] ?? $s, 'url' => '/tag/' . $s];
+  $csTags[] = ['label' => $sectorLabels[$s] ?? $s, 'url' => '/our-work?filter=sector:' . $s];
 }
 foreach ($impactSlugs as $slug) {
   $match = $tagStructure->findBy('slug', $slug);
-  if ($match) $csTags[] = ['label' => $match->name()->value(), 'url' => '/tag/' . $slug];
+  if ($match) $csTags[] = ['label' => $match->name()->value(), 'url' => '/our-work?filter=tag:' . $slug];
 }
 
 $heroImage  = $page->caseStudyImages()->toFile();

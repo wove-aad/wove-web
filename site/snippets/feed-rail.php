@@ -39,7 +39,7 @@ foreach ($allEntries as $entry) {
       $slug = $tagSlugMap[strtolower($t)] ?? Str::slug($t);
       $cloud[$key] = [
         'label' => $t,
-        'url'   => '/tag/' . $slug,
+        'url'   => '/our-work?filter=tag:' . $slug,
         'date'  => $entryDate,
       ];
     }
@@ -52,7 +52,7 @@ foreach ($allEntries as $entry) {
     if (!isset($cloud[$key]) || $entryDate > $cloud[$key]['date']) {
       $cloud[$key] = [
         'label' => $serviceLabels[$s],
-        'url'   => '/' . $s,
+        'url'   => '/our-work?filter=service:' . $s,
         'date'  => $entryDate,
       ];
     }
@@ -63,7 +63,7 @@ foreach ($allEntries as $entry) {
     if (!isset($cloud[$key])) {
       $cloud[$key] = [
         'label' => $entry->eyebrow()->or($entry->title())->value(),
-        'url'   => $entry->url(),
+        'url'   => '/our-work?filter=cs:' . $entry->slug(),
         'date'  => $entryDate,
       ];
     }
@@ -92,7 +92,7 @@ $totalCloud = count($cloud);
   </div>
   <?php if ($totalCloud > $cloudLimit): ?>
     <div class="feed-rail__tag-more">
-      <a href="/topics">All <?= $totalCloud ?> topics &rarr;</a>
+      <a href="/our-work">All <?= $totalCloud ?> topics &rarr;</a>
     </div>
   <?php endif ?>
 

@@ -301,6 +301,11 @@
     "feedGap": {
       "rem": "4rem",
       "px": 64
+    },
+    "panelWidth": {
+      "rem": "47.5rem",
+      "px": 760,
+      "cssVar": "--feed-panel-w"
     }
   },
   "border": {
@@ -333,7 +338,13 @@
   },
   "shadow": {
     "sm": "0 1px 4px rgba(0,0,0,0.2)",
-    "md": "0 4px 16px rgba(0,0,0,0.08)"
+    "md": "0 4px 16px rgba(0,0,0,0.08)",
+    "lift": {
+      "dark": "0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3)",
+      "light": "0 12px 32px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)",
+      "cssVar": "--feed-shadow-lift",
+      "use": "Raised, focused element (open team card and panel)"
+    }
   },
   "components": {
     "button": {
@@ -385,10 +396,10 @@
       }
     },
     "teamProfile": {
-      "grid": "4 columns at 1280px+, 3 at 960px+, 2 at 600px+, 1 below",
-      "gap": "1rem",
-      "card": "surface background, 1px border, radius 0.5rem, square photo, body padding 14px 16px 16px",
-      "panel": "full-width, below the open card's row; bio and latest posts side by side (3fr / 2fr) above 800px"
+      "grid": "4 columns at 1280px+, 3 at 960px+, 2 at 600px+, 1 below; gap 1rem",
+      "card": "surface background, 1px border, radius 0.5rem, square photo, body padding 14px 16px 16px, +/- indicator",
+      "openCard": "border transparent, --feed-shadow-lift, translateY(-2px); other cards opacity 0.45 and grayscale(0.6)",
+      "panel": "box up to --feed-panel-w, centred under the open card within the grid, --feed-shadow-lift, no border, 12px notch; header (name at --feed-fs-h2, role, close), bio beside a compact post list (dates right-aligned, rule between), footer with LinkedIn and see-all"
     }
   },
   "breakpoints": {
@@ -404,7 +415,12 @@
     }
   },
   "motion": {
-    "transition": "200ms ease"
+    "transition": "200ms ease",
+    "transitionSlow": "300ms ease",
+    "cssVars": [
+      "--feed-transition",
+      "--feed-transition-slow"
+    ]
   },
   "responsive": {
     "_note": "Overrides at min-width 1280px (feed.css)",

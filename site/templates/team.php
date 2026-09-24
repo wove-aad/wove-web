@@ -5,9 +5,9 @@
  *
  * A grid of team cards (Kirby users with "Show on the Our People page"
  * on), 4 per row on wide screens. Each card shows photo, name and role;
- * clicking it opens a full-width panel below that row with the bio, a
- * LinkedIn link, their latest Wove Mind entries and a link to Our Work
- * filtered by author.
+ * clicking it opens a compact panel below that row, centred under the
+ * card, with the bio, their latest Wove Mind entries, a LinkedIn link and
+ * a link to Our Work filtered by author. The other cards fade back.
  *
  * Route: /our-people (see site/plugins/wove-team/index.php)
  */
@@ -36,7 +36,9 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
       $role     = $member->content()->get('role');
       $bio      = $member->content()->get('bio');
       $linkedin = $member->content()->get('linkedin');
-      $latest   = wove_author_entries($member)->limit($latestLimit);
+      $entries   = wove_author_entries($member);
+      $postCount = $entries->count();
+      $latest    = $entries->limit($latestLimit);
     ?>
       <article class="team-card" id="<?= html($slug) ?>">
         <button class="team-card__toggle" type="button" aria-expanded="false" aria-controls="<?= html($slug) ?>-details">
@@ -56,28 +58,39 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
           <span class="team-card__icon" aria-hidden="true"></span>
         </button>
 
-        <div class="team-card__details" id="<?= html($slug) ?>-details">
-          <?php if ($bio->isNotEmpty()): ?>
-            <p class="team-card__bio"><?= $bio->html() ?></p>
-          <?php endif ?>
-          <?php if ($linkedin->isNotEmpty()): ?>
-            <a class="team-card__linkedin" href="<?= $linkedin->html() ?>" target="_blank" rel="noopener">LinkedIn &nearr;</a>
-          <?php endif ?>
+        <div class="team-card__details" id="<?= html($slug) ?>-details" aria-label="<?= html($name) ?>">
+          <div class="team-card__head">
+            <p><span class="team-card__head-name"><?= html($name) ?></span><?php if ($role->isNotEmpty()): ?><span class="team-card__role"><?= $role->html() ?></span><?php endif ?></p>
+            <button class="team-card__close" type="button" aria-label="Close">&times;</button>
+          </div>
 
-          <?php if ($latest->count()): ?>
-            <div class="team-card__latest">
-              <p class="team-card__label">Latest</p>
-              <ul class="team-card__articles">
-                <?php foreach ($latest as $entry): ?>
-                  <li>
-                    <a href="<?= $entry->url() ?>"><?= $entry->title()->html() ?></a>
-                    <time datetime="<?= $entry->date()->toDate('Y-m-d') ?>"><?= $entry->date()->toDate('j M Y') ?></time>
-                  </li>
-                <?php endforeach ?>
-              </ul>
-              <a class="team-card__all" href="<?= url('our-work') . '?filter=' . rawurlencode('author:' . $slug) ?>">
-                See all <?= html(explode(' ', $name)[0]) ?>'s posts &rarr;
-              </a>
+          <div class="team-card__body">
+            <?php if ($bio->isNotEmpty()): ?>
+              <p class="team-card__bio"><?= $bio->html() ?></p>
+            <?php endif ?>
+            <?php if ($latest->count()): ?>
+              <div class="team-card__latest">
+                <p class="team-card__label">Latest</p>
+                <ul class="team-card__articles">
+                  <?php foreach ($latest as $entry): ?>
+                    <li>
+                      <a href="<?= $entry->url() ?>"><?= $entry->title()->html() ?></a>
+                      <time datetime="<?= $entry->date()->toDate('Y-m-d') ?>"><?= $entry->date()->toDate('j M Y') ?></time>
+                    </li>
+                  <?php endforeach ?>
+                </ul>
+              </div>
+            <?php endif ?>
+          </div>
+
+          <?php if ($linkedin->isNotEmpty() || $postCount): ?>
+            <div class="team-card__foot">
+              <?php if ($linkedin->isNotEmpty()): ?>
+                <a class="team-card__linkedin" href="<?= $linkedin->html() ?>" target="_blank" rel="noopener">LinkedIn &nearr;</a>
+              <?php endif ?>
+              <?php if ($postCount): ?>
+                <a class="team-card__all" href="<?= url('our-work') . '?filter=' . rawurlencode('author:' . $slug) ?>">See all <?= html(explode(' ', $name)[0]) ?>'s posts (<?= $postCount ?>) &rarr;</a>
+              <?php endif ?>
             </div>
           <?php endif ?>
         </div>
@@ -91,18 +104,24 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
 </div>
 
 <script>
-/* Team cards — clicking a card opens its details in a full-width panel
-   directly below that card's row; one open at a time. Details stay
-   visible inline if JS doesn't run. /our-people#{slug} opens that card. */
+/* Team cards — clicking a card opens its details in a panel below that
+   card's row. The panel is centred under the card (kept inside the grid)
+   with a notch pointing at it; the other cards fade back. One open at a
+   time; Esc or the close button closes it and returns focus to the card.
+   Details stay inline in each card if JS doesn't run.
+   /our-people#{slug} opens that card on load. */
 (function () {
   var grid  = document.getElementById('team-grid');
   var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll('.team-card')) : [];
   if (!cards.length) return;
 
-  var panel = document.createElement('div');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var panel  = document.createElement('div');
   panel.className = 'team-panel';
-  panel.hidden = true;
-  var openCard = null;
+  panel.setAttribute('role', 'region');
+  panel.innerHTML = '<div class="team-panel__clip"><div class="team-panel__box"><span class="team-panel__notch" aria-hidden="true"></span></div></div>';
+  var box = panel.querySelector('.team-panel__box'), notch = panel.querySelector('.team-panel__notch');
+  var openCard = null, closeTimer;
 
   cards.forEach(function (card) {
     card.querySelector('.team-card__details').hidden = true;
@@ -111,63 +130,88 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
 
   // Last card on the same visual row as the given card
   function rowEnd(card) {
-    var top = card.offsetTop, last = card;
-    cards.forEach(function (c) { if (c.offsetTop === top) last = c; });
+    var last = card;
+    cards.forEach(function (c) { if (c.offsetTop === card.offsetTop) last = c; });
     return last;
   }
 
+  // Put the panel after the row, centre the box under the card, point the notch at it
   function place() {
     if (!openCard) return;
     rowEnd(openCard).after(panel);
+    // Measure against the panel itself: the grid has page padding
+    var g = panel.getBoundingClientRect(), c = openCard.getBoundingClientRect();
+    var mid = c.left - g.left + c.width / 2, bw = box.offsetWidth;
+    var left = Math.max(0, Math.min(mid - bw / 2, g.width - bw));
+    box.style.marginLeft = left + 'px';
+    notch.style.left = (mid - left) + 'px';
   }
 
-  function close() {
+  function detach(card) {
+    var details = box.querySelector('.team-card__details');
+    if (details) { details.hidden = true; card.appendChild(details); }
+    card.classList.remove('is-open');
+    card.querySelector('.team-card__toggle').setAttribute('aria-expanded', 'false');
+  }
+
+  function close(returnFocus) {
     if (!openCard) return;
-    var details = panel.firstElementChild;
-    if (details) { details.hidden = true; openCard.appendChild(details); }
-    openCard.classList.remove('is-open');
-    openCard.querySelector('.team-card__toggle').setAttribute('aria-expanded', 'false');
-    panel.hidden = true;
+    var card = openCard;
     openCard = null;
+    detach(card);
+    grid.classList.remove('has-open');
+    panel.classList.remove('is-in');
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(function () { if (!openCard) panel.remove(); }, reduce ? 0 : 300);
+    if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+    if (returnFocus) card.querySelector('.team-card__toggle').focus();
   }
 
   function open(card, scroll) {
-    close();
+    var sameRow = openCard && rowEnd(openCard) === rowEnd(card);
+    if (openCard) detach(openCard);
+    clearTimeout(closeTimer);
+
     var details = card.querySelector('.team-card__details');
-    panel.appendChild(details);
+    box.appendChild(details);
     details.hidden = false;
-    panel.hidden = false;
+    panel.setAttribute('aria-label', details.getAttribute('aria-label'));
     card.classList.add('is-open');
     card.querySelector('.team-card__toggle').setAttribute('aria-expanded', 'true');
+    grid.classList.add('has-open');
     openCard = card;
+
+    if (!sameRow) panel.classList.remove('is-in');
     place();
     if (history.replaceState) history.replaceState(null, '', '#' + card.id);
-    if (scroll) {
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
-    }
+
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      panel.classList.add('is-in');
+      setTimeout(function () {
+        if (scroll) panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
+        var closeBtn = details.querySelector('.team-card__close');
+        if (closeBtn) closeBtn.focus({ preventScroll: true });
+      }, reduce ? 0 : 200);
+    }); });
   }
 
   cards.forEach(function (card) {
     card.querySelector('.team-card__toggle').addEventListener('click', function () {
-      if (openCard === card) {
-        close();
-        if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
-      } else {
-        open(card, true);
-      }
+      openCard === card ? close(true) : open(card, true);
     });
+    var closeBtn = card.querySelector('.team-card__close');
+    if (closeBtn) closeBtn.addEventListener('click', function () { close(true); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close(true);
   });
 
   // Rows change with the viewport, so re-seat the panel after resizing
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      if (!openCard) return;
-      panel.remove();
-      place();
-    }, 100);
+    resizeTimer = setTimeout(place, 100);
   });
 
   var target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));

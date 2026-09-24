@@ -150,23 +150,29 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
     notch.style.left = (mid - left) + 'px';
   }
 
-  // Scroll so the open card and its panel are both on screen. The card's top
-  // is kept at least a header's height from the top of the viewport; if card
-  // and panel don't fit (usually on phones), the card's top goes there.
+  // Scroll so the open card and its panel are both on screen, keeping the
+  // card's top at least a header's height from the top of the viewport. If
+  // they don't fit, the panel wins: its bottom is brought into view, and if
+  // the panel alone is too tall its top goes just below the header height.
   function reveal(card) {
     var nav    = document.querySelector('.nav');
     var offset = (nav ? nav.offsetHeight : 0) + 16;
     var margin = 16;
+    var room   = window.innerHeight - offset - margin;
     var top    = card.getBoundingClientRect().top;
-    var bottom = box.getBoundingClientRect().bottom;
+    var boxR   = box.getBoundingClientRect();
     var delta  = 0;
 
-    if (bottom - top > window.innerHeight - offset - margin) {
-      delta = top - offset;                                        // too tall: card top below the header
-    } else if (bottom > window.innerHeight - margin) {
-      delta = bottom - (window.innerHeight - margin);              // show the bottom of the panel
-    } else if (top < offset) {
-      delta = top - offset;                                        // card partly above the top
+    if (boxR.bottom - top <= room) {
+      // Card and panel fit together
+      if (boxR.bottom > window.innerHeight - margin) delta = boxR.bottom - (window.innerHeight - margin);
+      else if (top < offset) delta = top - offset;
+    } else if (boxR.height <= room) {
+      // Only the panel fits: show all of it
+      delta = boxR.bottom - (window.innerHeight - margin);
+    } else {
+      // Panel taller than the screen: its top just below the header height
+      delta = boxR.top - offset;
     }
     if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior: reduce ? 'auto' : 'smooth' });
   }

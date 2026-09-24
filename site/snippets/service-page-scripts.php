@@ -18,6 +18,15 @@
     targets.forEach(function (el) { io.observe(el); });
   })();
 
+  /* Card tags — "+N" button reveals the rest of a card's tags */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.card-tags__more');
+    if (!btn) return;
+    e.preventDefault();
+    btn.parentNode.querySelectorAll('.card-tags__tag[hidden]').forEach(function (t) { t.hidden = false; });
+    btn.remove();
+  });
+
   /* See more / See less case studies — animated toggle (no-op if not on the page) */
   (function () {
     var btn = document.querySelector('.js-more');

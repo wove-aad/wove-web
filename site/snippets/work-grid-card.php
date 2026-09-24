@@ -10,8 +10,7 @@ $sectors  = implode(',', array_filter($caseStudy->sectors()->split(',')));
 $tags     = implode(',', array_filter($caseStudy->impactAreas()->split(',')));
 ?>
 
-<a href="<?= $caseStudy->url() ?>"
-   class="work-grid-card"
+<div class="work-grid-card"
    data-services="<?= html($services) ?>"
    data-sectors="<?= html($sectors) ?>"
    data-tags="<?= html($tags) ?>">
@@ -31,6 +30,9 @@ $tags     = implode(',', array_filter($caseStudy->impactAreas()->split(',')));
     <?php elseif ($caseStudy->heroTitle()->isNotEmpty()): ?>
       <p class="work-grid-card__desc"><?= strip_tags($caseStudy->heroTitle()->value()) ?></p>
     <?php endif ?>
+    <?php snippet('card-tags', ['post' => $caseStudy]) ?>
   </div>
 
-</a>
+  <a href="<?= $caseStudy->url() ?>" class="work-grid-card__link" aria-label="<?= $caseStudy->eyebrow()->or($caseStudy->title())->html() ?>"></a>
+
+</div>

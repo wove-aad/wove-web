@@ -436,6 +436,32 @@
   margin-right: var(--feed-space-4);
 }
 
+/* Card tags — services, sectors and editorial tags, linked to filtered Our Work */
+.card-tags {
+  position: relative;
+  z-index: 2; /* above the stretched card link */
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--feed-space-4) var(--feed-space-8);
+  padding-top: var(--feed-space-4);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.feed-wrap .card-tags__tag {
+  color: var(--feed-blue);
+  text-decoration: none;
+}
+.feed-wrap .card-tags__tag:hover { text-decoration: underline; text-underline-offset: 2px; }
+.card-tags__tag[hidden] { display: none; }
+.card-tags__more {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--feed-text-dim);
+  cursor: pointer;
+}
+.feed-wrap .card-tags__more:hover { color: var(--feed-blue); }
+
 /* Quote text — sparks */
 .feed-card__quote {
   font-size: var(--feed-fs-card-title);
@@ -1278,6 +1304,7 @@
   padding: var(--feed-space-64) 0;
 }
 .feed-wrap .work-grid-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--feed-surface);
@@ -1315,6 +1342,7 @@
   line-height: var(--feed-lh-body);
   color: var(--feed-text-muted);
 }
+.feed-wrap .work-grid-card__link { position: absolute; inset: 0; z-index: 1; }
 .feed-wrap .work-grid-card[hidden] { display: none; }
 .work-feed-item[hidden] { display: none; }
 .js .feed-wrap .work-grid-card {

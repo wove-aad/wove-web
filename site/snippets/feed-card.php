@@ -59,6 +59,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php endif ?>
       <time datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     </div>
+    <?php snippet('card-tags', ['post' => $post]) ?>
   </article>
 
 <?php elseif ($isSpark && $image): ?>
@@ -83,6 +84,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <?php endif ?>
         <time datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
       </div>
+      <?php snippet('card-tags', ['post' => $post]) ?>
     </div>
   </article>
 
@@ -114,6 +116,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <?php endif ?>
         <time datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
       </div>
+      <?php snippet('card-tags', ['post' => $post]) ?>
     </div>
     <?php if ($isLinked): ?>
       <a href="<?= $post->url() ?>" class="feed-card__link" tabindex="-1" aria-hidden="true"></a>
@@ -144,6 +147,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php endif ?>
       <time datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
     </div>
+    <?php snippet('card-tags', ['post' => $post]) ?>
     <?php if ($isLinked): ?>
       <a href="<?= $post->url() ?>" class="feed-card__link" tabindex="-1" aria-hidden="true"></a>
     <?php endif ?>

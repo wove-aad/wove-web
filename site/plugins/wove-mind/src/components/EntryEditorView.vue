@@ -5,6 +5,14 @@
   >
     <div class="wove-topbar wove-topbar--editor">
       <div class="wove-topbar__left">
+        <button
+          class="wove-btn wove-btn--ghost wove-btn--back"
+          title="Back to all entries"
+          @click="backToList"
+        >
+          <k-icon type="angle-left" />
+          <span>Back</span>
+        </button>
         <span class="wove-brand">
           Wove Mind<span class="wove-brand__dot">/</span
           ><span class="wove-brand__crumb">{{
@@ -16,16 +24,11 @@
           @input="onFormatChange"
         />
       </div>
-      <div class="wove-topbar__center">
+      <div class="wove-topbar__right">
         <span class="wove-save-status" :class="saveStateClass">
           <span class="wove-save-status__dot" />
           <span>{{ saveLabel }}</span>
         </span>
-      </div>
-      <div class="wove-topbar__right">
-        <button class="wove-btn wove-btn--ghost" @click="backToList">
-          Back
-        </button>
         <a
           v-if="previewUrl"
           class="wove-btn wove-btn--ghost"
@@ -34,7 +37,8 @@
           rel="noopener"
           :title="isDraft ? 'Preview draft on the site' : 'View live on the site'"
         >
-          View
+          <k-icon type="open" />
+          <span>View</span>
         </a>
         <button
           class="wove-btn wove-btn--danger"
@@ -42,7 +46,8 @@
           @click="confirmDelete"
           title="Delete this entry"
         >
-          Delete
+          <k-icon type="trash" />
+          <span>Delete</span>
         </button>
         <button
           v-if="isDraft"
@@ -50,7 +55,8 @@
           :disabled="isSaving"
           @click="publish"
         >
-          Publish
+          <k-icon type="check" />
+          <span>Publish</span>
         </button>
         <button
           v-else
@@ -58,7 +64,8 @@
           :disabled="isSaving"
           @click="unpublish"
         >
-          Unpublish
+          <k-icon type="undo" />
+          <span>Unpublish</span>
         </button>
       </div>
     </div>
@@ -91,12 +98,34 @@
             <div class="wove-fmt-perfect">{{ formatMeta.perfect }}</div>
           </div>
 
-          <k-form
-            v-if="fields && Object.keys(mainFields).length"
-            :fields="mainFields"
-            :value="values"
-            @input="onInput"
-          />
+          <div class="wove-compose-form" :style="{ '--wm-body-h': bodyHeight + 'px' }">
+            <k-form
+              v-if="fields && Object.keys(mainFields).length"
+              :fields="mainFields"
+              :value="values"
+              @input="onInput"
+            />
+            <!-- Body is always the last main field, so this sits
+                 directly under it. Drag to resize, double-click to reset. -->
+            <div
+              v-if="mainFields.body"
+              class="wove-body-resize"
+              role="separator"
+              aria-orientation="horizontal"
+              :aria-valuenow="bodyHeight"
+              :aria-valuemin="BODY_MIN_H"
+              :aria-valuemax="BODY_MAX_H"
+              aria-label="Resize the body field"
+              tabindex="0"
+              title="Drag to resize. Double-click to reset."
+              @pointerdown="startBodyResize"
+              @dblclick="setBodyHeight(BODY_DEFAULT_H)"
+              @keydown.up.prevent="setBodyHeight(bodyHeight - 40)"
+              @keydown.down.prevent="setBodyHeight(bodyHeight + 40)"
+            >
+              <span class="wove-body-resize__grip" />
+            </div>
+          </div>
         </div>
       </main>
 
@@ -118,6 +147,7 @@
             :title="values.title"
             :seo-title="values.seotitle"
             :seo-description="values.seodescription"
+            :auto-description="autoDescription"
             :slug="slug"
           />
         </div>
@@ -193,7 +223,34 @@ const MAIN_FIELDS_BY_FORMAT = {
 const LABEL_OVERRIDES = {
   body:    "Body",
   excerpt: "Excerpt (short summary)",
+  seotitle: "Meta title",
+  seodescription: "Meta description",
 };
+
+// Body field height (px). Stored per browser so each admin keeps
+// their preferred size.
+const BODY_MIN_H = 160;
+const BODY_MAX_H = 1200;
+const BODY_DEFAULT_H = 360;
+const BODY_H_KEY = "wove-mind.body-height";
+
+// Matches Kirby's excerpt(160) used as the meta description fallback
+// in site/snippets/header.php.
+const DESCRIPTION_LENGTH = 160;
+
+function plainText(html) {
+  if (!html) return "";
+  const el = document.createElement("div");
+  el.innerHTML = html;
+  return (el.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function excerpt(text, length) {
+  if (text.length <= length) return text;
+  const cut = text.slice(0, length);
+  const space = cut.lastIndexOf(" ");
+  return (space > length * 0.6 ? cut.slice(0, space) : cut).trim() + "…";
+}
 const RAIL_FIELDS_BY_FORMAT = {
   spark:    ["tags", "case_study", "services", "seotitle", "seodescription"],
   thread:   ["tags", "case_study", "services", "seotitle", "seodescription"],
@@ -220,8 +277,23 @@ export default {
     previewUrl: { type: String, default: null },
   },
   data() {
+    const values = { ...this.initialContent };
+    // New entries used to be created with the SEO tab's
+    // `{{ page.title }}` default resolved against the slug, so the
+    // stored meta title is the slug. Treat that as empty.
+    const slug = this.entryId.split("/").pop();
+    if (values.seotitle && values.seotitle === slug) values.seotitle = "";
+    let bodyHeight = BODY_DEFAULT_H;
+    try {
+      const stored = parseInt(localStorage.getItem(BODY_H_KEY), 10);
+      if (stored) bodyHeight = stored;
+    } catch (_) {}
     return {
-      values: { ...this.initialContent },
+      BODY_MIN_H,
+      BODY_MAX_H,
+      BODY_DEFAULT_H,
+      bodyHeight: Math.min(BODY_MAX_H, Math.max(BODY_MIN_H, bodyHeight)),
+      values,
       isSaving: false,
       isDeleting: false,
       deleteOpen: false,
@@ -303,12 +375,26 @@ export default {
           .map(([name, field]) => [name, stack(this.decorate(name, field))])
       );
     },
+    // Meta description fallback from the post content: the excerpt
+    // field if there is one, else the body, else the long read blocks.
+    autoDescription() {
+      const v = this.values;
+      let text = plainText(v.excerpt) || plainText(v.body);
+      if (!text && Array.isArray(v.blocks)) {
+        text = v.blocks
+          .map((b) => plainText(b.content && b.content.text))
+          .filter(Boolean)
+          .join(" ");
+      }
+      return excerpt(text, DESCRIPTION_LENGTH);
+    },
     hasSeoFields() {
       return this.railFields.seotitle || this.railFields.seodescription;
     },
     saveStateClass() {
       if (this.isSaving) return "is-saving";
       if (this.dirty) return "is-dirty";
+      if (!this.lastSavedAt) return "is-new";
       return "";
     },
     saveLabel() {
@@ -350,6 +436,16 @@ export default {
       const patch = {};
       if (label && field.label !== label) patch.label = label;
       if (field.when) patch.when = null;
+      // Show what the site will use when these are left empty.
+      if (name === "seotitle") {
+        patch.placeholder = (this.values.title || "").trim() || "Uses the post title";
+        patch.default = null;
+        patch.help = "Leave empty to use the post title. Aim for 50 to 60 characters.";
+      }
+      if (name === "seodescription") {
+        patch.placeholder = this.autoDescription || "Uses the start of the post";
+        patch.help = "Leave empty to use the start of the post. Up to 160 characters.";
+      }
       if (name === "body" && field.type === "writer") {
         // Force the writer toolbar to be permanent at the top rather
         // than the default floating-on-selection behaviour, and make
@@ -364,6 +460,27 @@ export default {
         patch.nodes = nodes;
       }
       return Object.keys(patch).length ? { ...field, ...patch } : field;
+    },
+    setBodyHeight(h) {
+      this.bodyHeight = Math.round(Math.min(BODY_MAX_H, Math.max(BODY_MIN_H, h)));
+      try {
+        localStorage.setItem(BODY_H_KEY, String(this.bodyHeight));
+      } catch (_) {}
+    },
+    startBodyResize(event) {
+      const startY = event.clientY;
+      const startH = this.bodyHeight;
+      const handle = event.currentTarget;
+      handle.setPointerCapture(event.pointerId);
+      const move = (e) => this.setBodyHeight(startH + e.clientY - startY);
+      const up = () => {
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", up);
+        handle.removeEventListener("pointercancel", up);
+      };
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", up);
+      handle.addEventListener("pointercancel", up);
     },
     onInput(values) {
       // Merge — k-form's emitted payload only carries fields it knows about,

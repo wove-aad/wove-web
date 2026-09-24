@@ -55,6 +55,12 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 ### Wove Mind Panel plugin avatars (2026-09-24)
 `site/plugins/wove-mind` shows the user's Kirby profile image (`$user->avatar()`, cropped to 96px) in the top bar and next to each author in the entries list, falling back to initials. `wove_mind_user_summary()` and `wove_mind_avatar_url()` in `index.php` supply the data. Rebuild with `npm run build` in the plugin folder after editing `src/`.
 
+### Wove Mind entry editor (2026-09-24)
+- **Kirby fields use container queries.** `.wove-editor__main` and `.wove-editor__rail` set `container-type: inline-size`. Without it Kirby measures the whole Panel main area, uses its 12-column grid and the fields overflow both columns (this was the sidebar clipping).
+- Top bar: Back (ghost, top left), brand, format chip; on the right the save status, View (ghost), Delete (dark red, `--wm-danger` tokens) and Publish, all with Kirby icons.
+- The body field defaults to 360px and has a drag handle under it (double-click resets, arrow keys work). The height is kept per browser in `localStorage` (`wove-mind.body-height`).
+- Meta title and meta description show their fallbacks as placeholders, and the search preview uses them: the post title, and the first 160 characters of the post. `header.php` applies the same description fallback to Wove Mind entries, and treats a meta title equal to the slug as empty. New entries are created with an empty `seotitle`; before this the SEO tab's `{{ page.title }}` default stored the slug.
+
 ### Our People / team page
 `/our-people` (linked from the header and footer) uses `site/templates/team.php`. The route in `site/plugins/wove-team/index.php` renders `page('our-people')` if it exists, otherwise a virtual page with the team template, so it works before a page is created. `site/blueprints/pages/team.yml` adds an optional intro; `team` is in `default.yml`'s `changeTemplate` list.
 - **Team members are Kirby users.** Profile fields (Show on the Our People page `showOnTeam`, Role `jobTitle`, Bio `bio`, LinkedIn `linkedin`) come from `site/plugins/wove-mind/blueprints/sections/team-profile.yml`, used by both user blueprints. The photo is the account avatar. User accounts aren't in git, so profiles are filled in per server.

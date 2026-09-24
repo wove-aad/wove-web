@@ -70,7 +70,7 @@
 .wove-btn:hover { opacity: 0.86; }
 .wove-btn--ghost {
   background: transparent; color: var(--wm-ink-2);
-  border-color: var(--wm-rule);
+  border-color: transparent;
 }
 .wove-btn--ghost:hover {
   background: var(--wm-surface-2);
@@ -94,6 +94,8 @@
   background: var(--wm-danger); color: var(--wm-ground);
   border-color: var(--wm-danger);
 }
+.wove-btn .k-icon { --icon-size: 16px; flex-shrink: 0; }
+.wove-btn--back { padding-left: 8px; margin-left: -8px; }
 .wove-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Confirm delete modal — same visual language as the format chooser */
@@ -506,9 +508,38 @@
   min-height: calc(100vh - 57px);
 }
 .wove-editor__main { display: flex; justify-content: center; padding: 48px 32px 120px; }
+/* Kirby lays out form fields with container queries. Without these the
+   nearest container is the whole Panel main area, so fields use the
+   12-column desktop grid and overflow both columns. */
+.wove-editor__main,
+.wove-editor__rail { container-type: inline-size; }
+
+/* Body field: taller by default, resizable with the handle below it */
+.wove-compose-form .k-field-name-body .ProseMirror { min-height: var(--wm-body-h, 360px); }
+.wove-body-resize {
+  display: flex; align-items: center; justify-content: center;
+  height: 20px; margin-top: 2px;
+  cursor: ns-resize; touch-action: none; user-select: none;
+  border-radius: var(--wm-radius-sm);
+}
+.wove-body-resize__grip {
+  width: 48px; height: 4px; border-radius: 2px;
+  background: var(--wm-faint);
+  transition: background 120ms;
+}
+.wove-body-resize:hover .wove-body-resize__grip,
+.wove-body-resize:focus-visible .wove-body-resize__grip { background: var(--wm-ink-2); }
+.wove-body-resize:focus-visible { outline: 2px solid var(--wm-accent); outline-offset: 2px; }
 .wove-editor__compose { width: 100%; max-width: 720px; }
 
-.wove-fmt-meta { margin-bottom: 28px; }
+.wove-fmt-meta {
+  margin-bottom: 28px;
+  padding: 16px 18px;
+  border-radius: var(--wm-radius-sm);
+  background: color-mix(in srgb, var(--wm-type) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wm-type) 18%, transparent);
+}
+.wove-fmt-meta .wove-fmt-pill { background: color-mix(in srgb, var(--wm-type) 14%, transparent); }
 .wove-fmt-pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 10px 3px 8px;
@@ -529,7 +560,15 @@
 }
 .wove-save-status__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--wm-thread); }
 .wove-save-status.is-saving .wove-save-status__dot { background: var(--wm-spark); animation: wove-pulse 1.2s ease-in-out infinite; }
-.wove-save-status.is-dirty .wove-save-status__dot { background: var(--wm-faint); }
+.wove-save-status.is-dirty .wove-save-status__dot,
+.wove-save-status.is-new .wove-save-status__dot { background: var(--wm-faint); }
+.wove-topbar--editor { grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
+.wove-topbar--editor .wove-topbar__right { gap: 8px; }
+.wove-topbar--editor .wove-save-status { margin-right: 8px; white-space: nowrap; }
+@media (max-width: 1199px) {
+  /* Keep the dot, drop the words, so the buttons fit */
+  .wove-topbar--editor .wove-save-status > span:last-child { display: none; }
+}
 @keyframes wove-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
 .wove-editor__rail {
@@ -595,6 +634,7 @@
   /* Editor actions drop to their own row: Back on the left, Publish on the right */
   .wove-topbar--editor { grid-template-columns: 1fr; row-gap: 10px; }
   .wove-topbar--editor .wove-topbar__right { justify-content: flex-start; gap: 8px; }
+  .wove-topbar--editor .wove-save-status { display: none; }
   .wove-topbar--editor .wove-topbar__right > :last-child { margin-left: auto; }
   .wove-topbar__center { display: none; } /* autosave status hides */
   .wove-brand__crumb { display: none; }

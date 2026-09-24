@@ -24,8 +24,18 @@ $hasCurrent = isset($navItems[$currentId]) || $currentId === $ctaId;
 $isCurrent = fn ($id) => $currentId === $id ? ' aria-current="page"' : '';
 
 // SEO tab fields (site/blueprints/tabs/seo.yml) — all optional, sensible fallbacks.
-$seoTitle       = $page->seoTitle()->or($page->title())->value();
+// A meta title equal to the slug is treated as empty: Wove Mind entries
+// used to be created with the `{{ page.title }}` default resolved to it.
+$seoTitle       = $page->seoTitle()->value() === $page->slug() ? '' : $page->seoTitle()->value();
+$seoTitle       = $seoTitle !== '' ? $seoTitle : $page->title()->value();
 $seoDescription = $page->seoDescription();
+// Wove Mind entries fall back to the start of the post, matching the
+// search preview in the Panel editor (site/plugins/wove-mind).
+if ($seoDescription->isEmpty() && $page->intendedTemplate()->name() === 'wove-mind-entry') {
+    $source = $page->excerpt()->or($page->body());
+    $seoDescription = new Kirby\Content\Field($page, 'seoDescription',
+        $source->isNotEmpty() ? $source->excerpt(160) : $page->blocks()->toBlocks()->excerpt(160));
+}
 $robotsFlags    = $page->robots()->split(',');
 $robotsContent  = implode(', ', array_filter([
   in_array('noindex', $robotsFlags) ? 'noindex' : 'index',

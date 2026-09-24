@@ -1,6 +1,6 @@
 <?php
 /**
- * Card tags — services, sectors and editorial tags on a feed card
+ * Card tags — case study, services, editorial tags and sectors on a feed card
  * Usage: <?php snippet('card-tags', ['post' => $post]) ?>
  *
  * Each tag links to Our Work filtered by it. The first four show; the
@@ -20,14 +20,17 @@ $sectorLabels  = [
 $siteTags = site()->tags()->toStructure();
 $tagField = $post->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
 
+// Order: case study, services, editorial tags, then sectors
 $cardTags = [];
+$caseStudies = $post->intendedTemplate()->name() === 'case-study'
+  ? [$post]
+  : $post->case_study()->toPages();
+foreach ($caseStudies as $cs) {
+  $cardTags['cs:' . $cs->slug()] = $cs->eyebrow()->or($cs->title())->value();
+}
 foreach ($post->services()->split(',') as $s) {
   $s = trim($s);
   if (isset($serviceLabels[$s])) $cardTags['service:' . $s] = $serviceLabels[$s];
-}
-foreach ($post->sectors()->split(',') as $s) {
-  $s = trim($s);
-  if (isset($sectorLabels[$s])) $cardTags['sector:' . $s] = $sectorLabels[$s];
 }
 foreach ($post->content()->get($tagField)->split(',') as $t) {
   $t   = trim($t);
@@ -35,6 +38,10 @@ foreach ($post->content()->get($tagField)->split(',') as $t) {
   if ($tag && $tag->active()->toBool() !== false) {
     $cardTags['tag:' . $tag->slug()->value()] = $tag->name()->value();
   }
+}
+foreach ($post->sectors()->split(',') as $s) {
+  $s = trim($s);
+  if (isset($sectorLabels[$s])) $cardTags['sector:' . $s] = $sectorLabels[$s];
 }
 
 if (!$cardTags) return;

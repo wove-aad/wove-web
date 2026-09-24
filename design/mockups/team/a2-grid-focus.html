@@ -24,7 +24,8 @@
 /* Focus state: the open card lifts, the rest recede */
 .grid.has-open .card:not(.is-open) { opacity: 0.45; filter: grayscale(0.6); }
 .grid.has-open .card:not(.is-open):hover { opacity: 0.8; filter: none; }
-.card.is-open { border-color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.10); transform: translateY(-2px); }
+.card.is-open { border-color: transparent; box-shadow: 0 12px 32px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06); transform: translateY(-2px); }
+[data-theme="dark"] .card.is-open { box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); }
 .card.is-open .plus::after { transform: rotate(0deg); }
 .card.is-open .plus::before, .card.is-open .plus::after { background: var(--text); }
 
@@ -32,29 +33,34 @@
 .panel { grid-column: 1 / -1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 300ms ease, margin 300ms ease; margin: -16px 0 0; }
 .panel.is-in { grid-template-rows: 1fr; margin: 0; }
 .panel__clip { overflow: hidden; }
-.panel__box { position: relative; margin-top: 10px; background: var(--surface); border: 1px solid var(--text); border-radius: var(--radius);
-  opacity: 0; transform: translateY(-6px); transition: opacity 250ms ease 80ms, transform 250ms ease 80ms; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+/* Once open, stop clipping so the shadow shows */
+.panel.is-in .panel__clip { animation: panel-unclip 0s 300ms forwards; }
+@keyframes panel-unclip { to { overflow: visible; } }
+.panel__box { position: relative; width: min(100%, 760px); margin-top: 10px; background: var(--surface); border-radius: var(--radius);
+  opacity: 0; transform: translateY(-6px); transition: opacity 250ms ease 80ms, transform 250ms ease 80ms;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.05); }
+[data-theme="dark"] .panel__box { box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); }
 .panel.is-in .panel__box { opacity: 1; transform: none; }
-.panel__notch { position: absolute; top: -7px; width: 12px; height: 12px; background: var(--surface); border-left: 1px solid var(--text); border-top: 1px solid var(--text); transform: rotate(45deg); }
-.panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 20px 0; }
+.panel__notch { position: absolute; top: -6px; width: 12px; height: 12px; background: var(--surface); border-radius: 2px 0 0 0; transform: rotate(45deg); }
+.panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 20px 24px 0; }
 .panel__head .name { font-size: 1.375rem; }
 .panel__head .role { margin-left: 10px; }
 .panel__close { flex-shrink: 0; width: 32px; height: 32px; margin: -6px -8px 0 0; border: 0; border-radius: 50%; background: none; cursor: pointer; font-size: 20px; line-height: 1; color: var(--dim); }
 .panel__close:hover { background: var(--raised); color: var(--text); }
-.panel__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; padding: 12px 20px 16px; }
-.panel .bio { max-width: 52ch; }
+.panel__body { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; padding: 12px 24px 16px; }
+.panel .bio { max-width: none; }
 .panel .posts { gap: 0; }
 .panel .posts a { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 16px; padding: 8px 0; border-top: 1px solid var(--rule); }
 .panel .posts a:first-child { border-top: 0; padding-top: 0; }
 .panel .posts time { flex-shrink: 0; }
-.panel__foot { display: flex; gap: 20px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--rule); }
-.panel__foot .sp { flex: 1; }
-@media (max-width: 800px) { .panel__body { grid-template-columns: 1fr; gap: 16px; } }
+.panel__foot { display: flex; gap: 20px; align-items: center; padding: 0 24px 20px; }
+.panel__foot .sp { display: none; }
+@media (max-width: 800px) { .panel__body { grid-template-columns: 1fr; gap: 16px; } .panel__head, .panel__body, .panel__foot { padding-left: 20px; padding-right: 20px; } }
 @media (prefers-reduced-motion: reduce) { .card, .panel, .panel__box { transition: none; } }
 </style>
 </head>
 <body>
-<div class="bar"><a href="index.html">&larr; Team directions</a><span>A2 · Grid + focused panel</span><span>Others fade back, notch links card and panel, Esc closes</span><span class="sp"></span><button id="tw-theme" type="button" aria-pressed="false">Dark</button><button id="tw-photos" type="button" aria-pressed="false">No photos</button></div>
+<div class="bar"><a href="index.html">&larr; Team directions</a><span>A2 · Grid + focused panel</span><span>Others fade back, open card and panel lift with a shadow, Esc closes</span><span class="sp"></span><button id="tw-theme" type="button" aria-pressed="false">Dark</button><button id="tw-photos" type="button" aria-pressed="false">No photos</button></div>
 <main class="page"><header class="hero"><h1 class="hero__title">Our People</h1><p class="hero__intro">The people behind the work.</p></header>
 <div class="grid" id="grid"></div></main>
 <script src="data.js"></script>
@@ -73,8 +79,14 @@ TEAM.forEach(function (p) {
 function rowEnd(card) { var last = card; grid.querySelectorAll('.card').forEach(function (c) { if (c.offsetTop === card.offsetTop) last = c; }); return last; }
 function seat() {
   rowEnd(open).after(panel);
-  var notch = panel.querySelector('.panel__notch'), g = grid.getBoundingClientRect(), c = open.getBoundingClientRect();
-  if (notch) notch.style.left = (c.left - g.left + c.width / 2 - 6) + 'px';
+  // Centre the box under the open card, kept inside the grid; the notch points at the card
+  var box = panel.querySelector('.panel__box'), notch = panel.querySelector('.panel__notch');
+  if (!box) return;
+  var g = grid.getBoundingClientRect(), c = open.getBoundingClientRect();
+  var bw = box.offsetWidth, mid = c.left - g.left + c.width / 2;
+  var left = Math.max(0, Math.min(mid - bw / 2, g.width - bw));
+  box.style.marginLeft = left + 'px';
+  if (notch) notch.style.left = (mid - left - 6) + 'px';
 }
 function show(el, p) {
   var sameRow = open && rowEnd(open) === rowEnd(el);

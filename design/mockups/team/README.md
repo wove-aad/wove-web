@@ -9,7 +9,7 @@ Four directions for the Our People page. Open `index.html` (on staging:
 | File | Direction |
 | --- | --- |
 | `a-grid-panel.html` | A: square photo cards, 4 per row, full-width panel below the row (the current build) |
-| `a2-grid-focus.html` | A2: A refined, with focus state (others fade back), a notch linking card and panel, tighter panel with header, close and footer, Esc to close |
+| `a2-grid-focus.html` | A2: A refined. Other cards fade back; the open card and panel lift with a shadow (no stroke); the panel is up to 760px wide, centred under the open card with a notch, with a header, close, bio beside a compact post list, and LinkedIn and see-all together below. Esc closes |
 | `b-portrait-drawer.html` | B: portrait wall with a side drawer, next/previous and arrow keys |
 | `c-index.html` | C: index list with a cursor-following photo preview and expanding rows |
 | `d-flip.html` | D: portrait cards that flip to show bio and posts |

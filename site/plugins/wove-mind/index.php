@@ -40,6 +40,7 @@ App::plugin('wove/mind', [
 									'props'     => [
 										'entries' => [],
 										'parent'  => 'mind',
+										'viewer'  => wove_mind_user_summary($kirby->user()),
 									],
 								];
 							}
@@ -52,6 +53,7 @@ App::plugin('wove/mind', [
 								'title'     => 'Wove Mind',
 								'props'     => [
 									'parent'  => 'mind',
+									'viewer'  => wove_mind_user_summary($user),
 									'entries' => $entries->values(fn ($entry) => wove_mind_entry_summary($entry, $user)),
 								],
 							];
@@ -119,6 +121,7 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 
 	$user   = $entry->createdBy() ?? $entry->authors()->toUsers()->first();
 	$author = $user ? ($user->name()->value() ?? $user->email()) : 'Anonymous';
+	$avatar = wove_mind_avatar_url($user);
 
 	return [
 		'id'        => $entry->uri(),
@@ -127,11 +130,33 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 		'format'    => $format,
 		'status'    => $entry->status(),
 		'author'    => $author,
+		'avatar'    => $avatar,
 		'mine'      => $viewer && $user && $viewer->id() === $user->id(),
 		'wordCount' => $words > 0 ? $words : null,
 		'dateLabel' => wove_mind_date_label($entry->modified()),
 		'editUrl'   => 'mind/entry/' . $entry->slug(),
 	];
+}
+
+/**
+ * Name and avatar of the logged-in user, for the top bar.
+ */
+function wove_mind_user_summary(?\Kirby\Cms\User $user): array
+{
+	return [
+		'name'   => $user ? ($user->name()->value() ?? $user->email()) : '',
+		'avatar' => wove_mind_avatar_url($user),
+	];
+}
+
+/**
+ * URL of a square thumbnail of the user's Panel profile image, or null if none is set.
+ */
+function wove_mind_avatar_url(?\Kirby\Cms\User $user): ?string
+{
+	$avatar = $user?->avatar();
+
+	return $avatar ? $avatar->crop(96, 96)->url() : null;
 }
 
 /**

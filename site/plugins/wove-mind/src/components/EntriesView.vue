@@ -8,8 +8,9 @@
         </span>
       </div>
       <div class="wove-topbar__right">
-        <span class="wove-avatar" :title="$panel.user.name">
-          {{ initials($panel.user.name) }}
+        <span class="wove-avatar" :title="viewer.name">
+          <img v-if="viewer.avatar" :src="viewer.avatar" alt="" />
+          <template v-else>{{ initials(viewer.name) }}</template>
         </span>
       </div>
     </div>
@@ -87,6 +88,10 @@
                   {{ entry.excerpt || "Untitled spark" }}
                 </p>
                 <div class="wove-entry__meta">
+                  <span class="wove-avatar wove-avatar--sm">
+                    <img v-if="entry.avatar" :src="entry.avatar" alt="" />
+                    <template v-else>{{ initials(entry.author) }}</template>
+                  </span>
                   <span>{{ entry.author }}</span>
                   <span
                     v-if="entry.wordCount"
@@ -124,6 +129,7 @@ export default {
   props: {
     entries: { type: Array, default: () => [] },
     parent: { type: String, required: true },
+    viewer: { type: Object, default: () => ({ name: "", avatar: null }) },
   },
   data() {
     return {

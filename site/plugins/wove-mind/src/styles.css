@@ -49,7 +49,10 @@
   background: var(--wove-accent-tint); color: var(--wove-accent-ink);
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
+  overflow: hidden; flex-shrink: 0;
 }
+.wove-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wove-avatar--sm { width: 20px; height: 20px; font-size: 9px; margin-right: -4px; }
 
 .wove-btn {
   display: inline-flex; align-items: center; gap: 8px;

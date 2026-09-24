@@ -59,6 +59,7 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 - **Authorship** means the entry's `author` field is set and `show_author` is on (`wove_entry_author()`). Entries with "Show author" off never appear on a profile or under an author filter. Case studies have no author.
 - **Author filter**: `author:{slug}` (slug = `Str::slug` of the user's name, `wove_author_slug()`). Our Work items carry `data-authors`; the hero shows name, role and a profile link. The filter is chosen from a **Team** dropdown (a native `<select>` styled as `.tag-pill--select`, with `field-sizing: content` so the pill fits the selected option in browsers that support it) at the end of the Our Work pills and of `tag-cloud.php`, where it navigates to Our Work. It lists only members with at least one credited entry. The Our Work JS selects pills with `.tag-pill[data-filter]` so the dropdown isn't treated as a pill.
 - A Kirby avatar is a user file with `template: avatar` (the Panel sets this on upload).
+- **Design exploration**: `design/mockups/team/` holds the temporary mockups (A grid + panel, A2 focused panel, B portrait drawer, C index, D flip) that led to the current layout. A2 was chosen; delete the folder when no longer needed.
 
 ### Tag order (global rule)
 Wherever tags or filter pills are listed, the order is **case study, services, editorial tags, sectors**. This applies to the filter pills in `wove-mind.php`, `work.php` and `home.php`, `tag-cloud.php` (stable sort by type), `card-tags.php`, the hero tags in `case-study.php` (no case study tag, as it's the page itself), the tag cloud in `wove-mind-entry.php` (linked case studies first) and `feed-rail.php` (group order, then most recent within each group). Follow it in any new tag list.
@@ -81,7 +82,7 @@ PHP 8.3 (via `winget install --id PHP.PHP.8.3 --source winget`) — the winget b
 
 ## Deploy state
 
-**2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter (later reworked into a 4-per-row card grid with an expandable details panel), the service page 404 fix, feed token clean-up (`--feed-fs-tag`, `--feed-fs-avatar`) and the re-sync of `design-tokens-feed.json`. `main`/production untouched.
+**2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter (later reworked into a 4-per-row card grid, then the A2 focused-panel design: shadow lift, other cards fade back, compact panel centred under the open card), the service page 404 fix, feed token clean-up and new tokens (`--feed-fs-tag`, `--feed-fs-avatar`, `--feed-shadow-lift`, `--feed-transition-slow`, `--feed-panel-w`) and the re-sync of `design-tokens-feed.json`. `main`/production untouched.
 
 ### As of 2026-07-14
 

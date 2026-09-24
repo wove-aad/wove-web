@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wove Mind cards: even grid</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;background:#ffffff;color:#111111;-webkit-font-smoothing:antialiased}
+a{color:#111111}a:hover{color:#1535A8}
+button{font:inherit;cursor:pointer}
+.card .media-inner{transition:transform 500ms cubic-bezier(.2,.7,.2,1)}
+.card:hover .media-inner{transform:scale(1.04)}
+.card .reveal{opacity:0;transform:translateY(6px);transition:opacity 200ms,transform 200ms}
+.card:hover .reveal,.card:focus-visible .reveal{opacity:1;transform:none}
+.card:hover .card-title{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.card:focus-visible{outline:2px solid #2A50F3;outline-offset:6px}
+.chip:hover{border-color:#111111}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1800px; box-sizing: border-box; padding: 64px; background: #ffffff; display: flex; flex-direction: column; gap: 40px">
+<header style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6B67">Wove Mind</div>
+<h1 style="margin: 0; font-size: 56px; font-weight: 800; letter-spacing: -0.03em; line-height: 1">Everything we've been writing.</h1>
+<p style="margin: 0; font-size: 17px; color: #6B6B67; max-width: 560px">[Intro line for Wove Mind]</p>
+</header>
+<nav aria-label="Filter by format" style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{chips}}" as="chip" hint-placeholder-count="5">
+<button class="chip" onClick="{{chip.pick}}" aria-pressed="{{chip.pressed}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{chip.border}}; background: {{chip.bg}}; color: {{chip.fg}}; font-size: 14px; font-weight: 500">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: {{chip.dot}}"></span>
+<span>{{chip.label}}</span>
+<span style="font-size: 12px; opacity: 0.7">{{chip.count}}</span>
+</button>
+</sc-for>
+</nav>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 32px; align-items: start">
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="6">
+<a href="#" class="card" style="display: flex; flex-direction: column; gap: 16px; text-decoration: none; color: #111111">
+<div style="position: relative; aspect-ratio: 4 / 3; border-radius: {{radius}}px; overflow: hidden; background: {{c.tint}}">
+<sc-if value="{{c.cover}}" hint-placeholder-val="{{c.cover}}">
+<div class="media-inner" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: {{c.tint}}; color: {{c.ink}}; font-size: 13px; font-weight: 500">[Cover image]</div>
+</sc-if>
+<sc-if value="{{c.quote}}" hint-placeholder-val="{{c.quote}}">
+<div class="media-inner" style="position: absolute; inset: 0; box-sizing: border-box; padding: 64px 28px 28px; display: flex; align-items: flex-end; font-size: 25px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em; color: {{c.ink}}">{{c.title}}</div>
+</sc-if>
+<span style="position: absolute; top: 16px; left: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #ffffff; border-radius: 999px; font-size: 12px; font-weight: 600; color: #111111">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: {{c.dot}}"></span>{{c.fname}}</span>
+<span class="reveal" style="position: absolute; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #111111; color: #ffffff; border-radius: 999px; font-size: 13px; font-weight: 600">{{c.cta}}
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</span>
+</div>
+<sc-if value="{{c.cover}}" hint-placeholder-val="{{c.cover}}">
+<h3 class="card-title" style="margin: 0; font-size: 22px; font-weight: 700; line-height: 1.22; letter-spacing: -0.02em">{{c.title}}</h3>
+</sc-if>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6B6B67">
+<span style="width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: {{c.tint}}; color: {{c.ink}}; font-size: 10px; font-weight: 700">{{c.ini}}</span>
+<span style="color: #3D3D3B; font-weight: 500">{{c.author}}</span>
+<span>·</span>
+<span>{{c.meta}}</span>
+<span style="margin-left: auto">{{c.tagText}}</span>
+</div>
+</a>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"radius":{"editor":"range","default":12,"min":0,"max":32,"step":2,"unit":"px"},"$preview":{"width":1280,"height":1800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: "all" };
+  }
+  renderVals() {
+    const F = {
+      spark: { name: "Spark", dot: "#C6841E", tint: "#F7ECD3", ink: "#7A4D0E" },
+      thread: { name: "Thread", dot: "#2F7A57", tint: "#E1EEE7", ink: "#1A4D33" },
+      whatif: { name: "What if", dot: "#2A50F3", tint: "#EBF0FE", ink: "#1535A8" },
+      longread: { name: "Long read", dot: "#6B3EC2", tint: "#EDE6F8", ink: "#4A2A8A" }
+    };
+    const E = [
+      { f: "whatif", title: "What if brand was a verb, not a noun?", author: "Grace", ini: "GM", meta: "312 reads", tags: ["#Brand", "#Strategy"], cover: true },
+      { f: "spark", title: "Spent an hour just watching how people cross the street here. It's a language.", author: "Zara", ini: "ZA", meta: "12 reads", tags: ["#Cities", "#Observation"], cover: false },
+      { f: "longread", title: "The quiet economics of care work", author: "Scott", ini: "SC", meta: "9 min read", tags: ["#Care", "#Economics"], cover: true },
+      { f: "thread", title: "Three things clients keep asking that they don't need", author: "Zara", ini: "ZA", meta: "540 words", tags: ["#Practice"], cover: true },
+      { f: "spark", title: "Studio Friday. This whiteboard is now a landmark.", author: "Grace", ini: "GM", meta: "Photo", tags: [], cover: true },
+      { f: "whatif", title: "What if we designed for rest?", author: "Grace", ini: "GM", meta: "420 reads", tags: ["#Wellbeing"], cover: true },
+      { f: "longread", title: "Why we stopped pitching against agencies", author: "Scott", ini: "SC", meta: "8 min read", tags: ["#Practice", "#Business"], cover: true },
+      { f: "thread", title: "Notes from a week of no meetings", author: "Scott", ini: "SC", meta: "380 words", tags: ["#Focus", "#Team"], cover: false }
+    ];
+    const filter = this.state.filter;
+    const keys = ["all", "spark", "thread", "whatif", "longread"];
+    const chips = keys.map((k) => {
+      const on = filter === k;
+      return {
+        label: k === "all" ? "All" : F[k].name,
+        count: k === "all" ? E.length : E.filter((e) => e.f === k).length,
+        dot: k === "all" ? (on ? "#ffffff" : "#111111") : F[k].dot,
+        pressed: on ? "true" : "false",
+        bg: on ? "#111111" : "#ffffff",
+        fg: on ? "#ffffff" : "#3D3D3B",
+        border: on ? "#111111" : "#D9D6CC",
+        pick: () => this.setState({ filter: k })
+      };
+    });
+    const cards = E.filter((e) => filter === "all" || e.f === filter).map((e) => ({
+      ...e,
+      fname: F[e.f].name,
+      dot: F[e.f].dot,
+      tint: F[e.f].tint,
+      ink: F[e.f].ink,
+      quote: !e.cover,
+      tagText: e.tags.join("  "),
+      cta: e.f === "longread" ? "Read" : e.f === "spark" ? "View" : "Open"
+    }));
+    return { chips, cards, radius: this.props.radius ?? 12 };
+  }
+}
+</script>
+</body>
+</html>

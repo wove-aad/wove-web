@@ -166,7 +166,9 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 	}
 	$words = $excerpt === '' ? 0 : count(preg_split('/\s+/u', $excerpt));
 
-	$user   = $entry->createdBy() ?? $entry->authors()->toUsers()->first();
+	// The blueprint's `author` users field. createdBy()/authors() are not Page
+	// methods, so Kirby returned them as Field objects and the fallback never ran.
+	$user   = $entry->author()->toUser();
 	$author = $user ? ($user->name()->value() ?? $user->email()) : 'Anonymous';
 	$avatar = wove_mind_avatar_url($user);
 

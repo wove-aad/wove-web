@@ -1374,7 +1374,7 @@
 }
 .feed-wrap .work-grid-card__client {
   font-size: var(--feed-fs-card-title);
-  font-weight: var(--feed-fw-regular);
+  font-weight: var(--feed-fw-semibold);
   line-height: var(--feed-lh-tight);
   letter-spacing: -0.01em;
   color: var(--feed-text-body);

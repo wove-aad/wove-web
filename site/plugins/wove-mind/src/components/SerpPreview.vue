@@ -13,6 +13,8 @@ export default {
     title: { type: String, default: "" },
     seoTitle: { type: String, default: "" },
     seoDescription: { type: String, default: "" },
+    // Excerpt from the post content, used when no meta description is set.
+    autoDescription: { type: String, default: "" },
     slug: { type: String, default: "" },
     // Old-name fallbacks in case the blueprint uses camelCase.
     metaTitle: { type: String, default: "" },
@@ -34,9 +36,10 @@ export default {
     displayDesc() {
       const d =
         (this.seoDescription || "").trim() ||
-        (this.metaDescription || "").trim();
+        (this.metaDescription || "").trim() ||
+        (this.autoDescription || "").trim();
       if (d) return d;
-      return "Add a meta description to preview how this post appears in search results.";
+      return "Start writing the post, or add a meta description to preview how this post appears in search results.";
     },
   },
 };

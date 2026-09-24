@@ -264,6 +264,9 @@ export default {
             content: {
               title: format === "spark" ? "Spark" : "Untitled",
               format: format,
+              // Stops the SEO tab's `{{ page.title }}` default filling
+              // in the slug. Empty falls back to the title on the site.
+              seotitle: "",
               ...(authorId ? { author: [authorId] } : {}),
             },
           }

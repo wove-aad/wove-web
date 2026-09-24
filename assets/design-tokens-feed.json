@@ -385,9 +385,10 @@
       }
     },
     "teamProfile": {
-      "photo": "160px square, radius 0.5rem",
-      "grid": "2 columns, 1 below 800px",
-      "gap": "3.5rem 2rem"
+      "grid": "4 columns at 1280px+, 3 at 960px+, 2 at 600px+, 1 below",
+      "gap": "1rem",
+      "card": "surface background, 1px border, radius 0.5rem, square photo, body padding 14px 16px 16px",
+      "panel": "full-width, below the open card's row; bio and latest posts side by side (3fr / 2fr) above 800px"
     }
   },
   "breakpoints": {

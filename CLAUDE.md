@@ -81,7 +81,7 @@ PHP 8.3 (via `winget install --id PHP.PHP.8.3 --source winget`) — the winget b
 
 ## Deploy state
 
-**2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter, the service page 404 fix, feed token clean-up (`--feed-fs-tag`, `--feed-fs-avatar`) and the re-sync of `design-tokens-feed.json`. `main`/production untouched.
+**2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter (later reworked into a 4-per-row card grid with an expandable details panel), the service page 404 fix, feed token clean-up (`--feed-fs-tag`, `--feed-fs-avatar`) and the re-sync of `design-tokens-feed.json`. `main`/production untouched.
 
 ### As of 2026-07-14
 

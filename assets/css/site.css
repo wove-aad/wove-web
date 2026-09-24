@@ -299,7 +299,6 @@ button { font-family: inherit; cursor: pointer; }
   transition: opacity var(--transition);
 }
 .nav__links a:hover { opacity: 0.6; }
-.nav__links a[aria-current="page"] { font-weight: var(--weight-bold); }
 .nav__links a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 .nav__cta {
   margin-left: auto;
@@ -313,6 +312,42 @@ button { font-family: inherit; cursor: pointer; }
 }
 .nav__cta:hover { background: var(--color-off-white); }
 .nav__cta:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+
+/* Current item doubles as the page title (header.php sets aria-current and
+   nav--has-current). The other links are muted while one is current; on
+   pages with no current item (home, case studies) they stay full colour. */
+.nav { --nav-title-size: 1.25rem; /* 20px */ }
+.nav--has-current .nav__links a { color: var(--color-text-muted); }
+.nav__links a[aria-current="page"],
+.nav__cta[aria-current="page"] {
+  font-size: var(--nav-title-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-black);
+  line-height: 1;
+}
+.nav__links a[aria-current="page"]:hover { opacity: 1; }
+.nav__cta[aria-current="page"] { padding: 0; border-color: transparent; }
+.nav__cta[aria-current="page"]:hover { background: none; }
+
+/* Page-to-page transitions (cross-document view transitions). Browsers
+   without support load pages as before. Each nav item has its own
+   view-transition-name (inline in header.php), so the item that becomes
+   current grows into the title and the others slide to their new places;
+   the rest of the page cross-fades. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+::view-transition-group(*) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 300ms; }
+/* Fade the outgoing link quickly so the old and new text don't double up
+   while the item resizes. */
+.nav__links a, .nav__cta { view-transition-class: nav-item; }
+::view-transition-old(*.nav-item) { animation-duration: 150ms; }
 
 
 /* ============================================================

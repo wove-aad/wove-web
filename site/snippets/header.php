@@ -4,14 +4,26 @@
  * Usage: <?php snippet('header') ?>
  * Lifted from the Labs service-page prototype (Pass 2) so every template
  * shares one nav. `aria-current="page"` is set dynamically by comparing
- * $page's URI against each link, rather than hardcoding it per page.
+ * $page's id against each link's page id, rather than hardcoding it per
+ * page. The ids differ from the hrefs where a route renames a page
+ * (/our-work renders page('work')).
+ * The current item doubles as the page title (styled larger in site.css),
+ * and `nav--has-current` mutes the other links. Each item has a
+ * view-transition-name, so browsers with cross-document view transitions
+ * animate it between the link size and the title size on navigation.
  * Pairs with footer.php, which closes </body></html> — no template
  * currently opens its own doctype/head, so this snippet owns that shell
  * (matches wovemind.php / wovemind-post.php, which already assumed it).
  */
 
-$uri = '/' . $page->uri();
-$isCurrent = fn ($path) => $uri === $path ? ' aria-current="page"' : '';
+$navItems = [
+  'work'       => ['href' => '/our-work',   'label' => 'Our Work'],
+  'our-people' => ['href' => '/our-people', 'label' => 'Our People'],
+];
+$ctaId     = 'contact';
+$currentId = $page->id();
+$hasCurrent = isset($navItems[$currentId]) || $currentId === $ctaId;
+$isCurrent = fn ($id) => $currentId === $id ? ' aria-current="page"' : '';
 
 // SEO tab fields (site/blueprints/tabs/seo.yml) — all optional, sensible fallbacks.
 $seoTitle       = $page->seoTitle()->or($page->title())->value();
@@ -62,11 +74,12 @@ $ogType = $page->ogtype()->or('website')->value();
 <a href="#main" class="skip-link">Skip to main content</a>
 
 <!-- NAV -->
-<nav class="nav" aria-label="Main navigation">
+<nav class="nav<?= $hasCurrent ? ' nav--has-current' : '' ?>" aria-label="Main navigation">
   <a href="/" class="nav__logo" aria-label="Wove, go to homepage">wove</a>
   <ul class="nav__links" role="list">
-    <li><a href="/our-work"<?= $isCurrent('/our-work') ?>>Our Work</a></li>
-    <li><a href="/our-people"<?= $isCurrent('/our-people') ?>>Our People</a></li>
+    <?php foreach ($navItems as $id => $item): ?>
+      <li><a href="<?= $item['href'] ?>" style="view-transition-name: nav-<?= $id ?>"<?= $isCurrent($id) ?>><?= $item['label'] ?></a></li>
+    <?php endforeach ?>
   </ul>
-  <a href="/contact" class="nav__cta">Get in touch</a>
+  <a href="/contact" class="nav__cta" style="view-transition-name: nav-<?= $ctaId ?>"<?= $isCurrent($ctaId) ?>>Get in touch</a>
 </nav>

@@ -50,18 +50,45 @@ foreach ($entries as $e) {
   }
 }
 
+// Case study slugs for a feed item: its own slug for a case study, linked case studies for an entry
+$caseStudySlugs = function ($p) {
+  if ($p->intendedTemplate()->name() === 'case-study') return [$p->slug()];
+  return $p->case_study()->toPages()->values(fn ($cs) => $cs->slug());
+};
+
+// Case study pills, labelled by client name (eyebrow) like Our Work
+$usedCaseStudies = [];
+foreach (kirby()->collection('case-studies') as $cs) {
+  $usedCaseStudies[$cs->slug()] = $cs->eyebrow()->or($cs->title())->value();
+}
+
 // Service promo cards, placed second in the grid when that service's filter is active.
 // They link to Our Work filtered by that service, with the service page's featured image as a thumbnail.
-$servicePromos = [];
+// Case study promos link to the case study itself, using its hero image.
+$promos = [];
 foreach ($usedServices as $slug => $label) {
   $servicePage = page('services/' . $slug);
   $promoImage  = $servicePage ? $servicePage->content()->get('image')->toFile() : null;
-  $servicePromos[$slug] = [
-    'label' => $label,
+  $promos['service:' . $slug] = [
+    'text'  => 'See all our ' . $label . ' work',
     'url'   => url('our-work') . '?filter=' . rawurlencode('service:' . $slug),
     'image' => $promoImage ? $promoImage->crop(480, 300)->url() : null,
   ];
 }
+foreach (kirby()->collection('case-studies') as $cs) {
+  $promoImage = $cs->caseStudyImages()->toFile();
+  $promos['cs:' . $cs->slug()] = [
+    'text'  => 'See case study',
+    'url'   => $cs->url(),
+    'image' => $promoImage ? $promoImage->crop(480, 300)->url() : null,
+  ];
+}
+
+// Labels for the "See all …" footer link, keyed by filter
+$filterLabels = [];
+foreach ($usedServices as $slug => $label)    $filterLabels['service:' . $slug] = $label;
+foreach ($usedTags as $slug => $label)        $filterLabels['tag:' . $slug]     = $label;
+foreach ($usedCaseStudies as $slug => $label) $filterLabels['cs:' . $slug]      = $label;
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
@@ -90,6 +117,9 @@ foreach ($usedServices as $slug => $label) {
         <?php foreach ($usedTags as $slug => $label): ?>
           <button class="tag-pill" data-filter="tag:<?= $slug ?>" type="button"><?= html($label) ?></button>
         <?php endforeach ?>
+        <?php foreach ($usedCaseStudies as $slug => $label): ?>
+          <button class="tag-pill" data-filter="cs:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+        <?php endforeach ?>
       </div>
     </aside>
 
@@ -105,24 +135,26 @@ foreach ($usedServices as $slug => $label) {
         <?php foreach ($feedItems as $post):
           $services = implode(',', array_filter(array_map('trim', $post->services()->split(','))));
           $tags     = implode(',', $tagSlugs($post));
+          $csSlugs  = implode(',', $caseStudySlugs($post));
         ?>
           <div class="feed-item"
                data-services="<?= html($services) ?>"
-               data-tags="<?= html($tags) ?>">
+               data-tags="<?= html($tags) ?>"
+               data-casestudies="<?= html($csSlugs) ?>">
             <?php snippet('stream-card', ['post' => $post]) ?>
           </div>
         <?php endforeach ?>
-        <?php foreach ($servicePromos as $slug => $promo): ?>
+        <?php foreach ($promos as $filter => $promo): ?>
           <a class="feed-promo"
              href="<?= $promo['url'] ?>"
-             data-promo="service:<?= $slug ?>"
+             data-promo="<?= html($filter) ?>"
              hidden>
             <span class="feed-promo__thumb">
               <?php if ($promo['image']): ?>
                 <img src="<?= $promo['image'] ?>" alt="" loading="lazy">
               <?php endif ?>
             </span>
-            <span class="feed-promo__btn">See all our <?= html($promo['label']) ?> work &rarr;</span>
+            <span class="feed-promo__btn"><?= html($promo['text']) ?> &rarr;</span>
           </a>
         <?php endforeach ?>
       </div>
@@ -148,11 +180,7 @@ foreach ($usedServices as $slug => $label) {
 
 </div>
 
-<script>window.__feedLabels = <?= json_encode(
-  array_merge(
-    array_map(fn ($l) => ['label' => $l, 'type' => 'service'], $usedServices),
-    array_map(fn ($l) => ['label' => $l, 'type' => 'tag'], $usedTags)
-  ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+<script>window.__feedLabels = <?= json_encode($filterLabels ?: new stdClass(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
 
 <script>
 (function () {
@@ -167,7 +195,7 @@ foreach ($usedServices as $slug => $label) {
   if (!pills.length || !items.length) return;
 
   var LIMIT = 5;
-  var attrMap = { service: 'data-services', tag: 'data-tags' };
+  var attrMap = { service: 'data-services', tag: 'data-tags', cs: 'data-casestudies' };
 
   function entryWord(n) { return n + ' entr' + (n === 1 ? 'y' : 'ies'); }
 
@@ -212,9 +240,7 @@ foreach ($usedServices as $slug => $label) {
     }
 
     if (!showAll && matched.length > LIMIT) {
-      var slug = filter.split(':').slice(1).join(':');
-      var meta = labels[slug];
-      var name = meta ? meta.label : slug;
+      var name = labels[filter] || filter.split(':').slice(1).join(':');
       moreLink.href = '/our-work?filter=' + encodeURIComponent(filter);
       moreLink.textContent = 'See all ' + name + ' →';
       moreWrap.hidden = false;

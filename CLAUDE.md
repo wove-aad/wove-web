@@ -63,6 +63,9 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 ### Tag order (global rule)
 Wherever tags or filter pills are listed, the order is **case study, services, editorial tags, sectors**. This applies to the filter pills in `wove-mind.php`, `work.php` and `home.php`, `tag-cloud.php` (stable sort by type), `card-tags.php`, the hero tags in `case-study.php` (no case study tag, as it's the page itself), the tag cloud in `wove-mind-entry.php` (linked case studies first) and `feed-rail.php` (group order, then most recent within each group). Follow it in any new tag list.
 
+### Feed design tokens
+`assets/css/feed.css` defines the `--feed-*` custom properties (dark values on `.feed-wrap`, light overrides under `[data-theme="light"]`). Use these in new feed/team styles rather than literal sizes or colours. `--feed-fs-tag` (card tags and small links) and `--feed-fs-avatar` (byline initials) were added on 2026-09-24. **`assets/design-tokens-feed.json` is out of date**: commit `2ca850f` (2026-09-16, "Improve feed legibility") raised type sizes, text colours and spacing in `feed.css` without updating the JSON, so the CSS is the current source.
+
 ## Known gaps / open items
 
 - **Kirby's `when` field condition only supports a single exact value, not a list.** Confirmed by reading `kirby/src/Form/Mixin/When.php` directly — `when: format: in: [...]` can never match (a string can never `===` an array), so any field using that pattern is permanently hidden regardless of format. This was already fixed on `title`/`image`/`body` in `wove-mind-entry.yml` (they now show unconditionally instead), but **if this pattern shows up in any new blueprint work, it won't work** — needs restructuring (e.g. per-value fields, or just showing unconditionally with an `info:` note).

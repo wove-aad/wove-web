@@ -18,13 +18,16 @@
     targets.forEach(function (el) { io.observe(el); });
   })();
 
-  /* Card tags — "+N" button reveals the rest of a card's tags */
+  /* Card tags — "+N" reveals the rest of a card's tags, "See less" hides them again */
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.card-tags__more');
     if (!btn) return;
     e.preventDefault();
-    btn.parentNode.querySelectorAll('.card-tags__tag[hidden]').forEach(function (t) { t.hidden = false; });
-    btn.remove();
+    var expand = btn.getAttribute('aria-expanded') !== 'true';
+    btn.parentNode.querySelectorAll('.card-tags__tag--extra').forEach(function (t) { t.hidden = !expand; });
+    btn.setAttribute('aria-expanded', String(expand));
+    btn.textContent = expand ? 'See less' : btn.getAttribute('data-more');
+    btn.setAttribute('aria-label', expand ? 'Show fewer tags' : 'Show ' + btn.getAttribute('data-more').slice(1) + ' more tags');
   });
 
   /* See more / See less case studies — animated toggle (no-op if not on the page) */

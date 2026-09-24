@@ -38,6 +38,18 @@ foreach ($entries as $e) {
     if ($tag) $usedTags[$slug] = $tag->name()->value();
   }
 }
+
+// Service promo cards, placed second in the grid when that service's filter is active
+$servicePromos = [];
+foreach ($usedServices as $slug => $label) {
+  $servicePage = page('services/' . $slug);
+  $promoImage  = $servicePage ? $servicePage->content()->get('image')->toFile() : null;
+  $servicePromos[$slug] = [
+    'label' => $label,
+    'url'   => $servicePage ? $servicePage->url() : url('services/' . $slug),
+    'image' => $promoImage ? $promoImage->resize(1200)->url() : null,
+  ];
+}
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
@@ -88,6 +100,17 @@ foreach ($entries as $e) {
             <?php snippet('feed-card', ['post' => $post]) ?>
           </div>
         <?php endforeach ?>
+        <?php foreach ($servicePromos as $slug => $promo): ?>
+          <a class="feed-promo<?= $promo['image'] ? ' feed-promo--image' : '' ?>"
+             href="<?= $promo['url'] ?>"
+             data-promo="service:<?= $slug ?>"
+             hidden>
+            <?php if ($promo['image']): ?>
+              <img class="feed-promo__img" src="<?= $promo['image'] ?>" alt="" loading="lazy">
+            <?php endif ?>
+            <span class="feed-promo__btn">See all our <?= html($promo['label']) ?> work &rarr;</span>
+          </a>
+        <?php endforeach ?>
       </div>
 
       <div class="feed__footer" id="feed-more" hidden>
@@ -124,6 +147,8 @@ foreach ($entries as $e) {
   var moreWrap = document.getElementById('feed-more');
   var moreLink = document.getElementById('feed-more-link');
   var countEl  = document.getElementById('feed-count');
+  var grid     = document.getElementById('feed-grid');
+  var promos   = document.querySelectorAll('#feed-grid .feed-promo');
   var labels   = window.__feedLabels || {};
   if (!pills.length || !items.length) return;
 
@@ -162,6 +187,15 @@ foreach ($entries as $e) {
     });
 
     countEl.textContent = entryWord(matched.length);
+
+    // Show the matching service promo in position 2 (or last, if only one entry matches)
+    promos.forEach(function (promo) { promo.hidden = true; });
+    var promo = grid.querySelector('.feed-promo[data-promo="' + filter + '"]');
+    if (promo) {
+      var first = matched[0];
+      grid.insertBefore(promo, first ? first.nextSibling : grid.firstChild);
+      promo.hidden = false;
+    }
 
     if (!showAll && matched.length > LIMIT) {
       var slug = filter.split(':').slice(1).join(':');

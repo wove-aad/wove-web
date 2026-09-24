@@ -1,0 +1,2 @@
+# Service pages may be stored under their own template name
+extends: pages/service

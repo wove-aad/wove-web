@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team A2: grid and focused panel</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px)  { .grid { grid-template-columns: 1fr; } }
+
+.card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  transition: opacity 250ms ease, filter 250ms ease, border-color var(--t), box-shadow 250ms ease, transform 250ms ease; }
+.card:hover { border-color: var(--hover-border); }
+.card button { position: relative; display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+.card .photo { aspect-ratio: 1; }
+.card__sum { display: flex; flex-direction: column; gap: 4px; padding: 14px 40px 16px 16px; }
+.plus { position: absolute; right: 16px; bottom: 18px; width: 12px; height: 12px; }
+.plus::before, .plus::after { content: ""; position: absolute; left: 0; top: 50%; width: 100%; height: 1.5px; background: var(--dim); transition: transform var(--t), background var(--t); }
+.plus::after { transform: rotate(90deg); }
+
+/* Focus state: the open card lifts, the rest recede */
+.grid.has-open .card:not(.is-open) { opacity: 0.45; filter: grayscale(0.6); }
+.grid.has-open .card:not(.is-open):hover { opacity: 0.8; filter: none; }
+.card.is-open { border-color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.10); transform: translateY(-2px); }
+.card.is-open .plus::after { transform: rotate(0deg); }
+.card.is-open .plus::before, .card.is-open .plus::after { background: var(--text); }
+
+/* Panel: eases open (grid-rows 0fr -> 1fr), notch points at the open card */
+.panel { grid-column: 1 / -1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 300ms ease, margin 300ms ease; margin: -16px 0 0; }
+.panel.is-in { grid-template-rows: 1fr; margin: 0; }
+.panel__clip { overflow: hidden; }
+.panel__box { position: relative; margin-top: 10px; background: var(--surface); border: 1px solid var(--text); border-radius: var(--radius);
+  opacity: 0; transform: translateY(-6px); transition: opacity 250ms ease 80ms, transform 250ms ease 80ms; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.panel.is-in .panel__box { opacity: 1; transform: none; }
+.panel__notch { position: absolute; top: -7px; width: 12px; height: 12px; background: var(--surface); border-left: 1px solid var(--text); border-top: 1px solid var(--text); transform: rotate(45deg); }
+.panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 20px 0; }
+.panel__head .name { font-size: 1.375rem; }
+.panel__head .role { margin-left: 10px; }
+.panel__close { flex-shrink: 0; width: 32px; height: 32px; margin: -6px -8px 0 0; border: 0; border-radius: 50%; background: none; cursor: pointer; font-size: 20px; line-height: 1; color: var(--dim); }
+.panel__close:hover { background: var(--raised); color: var(--text); }
+.panel__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; padding: 12px 20px 16px; }
+.panel .bio { max-width: 52ch; }
+.panel .posts { gap: 0; }
+.panel .posts a { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 16px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.panel .posts a:first-child { border-top: 0; padding-top: 0; }
+.panel .posts time { flex-shrink: 0; }
+.panel__foot { display: flex; gap: 20px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--rule); }
+.panel__foot .sp { flex: 1; }
+@media (max-width: 800px) { .panel__body { grid-template-columns: 1fr; gap: 16px; } }
+@media (prefers-reduced-motion: reduce) { .card, .panel, .panel__box { transition: none; } }
+</style>
+</head>
+<body>
+<div class="bar"><a href="index.html">&larr; Team directions</a><span>A2 · Grid + focused panel</span><span>Others fade back, notch links card and panel, Esc closes</span><span class="sp"></span><button id="tw-theme" type="button" aria-pressed="false">Dark</button><button id="tw-photos" type="button" aria-pressed="false">No photos</button></div>
+<main class="page"><header class="hero"><h1 class="hero__title">Our People</h1><p class="hero__intro">The people behind the work.</p></header>
+<div class="grid" id="grid"></div></main>
+<script src="data.js"></script>
+<script>
+initBar();
+
+var grid = document.getElementById('grid'), panel = document.createElement('div'), open = null;
+panel.className = 'panel'; panel.setAttribute('role', 'region');
+var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+TEAM.forEach(function (p) {
+  var el = document.createElement('article'); el.className = 'card'; el.id = p.slug;
+  el.innerHTML = '<button type="button" aria-expanded="false">' + photoHTML(p) + '<span class="card__sum"><span class="name">' + p.name + '</span><span class="role">' + p.role + '</span></span><span class="plus" aria-hidden="true"></span></button>';
+  el.querySelector('button').addEventListener('click', function () { open === el ? close(true) : show(el, p); });
+  grid.appendChild(el);
+});
+function rowEnd(card) { var last = card; grid.querySelectorAll('.card').forEach(function (c) { if (c.offsetTop === card.offsetTop) last = c; }); return last; }
+function seat() {
+  rowEnd(open).after(panel);
+  var notch = panel.querySelector('.panel__notch'), g = grid.getBoundingClientRect(), c = open.getBoundingClientRect();
+  if (notch) notch.style.left = (c.left - g.left + c.width / 2 - 6) + 'px';
+}
+function show(el, p) {
+  var sameRow = open && rowEnd(open) === rowEnd(el);
+  if (open) { open.classList.remove('is-open'); open.querySelector('button').setAttribute('aria-expanded', 'false'); }
+  open = el; el.classList.add('is-open'); grid.classList.add('has-open'); el.querySelector('button').setAttribute('aria-expanded', 'true');
+  panel.setAttribute('aria-label', p.name);
+  panel.innerHTML = '<div class="panel__clip"><div class="panel__box"><span class="panel__notch" aria-hidden="true"></span>' +
+    '<div class="panel__head"><p><span class="name">' + p.name + '</span><span class="role">' + p.role + '</span></p><button class="panel__close" type="button" aria-label="Close">\u00d7</button></div>' +
+    '<div class="panel__body"><p class="bio">' + p.bio + '</p><div><p class="label" style="margin-bottom:8px">Latest</p>' +
+    (p.posts.length ? '<div class="posts">' + p.posts.map(function (x) { return '<a href="#"><span>' + x[0] + '</span><time>' + x[1] + '</time></a>'; }).join('') + '</div>' : '<p class="role">No posts yet.</p>') + '</div></div>' +
+    '<div class="panel__foot"><a class="linkedin" href="#">LinkedIn \u2197</a><span class="sp"></span>' + (p.count ? '<a class="all" href="#">See all ' + p.name.split(' ')[0] + '\u2019s posts (' + p.count + ') \u2192</a>' : '') + '</div></div></div>';
+  panel.querySelector('.panel__close').addEventListener('click', function () { close(true); });
+  if (!sameRow) panel.classList.remove('is-in');
+  seat();
+  requestAnimationFrame(function () { requestAnimationFrame(function () {
+    panel.classList.add('is-in');
+    setTimeout(function () {
+      panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
+      panel.querySelector('.panel__close').focus({ preventScroll: true });
+    }, reduce ? 0 : 200);
+  }); });
+}
+function close(returnFocus) {
+  if (!open) return;
+  var card = open; open = null;
+  card.classList.remove('is-open'); grid.classList.remove('has-open'); card.querySelector('button').setAttribute('aria-expanded', 'false');
+  panel.classList.remove('is-in');
+  setTimeout(function () { if (!open) panel.remove(); }, reduce ? 0 : 300);
+  if (returnFocus) card.querySelector('button').focus();
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(true); });
+window.addEventListener('resize', function () { if (open) seat(); });
+</script>
+</body>
+</html>

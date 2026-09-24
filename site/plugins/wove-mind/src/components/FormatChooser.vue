@@ -12,7 +12,7 @@
           :data-type="fmt.key"
           @click="choose(fmt.key)"
         >
-          <span class="wove-chooser__swatch" :style="{ background: swatchColor(fmt.key) }"></span>
+          <span class="wove-chooser__swatch"></span>
           <span>
             <div class="wove-chooser__name">{{ fmt.name }}</div>
             <div class="wove-chooser__desc">{{ fmt.desc }}</div>
@@ -27,12 +27,6 @@
 <script>
 import { FORMATS } from "../formats.js";
 
-const SWATCHES = {
-  spark: "#C6841E",
-  thread: "#2F7A57",
-  whatif: "#2A50F3",
-  longread: "#6B3EC2",
-};
 
 export default {
   data() {
@@ -47,9 +41,6 @@ export default {
     },
     close() {
       this.isOpen = false;
-    },
-    swatchColor(key) {
-      return SWATCHES[key] || "#000";
     },
     choose(key) {
       this.close();

@@ -73,6 +73,11 @@
   --wm-accent-tint: var(--wm-blue-tint);
   --wm-accent-ink:  var(--wm-blue-ink);
 
+  /* Destructive actions (delete) — a dark red */
+  --wm-danger:      #9c1e1e;
+  --wm-danger-rule: #e2b4b0;
+  --wm-danger-tint: #fbeceb;
+
   /* Post-type accents — spark = coral (project accent), thread =
      green from the published/success family, whatif = blue, longread
      = a violet held locally. */
@@ -170,6 +175,9 @@
     --wm-accent:      #6a85f7;
     --wm-accent-tint: #1f2647;
     --wm-accent-ink:  #c7d0fa;
+    --wm-danger:      #f08a84;
+    --wm-danger-rule: #5a2622;
+    --wm-danger-tint: #2e1614;
 
     --wm-spark-tint:    #3a2417;
     --wm-thread-tint:   #1b2c22;
@@ -196,6 +204,9 @@
   --wm-accent:      #6a85f7;
   --wm-accent-tint: #1f2647;
   --wm-accent-ink:  #c7d0fa;
+  --wm-danger:      #f08a84;
+  --wm-danger-rule: #5a2622;
+  --wm-danger-tint: #2e1614;
 
   --wm-spark-tint:    #3a2417;
   --wm-thread-tint:   #1b2c22;

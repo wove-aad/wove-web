@@ -24,7 +24,7 @@ One shared template, `site/templates/service.php`, replaced the four per-service
 
 Routing (`site/config/config.php`): `/strategy` etc. redirect to `/services/{slug}`. The service content files are named after each service (`content/services/strategy/strategy.txt` etc.), so Kirby's own lookup would fall back to `default.php`. The `services/(:any)` route therefore renders a `{slug}.php` template if one exists, otherwise `service.php`, passing `$serviceSlug`. It sets `$kirby->data` and visits the page first (mirroring `Page::render()`), because snippets such as `header.php` read `$page` from there. **Until 2026-09-24 this route returned `false` when `{slug}.php` was missing, so every service page was a 404.**
 
-Content pages exist locally at `content/services/{labs,strategy,brand,digital}` (plus a `content/services/services.txt` parent) so the URLs resolve — these are gitignored (`content/` is deliberately excluded, "keep content out of main repo for now"), so they only exist on whichever machine/server actually has them. The real content on `dev`/staging was created through the Panel directly.
+Content pages for the services are tracked in git at `content/services/{labs,strategy,brand,digital}` (plus a `content/services/services.txt` parent), alongside `contact`, `error`, `sector` and `tag`. Other content (Wove Mind entries, case studies, `site.txt`) and user accounts aren't in the repo and only exist on the server where they were created.
 
 ### WoveMind content model
 `site/blueprints/pages/wove-mind-entry.yml` — format is `spark | thread | whatif | longread`. The earlier `project-highlight` format and its `client`/`excerpt`/`website` fields have been removed from the blueprint; `wove-mind.php` still filters out any old entries with `format: project-highlight`. Fields: `title`, `blocks` (body content), `body` (writer, labelled "Excerpt / Lead"), `image` (featured image), author fields (`show_author`, `author`, `author_role`, `author_bio`) and relations (`case_study`, `services`, `sectors`, `tags`). `title`/`image`/`body` show for **every** format (see gap below).
@@ -47,7 +47,7 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 - **Author avatars on feed cards**: `feed-card.php` shows the author's Panel profile image, or their initials when none is uploaded. User accounts are gitignored, so profile images only exist on the server where they were uploaded.
 
 ### Service page blueprint (2026-09-24)
-`site/blueprints/pages/service.yml` adds a **Featured image** field (`image`) to service pages, used by the homepage promo card. `strategy.yml`, `labs.yml`, `digital.yml` and `brand.yml` each just `extends: pages/service`, because it wasn't confirmed whether the service content files are named `service.txt` or after each service. Delete whichever set turns out unused.
+`site/blueprints/pages/service.yml` adds a **Featured image** field (`image`) to service pages, used by the homepage promo card. `strategy.yml`, `labs.yml`, `digital.yml` and `brand.yml` each just `extends: pages/service`. **Keep them**: the service content files are named after each service (`strategy.txt` etc.), so these are the blueprints the Panel actually uses.
 
 ### Wove Mind Panel plugin avatars (2026-09-24)
 `site/plugins/wove-mind` shows the user's Kirby profile image (`$user->avatar()`, cropped to 96px) in the top bar and next to each author in the entries list, falling back to initials. `wove_mind_user_summary()` and `wove_mind_avatar_url()` in `index.php` supply the data. Rebuild with `npm run build` in the plugin folder after editing `src/`.
@@ -57,7 +57,7 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 - **Team members are Kirby users.** Profile fields (Show on the Our People page, Role, Bio, LinkedIn) come from `site/plugins/wove-mind/blueprints/sections/team-profile.yml`, used by both user blueprints. The photo is the account avatar. User accounts aren't in git, so profiles are filled in per server.
 - Each profile shows photo (or initials), name, role, bio, a subtle LinkedIn link, the 3 latest Wove Mind entries credited to them, and "See all {first name}'s posts →" linking to `/our-work?filter=author:{slug}`.
 - **Authorship** means the entry's `author` field is set and `show_author` is on (`wove_entry_author()`). Entries with "Show author" off never appear on a profile or under an author filter. Case studies have no author.
-- **Author filter**: `author:{slug}` (slug = `Str::slug` of the user's name, `wove_author_slug()`). Our Work items carry `data-authors`; the hero shows name, role and a profile link. The filter is chosen from a **Team** dropdown (a native `<select>` styled as `.tag-pill--select`) at the end of the Our Work pills and of `tag-cloud.php`, where it navigates to Our Work. It lists only members with at least one credited entry. The Our Work JS selects pills with `.tag-pill[data-filter]` so the dropdown isn't treated as a pill.
+- **Author filter**: `author:{slug}` (slug = `Str::slug` of the user's name, `wove_author_slug()`). Our Work items carry `data-authors`; the hero shows name, role and a profile link. The filter is chosen from a **Team** dropdown (a native `<select>` styled as `.tag-pill--select`, with `field-sizing: content` so the pill fits the selected option in browsers that support it) at the end of the Our Work pills and of `tag-cloud.php`, where it navigates to Our Work. It lists only members with at least one credited entry. The Our Work JS selects pills with `.tag-pill[data-filter]` so the dropdown isn't treated as a pill.
 - A Kirby avatar is a user file with `template: avatar` (the Panel sets this on upload).
 
 ### Tag order (global rule)
@@ -78,7 +78,7 @@ PHP 8.3 (via `winget install --id PHP.PHP.8.3 --source winget`) — the winget b
 
 ## Deploy state
 
-**2026-09-24:** today's work (avatars, case study reveal fix, homepage feed scroll, "See all" link, service promo card and blueprint) was fast-forwarded onto `dev` and deployed to staging. `main`/production untouched.
+**2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter, and the service page 404 fix. `main`/production untouched.
 
 ### As of 2026-07-14
 

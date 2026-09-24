@@ -5,9 +5,12 @@
 Card directions for the Wove Mind feed and the homepage feed, exported from the
 design canvas: https://claude.ai/artifact/5nh5NajLLgeEWLMSATjUwU
 
-These are Design Component (`.dc.html`) sources. They need the canvas runtime
-(`support.js`) to render, so view them on the canvas. `canvas.json` holds the
-artboard layout.
+Open `index.html` (on staging: `/design/mockups/wove-mind-cards/`) for
+standalone versions of all six directions. They share `shared.css` and
+`data.js`, and each page has a bar at the top for its tweaks.
+
+The `.dc.html` files and `canvas.json` are the canvas sources. They need the
+canvas runtime to render, so view those on the canvas.
 
 ## Wove Mind feed
 

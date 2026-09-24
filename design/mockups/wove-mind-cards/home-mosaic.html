@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B · Homepage: mosaic</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="data.js"></script>
+<script>
+
+const app = document.getElementById("app");
+const open = {}; let short = "condense", radius = 16;
+const LAYOUT = [[0, 8], [2, 4], [1, 6], [3, 6], ["strip"], [4, 4], [6, 4], [5, 4]];
+function tile(e, span, i) {
+  const r = `border-radius:${radius}px`;
+  const svcText = e.svc.join(", ");
+  if (e.k === "case") return `<a href="#" class="tile" style="grid-column:span ${span};display:flex;flex-direction:column;min-height:460px;${r};background:#22221B;color:#fff">
+<div style="position:absolute;inset:0;overflow:hidden"><div class="ph mi" style="background:#22221B;color:#9A968A">[Case study image]</div></div>
+<div style="position:relative;margin-top:auto;padding:32px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(to top,rgba(17,17,17,.9),rgba(17,17,17,0))"><span class="label" style="color:#D8D4C6">Case study · ${e.who}</span>
+<span style="font-size:32px;font-weight:800;line-height:1.08;letter-spacing:-.03em;color:#fff">${e.title}</span><div style="display:flex;gap:6px;flex-wrap:wrap">${e.svc.map((s) => `<span class="svc" style="color:#fff;border-color:rgba(255,255,255,.4)">${s}</span>`).join("")}</div></div></a>`;
+  if (e.k === "longread") return `<a href="#" class="tile" style="grid-column:span ${span};display:flex;flex-direction:column;${r};background:#EDE6F8">
+<div style="position:relative;height:260px;overflow:hidden"><div class="ph mi" style="background:#D9CCF0;color:#4A2A8A">[Cover image]</div></div>
+<div style="padding:28px;display:flex;flex-direction:column;gap:14px;flex-grow:1"><span class="label" style="color:#4A2A8A"><span class="dot" style="background:#6B3EC2"></span>Long read · ${svcText}</span>
+<span style="font-size:28px;font-weight:800;line-height:1.1;letter-spacing:-.03em">${e.title}</span><span style="font-size:15px;line-height:1.5;color:#3D3D3B">[Deck: one sentence that draws the reader in]</span><div style="flex-grow:1"></div>
+<span style="font-size:13px;color:#3D3D3B"><b style="font-weight:600">${e.who}</b> · ${e.meta}</span></div></a>`;
+  return `<article class="tile" style="grid-column:span ${span};padding:28px;${r};background:#EBF0FE;display:flex;flex-direction:column;gap:18px;min-height:460px">
+<span class="label" style="color:#1535A8"><span class="dot" style="background:#2A50F3"></span>What if · ${svcText}</span>
+<h3 style="margin:0;font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.03em;color:#1535A8">${e.title}</h3><div style="flex-grow:1"></div>
+${open[i] ? `<div class="struct"><div><b>Premise</b><span>[Premise]</span></div><div><b>Tension</b><span>[Tension]</span></div><div><b>Question</b><span>[Question]</span></div></div>` : ""}
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px;font-weight:600;color:#3D3D3B">${e.who}</span><button class="toggle" data-t="${i}" aria-expanded="${!!open[i]}">${open[i] ? "Close" : "Unpack it"}</button></div></article>`;
+}
+function strip() {
+  const r = `border-radius:${radius}px`;
+  return `<section aria-label="Short thoughts" style="grid-column:span 12;display:flex;flex-direction:column;gap:16px;padding:24px 0">
+<div style="display:flex;align-items:center;justify-content:space-between"><span class="eyebrow" style="letter-spacing:.08em">Short thoughts from Wove Mind</span><a href="#" style="font-size:13px;font-weight:600;min-height:44px;display:inline-flex;align-items:center">All thoughts</a></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">${HOME_SHORT.map((m) => `<a href="#" class="tile" style="display:flex;flex-direction:column;gap:10px;padding:20px;border:1px solid #D9D6CC;${r}"><span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#6B6B67"><span class="dot" style="background:${F[m.k].dot}"></span>${F[m.k].name} · ${m.svc.join(", ")}</span><span class="mt">${m.title}</span><span style="font-size:13px;color:#6B6B67">${m.who}</span></a>`).join("")}</div></section>`;
+}
+function render() {
+  const items = LAYOUT.filter((l) => short === "condense" || l[0] !== "strip").map((l) => l[0] === "strip" ? strip() : tile(HOME_MAIN[l[0]], l[1], l[0])).join("");
+  app.innerHTML = bar("B · Homepage: mosaic led by case studies", shortFormsControl(short) + `<label>Corner radius <input type="range" min="0" max="32" step="2" value="${radius}" data-r></label>`) +
+    `<main class="page" style="gap:48px">${homeHead()}<div class="grid12">${items}</div></main>`;
+}
+app.addEventListener("click", (ev) => { const t = ev.target.closest("[data-t]"); if (t) { open[t.dataset.t] = !open[t.dataset.t]; render(); } if (ev.target.closest("a[href=\"#\"]")) ev.preventDefault(); });
+app.addEventListener("change", (ev) => { if (ev.target.matches("[data-short]")) { short = ev.target.value; render(); } if (ev.target.matches("[data-r]")) { radius = +ev.target.value; render(); } });
+render();
+</script>
+</body>
+</html>

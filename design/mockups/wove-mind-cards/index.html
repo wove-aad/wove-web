@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wove Mind cards</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+.list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.list a{display:flex;flex-direction:column;gap:8px;padding:24px;border:1px solid #D9D6CC;border-radius:12px;text-decoration:none;min-height:44px}
+.list a:hover{border-color:#111;color:#111}
+.list b{font-size:20px;letter-spacing:-.01em}
+.list span{font-size:14px;color:#6B6B67}
+.note{padding:16px 20px;background:#FBEDD6;color:#5C3005;border-radius:10px;font-size:14px}
+@media (max-width:800px){.list{grid-template-columns:1fr}.page{padding:32px 16px}}
+</style>
+</head>
+<body>
+<main class="page">
+<header style="display:flex;flex-direction:column;gap:14px"><div class="eyebrow">Design exploration</div><h1 class="h1">Wove Mind cards</h1></header>
+<p class="note"><b>Temporary.</b> Delete <code>design/mockups/wove-mind-cards/</code> once the card direction has been resolved.</p>
+<h2 style="margin:0;font-size:22px">Wove Mind feed</h2>
+<nav class="list" aria-label="Wove Mind feed directions">
+<a href="feed-grid.html"><b>A · Even grid</b><span>Format filter, hover zoom and reveal</span></a>
+<a href="feed-mosaic.html"><b>B · Mosaic</b><span>Card size and shape set by format</span></a>
+<a href="feed-index.html"><b>C · Index</b><span>Title list with hover preview</span></a>
+</nav>
+<h2 style="margin:0;font-size:22px">Homepage feed</h2>
+<p style="margin:-24px 0 0;font-size:14px;color:#6B6B67">Case studies and service-tagged Mind entries. Each page has a switch to condense or hide sparks and threads.</p>
+<nav class="list" aria-label="Homepage feed directions">
+<a href="home-grid.html"><b>A · Even grid</b><span>Service filter, short thoughts stacked in one cell</span></a>
+<a href="home-mosaic.html"><b>B · Mosaic</b><span>Led by case studies, short thoughts in a strip</span></a>
+<a href="home-index.html"><b>C · Index</b><span>Mixed list with preview, short thoughts listed below</span></a>
+</nav>
+<p style="margin:0;font-size:13px;color:#6B6B67">Inter stands in for Ballinger. Case study content, covers and decks are placeholders.</p>
+</main>
+</body>
+</html>

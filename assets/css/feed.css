@@ -278,6 +278,7 @@
   justify-content: space-between;
   align-items: center;
 }
+.feed__footer[hidden] { display: none; }
 .feed__more {
   font-size: var(--feed-fs-body);
   font-weight: var(--feed-fw-regular);

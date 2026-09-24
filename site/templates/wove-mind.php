@@ -129,7 +129,6 @@ foreach ($entries as $e) {
 
   var LIMIT = 5;
   var attrMap = { service: 'data-services', tag: 'data-tags' };
-  var totalExceedsFeed = <?= json_encode($totalCount > $feedMax) ?>;
 
   function entryWord(n) { return n + ' entr' + (n === 1 ? 'y' : 'ies'); }
 
@@ -171,13 +170,19 @@ foreach ($entries as $e) {
       moreLink.href = '/our-work?filter=' + encodeURIComponent(filter);
       moreLink.textContent = 'See all ' + name + ' →';
       moreWrap.hidden = false;
-    } else if (showAll && totalExceedsFeed) {
+    } else {
       moreLink.href = '/our-work';
       moreLink.textContent = 'See all work →';
       moreWrap.hidden = false;
-    } else {
-      moreWrap.hidden = true;
     }
+  }
+
+  // Bring the top of the feed back into view if the reader has scrolled past it
+  var shell = document.querySelector('.feed-shell');
+  function scrollToFeedTop() {
+    if (!shell || shell.getBoundingClientRect().top >= 0) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    shell.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 
   pills.forEach(function (pill) {
@@ -185,6 +190,7 @@ foreach ($entries as $e) {
       pills.forEach(function (p) { p.classList.remove('is-active'); });
       pill.classList.add('is-active');
       applyFilter(pill.getAttribute('data-filter'));
+      scrollToFeedTop();
     });
   });
 

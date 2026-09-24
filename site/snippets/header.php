@@ -7,10 +7,8 @@
  * $page's id against each link's page id, rather than hardcoding it per
  * page. The ids differ from the hrefs where a route renames a page
  * (/our-work renders page('work')).
- * The current item doubles as the page title (styled larger in site.css),
- * and `nav--has-current` mutes the other links. Each item has a
- * view-transition-name, so browsers with cross-document view transitions
- * animate it between the link size and the title size on navigation.
+ * The current item doubles as the page title (semibold in site.css), and
+ * `nav--has-current` mutes the other links.
  * Pairs with footer.php, which closes </body></html> — no template
  * currently opens its own doctype/head, so this snippet owns that shell
  * (matches wovemind.php / wovemind-post.php, which already assumed it).
@@ -78,8 +76,8 @@ $ogType = $page->ogtype()->or('website')->value();
   <a href="/" class="nav__logo" aria-label="Wove, go to homepage">wove</a>
   <ul class="nav__links" role="list">
     <?php foreach ($navItems as $id => $item): ?>
-      <li><a href="<?= $item['href'] ?>" style="view-transition-name: nav-<?= $id ?>"<?= $isCurrent($id) ?>><?= $item['label'] ?></a></li>
+      <li><a href="<?= $item['href'] ?>"<?= $isCurrent($id) ?>><?= $item['label'] ?></a></li>
     <?php endforeach ?>
   </ul>
-  <a href="/contact" class="nav__cta" style="view-transition-name: nav-<?= $ctaId ?>"<?= $isCurrent($ctaId) ?>>Get in touch</a>
+  <a href="/contact" class="nav__cta"<?= $isCurrent($ctaId) ?>>Get in touch</a>
 </nav>

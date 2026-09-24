@@ -327,25 +327,6 @@ button { font-family: inherit; cursor: pointer; }
 .nav__cta[aria-current="page"] { padding: 0; border-color: transparent; }
 .nav__cta[aria-current="page"]:hover { background: none; }
 
-/* Page-to-page transitions (cross-document view transitions). Browsers
-   without support load pages as before. Each nav item has its own
-   view-transition-name (inline in header.php), so the items slide to their
-   new places and the current one cross-fades into its semibold state;
-   the rest of the page cross-fades. */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
-}
-::view-transition-group(*) {
-  animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
-}
-::view-transition-old(root),
-::view-transition-new(root) { animation-duration: 300ms; }
-/* Fade the outgoing link quickly so the old and new text don't double up
-   while the item changes weight. */
-.nav__links a, .nav__cta { view-transition-class: nav-item; }
-::view-transition-old(*.nav-item) { animation-duration: 150ms; }
-
 
 /* ============================================================
    PAGE HEAD — service name + tagline

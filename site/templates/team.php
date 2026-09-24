@@ -150,6 +150,27 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
     notch.style.left = (mid - left) + 'px';
   }
 
+  // Scroll so the open card and its panel are both on screen. The card's top
+  // is kept at least a header's height from the top of the viewport; if card
+  // and panel don't fit (usually on phones), the card's top goes there.
+  function reveal(card) {
+    var nav    = document.querySelector('.nav');
+    var offset = (nav ? nav.offsetHeight : 0) + 16;
+    var margin = 16;
+    var top    = card.getBoundingClientRect().top;
+    var bottom = box.getBoundingClientRect().bottom;
+    var delta  = 0;
+
+    if (bottom - top > window.innerHeight - offset - margin) {
+      delta = top - offset;                                        // too tall: card top below the header
+    } else if (bottom > window.innerHeight - margin) {
+      delta = bottom - (window.innerHeight - margin);              // show the bottom of the panel
+    } else if (top < offset) {
+      delta = top - offset;                                        // card partly above the top
+    }
+    if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
   function detach(card) {
     var details = box.querySelector('.team-card__details');
     if (details) { details.hidden = true; card.appendChild(details); }
@@ -190,11 +211,12 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
 
     requestAnimationFrame(function () { requestAnimationFrame(function () {
       panel.classList.add('is-in');
+      // Wait for the panel to finish opening so its full height is measured
       setTimeout(function () {
-        if (scroll) panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
+        if (scroll) reveal(card);
         var closeBtn = details.querySelector('.team-card__close');
         if (closeBtn) closeBtn.focus({ preventScroll: true });
-      }, reduce ? 0 : 200);
+      }, reduce ? 0 : 320);
     }); });
   }
 

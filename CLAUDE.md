@@ -18,14 +18,11 @@ _Last updated 2026-09-24. Kirby CMS build for wove.group._
 - `assets/fonts/Ballinger-*.{woff,woff2}` — real font files (Regular/Bold/X-Bold/Italic), pulled from `dev`'s own asset scaffold. **No files exist for weights 300 (light) / 500 (medium) / 900 (black)** — deliberately not faked; per the CSS font-matching spec an unregistered weight resolves to the nearest registered weight in the same family, so text stays in Ballinger rather than falling through to a different fallback font. `font-display: optional` (not `swap`) to avoid a visible font-swap jump on slow/uncached loads.
 
 ### Service pages
-Four real Kirby templates, one per service: `site/templates/{labs,strategy,brand,digital}.php`. Each follows the same shape:
-- **Static** (hardcoded in the template, not CMS-managed by design — see `frontend-development-guidelines.md`'s note that services/home/about are static templates): page head, intro, "what we can help with," the offerings grid, the quote.
-- **Dynamic — featured case study/studies**: `kirby()->collection('case-studies')->filter(fn ($cs) => in_array($page->slug(), $cs->services()->split(',')))`, rendered via `site/snippets/case-study-feature-card.php`. Labs shows one card; Strategy/Brand/Digital show every matching case study with a "See more" expand/collapse (first card always visible).
-- **Dynamic — recent work**: two card types in one `.wovemind-cards` grid —
-  - `project-highlight` entries (non-linked, external "Visit website" CTA) via `wovemind-highlight-card.php`
-  - `thread`/`whatif`/`longread` entries (linked, internal CTA) via `wovemind-related-card.php`
+One shared template, `site/templates/service.php`, replaced the four per-service templates (`{labs,strategy,brand,digital}.php`, now removed along with `case-study-feature-card.php`, `wovemind-highlight-card.php` and `wovemind-related-card.php`). It uses the feed design system (`assets/css/feed.css`):
+- Breadcrumb (Feed / Our Work / service), a `tag-hero` with the page title, intro (`$page->intro()`, falling back to a hardcoded intro per service) and an entry count, then the `tag-cloud` snippet.
+- **Dynamic — one mixed stream**: matching case studies (`kirby()->collection('case-studies')`) plus listed Wove Mind entries, both filtered with `in_array($serviceSlug, $p->services()->split(','))`, rendered through `stream-card` (case studies → `work-grid-card`, entries → `feed-card`). **Note:** `Field::split(',')` returns a plain PHP array, not a Kirby collection, so `->includes()` never works; always use `in_array()`.
 
-  Both queried with `in_array($page->slug(), $p->services()->split(','))` — **note:** `Field::split(',')` returns a plain PHP array, not a Kirby collection, so `->includes()` (the pattern in the original brief) never works; always use `in_array()`.
+Routing (`site/config/config.php`): `/strategy` etc. redirect to `/services/{slug}`. The `services/(:any)` route only renders a `{slug}.php` template if one exists; otherwise it returns `false` and Kirby renders `page('services/{slug}')` with its own template. `service.php` gets the slug from a `$serviceSlug` variable or the page slug.
 
 Content pages exist locally at `content/services/{labs,strategy,brand,digital}` (plus a `content/services/services.txt` parent) so the URLs resolve — these are gitignored (`content/` is deliberately excluded, "keep content out of main repo for now"), so they only exist on whichever machine/server actually has them. The real content on `dev`/staging was created through the Panel directly.
 

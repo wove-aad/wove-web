@@ -3,6 +3,7 @@
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
 use Kirby\Form\Form;
+use Kirby\Toolkit\Str;
 
 /**
  * Wove Mind — custom Panel plugin for authoring team posts.
@@ -157,37 +158,90 @@ function wove_mind_entry_summary(Page $entry, ?\Kirby\Cms\User $viewer = null): 
 	$content = $entry->content();
 	$format  = $content->get('format')->value() ?: 'thread';
 
-	// Prefer the intentional excerpt if present, otherwise fall back to
-	// stripped blocks content, so the list card has something to show.
-	$excerpt = trim((string) $content->get('excerpt')->value());
-	if ($excerpt === '') {
-		$blocks  = trim(strip_tags((string) $content->get('blocks')->value()));
-		$excerpt = $blocks;
-	}
-	$words = $excerpt === '' ? 0 : count(preg_split('/\s+/u', $excerpt));
+	// Plain text of the post: the optional excerpt, the writer `body`,
+	// and the text of any long read blocks.
+	$excerpt = wove_mind_plain_text((string) $content->get('excerpt')->value());
+	$body    = wove_mind_plain_text((string) $content->get('body')->value());
+	$blocks  = wove_mind_blocks_text((string) $content->get('blocks')->value());
+	$summary = $excerpt ?: ($body ?: $blocks);
+	$full    = trim($body . ' ' . $blocks);
+	$words   = $full === '' ? 0 : count(preg_split('/\s+/u', $full));
 
 	// The blueprint's `author` users field. createdBy()/authors() are not Page
 	// methods, so Kirby returned them as Field objects and the fallback never ran.
-	$user   = $entry->author()->toUser();
+	$user   = $content->get('author')->toUser();
 	$author = $user ? ($user->name()->value() ?? $user->email()) : 'Anonymous';
 	$avatar = wove_mind_avatar_url($user);
+
+	// Featured image. Read through content() because Page::image() is
+	// Kirby's "first image of the page" method, not the field.
+	$image = $content->get('image')->toFile();
+	$thumb = $image ? $image->crop(112, 112)->url() : null;
+
+	// Published entries sort and group by their date field, falling
+	// back to the last edit; drafts always use the last edit.
+	$modified  = $entry->modified();
+	$date      = $content->get('date')->isNotEmpty() ? $content->get('date')->toDate() : null;
+	$timestamp = $entry->isDraft() ? $modified : ($date ?: $modified);
+
+	// Sparks have no title of their own: show the start of the text.
+	$sparkText = null;
+	if ($format === 'spark') {
+		$sparkText = $body !== '' ? Str::short($body, 140) : ($image ? 'Image spark' : 'Empty spark');
+	}
 
 	$tags = $content->get('tags')->split(',');
 
 	return [
 		'id'        => $entry->uri(),
 		'title'     => $entry->title()->value(),
-		'excerpt'   => mb_substr($excerpt, 0, 160),
+		'excerpt'   => Str::short($summary, 160),
+		'sparkText' => $sparkText,
 		'format'    => $format,
 		'status'    => $entry->status(),
 		'author'    => $author,
 		'avatar'    => $avatar,
+		'thumb'     => $thumb,
 		'tags'      => $tags,
-		'mine'      => $viewer && $user && $viewer->id() === $user->id(),
+		'mine'      => $viewer !== null && $user !== null && $viewer->id() === $user->id(),
 		'wordCount' => $words > 0 ? $words : null,
-		'dateLabel' => wove_mind_date_label($entry->modified()),
+		'timestamp' => $timestamp,
+		// A date field has no time, so show it by day
+		'dateLabel' => wove_mind_date_label($timestamp, $timestamp !== $modified),
+		'monthLabel' => date('F Y', $timestamp),
 		'editUrl'   => 'wove-mind/entry/' . $entry->slug(),
+		'viewUrl'   => $entry->previewUrl(),
 	];
+}
+
+/**
+ * HTML to single-spaced plain text. Block-level tags become spaces so
+ * paragraphs don't run together.
+ */
+function wove_mind_plain_text(string $html): string
+{
+	$text = strip_tags(preg_replace('/<(br|\/p|\/li|\/h[1-6]|\/blockquote)[^>]*>/i', ' ', $html));
+	return trim(preg_replace('/\s+/u', ' ', html_entity_decode($text, ENT_QUOTES | ENT_HTML5)));
+}
+
+/**
+ * Text of a blocks field (stored as JSON). Only the `text` of each
+ * block is read, which covers text, heading, quote and list blocks.
+ */
+function wove_mind_blocks_text(string $json): string
+{
+	$blocks = json_decode($json, true);
+	if (!is_array($blocks)) {
+		return '';
+	}
+	$parts = [];
+	foreach ($blocks as $block) {
+		$text = $block['content']['text'] ?? null;
+		if (is_string($text)) {
+			$parts[] = wove_mind_plain_text($text);
+		}
+	}
+	return trim(implode(' ', array_filter($parts)));
 }
 
 /**
@@ -212,32 +266,38 @@ function wove_mind_avatar_url(?\Kirby\Cms\User $user): ?string
 }
 
 /**
- * Human-friendly date label. Same-day => "Today, HH:MM"; recent days => "N days ago";
- * older => "MMM D" or "MMM D, YYYY" for other years.
+ * Human-friendly date label: "Just now", "5 min ago", "Today, 12:05",
+ * "Yesterday", "3 days ago", then "3 Sep 2026".
  */
-function wove_mind_date_label(int $timestamp): string
+function wove_mind_date_label(int $timestamp, bool $dayOnly = false): string
 {
 	$now  = time();
 	$diff = $now - $timestamp;
 
-	if ($diff < 60) {
+	if ($dayOnly) {
+		if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
+			return 'Today';
+		}
+		if (date('Y-m-d', $timestamp) === date('Y-m-d', $now - 86400)) {
+			return 'Yesterday';
+		}
+		return date('j M Y', $timestamp);
+	}
+
+	if ($diff >= 0 && $diff < 60) {
 		return 'Just now';
 	}
-	if ($diff < 3600) {
-		$m = (int) floor($diff / 60);
-		return $m . ' min ago';
+	if ($diff >= 0 && $diff < 3600) {
+		return (int) floor($diff / 60) . ' min ago';
 	}
-	if ($diff < 86400 && date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
+	if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
 		return 'Today, ' . date('H:i', $timestamp);
 	}
-	if ($diff < 86400 * 2) {
+	if (date('Y-m-d', $timestamp) === date('Y-m-d', $now - 86400)) {
 		return 'Yesterday';
 	}
-	if ($diff < 86400 * 7) {
-		return floor($diff / 86400) . ' days ago';
+	if ($diff > 0 && $diff < 86400 * 7) {
+		return (int) floor($diff / 86400) . ' days ago';
 	}
-	if (date('Y', $timestamp) === date('Y', $now)) {
-		return date('M j', $timestamp);
-	}
-	return date('M j, Y', $timestamp);
+	return date('j M Y', $timestamp);
 }

@@ -295,11 +295,20 @@
     }
   }
 
+  // Bring the top of the feed back into view if the reader has scrolled past it
+  var shell = document.querySelector('.home-feed__shell');
+  function scrollToFeedTop() {
+    if (!shell || shell.getBoundingClientRect().top >= 0) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    shell.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       pills.forEach(function (p) { p.classList.remove('is-active'); });
       pill.classList.add('is-active');
       applyFilter(pill.getAttribute('data-filter'));
+      scrollToFeedTop();
     });
   });
 

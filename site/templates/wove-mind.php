@@ -50,15 +50,16 @@ foreach ($entries as $e) {
   }
 }
 
-// Service promo cards, placed second in the grid when that service's filter is active
+// Service promo cards, placed second in the grid when that service's filter is active.
+// They link to Our Work filtered by that service, with the service page's featured image as a thumbnail.
 $servicePromos = [];
 foreach ($usedServices as $slug => $label) {
   $servicePage = page('services/' . $slug);
   $promoImage  = $servicePage ? $servicePage->content()->get('image')->toFile() : null;
   $servicePromos[$slug] = [
     'label' => $label,
-    'url'   => $servicePage ? $servicePage->url() : url('services/' . $slug),
-    'image' => $promoImage ? $promoImage->resize(1200)->url() : null,
+    'url'   => url('our-work') . '?filter=' . rawurlencode('service:' . $slug),
+    'image' => $promoImage ? $promoImage->crop(480, 300)->url() : null,
   ];
 }
 ?>
@@ -112,13 +113,15 @@ foreach ($usedServices as $slug => $label) {
           </div>
         <?php endforeach ?>
         <?php foreach ($servicePromos as $slug => $promo): ?>
-          <a class="feed-promo<?= $promo['image'] ? ' feed-promo--image' : '' ?>"
+          <a class="feed-promo"
              href="<?= $promo['url'] ?>"
              data-promo="service:<?= $slug ?>"
              hidden>
-            <?php if ($promo['image']): ?>
-              <img class="feed-promo__img" src="<?= $promo['image'] ?>" alt="" loading="lazy">
-            <?php endif ?>
+            <span class="feed-promo__thumb">
+              <?php if ($promo['image']): ?>
+                <img src="<?= $promo['image'] ?>" alt="" loading="lazy">
+              <?php endif ?>
+            </span>
             <span class="feed-promo__btn">See all our <?= html($promo['label']) ?> work &rarr;</span>
           </a>
         <?php endforeach ?>

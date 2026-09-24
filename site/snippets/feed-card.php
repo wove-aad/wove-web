@@ -23,6 +23,11 @@ $author = $post->show_author()->toBool() && $post->author()->isNotEmpty()
   ? $post->author()->toUser()
   : null;
 
+// Initials shown in the avatar circle when the author has no profile image
+$authorInitials = $author
+  ? Str::upper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', trim($author->name()->value() ?? '')), 0, 2))))
+  : '';
+
 $postMidnight = strtotime('midnight', $post->date()->toTimestamp());
 $daysAgo      = (int) round((strtotime('today') - $postMidnight) / 86400);
 $dateLabel    = match (true) {
@@ -45,6 +50,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <span class="feed-card__avatar">
           <?php if ($avatar = $author->avatar()): ?>
             <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+          <?php else: ?>
+            <?= html($authorInitials) ?>
           <?php endif ?>
         </span>
         <span class="feed-card__author"><?= $author->name()->html() ?></span>
@@ -67,6 +74,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
           <span class="feed-card__avatar">
             <?php if ($avatar = $author->avatar()): ?>
               <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+            <?php else: ?>
+              <?= html($authorInitials) ?>
             <?php endif ?>
           </span>
           <span class="feed-card__author"><?= $author->name()->html() ?></span>
@@ -96,6 +105,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
           <span class="feed-card__avatar">
             <?php if ($avatar = $author->avatar()): ?>
               <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+            <?php else: ?>
+              <?= html($authorInitials) ?>
             <?php endif ?>
           </span>
           <span class="feed-card__author"><?= $author->name()->html() ?></span>
@@ -124,6 +135,8 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <span class="feed-card__avatar">
           <?php if ($avatar = $author->avatar()): ?>
             <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+          <?php else: ?>
+            <?= html($authorInitials) ?>
           <?php endif ?>
         </span>
         <span class="feed-card__author"><?= $author->name()->html() ?></span>

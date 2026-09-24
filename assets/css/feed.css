@@ -306,38 +306,34 @@
 
 /* Service promo card — shown second in the grid when a service filter is active */
 .feed-promo {
-  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--feed-space-16);
   min-height: 240px;
   padding: var(--feed-space-24);
-  border: var(--feed-border-line);
-  border-radius: var(--feed-radius-sm);
-  background: var(--feed-raised);
-  overflow: hidden;
   color: var(--feed-text);
   text-decoration: none;
 }
 .feed-promo[hidden] { display: none; }
-.feed-promo__img {
-  position: absolute;
-  inset: 0;
+.feed-promo__thumb {
+  width: 60%;
+  max-width: 240px;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--feed-radius-sm);
+  background: var(--feed-raised);
+  overflow: hidden;
+}
+.feed-promo__thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
   transition: transform 600ms ease;
 }
-.feed-promo--image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-}
-.feed-promo:hover .feed-promo__img { transform: scale(1.03); }
+.feed-promo:hover .feed-promo__thumb img { transform: scale(1.03); }
 .feed-promo__btn {
-  position: relative;
-  z-index: 1;
   padding: 10px 20px;
   border: 1px solid currentColor;
   border-radius: var(--feed-radius-pill);
@@ -346,9 +342,7 @@
   text-align: center;
   transition: background var(--feed-transition), color var(--feed-transition);
 }
-.feed-promo--image { color: #ffffff; }
 .feed-promo:hover .feed-promo__btn { background: var(--feed-text); color: var(--feed-surface); }
-.feed-promo--image:hover .feed-promo__btn { background: #ffffff; color: #111111; }
 
 /* Standard card (with image) */
 .feed-card {
@@ -418,6 +412,10 @@
   background: var(--feed-raised);
   flex-shrink: 0;
   overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: var(--feed-fw-semibold);
+  color: var(--feed-text-muted);
+  line-height: 1;
 }
 .feed-card__avatar img {
   width: 100%; height: 100%; object-fit: cover;

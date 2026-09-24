@@ -3,7 +3,7 @@
     class="k-panel-view wove-mind"
     :data-fmt="currentFormat"
   >
-    <div class="wove-topbar">
+    <div class="wove-topbar wove-topbar--editor">
       <div class="wove-topbar__left">
         <span class="wove-brand">
           Wove Mind<span class="wove-brand__dot">/</span
@@ -75,7 +75,7 @@
           <button class="wove-btn wove-btn--ghost" @click="deleteOpen = false" :disabled="isDeleting">
             Cancel
           </button>
-          <button class="wove-btn wove-btn--danger" @click="doDelete" :disabled="isDeleting">
+          <button class="wove-btn wove-btn--danger wove-btn--danger-solid" @click="doDelete" :disabled="isDeleting">
             {{ isDeleting ? "Deleting…" : "Delete" }}
           </button>
         </div>
@@ -284,11 +284,15 @@ export default {
       if (!this.fields) return {};
       const allow = RAIL_FIELDS_BY_FORMAT[this.currentFormat];
       const filterHidden = (name) => !HIDDEN_FIELDS.includes(name);
+      // The rail is too narrow for side-by-side fields, so stack them
+      // all full width (the SEO tab sets some to 1/2).
+      const stack = (field) =>
+        field.width && field.width !== "1/1" ? { ...field, width: "1/1" } : field;
       if (allow) {
         const out = {};
         for (const name of allow) {
           if (this.fields[name] && filterHidden(name)) {
-            out[name] = this.decorate(name, this.fields[name]);
+            out[name] = stack(this.decorate(name, this.fields[name]));
           }
         }
         return out;
@@ -296,7 +300,7 @@ export default {
       return Object.fromEntries(
         Object.entries(this.fields)
           .filter(([name]) => RAIL_FIELDS.includes(name) && filterHidden(name))
-          .map(([name, field]) => [name, this.decorate(name, field)])
+          .map(([name, field]) => [name, stack(this.decorate(name, field))])
       );
     },
     hasSeoFields() {

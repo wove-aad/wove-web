@@ -42,10 +42,10 @@
   position: sticky; top: 0; z-index: 20;
 }
 .wove-topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-.wove-topbar__left { display: flex; align-items: center; gap: 12px; }
+.wove-topbar__left { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .wove-topbar__center { display: flex; justify-content: center; }
 .wove-topbar__right { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-.wove-brand { font-weight: 700; letter-spacing: -0.01em; }
+.wove-brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
 .wove-brand__dot { color: var(--wm-faint); margin: 0 8px; }
 .wove-brand__crumb { color: var(--wm-muted); }
 
@@ -79,20 +79,20 @@
   opacity: 1;
 }
 .wove-btn--danger {
-  background: transparent; color: var(--wm-muted);
-  border-color: var(--wm-rule);
+  background: transparent; color: var(--wm-danger);
+  border-color: var(--wm-danger-rule);
 }
 .wove-btn--danger:hover {
-  background: #fdecea;
-  border-color: #d64545;
-  color: #9c1e1e;
+  background: var(--wm-danger-tint);
+  border-color: var(--wm-danger);
+  color: var(--wm-danger);
   opacity: 1;
 }
-.k-panel[data-theme="dark"] .wove-btn--danger:hover,
-.k-panel:not([data-theme="light"]) .wove-btn--danger:hover {
-  background: #401717;
-  border-color: #a94444;
-  color: #ffb4b4;
+/* Filled variant for the final confirm in the delete dialog */
+.wove-btn--danger-solid,
+.wove-btn--danger-solid:hover {
+  background: var(--wm-danger); color: var(--wm-ground);
+  border-color: var(--wm-danger);
 }
 .wove-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -498,7 +498,13 @@
 /* ------------------------------------------------------------ */
 /* Editor view                                                  */
 /* ------------------------------------------------------------ */
-.wove-editor { display: grid; grid-template-columns: 1fr 340px; min-height: calc(100vh - 57px); }
+.wove-editor {
+  display: grid;
+  /* minmax(0, …) lets the compose column shrink below its content
+     width, so it can't push the rail off the right edge. */
+  grid-template-columns: minmax(0, 1fr) 360px;
+  min-height: calc(100vh - 57px);
+}
 .wove-editor__main { display: flex; justify-content: center; padding: 48px 32px 120px; }
 .wove-editor__compose { width: 100%; max-width: 720px; }
 
@@ -529,6 +535,7 @@
 .wove-editor__rail {
   background: var(--wm-surface); border-left: 1px solid var(--wm-rule);
   padding: 24px 22px; overflow-y: auto;
+  min-width: 0;
 }
 .wove-rail__label {
   display: block;
@@ -551,7 +558,7 @@
    shrink the list layout to a single stacked column. */
 @media (max-width: 959px) {
   .wove-editor {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .wove-editor__rail {
     border-left: none;
@@ -585,6 +592,10 @@
     padding: 10px var(--wm-space-16);
     grid-template-columns: 1fr auto;
   }
+  /* Editor actions drop to their own row: Back on the left, Publish on the right */
+  .wove-topbar--editor { grid-template-columns: 1fr; row-gap: 10px; }
+  .wove-topbar--editor .wove-topbar__right { justify-content: flex-start; gap: 8px; }
+  .wove-topbar--editor .wove-topbar__right > :last-child { margin-left: auto; }
   .wove-topbar__center { display: none; } /* autosave status hides */
   .wove-brand__crumb { display: none; }
   .wove-page {

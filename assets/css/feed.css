@@ -264,7 +264,7 @@
 }
 .feed__title {
   font-size: var(--feed-fs-h1);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-heading);
   letter-spacing: -0.02em;
 }
@@ -396,7 +396,7 @@
 
 .feed-card__title {
   font-size: var(--feed-fs-card-title);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-tight);
   letter-spacing: -0.01em;
   color: var(--feed-text-body);
@@ -603,7 +603,7 @@
 }
 .contact-page__title {
   font-size: clamp(2rem, 1rem + 3vw, 3.5rem);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: var(--feed-space-16);
@@ -744,7 +744,7 @@
 }
 .sector-hero__title {
   font-size: clamp(2rem, 1rem + 3vw, 3.5rem);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: var(--feed-space-16);
@@ -780,12 +780,10 @@
   color: var(--feed-coral); margin-bottom: var(--feed-space-12);
 }
 .cs-hero__title {
-  font-size: var(--feed-fs-hero); font-weight: var(--feed-fw-semibold);
+  font-size: var(--feed-fs-hero); font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-heading); letter-spacing: -0.02em;
   max-width: 36rem;
 }
-/* Spark titles stay regular */
-.entry-format--spark ~ .cs-hero__title { font-weight: var(--feed-fw-regular); }
 .cs-hero__tags {
   display: flex; flex-wrap: wrap; gap: var(--feed-space-8);
   margin-top: var(--feed-space-24);
@@ -1123,7 +1121,7 @@
 }
 .tag-hero__name {
   font-size: var(--feed-fs-h1);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-heading);
   letter-spacing: -0.02em;
   margin-bottom: var(--feed-space-16);
@@ -1374,7 +1372,7 @@
 }
 .feed-wrap .work-grid-card__client {
   font-size: var(--feed-fs-card-title);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-tight);
   letter-spacing: -0.01em;
   color: var(--feed-text-body);
@@ -1734,7 +1732,7 @@
 }
 .error-page__title {
   font-size: var(--feed-fs-hero);
-  font-weight: var(--feed-fw-semibold);
+  font-weight: var(--feed-fw-regular);
   line-height: var(--feed-lh-heading);
   letter-spacing: -0.02em;
   margin-bottom: var(--feed-space-16);

@@ -33,7 +33,7 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
       $avatar   = $member->avatar();
       $name     = $member->name()->value() ?: $member->email();
       $initials = Str::upper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', trim($name)), 0, 2))));
-      $role     = $member->content()->get('role');
+      $role     = wove_member_role($member);
       $bio      = $member->content()->get('bio');
       $linkedin = $member->content()->get('linkedin');
       $entries   = wove_author_entries($member);
@@ -51,8 +51,8 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
           </span>
           <span class="team-card__summary">
             <span class="team-card__name"><?= html($name) ?></span>
-            <?php if ($role->isNotEmpty()): ?>
-              <span class="team-card__role"><?= $role->html() ?></span>
+            <?php if ($role !== ''): ?>
+              <span class="team-card__role"><?= html($role) ?></span>
             <?php endif ?>
           </span>
           <span class="team-card__icon" aria-hidden="true"></span>
@@ -60,7 +60,10 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
 
         <div class="team-card__details" id="<?= html($slug) ?>-details" aria-label="<?= html($name) ?>">
           <div class="team-card__head">
-            <p><span class="team-card__head-name"><?= html($name) ?></span><?php if ($role->isNotEmpty()): ?><span class="team-card__role"><?= $role->html() ?></span><?php endif ?></p>
+            <p class="team-card__head-title">
+              <span class="team-card__head-name"><?= html($name) ?></span>
+              <?php if ($role !== ''): ?><span class="team-card__role"><?= html($role) ?></span><?php endif ?>
+            </p>
             <button class="team-card__close" type="button" aria-label="Close">&times;</button>
           </div>
 

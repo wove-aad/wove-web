@@ -117,7 +117,7 @@ $heroData = ['services' => [], 'caseStudies' => [], 'sectors' => [], 'tags' => [
 foreach ($usedAuthors as $slug => $member) {
   $heroData['authors'][$slug] = [
     'label' => $member->name()->value(),
-    'role'  => $member->content()->get('role')->value() ?: '',
+    'role'  => wove_member_role($member),
     'url'   => url('our-people') . '#' . $slug,
   ];
 }

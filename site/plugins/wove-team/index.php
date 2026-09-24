@@ -75,3 +75,20 @@ function wove_entry_author(Page $entry): ?User
 	if (!$entry->show_author()->toBool() || $entry->author()->isEmpty()) return null;
 	return $entry->author()->toUser();
 }
+
+/**
+ * A team member's role: the "Role" profile field, or failing that the
+ * "Author role" on their most recent credited Wove Mind entry.
+ */
+function wove_member_role(User $user): string
+{
+	$role = trim((string) $user->content()->get('role')->value());
+	if ($role !== '') return $role;
+
+	foreach (wove_author_entries($user) as $entry) {
+		$entryRole = trim((string) $entry->author_role()->value());
+		if ($entryRole !== '') return $entryRole;
+	}
+
+	return '';
+}

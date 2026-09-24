@@ -1899,14 +1899,15 @@
 .team-card__details { display: flex; flex-direction: column; min-width: 0; }
 .team-card__details[hidden] { display: none; }
 .team-card__head {
-  display: flex; align-items: baseline; justify-content: space-between; gap: var(--feed-space-16);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--feed-space-16);
   padding: var(--feed-space-24) var(--feed-space-24) 0;
 }
-.team-card__head-name { font-size: var(--feed-fs-h2); margin-right: var(--feed-space-12); }
+.team-card__head-title { display: flex; flex-direction: column; gap: var(--feed-space-4); }
+.team-card__head-name { font-size: var(--feed-fs-h2); }
 .team-card__close {
   flex-shrink: 0;
   width: 32px; height: 32px;
-  margin: -6px -8px 0 0;
+  margin: -4px -8px 0 0;
   border: 0; border-radius: 50%;
   background: none;
   font: inherit; font-size: var(--feed-fs-card-title); line-height: 1;

@@ -29,6 +29,15 @@
           <span class="wove-save-status__dot" />
           <span>{{ saveLabel }}</span>
         </span>
+        <button
+          class="wove-btn wove-btn--ghost wove-btn--focus"
+          :aria-pressed="focusMode ? 'true' : 'false'"
+          :title="(focusMode ? 'Show the settings sidebar' : 'Hide the sidebar and focus on writing') + ' (' + focusShortcut + ')'"
+          @click="toggleFocus"
+        >
+          <k-icon :type="focusMode ? 'collapse-horizontal' : 'expand-horizontal'" />
+          <span>{{ focusMode ? "Exit focus" : "Focus" }}</span>
+        </button>
         <a
           v-if="previewUrl"
           class="wove-btn wove-btn--ghost"
@@ -89,7 +98,7 @@
       </div>
     </div>
 
-    <div class="wove-editor">
+    <div class="wove-editor" :class="{ 'is-focus': focusMode }">
       <main class="wove-editor__main">
         <div class="wove-editor__compose">
           <div class="wove-fmt-meta">
@@ -233,6 +242,11 @@ const BODY_MIN_H = 160;
 const BODY_MAX_H = 1200;
 const BODY_DEFAULT_H = 360;
 const BODY_H_KEY = "wove-mind.body-height";
+const FOCUS_KEY = "wove-mind.focus";
+
+// Sparks have no title field, so their page title (browser tab, meta
+// title fallback) is set from the start of the text on save.
+const SPARK_TITLE_LENGTH = 60;
 
 // Matches Kirby's excerpt(160) used as the meta description fallback
 // in site/snippets/header.php.
@@ -284,15 +298,20 @@ export default {
     const slug = this.entryId.split("/").pop();
     if (values.seotitle && values.seotitle === slug) values.seotitle = "";
     let bodyHeight = BODY_DEFAULT_H;
+    let focusMode = false;
     try {
       const stored = parseInt(localStorage.getItem(BODY_H_KEY), 10);
       if (stored) bodyHeight = stored;
+      focusMode = localStorage.getItem(FOCUS_KEY) === "1";
     } catch (_) {}
     return {
       BODY_MIN_H,
       BODY_MAX_H,
       BODY_DEFAULT_H,
       bodyHeight: Math.min(BODY_MAX_H, Math.max(BODY_MIN_H, bodyHeight)),
+      focusMode,
+      // Whether Kirby's own menu was open before focus mode closed it
+      menuWasOpen: null,
       values,
       isSaving: false,
       isDeleting: false,
@@ -388,6 +407,10 @@ export default {
       }
       return excerpt(text, DESCRIPTION_LENGTH);
     },
+    focusShortcut() {
+      const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+      return mac ? "⌘." : "Ctrl+.";
+    },
     hasSeoFields() {
       return this.railFields.seotitle || this.railFields.seodescription;
     },
@@ -410,9 +433,13 @@ export default {
     // have a way to reach a mounted Vue component. Cleared on
     // destroy so we don't leak across view transitions.
     window.__woveMindImagePicker = this.$refs.imagePicker;
+    document.addEventListener("keydown", this.onKeydown);
+    if (this.focusMode) this.collapsePanelMenu();
   },
   beforeDestroy() {
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+    document.removeEventListener("keydown", this.onKeydown);
+    this.restorePanelMenu();
     if (window.__woveMindImagePicker === this.$refs.imagePicker) {
       window.__woveMindImagePicker = null;
     }
@@ -461,6 +488,42 @@ export default {
       }
       return Object.keys(patch).length ? { ...field, ...patch } : field;
     },
+    onKeydown(event) {
+      if ((event.metaKey || event.ctrlKey) && event.key === ".") {
+        event.preventDefault();
+        this.toggleFocus();
+      }
+    },
+    toggleFocus() {
+      this.focusMode = !this.focusMode;
+      try {
+        localStorage.setItem(FOCUS_KEY, this.focusMode ? "1" : "0");
+      } catch (_) {}
+      if (this.focusMode) this.collapsePanelMenu();
+      else this.restorePanelMenu();
+    },
+    // Focus mode also folds away Kirby's own left-hand menu, and puts
+    // it back as it was on leaving.
+    collapsePanelMenu() {
+      const menu = this.$panel?.menu;
+      if (!menu || typeof menu.toggle !== "function") return;
+      // Below 960px the sidebar stacks and focus mode does nothing
+      if (!window.matchMedia("(min-width: 960px)").matches) return;
+      this.menuWasOpen = menu.isOpen;
+      if (menu.isOpen) menu.toggle();
+    },
+    restorePanelMenu() {
+      const menu = this.$panel?.menu;
+      if (!menu || this.menuWasOpen === null) return;
+      if (this.menuWasOpen && !menu.isOpen) menu.toggle();
+      this.menuWasOpen = null;
+    },
+    sparkTitle() {
+      const text = plainText(this.values.body);
+      if (text) return excerpt(text, SPARK_TITLE_LENGTH);
+      const hasImage = Array.isArray(this.values.image) ? this.values.image.length : !!this.values.image;
+      return hasImage ? "Image spark" : "Spark";
+    },
     setBodyHeight(h) {
       this.bodyHeight = Math.round(Math.min(BODY_MAX_H, Math.max(BODY_MIN_H, h)));
       try {
@@ -506,6 +569,9 @@ export default {
     async save({ silent = false } = {}) {
       if (this.isSaving) return;
       this.isSaving = true;
+      if (this.currentFormat === "spark") {
+        this.values = { ...this.values, title: this.sparkTitle() };
+      }
       try {
         await this.$api.patch(`pages/${this.apiId}`, this.values);
         this.dirty = false;

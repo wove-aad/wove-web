@@ -59,7 +59,17 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 - **Kirby fields use container queries.** `.wove-editor__main` and `.wove-editor__rail` set `container-type: inline-size`. Without it Kirby measures the whole Panel main area, uses its 12-column grid and the fields overflow both columns (this was the sidebar clipping).
 - Top bar: Back (ghost, top left), brand, format chip; on the right the save status, View (ghost), Delete (dark red, `--wm-danger` tokens) and Publish, all with Kirby icons.
 - The body field defaults to 360px and has a drag handle under it (double-click resets, arrow keys work). The height is kept per browser in `localStorage` (`wove-mind.body-height`).
+- **Focus mode**: a Focus button (or ⌘. / Ctrl+.) hides the settings sidebar, centres the compose column and folds Kirby's own menu, restoring it on exit. Kept per browser (`wove-mind.focus`). Only applies at 960px+, where the sidebar sits beside the body.
+- **Spark titles**: sparks have no title field, so saving a spark sets `title` from the first 60 characters of the body ("Image spark" or "Spark" when empty).
 - Meta title and meta description show their fallbacks as placeholders, and the search preview uses them: the post title, and the first 160 characters of the post. `header.php` applies the same description fallback to Wove Mind entries, and treats a meta title equal to the slug as empty. New entries are created with an empty `seotitle`; before this the SEO tab's `{{ page.title }}` default stored the slug.
+
+### Wove Mind entries list (2026-09-24)
+- Filters: All, My entries and Drafts pills, plus an "All types" dropdown that combines with them. Search focuses with ⌘K / Ctrl+K; Esc clears it.
+- Drafts show first ("In progress", by last edit), then published entries grouped by month of their `date` field (falling back to the last edit). Dates read "Today", "Yesterday", "3 days ago", then "3 Sep 2026".
+- Each row has a 56px thumbnail of the featured image (a tile tinted with the format colour when there isn't one). Sparks show their text in quote marks in place of a title. Word counts cover the body and long read blocks.
+- The row is a `<div>` with a stretched `.wove-entry__link` to the editor; View and Edit appear on hover (always on touch screens), and the Live/Draft pill is a dropdown. Moving to draft asks first.
+- "My entries" matches the entry's `author` field against the signed-in account, so it only counts entries credited to that exact user.
+- `wove_mind_entry_summary()` in `index.php` supplies the row data (`thumb`, `sparkText`, `timestamp`, `monthLabel`, `viewUrl`). Read the featured image with `$page->content()->get('image')`: `$page->image()` is Kirby's "first image of the page" method.
 
 ### Our People / team page
 `/our-people` (linked from the header and footer) uses `site/templates/team.php`. The route in `site/plugins/wove-team/index.php` renders `page('our-people')` if it exists, otherwise a virtual page with the team template, so it works before a page is created. `site/blueprints/pages/team.yml` adds an optional intro; `team` is in `default.yml`'s `changeTemplate` list.

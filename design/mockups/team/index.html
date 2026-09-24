@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team page directions</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.list a { display: flex; flex-direction: column; gap: 6px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.list a:hover { border-color: var(--hover-border); }
+.list b { font-size: var(--fs-card-title); font-weight: 400; color: var(--text-body); }
+.list span { font-size: var(--fs-excerpt); color: var(--muted); }
+.list em { font-style: normal; font-size: var(--fs-tag); color: var(--dim); }
+.note { margin-bottom: 32px; padding: 14px 18px; background: var(--raised); border-radius: var(--radius); font-size: var(--fs-excerpt); color: var(--muted); }
+@media (max-width: 700px) { .list { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="page">
+<header class="hero"><p class="label">Design exploration</p><h1 class="hero__title">Team page directions</h1></header>
+<p class="note"><b>Temporary.</b> Delete <code>design/mockups/team/</code> once a direction is chosen. Each page has Dark and No photos switches in the bar at the top. People and posts are placeholders.</p>
+<nav class="list" aria-label="Team page directions">
+<a href="a-grid-panel.html"><b>A · Grid + panel below the row</b><span>Square photo cards, 4 per row. Clicking opens a full-width panel under the row with bio and posts.</span><em>The current build on staging</em></a>
+<a href="b-portrait-drawer.html"><b>B · Portrait wall + side drawer</b><span>Tall portraits with no card chrome. Clicking slides in a drawer with a larger photo, services, bio and posts, with next and previous.</span><em>Most editorial; photos carry the page</em></a>
+<a href="c-index.html"><b>C · Index list</b><span>One row per person: name, role, latest post and post count. The photo follows the cursor; clicking expands the row.</span><em>Works best without photos; foregrounds the writing</em></a>
+<a href="d-flip.html"><b>D · Flip in place</b><span>Portrait cards that turn over to show the bio and posts on the back. No layout shift.</span><em>Compact; long bios need scrolling on the back</em></a>
+</nav>
+</main>
+</body>
+</html>

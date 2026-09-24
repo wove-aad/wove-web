@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team B: portraits and drawer</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+
+.wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 24px; }
+@media (max-width: 1100px) { .wall { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .wall { grid-template-columns: repeat(2, 1fr); gap: 32px 16px; } }
+.person { display: flex; flex-direction: column; gap: 12px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+.person .photo { aspect-ratio: 3 / 4; border-radius: var(--radius); }
+.person .photo__img { transition: transform 500ms cubic-bezier(.2,.7,.2,1); }
+.person:hover .photo__img { transform: scale(1.03); }
+.person__sum { display: flex; flex-direction: column; gap: 2px; }
+.person:hover .name { text-decoration: underline; text-underline-offset: 3px; }
+.scrim { position: fixed; inset: 0; background: rgba(20,18,10,0.35); opacity: 0; pointer-events: none; transition: opacity var(--t); z-index: 60; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%); background: var(--surface); border-left: 1px solid var(--border); transform: translateX(100%); transition: transform 300ms ease; z-index: 70; overflow-y: auto; display: flex; flex-direction: column; }
+.is-drawer-open .scrim { opacity: 1; pointer-events: auto; }
+.is-drawer-open .drawer { transform: none; }
+.drawer .photo { aspect-ratio: 4 / 3; flex-shrink: 0; }
+.drawer__body { display: flex; flex-direction: column; gap: 14px; padding: 24px 28px 40px; }
+.drawer__name { font-size: 1.5rem; font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; }
+.drawer__close { position: absolute; top: 12px; right: 12px; z-index: 1; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--surface); cursor: pointer; font-size: 20px; }
+.drawer hr { border: 0; border-top: 1px solid var(--rule); margin: 8px 0; width: 100%; }
+.drawer__nav { display: flex; justify-content: space-between; margin-top: auto; padding: 16px 28px; border-top: 1px solid var(--rule); font-size: var(--fs-meta); }
+.drawer__nav button { border: 0; background: none; cursor: pointer; color: var(--muted); padding: 0; }
+.drawer__nav button:hover { color: var(--text); }
+
+</style>
+</head>
+<body>
+<div class="bar"><a href="index.html">&larr; Team directions</a><span>B · Portrait wall + side drawer</span><span>Next/previous and arrow keys in the drawer</span><span class="sp"></span><button id="tw-theme" type="button" aria-pressed="false">Dark</button><button id="tw-photos" type="button" aria-pressed="false">No photos</button></div>
+<main class="page"><header class="hero"><h1 class="hero__title">Our People</h1><p class="hero__intro">The people behind the work.</p></header>
+<div class="wall" id="wall"></div></main>
+<div class="scrim" id="scrim"></div><aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Team member" aria-hidden="true"></aside>
+<script src="data.js"></script>
+<script>
+initBar();
+
+var wall = document.getElementById('wall'), drawer = document.getElementById('drawer'), idx = 0;
+TEAM.forEach(function (p, i) {
+  var b = document.createElement('button'); b.type = 'button'; b.className = 'person';
+  b.innerHTML = photoHTML(p) + '<span class="person__sum"><span class="name">' + p.name + '</span><span class="role">' + p.role + '</span></span>';
+  b.addEventListener('click', function () { show(i); });
+  wall.appendChild(b);
+});
+function show(i) {
+  idx = (i + TEAM.length) % TEAM.length; var p = TEAM[idx];
+  drawer.innerHTML = '<button class="drawer__close" type="button" aria-label="Close">\u00d7</button>' + photoHTML(p) +
+    '<div class="drawer__body"><h2 class="drawer__name">' + p.name + '</h2><p class="role">' + p.role + '</p>' +
+    '<div class="tags">' + p.services.map(function (s) { return '<a href="#">' + s + '</a>'; }).join('') + '</div>' +
+    '<p class="bio">' + p.bio + '</p><a class="linkedin" href="#">LinkedIn \u2197</a><hr><p class="label">Latest</p>' + postsHTML(p) + '</div>' +
+    '<div class="drawer__nav"><button type="button" data-step="-1">\u2190 ' + TEAM[(idx - 1 + TEAM.length) % TEAM.length].name + '</button><button type="button" data-step="1">' + TEAM[(idx + 1) % TEAM.length].name + ' \u2192</button></div>';
+  drawer.querySelector('.drawer__close').addEventListener('click', hide);
+  drawer.querySelectorAll('[data-step]').forEach(function (b) { b.addEventListener('click', function () { show(idx + Number(b.dataset.step)); }); });
+  document.body.classList.add('is-drawer-open'); drawer.setAttribute('aria-hidden', 'false');
+  drawer.querySelector('.drawer__close').focus();
+}
+function hide() { document.body.classList.remove('is-drawer-open'); drawer.setAttribute('aria-hidden', 'true'); }
+document.getElementById('scrim').addEventListener('click', hide);
+document.addEventListener('keydown', function (e) {
+  if (!document.body.classList.contains('is-drawer-open')) return;
+  if (e.key === 'Escape') hide(); if (e.key === 'ArrowRight') show(idx + 1); if (e.key === 'ArrowLeft') show(idx - 1);
+});
+
+</script>
+</body>
+</html>

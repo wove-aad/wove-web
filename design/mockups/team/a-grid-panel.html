@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team A: grid and panel</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px)  { .grid { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color var(--t); }
+.card:hover { border-color: var(--hover-border); }
+.card.is-open { border-color: var(--dim); }
+.card button { position: relative; display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+.card .photo { aspect-ratio: 1; }
+.card__sum { display: flex; flex-direction: column; gap: 4px; padding: 14px 40px 16px 16px; }
+.plus { position: absolute; right: 16px; bottom: 18px; font-size: 18px; line-height: 1; color: var(--dim); }
+.panel { grid-column: 1 / -1; display: grid; grid-template-columns: 3fr 2fr; gap: 48px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.panel__left { display: flex; flex-direction: column; gap: 12px; }
+.panel__right { display: flex; flex-direction: column; gap: 10px; }
+@media (max-width: 800px) { .panel { grid-template-columns: 1fr; gap: 16px; } }
+
+</style>
+</head>
+<body>
+<div class="bar"><a href="index.html">&larr; Team directions</a><span>A · Grid + panel below the row</span><span>The current build</span><span class="sp"></span><button id="tw-theme" type="button" aria-pressed="false">Dark</button><button id="tw-photos" type="button" aria-pressed="false">No photos</button></div>
+<main class="page"><header class="hero"><h1 class="hero__title">Our People</h1><p class="hero__intro">The people behind the work.</p></header>
+<div class="grid" id="grid"></div></main>
+<script src="data.js"></script>
+<script>
+initBar();
+
+var grid = document.getElementById('grid'), panel = document.createElement('div'), open = null;
+panel.className = 'panel';
+TEAM.forEach(function (p) {
+  var el = document.createElement('article'); el.className = 'card'; el.id = p.slug;
+  el.innerHTML = '<button type="button" aria-expanded="false">' + photoHTML(p) + '<span class="card__sum"><span class="name">' + p.name + '</span><span class="role">' + p.role + '</span></span><span class="plus" aria-hidden="true">+</span></button>';
+  el.querySelector('button').addEventListener('click', function () { toggle(el, p); });
+  grid.appendChild(el);
+});
+function rowEnd(card) { var cards = grid.querySelectorAll('.card'), last = card; cards.forEach(function (c) { if (c.offsetTop === card.offsetTop) last = c; }); return last; }
+function toggle(el, p) {
+  if (open) { open.classList.remove('is-open'); open.querySelector('.plus').textContent = '+'; open.querySelector('button').setAttribute('aria-expanded', 'false'); }
+  if (open === el) { panel.remove(); open = null; return; }
+  open = el; el.classList.add('is-open'); el.querySelector('.plus').textContent = '\u2212'; el.querySelector('button').setAttribute('aria-expanded', 'true');
+  panel.innerHTML = '<div class="panel__left"><p class="bio">' + p.bio + '</p><a class="linkedin" href="#">LinkedIn \u2197</a></div><div class="panel__right"><p class="label">Latest</p>' + postsHTML(p) + '</div>';
+  rowEnd(el).after(panel);
+}
+window.addEventListener('resize', function () { if (open) rowEnd(open).after(panel); });
+
+</script>
+</body>
+</html>

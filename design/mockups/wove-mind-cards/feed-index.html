@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C · Wove Mind: index</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="data.js"></script>
+<script>
+
+const app = document.getElementById("app");
+const BLURB = { spark: "One thought.", thread: "A short piece with room to breathe.", whatif: "A structured provocation: premise, tension, question.", longread: "[Deck: one sentence that draws the reader in]" };
+const LIST = [2, 0, 1, 3, 4, 5, 6, 7].map((i) => ENTRIES[i]);
+function preview(e) {
+  const f = F[e.k];
+  return `<div class="pv" style="background:${f.tint}">${e.cover ? `<div class="ph" style="color:${f.ink}">[${e.photo ? "Photo" : "Cover image"}]</div>` : `<div class="quote" style="padding:36px;font-size:30px;color:${f.ink}">${e.title}</div>`}<span class="pill" style="top:20px;left:20px"><span class="dot" style="background:${f.dot}"></span>${f.name}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;color:#3D3D3B">${BLURB[e.k]}</span><span style="font-size:13px;color:#6B6B67">${e.tags.join("  ")}</span></div>`;
+}
+app.innerHTML = bar("C · Wove Mind: index list with hover preview") + `<main class="page" style="gap:48px">${mindHead()}<div class="split"><div style="border-bottom:1px solid #EAEAE4">${LIST.map((e, i) => `<a href="#" class="row${i === 0 ? " on" : ""}" data-i="${i}"><div style="display:flex;flex-direction:column;gap:8px;flex-grow:1;min-width:0"><span class="rm"><span class="dot" style="background:${F[e.k].dot}"></span>${F[e.k].name} · ${e.author} · ${e.meta}</span><span class="rt">${e.title}</span></div><span class="arrow">${ARROW(28)}</span></a>`).join("")}</div><aside class="preview" aria-label="Preview" id="pv">${preview(LIST[0])}</aside></div></main>`;
+let active = 0;
+function activate(i) { if (i === active) return; active = i; app.querySelectorAll(".row").forEach((r) => r.classList.toggle("on", +r.dataset.i === i)); document.getElementById("pv").innerHTML = preview(LIST[i]); }
+app.querySelectorAll(".row").forEach((r) => { r.addEventListener("mouseenter", () => activate(+r.dataset.i)); r.addEventListener("focus", () => activate(+r.dataset.i)); r.addEventListener("click", (ev) => ev.preventDefault()); });
+</script>
+</body>
+</html>

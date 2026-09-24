@@ -314,17 +314,14 @@ button { font-family: inherit; cursor: pointer; }
 .nav__cta:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
 
 /* Current item doubles as the page title (header.php sets aria-current and
-   nav--has-current). The other links are muted while one is current; on
-   pages with no current item (home, case studies) they stay full colour. */
-.nav { --nav-title-size: 1.25rem; /* 20px */ }
+   nav--has-current), shown in semibold at the normal nav size. The other
+   links are muted while one is current; on pages with no current item
+   (home, case studies) they stay full colour. */
 .nav--has-current .nav__links a { color: var(--color-text-muted); }
 .nav__links a[aria-current="page"],
 .nav__cta[aria-current="page"] {
-  font-size: var(--nav-title-size);
-  font-weight: var(--weight-bold);
-  letter-spacing: -0.02em;
+  font-weight: 600;
   color: var(--color-black);
-  line-height: 1;
 }
 .nav__links a[aria-current="page"]:hover { opacity: 1; }
 .nav__cta[aria-current="page"] { padding: 0; border-color: transparent; }
@@ -332,20 +329,20 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Page-to-page transitions (cross-document view transitions). Browsers
    without support load pages as before. Each nav item has its own
-   view-transition-name (inline in header.php), so the item that becomes
-   current grows into the title and the others slide to their new places;
+   view-transition-name (inline in header.php), so the items slide to their
+   new places and the current one cross-fades into its semibold state;
    the rest of the page cross-fades. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
 }
 ::view-transition-group(*) {
-  animation-duration: 450ms;
+  animation-duration: 300ms;
   animation-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: 300ms; }
 /* Fade the outgoing link quickly so the old and new text don't double up
-   while the item resizes. */
+   while the item changes weight. */
 .nav__links a, .nav__cta { view-transition-class: nav-item; }
 ::view-transition-old(*.nav-item) { animation-duration: 150ms; }
 

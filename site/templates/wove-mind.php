@@ -111,14 +111,14 @@ foreach ($usedCaseStudies as $slug => $label) $filterLabels['cs:' . $slug]      
 
       <div class="feed-rail__tags" id="feed-filter-pills">
         <button class="tag-pill is-active" data-filter="*" type="button">All</button>
+        <?php foreach ($usedCaseStudies as $slug => $label): ?>
+          <button class="tag-pill" data-filter="cs:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+        <?php endforeach ?>
         <?php foreach ($usedServices as $slug => $label): ?>
           <button class="tag-pill" data-filter="service:<?= $slug ?>" type="button"><?= html($label) ?></button>
         <?php endforeach ?>
         <?php foreach ($usedTags as $slug => $label): ?>
           <button class="tag-pill" data-filter="tag:<?= $slug ?>" type="button"><?= html($label) ?></button>
-        <?php endforeach ?>
-        <?php foreach ($usedCaseStudies as $slug => $label): ?>
-          <button class="tag-pill" data-filter="cs:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
         <?php endforeach ?>
       </div>
     </aside>

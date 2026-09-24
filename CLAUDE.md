@@ -52,6 +52,9 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 ### Wove Mind Panel plugin avatars (2026-09-24)
 `site/plugins/wove-mind` shows the user's Kirby profile image (`$user->avatar()`, cropped to 96px) in the top bar and next to each author in the entries list, falling back to initials. `wove_mind_user_summary()` and `wove_mind_avatar_url()` in `index.php` supply the data. Rebuild with `npm run build` in the plugin folder after editing `src/`.
 
+### Tag order (global rule)
+Wherever tags or filter pills are listed, the order is **case study, services, editorial tags, sectors**. This applies to the filter pills in `wove-mind.php`, `work.php` and `home.php`, `tag-cloud.php` (stable sort by type), `card-tags.php`, the hero tags in `case-study.php` (no case study tag, as it's the page itself), the tag cloud in `wove-mind-entry.php` (linked case studies first) and `feed-rail.php` (group order, then most recent within each group). Follow it in any new tag list.
+
 ## Known gaps / open items
 
 - **Kirby's `when` field condition only supports a single exact value, not a list.** Confirmed by reading `kirby/src/Form/Mixin/When.php` directly — `when: format: in: [...]` can never match (a string can never `===` an array), so any field using that pattern is permanently hidden regardless of format. This was already fixed on `title`/`image`/`body` in `wove-mind-entry.yml` (they now show unconditionally instead), but **if this pattern shows up in any new blueprint work, it won't work** — needs restructuring (e.g. per-value fields, or just showing unconditionally with an `info:` note).

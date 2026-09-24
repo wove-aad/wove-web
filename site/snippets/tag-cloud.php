@@ -85,6 +85,10 @@ foreach ($caseStudies as $cs) {
   }
 }
 
+// Global tag order: case study, services, editorial tags, sectors (stable, so first-seen order holds within a group)
+$typeRank = ['casestudy' => 0, 'service' => 1, 'tag' => 2, 'sector' => 3];
+uasort($pills, fn ($a, $b) => ($typeRank[$a['type']] ?? 9) <=> ($typeRank[$b['type']] ?? 9));
+
 $active     = $active ?? '';
 $activeType = $activeType ?? '';
 ?>

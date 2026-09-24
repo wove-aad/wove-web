@@ -135,11 +135,11 @@
           <?php foreach ($usedServices as $slug => $label): ?>
             <button class="tag-pill" data-filter="service:<?= $slug ?>" type="button"><?= html($label) ?></button>
           <?php endforeach ?>
-          <?php foreach ($usedSectors as $slug => $label): ?>
-            <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
-          <?php endforeach ?>
           <?php foreach ($usedTags as $slug => $label): ?>
             <button class="tag-pill" data-filter="tag:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+          <?php endforeach ?>
+          <?php foreach ($usedSectors as $slug => $label): ?>
+            <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
           <?php endforeach ?>
         </div>
       </aside>

@@ -70,7 +70,11 @@ foreach ($allEntries as $entry) {
   }
 }
 
-usort($cloud, fn ($a, $b) => $b['date'] <=> $a['date']);
+// Global tag order: case study, services, editorial tags; most recent first within each group
+$typeRank = ['cs' => 0, 'svc' => 1, 'tag' => 2];
+foreach ($cloud as $key => &$item) $item['rank'] = $typeRank[strstr($key, ':', true)] ?? 9;
+unset($item);
+usort($cloud, fn ($a, $b) => [$a['rank'], $b['date']] <=> [$b['rank'], $a['date']]);
 
 $cloudLimit = 16;
 $totalCloud = count($cloud);

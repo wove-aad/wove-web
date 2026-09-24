@@ -24,12 +24,13 @@ $csTags = [];
 foreach ($serviceSlugs as $s) {
   $csTags[] = ['label' => $serviceLabels[$s] ?? ucfirst($s), 'url' => '/our-work?filter=service:' . $s];
 }
-foreach ($sectorSlugs as $s) {
-  $csTags[] = ['label' => $sectorLabels[$s] ?? $s, 'url' => '/our-work?filter=sector:' . $s];
-}
+// Global tag order: services, editorial tags, sectors (the case study itself is this page)
 foreach ($impactSlugs as $slug) {
   $match = $tagStructure->findBy('slug', $slug);
   if ($match) $csTags[] = ['label' => $match->name()->value(), 'url' => '/our-work?filter=tag:' . $slug];
+}
+foreach ($sectorSlugs as $s) {
+  $csTags[] = ['label' => $sectorLabels[$s] ?? $s, 'url' => '/our-work?filter=sector:' . $s];
 }
 
 $heroImage  = $page->caseStudyImages()->toFile();

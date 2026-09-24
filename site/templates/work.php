@@ -145,17 +145,17 @@ $totalCount = count($feedItems);
   <?php if ($usedServices || $usedSectors || $usedTags || $usedCS): ?>
   <nav class="tag-cloud" aria-label="Filter by tag">
     <button class="tag-pill is-active" data-filter="*" type="button">All</button>
+    <?php foreach ($usedCS as $slug => $label): ?>
+      <button class="tag-pill" data-filter="cs:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+    <?php endforeach ?>
     <?php foreach ($usedServices as $slug => $label): ?>
       <button class="tag-pill" data-filter="service:<?= $slug ?>" type="button"><?= html($label) ?></button>
-    <?php endforeach ?>
-    <?php foreach ($usedSectors as $slug => $label): ?>
-      <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
     <?php endforeach ?>
     <?php foreach ($usedTags as $slug => $label): ?>
       <button class="tag-pill" data-filter="tag:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
     <?php endforeach ?>
-    <?php foreach ($usedCS as $slug => $label): ?>
-      <button class="tag-pill" data-filter="cs:<?= html($slug) ?>" type="button"><?= html($label) ?></button>
+    <?php foreach ($usedSectors as $slug => $label): ?>
+      <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
     <?php endforeach ?>
   </nav>
   <?php endif ?>

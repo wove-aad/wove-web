@@ -278,12 +278,16 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   gap: var(--space-32);
-  padding: var(--space-16) var(--gutter-x);
+  /* Horizontal padding matches --feed-page-px so the nav lines up with feed page content */
+  padding: var(--space-16) 1rem;
   border-bottom: var(--border);
   max-width: var(--width-header);
   margin: 0 auto;
   filter: grayscale(1);
 }
+@media (min-width: 600px)  { .nav { padding-inline: 1.5rem; } }
+@media (min-width: 960px)  { .nav { padding-inline: 2rem; } }
+@media (min-width: 1280px) { .nav { padding-inline: 3rem; } }
 .nav__logo {
   font-weight: var(--weight-xbold);
   font-size: var(--size-attr-name);

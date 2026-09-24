@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wove Mind cards: index with preview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;background:#ffffff;color:#111111;-webkit-font-smoothing:antialiased}
+a{color:#111111}a:hover{color:#111111}
+.row{transition:color 200ms,padding-left 250ms cubic-bezier(.2,.7,.2,1)}
+.row:focus-visible{outline:2px solid #2A50F3;outline-offset:4px}
+.row .arrow{transition:opacity 200ms,transform 250ms}
+.preview{transition:background 300ms}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1400px; box-sizing: border-box; padding: 64px; background: #ffffff; display: flex; flex-direction: column; gap: 48px">
+<header style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6B67">Wove Mind</div>
+<h1 style="margin: 0; font-size: 56px; font-weight: 800; letter-spacing: -0.03em; line-height: 1">Everything we've been writing.</h1>
+</header>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 64px; align-items: start">
+<div style="display: flex; flex-direction: column; border-bottom: 1px solid #EAEAE4">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+<a href="#" class="row" onMouseEnter="{{r.hover}}" onFocus="{{r.hover}}" style="display: flex; align-items: center; gap: 24px; padding: 22px 0 22px {{r.indent}}px; border-top: 1px solid #EAEAE4; text-decoration: none; color: {{r.color}}">
+<div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-width: 0">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #6B6B67">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: {{r.dot}}"></span>{{r.fname}} · {{r.author}} · {{r.meta}}</span>
+<span style="font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -0.025em">{{r.title}}</span>
+</div>
+<svg class="arrow" style="opacity: {{r.arrow}}; flex-shrink: 0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</a>
+</sc-for>
+</div>
+<aside aria-label="Preview" style="display: flex; flex-direction: column; gap: 20px">
+<div class="preview" style="position: relative; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: {{a.tint}}">
+<sc-if value="{{a.cover}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: {{a.ink}}; font-size: 13px; font-weight: 500">[Cover image]</div>
+</sc-if>
+<sc-if value="{{a.quote}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; inset: 0; box-sizing: border-box; padding: 36px; display: flex; align-items: flex-end; font-size: 30px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em; color: {{a.ink}}">{{a.title}}</div>
+</sc-if>
+<span style="position: absolute; top: 20px; left: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #ffffff; border-radius: 999px; font-size: 12px; font-weight: 600; color: #111111">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: {{a.dot}}"></span>{{a.fname}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 14px; color: #3D3D3B">{{a.blurb}}</span>
+<span style="font-size: 13px; color: #6B6B67">{{a.tagText}}</span>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { active: 0 };
+  }
+  renderVals() {
+    const F = {
+      spark: { name: "Spark", dot: "#C6841E", tint: "#F7ECD3", ink: "#7A4D0E", blurb: "One thought." },
+      thread: { name: "Thread", dot: "#2F7A57", tint: "#E1EEE7", ink: "#1A4D33", blurb: "A short piece with room to breathe." },
+      whatif: { name: "What if", dot: "#2A50F3", tint: "#EBF0FE", ink: "#1535A8", blurb: "A structured provocation: premise, tension, question." },
+      longread: { name: "Long read", dot: "#6B3EC2", tint: "#EDE6F8", ink: "#4A2A8A", blurb: "[Deck: one sentence that draws the reader in]" }
+    };
+    const E = [
+      { f: "longread", title: "The quiet economics of care work", author: "Scott", meta: "9 min read", tags: ["#Care", "#Economics", "#Systems"], cover: true },
+      { f: "whatif", title: "What if brand was a verb, not a noun?", author: "Grace", meta: "312 reads", tags: ["#Brand", "#Strategy"], cover: true },
+      { f: "spark", title: "Spent an hour just watching how people cross the street here. It's a language.", author: "Zara", meta: "12 reads", tags: ["#Cities", "#Observation"], cover: false },
+      { f: "thread", title: "Three things clients keep asking that they don't need", author: "Zara", meta: "540 words", tags: ["#Practice"], cover: true },
+      { f: "spark", title: "Studio Friday. This whiteboard is now a landmark.", author: "Grace", meta: "Photo", tags: [], cover: true },
+      { f: "whatif", title: "What if we designed for rest?", author: "Grace", meta: "420 reads", tags: ["#WhatIf", "#Wellbeing"], cover: true },
+      { f: "longread", title: "Why we stopped pitching against agencies", author: "Scott", meta: "8 min read", tags: ["#Practice", "#Business"], cover: true },
+      { f: "thread", title: "Notes from a week of no meetings", author: "Scott", meta: "380 words", tags: ["#Focus", "#Team"], cover: false }
+    ];
+    const active = this.state.active;
+    const rows = E.map((e, i) => {
+      const on = i === active;
+      return {
+        ...e,
+        fname: F[e.f].name,
+        dot: F[e.f].dot,
+        color: on ? "#111111" : "#6B6B67",
+        indent: on ? 16 : 0,
+        arrow: on ? 1 : 0,
+        hover: () => this.setState({ active: i })
+      };
+    });
+    const e = E[active];
+    const a = {
+      ...e,
+      fname: F[e.f].name,
+      dot: F[e.f].dot,
+      tint: F[e.f].tint,
+      ink: F[e.f].ink,
+      blurb: F[e.f].blurb,
+      quote: !e.cover,
+      tagText: e.tags.join("  ")
+    };
+    return { rows, a };
+  }
+}
+</script>
+</body>
+</html>

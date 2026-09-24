@@ -259,15 +259,24 @@ return [
                 $page = page('services/' . $slug);
                 if (!$page) return false;
 
-                $templateFile = kirby()->root('templates') . '/' . $slug . '.php';
-                if (!file_exists($templateFile)) return false;
+                // Render with a per-service template if one exists, otherwise the
+                // shared service.php. The content files are named after each
+                // service (strategy.txt etc.), so Kirby's own template lookup would
+                // fall back to default.php. Setting $kirby->data mirrors
+                // Page::render(), so snippets like header.php see $page.
+                $kirby    = kirby();
+                $template = $kirby->template($slug);
+                if (!$template->exists()) $template = $kirby->template('service');
 
-                $html = \Kirby\Toolkit\Tpl::load($templateFile, [
-                    'kirby' => kirby(),
-                    'site'  => site(),
-                    'page'  => $page,
-                    'pages' => site()->children(),
-                ]);
+                $kirby->site()->visit($page);
+                $kirby->data = [
+                    'kirby'       => $kirby,
+                    'site'        => $kirby->site(),
+                    'pages'       => $kirby->site()->children(),
+                    'page'        => $page,
+                    'serviceSlug' => $slug,
+                ];
+                $html = $template->render($kirby->data);
                 return new \Kirby\Cms\Response($html, 'text/html');
             }
         ],

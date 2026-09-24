@@ -1302,6 +1302,7 @@
   border: 0;
   border-radius: inherit;
   padding: var(--feed-space-8) calc(var(--feed-space-16) + 14px) var(--feed-space-8) var(--feed-space-16);
+  field-sizing: content; /* size to the selected option, not the longest name */
   cursor: pointer;
 }
 .tag-pill--select select:focus-visible { outline: 2px solid var(--feed-text); outline-offset: 2px; }

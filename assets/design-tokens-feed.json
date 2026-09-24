@@ -213,7 +213,7 @@
         "use": "Homepage hero title",
         "px": 44,
         "rem": "2.75rem",
-        "weight": 400,
+        "weight": 600,
         "lineHeight": 1.1,
         "letterSpacing": "-0.02em",
         "cssVar": "--feed-fs-hero"

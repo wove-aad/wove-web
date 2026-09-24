@@ -1285,6 +1285,39 @@
   color: var(--feed-bg);
 }
 .tag-pill.is-active:hover { opacity: 0.85; }
+
+/* Team dropdown — a native select styled as a pill */
+.tag-pill--select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+}
+.tag-pill--select select {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  padding: var(--feed-space-8) calc(var(--feed-space-16) + 14px) var(--feed-space-8) var(--feed-space-16);
+  cursor: pointer;
+}
+.tag-pill--select select:focus-visible { outline: 2px solid var(--feed-text); outline-offset: 2px; }
+.tag-pill--select::after {
+  content: "";
+  position: absolute;
+  right: var(--feed-space-16);
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.tag-pill--select option { color: #1b1b17; background: #ffffff; }
 @media (max-width: 599px) {
   .tag-cloud { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .tag-cloud::-webkit-scrollbar { display: none; }
@@ -1723,3 +1756,71 @@
   padding-right: 0;
   margin-top: var(--feed-space-16);
 }
+
+/* --- Our People (team page) ------------------------------------ */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--feed-space-48) var(--feed-space-32);
+  max-width: var(--feed-max-w);
+  margin: 0 auto;
+  padding: var(--feed-space-32) var(--feed-page-px) var(--feed-space-64);
+}
+@media (max-width: 799px) { .team-grid { grid-template-columns: 1fr; } }
+.team-profile {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: var(--feed-space-24);
+  align-items: start;
+  scroll-margin-top: var(--feed-space-32);
+}
+@media (max-width: 499px) { .team-profile { grid-template-columns: 1fr; } }
+.team-profile__photo {
+  width: 160px;
+  aspect-ratio: 1;
+  border-radius: var(--feed-radius-sm);
+  background: var(--feed-raised);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.team-profile__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.team-profile__initials {
+  font-size: 2rem;
+  font-weight: var(--feed-fw-semibold);
+  color: var(--feed-text-dim);
+}
+.team-profile__body { display: flex; flex-direction: column; gap: var(--feed-space-8); min-width: 0; }
+.team-profile__name {
+  font-size: var(--feed-fs-card-title);
+  font-weight: var(--feed-fw-regular);
+  line-height: var(--feed-lh-tight);
+  color: var(--feed-text-body);
+}
+.team-profile__role { font-size: var(--feed-fs-meta); color: var(--feed-text-dim); }
+.team-profile__bio { font-size: var(--feed-fs-excerpt); line-height: var(--feed-lh-body); color: var(--feed-text-muted); }
+.feed-wrap .team-profile__linkedin {
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--feed-text-dim);
+}
+.feed-wrap .team-profile__linkedin:hover { color: var(--feed-blue); }
+.team-profile__latest {
+  margin-top: var(--feed-space-8);
+  padding-top: var(--feed-space-12);
+  border-top: var(--feed-border-line);
+  display: flex; flex-direction: column; gap: var(--feed-space-8);
+}
+.team-profile__label {
+  font-size: var(--feed-fs-label);
+  font-weight: var(--feed-fw-semibold);
+  letter-spacing: var(--feed-ls-label);
+  text-transform: uppercase;
+  color: var(--feed-text-dim);
+}
+.team-profile__articles { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--feed-space-8); }
+.team-profile__articles li { display: flex; flex-direction: column; gap: 2px; }
+.feed-wrap .team-profile__articles a { font-size: var(--feed-fs-excerpt); color: var(--feed-text-body); }
+.feed-wrap .team-profile__articles a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.team-profile__articles time { font-size: 12px; color: var(--feed-text-dim); }
+.feed-wrap .team-profile__all { font-size: 12px; color: var(--feed-blue); }
+.feed-wrap .team-profile__all:hover { text-decoration: underline; text-underline-offset: 2px; }

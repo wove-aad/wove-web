@@ -1,0 +1,22 @@
+title: Our People
+icon: users
+
+# Team members are Kirby user accounts. Edit a person's photo (avatar),
+# role, bio and LinkedIn link from their account under Users.
+tabs:
+  content:
+    label: Content
+    icon: text
+    columns:
+      main:
+        width: 2/3
+        sections:
+          intro:
+            type: fields
+            fields:
+              intro:
+                label: Intro
+                type: textarea
+                buttons: false
+                help: Shown under the page title. Team members are managed under Users.
+  seo: tabs/seo

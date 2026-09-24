@@ -1,0 +1,27 @@
+# Team profile fields, shown on the Our People page (/our-people).
+# The profile picture is the account's Kirby avatar.
+type: fields
+fields:
+  teamHeadline:
+    type: headline
+    label: Team profile
+  showOnTeam:
+    label: Show on the Our People page
+    type: toggle
+    default: true
+    text:
+      - "Hidden"
+      - "Shown"
+  role:
+    label: Role
+    type: text
+    placeholder: e.g. Strategy Director
+  bio:
+    label: Bio
+    type: textarea
+    buttons: false
+    maxlength: 600
+  linkedin:
+    label: LinkedIn profile
+    type: url
+    placeholder: https://www.linkedin.com/in/…

@@ -27,6 +27,7 @@ foreach ($caseStudies as $cs) {
     'sectors'     => implode(',', array_filter(array_map('trim', $cs->sectors()->split(',')))),
     'tags'        => implode(',', array_filter(array_map('trim', $cs->impactAreas()->split(',')))),
     'casestudies' => $cs->slug(),
+    'authors'     => '',
   ];
 }
 foreach ($wmEntries as $e) {
@@ -41,6 +42,7 @@ foreach ($wmEntries as $e) {
     'sectors'     => implode(',', array_filter(array_map('trim', $e->sectors()->split(',')))),
     'tags'        => implode(',', array_filter(array_map('trim', $e->content()->get('tags')->split(',')))),
     'casestudies' => implode(',', $linkedCS),
+    'authors'     => ($author = wove_entry_author($e)) ? wove_author_slug($author) : '',
   ];
 }
 usort($feedItems, fn ($a, $b) => $b['date'] <=> $a['date']);
@@ -99,7 +101,26 @@ foreach ($caseStudies as $cs) {
 
 // --- Hero data payload for JS ---
 
-$heroData = ['services' => [], 'caseStudies' => [], 'sectors' => [], 'tags' => []];
+// Team members with at least one credited entry, for the Team dropdown
+$usedAuthors = [];
+foreach (wove_team_members() as $member) {
+  $slug = wove_author_slug($member);
+  foreach ($feedItems as $item) {
+    if ($item['authors'] === $slug) {
+      $usedAuthors[$slug] = $member;
+      break;
+    }
+  }
+}
+
+$heroData = ['services' => [], 'caseStudies' => [], 'sectors' => [], 'tags' => [], 'authors' => []];
+foreach ($usedAuthors as $slug => $member) {
+  $heroData['authors'][$slug] = [
+    'label' => $member->name()->value(),
+    'role'  => $member->content()->get('role')->value() ?: '',
+    'url'   => url('our-people') . '#' . $slug,
+  ];
+}
 foreach ($usedServices as $slug => $label) {
   $heroData['services'][$slug] = ['label' => $label, 'intro' => $serviceIntros[$slug] ?? ''];
 }
@@ -142,7 +163,7 @@ $totalCount = count($feedItems);
     </div>
   </div>
 
-  <?php if ($usedServices || $usedSectors || $usedTags || $usedCS): ?>
+  <?php if ($usedServices || $usedSectors || $usedTags || $usedCS || $usedAuthors): ?>
   <nav class="tag-cloud" aria-label="Filter by tag">
     <button class="tag-pill is-active" data-filter="*" type="button">All</button>
     <?php foreach ($usedCS as $slug => $label): ?>
@@ -157,6 +178,17 @@ $totalCount = count($feedItems);
     <?php foreach ($usedSectors as $slug => $label): ?>
       <button class="tag-pill" data-filter="sector:<?= $slug ?>" type="button"><?= html($label) ?></button>
     <?php endforeach ?>
+    <?php if ($usedAuthors): ?>
+      <label class="tag-pill tag-pill--select">
+        <span class="visually-hidden">Filter by team member</span>
+        <select id="feed-team-select">
+          <option value="">Team</option>
+          <?php foreach ($usedAuthors as $slug => $member): ?>
+            <option value="<?= html($slug) ?>"><?= $member->name()->html() ?></option>
+          <?php endforeach ?>
+        </select>
+      </label>
+    <?php endif ?>
   </nav>
   <?php endif ?>
 
@@ -169,7 +201,8 @@ $totalCount = count($feedItems);
              data-services="<?= html($item['services']) ?>"
              data-sectors="<?= html($item['sectors']) ?>"
              data-tags="<?= html($item['tags']) ?>"
-             data-casestudies="<?= html($item['casestudies']) ?>">
+             data-casestudies="<?= html($item['casestudies']) ?>"
+             data-authors="<?= html($item['authors']) ?>">
           <?php snippet('stream-card', ['post' => $e]) ?>
         </div>
       <?php endforeach ?>
@@ -196,7 +229,8 @@ $totalCount = count($feedItems);
 <script>
 (function () {
   var data  = window.__feedHeroData || {};
-  var pills = document.querySelectorAll('.tag-pill');
+  var pills = document.querySelectorAll('.tag-pill[data-filter]');
+  var teamSelect = document.getElementById('feed-team-select');
   var items = document.querySelectorAll('.work-feed-item');
   var grid  = document.getElementById('feed-grid');
   var heroContent = document.getElementById('feed-hero-content');
@@ -258,6 +292,16 @@ $totalCount = count($feedItems);
              '<div class="tag-hero__meta" id="feed-hero-meta"></div>';
     }
 
+    if (type === 'author' && data.authors && data.authors[slug]) {
+      var a = data.authors[slug];
+      var h = '<div class="tag-hero__label">Team</div>' +
+              '<h1 class="tag-hero__name">' + esc(a.label) + '</h1>';
+      if (a.role) h += '<p class="tag-hero__intro">' + esc(a.role) + '</p>';
+      h += '<a href="' + esc(a.url) + '" class="tag-hero__cta">View profile &rarr;</a>';
+      h += '<div class="tag-hero__meta" id="feed-hero-meta"></div>';
+      return h;
+    }
+
     if (type === 'tag' && data.tags && data.tags[slug]) {
       return '<h1 class="tag-hero__name">' + esc(data.tags[slug].label) + '</h1>' +
              '<div class="tag-hero__meta" id="feed-hero-meta"></div>';
@@ -271,13 +315,18 @@ $totalCount = count($feedItems);
     pills.forEach(function (p) {
       p.classList.toggle('is-active', p.getAttribute('data-filter') === filter);
     });
+    if (teamSelect) {
+      var isAuthor = filter.indexOf('author:') === 0;
+      teamSelect.value = isAuthor ? filter.slice(7) : '';
+      teamSelect.parentNode.classList.toggle('is-active', isAuthor && teamSelect.value !== '');
+    }
 
     heroContent.classList.add('is-fading');
     grid.classList.add('is-fading');
 
     setTimeout(function () {
       // Filter items
-      var attrMap = { service: 'data-services', sector: 'data-sectors', tag: 'data-tags', cs: 'data-casestudies' };
+      var attrMap = { service: 'data-services', sector: 'data-sectors', tag: 'data-tags', cs: 'data-casestudies', author: 'data-authors' };
       if (filter === '*') {
         items.forEach(function (el) { el.hidden = false; });
       } else {
@@ -327,6 +376,12 @@ $totalCount = count($feedItems);
       applyFilter(pill.getAttribute('data-filter'), true);
     });
   });
+
+  if (teamSelect) {
+    teamSelect.addEventListener('change', function () {
+      applyFilter(teamSelect.value ? 'author:' + teamSelect.value : '*', true);
+    });
+  }
 
   window.addEventListener('popstate', function (e) {
     applyFilter(e.state && e.state.filter ? e.state.filter : filterFromURL(), false);

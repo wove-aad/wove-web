@@ -10,7 +10,7 @@ use Kirby\Form\Form;
  * Registers:
  *   - a "wove-mind" Panel area with a list view and an entry editor view
  *     living at /panel/wove-mind
- *   - user role blueprints (admin, contributor)
+ *   - user role blueprints (admin, contributor), with shared team profile fields
  *
  * Deliberately does NOT ship page blueprints — those live in
  * site/blueprints/pages/wove-mind{,-entry}.yml and are the single
@@ -141,6 +141,7 @@ App::plugin('wove/mind', [
 	'blueprints' => [
 		'users/admin'       => __DIR__ . '/blueprints/users/admin.yml',
 		'users/contributor' => __DIR__ . '/blueprints/users/contributor.yml',
+		'sections/team-profile' => __DIR__ . '/blueprints/sections/team-profile.yml',
 	],
 
 ]);

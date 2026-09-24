@@ -51,3 +51,7 @@ permissions:
     create: false
     delete: false
     update: false
+
+sections:
+  profile:
+    extends: sections/team-profile

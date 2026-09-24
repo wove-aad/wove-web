@@ -52,6 +52,14 @@ The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site
 ### Wove Mind Panel plugin avatars (2026-09-24)
 `site/plugins/wove-mind` shows the user's Kirby profile image (`$user->avatar()`, cropped to 96px) in the top bar and next to each author in the entries list, falling back to initials. `wove_mind_user_summary()` and `wove_mind_avatar_url()` in `index.php` supply the data. Rebuild with `npm run build` in the plugin folder after editing `src/`.
 
+### Our People / team page
+`/our-people` (linked from the header and footer) uses `site/templates/team.php`. The route in `site/plugins/wove-team/index.php` renders `page('our-people')` if it exists, otherwise a virtual page with the team template, so it works before a page is created. `site/blueprints/pages/team.yml` adds an optional intro; `team` is in `default.yml`'s `changeTemplate` list.
+- **Team members are Kirby users.** Profile fields (Show on the Our People page, Role, Bio, LinkedIn) come from `site/plugins/wove-mind/blueprints/sections/team-profile.yml`, used by both user blueprints. The photo is the account avatar. User accounts aren't in git, so profiles are filled in per server.
+- Each profile shows photo (or initials), name, role, bio, a subtle LinkedIn link, the 3 latest Wove Mind entries credited to them, and "See all {first name}'s posts →" linking to `/our-work?filter=author:{slug}`.
+- **Authorship** means the entry's `author` field is set and `show_author` is on (`wove_entry_author()`). Entries with "Show author" off never appear on a profile or under an author filter. Case studies have no author.
+- **Author filter**: `author:{slug}` (slug = `Str::slug` of the user's name, `wove_author_slug()`). Our Work items carry `data-authors`; the hero shows name, role and a profile link. The filter is chosen from a **Team** dropdown (a native `<select>` styled as `.tag-pill--select`) at the end of the Our Work pills and of `tag-cloud.php`, where it navigates to Our Work. It lists only members with at least one credited entry. The Our Work JS selects pills with `.tag-pill[data-filter]` so the dropdown isn't treated as a pill.
+- A Kirby avatar is a user file with `template: avatar` (the Panel sets this on upload).
+
 ### Tag order (global rule)
 Wherever tags or filter pills are listed, the order is **case study, services, editorial tags, sectors**. This applies to the filter pills in `wove-mind.php`, `work.php` and `home.php`, `tag-cloud.php` (stable sort by type), `card-tags.php`, the hero tags in `case-study.php` (no case study tag, as it's the page itself), the tag cloud in `wove-mind-entry.php` (linked case studies first) and `feed-rail.php` (group order, then most recent within each group). Follow it in any new tag list.
 

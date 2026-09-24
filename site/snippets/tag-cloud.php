@@ -5,7 +5,8 @@
  *
  * Each pill is a navigation link. Services link to /services/{slug},
  * sectors and editorial tags link to /tag/{slug}, case study names
- * link directly to the case study page.
+ * link directly to the case study page. A "Team" dropdown at the end
+ * opens Our Work filtered by that team member's posts.
  */
 
 $caseStudies  = kirby()->collection('case-studies');
@@ -89,15 +90,34 @@ foreach ($caseStudies as $cs) {
 $typeRank = ['casestudy' => 0, 'service' => 1, 'tag' => 2, 'sector' => 3];
 uasort($pills, fn ($a, $b) => ($typeRank[$a['type']] ?? 9) <=> ($typeRank[$b['type']] ?? 9));
 
+// Team members with at least one credited entry, for the Team dropdown
+$teamOptions = [];
+foreach (wove_team_members() as $member) {
+  if (wove_author_entries($member)->count()) {
+    $teamOptions[wove_author_slug($member)] = $member->name()->value();
+  }
+}
+
 $active     = $active ?? '';
 $activeType = $activeType ?? '';
 ?>
 
-<?php if ($pills): ?>
+<?php if ($pills || $teamOptions): ?>
 <nav class="tag-cloud" aria-label="Tags">
   <?php foreach ($pills as $pill): ?>
     <a href="<?= $pill['url'] ?>"
        class="tag-pill<?= ($pill['slug'] === $active && $pill['type'] === $activeType) ? ' is-active' : '' ?>"><?= html($pill['label']) ?></a>
   <?php endforeach ?>
+  <?php if ($teamOptions): ?>
+    <label class="tag-pill tag-pill--select<?= $activeType === 'author' ? ' is-active' : '' ?>">
+      <span class="visually-hidden">See work by team member</span>
+      <select onchange="if (this.value) window.location.href = '/our-work?filter=' + encodeURIComponent('author:' + this.value)">
+        <option value="">Team</option>
+        <?php foreach ($teamOptions as $slug => $name): ?>
+          <option value="<?= html($slug) ?>"<?= ($activeType === 'author' && $active === $slug) ? ' selected' : '' ?>><?= html($name) ?></option>
+        <?php endforeach ?>
+      </select>
+    </label>
+  <?php endif ?>
 </nav>
 <?php endif ?>

@@ -36,6 +36,8 @@ Working locally — first-account installation completed, a real `project-highli
 
 ### Homepage feed (2026-09-24)
 The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site/config/config.php`), not `home.php`.
+- **Case studies are in the feed**: `kirby()->collection('case-studies')` is merged with listed Wove Mind entries and sorted by `date`, rendered through `stream-card`. Services come from `services`; tags come from `tags` (entries) or `impactAreas` (case studies), normalised to site tag slugs so both match the tag pills. The template loads `service-page-scripts` so case study cards get revealed.
+- **Case study card styling in feeds**: `.feed-wrap .work-grid-card` in `feed.css` matches `.feed-card` (surface background, border, `--feed-radius-sm`, 16:10 image, padded body, regular-weight title). It overrides the `site.css` `.work-grid-card` rules (image radius, body margin), which still apply outside `.feed-wrap`.
 - Clicking a filter pill scrolls back to the top of `.feed-shell` if the reader has scrolled past it (instant for reduced-motion users). `home.php` has the same behaviour.
 - The footer link always shows: "See all {filter}" linking to `/our-work?filter=…` when a filter has more than 5 matches, otherwise "See all work" linking to `/our-work`. `.feed__footer` sets `display: flex`, so it needs an explicit `[hidden] { display: none; }` rule in `feed.css`.
 - **Service promo card**: when a service filter is active, a `.feed-promo` card appears second in the grid (or after the only match), linking to `page('services/{slug}')` with a centred outline button, "See all our {Service} work →", over that service page's featured image. Falls back to a plain card when no image is set.

@@ -9,8 +9,11 @@
  * at 5 items per filter with a "See all" link to /our-work.
  */
 
-$entries = $page->children()->listed()->sortBy('date', 'desc')
+$entries = $page->children()->listed()
   ->filter(fn ($p) => $p->format()->value() !== 'project-highlight');
+
+// Case studies sit in the same feed, newest first alongside Wove Mind entries
+$entries = $entries->add(kirby()->collection('case-studies'))->sortBy('date', 'desc');
 
 $feedMax     = 20;
 $totalCount  = $entries->count();
@@ -23,6 +26,17 @@ foreach ($siteTags as $t) {
   $tagSlugMap[strtolower($t->name()->value())] = $t->slug()->value();
 }
 
+// Tag slugs for a feed item. Case studies keep their tags in `impactAreas`.
+$tagSlugs = function ($p) use ($tagSlugMap) {
+  $field = $p->intendedTemplate()->name() === 'case-study' ? 'impactAreas' : 'tags';
+  $slugs = [];
+  foreach ($p->content()->get($field)->split(',') as $t) {
+    $t = trim($t);
+    if ($t) $slugs[] = $tagSlugMap[strtolower($t)] ?? Str::slug($t);
+  }
+  return $slugs;
+};
+
 $usedServices = [];
 $usedTags     = [];
 foreach ($entries as $e) {
@@ -30,11 +44,8 @@ foreach ($entries as $e) {
     $s = trim($s);
     if ($s && isset($serviceLabels[$s])) $usedServices[$s] = $serviceLabels[$s];
   }
-  foreach ($e->tags()->split(',') as $t) {
-    $t = trim($t);
-    if (!$t) continue;
-    $slug = $tagSlugMap[strtolower($t)] ?? Str::slug($t);
-    $tag  = $siteTags->findBy('slug', $slug);
+  foreach ($tagSlugs($e) as $slug) {
+    $tag = $siteTags->findBy('slug', $slug);
     if ($tag) $usedTags[$slug] = $tag->name()->value();
   }
 }
@@ -92,12 +103,12 @@ foreach ($usedServices as $slug => $label) {
       <div class="feed-cards" id="feed-grid">
         <?php foreach ($feedItems as $post):
           $services = implode(',', array_filter(array_map('trim', $post->services()->split(','))));
-          $tags     = implode(',', array_filter(array_map('trim', $post->tags()->split(','))));
+          $tags     = implode(',', $tagSlugs($post));
         ?>
           <div class="feed-item"
                data-services="<?= html($services) ?>"
                data-tags="<?= html($tags) ?>">
-            <?php snippet('feed-card', ['post' => $post]) ?>
+            <?php snippet('stream-card', ['post' => $post]) ?>
           </div>
         <?php endforeach ?>
         <?php foreach ($servicePromos as $slug => $promo): ?>
@@ -241,4 +252,5 @@ foreach ($usedServices as $slug => $label) {
 })();
 </script>
 
+<?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

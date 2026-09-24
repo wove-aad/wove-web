@@ -1,0 +1,260 @@
+{
+  "_meta": {
+    "project": "Wove.group",
+    "version": "0.1-feed",
+    "status": "Feed IA mockup — toned-down tokens (medium weights, reduced sizes)",
+    "exported": "2026-09-14",
+    "basedOn": "assets/design-tokens.json v0.3",
+    "notes": "Aligned with the live card-preview page on staging (staging.wove.group/card-preview). Weight 400 is the default for titles and body; 500 for nav/chips; 600 only for uppercase labels and format badges. Sizes and padding taken directly from computed styles on the staging page."
+  },
+
+  "color": {
+    "_note": "Dark-mode palette extracted from staging.wove.group/card-preview",
+    "bg":           "#131310",
+    "surface":      "#1b1b17",
+    "surfaceRaised":"#22221d",
+    "border":       "#2a2a22",
+    "textPrimary":  "#f1efe8",
+    "textBody":     "#fdfcf7",
+    "textMuted":    "#9a968a",
+    "textDim":      "#6e6a5f",
+    "textInverse":  "#131310",
+    "coral":        "#ed8c7c",
+    "gold":         "#e8c888",
+    "green":        "#9cd3b7",
+    "blue":         "#c7d0fa",
+    "purple":       "#c7b4ee",
+    "accentBlue":   "#2a50f3",
+    "accentGreen":  "#2f7a57",
+    "white":        "#ffffff",
+    "white85":      "rgba(255,255,255,0.85)",
+    "white80":      "rgba(255,255,255,0.80)",
+    "white50":      "rgba(255,255,255,0.50)",
+    "white16":      "rgba(255,255,255,0.16)"
+  },
+
+  "typography": {
+    "fontFamily": "Ballinger",
+    "fallback": "sans-serif",
+
+    "fontWeight": {
+      "light":    300,
+      "regular":  400,
+      "medium":   500,
+      "semibold": 600,
+      "bold":     700
+    },
+
+    "styles": {
+      "feedH1": {
+        "use": "Feed page title (e.g. 'Latest from the studio')",
+        "px": 32,
+        "rem": "2rem",
+        "weight": 400,
+        "lineHeight": 1.15,
+        "letterSpacing": "-0.02em",
+        "_staging": "h1: 32px / 400 / 36.8px lh / -0.64px ls"
+      },
+      "feedH2": {
+        "use": "Section titles (e.g. 'Sparks', 'Threads')",
+        "px": 20,
+        "rem": "1.25rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "-0.01em",
+        "_staging": "block__title: 20px / 400 / 30px lh / -0.2px ls"
+      },
+      "railBrand": {
+        "use": "Brand name in facet rail",
+        "px": 20,
+        "rem": "1.25rem",
+        "weight": 400,
+        "lineHeight": 1.2,
+        "letterSpacing": "-0.01em"
+      },
+      "railItem": {
+        "use": "Service area names in facet rail",
+        "px": 17,
+        "rem": "1.0625rem",
+        "weight": 400,
+        "lineHeight": 1.25,
+        "letterSpacing": "-0.01em"
+      },
+      "cardTitle": {
+        "use": "Article/entry card title",
+        "px": 17,
+        "rem": "1.0625rem",
+        "weight": 400,
+        "lineHeight": 1.25,
+        "letterSpacing": "-0.01em",
+        "_staging": "card__title: 17px / 400 / 21.25px lh / -0.17px ls"
+      },
+      "cardBody": {
+        "use": "Spark quote text — body IS the card",
+        "px": 17,
+        "rem": "1.0625rem",
+        "weight": 400,
+        "lineHeight": 1.3,
+        "letterSpacing": "-0.005em",
+        "_staging": "card__quote: 17px / 400 / 22.1px lh / -0.085px ls"
+      },
+      "cardExcerpt": {
+        "use": "Card excerpt/summary (What if, Long read)",
+        "px": 13,
+        "rem": "0.8125rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "0",
+        "_staging": "card__excerpt: 13px / 400 / 19.5px lh"
+      },
+      "cardMeta": {
+        "use": "Byline — author name, date",
+        "px": 12,
+        "rem": "0.75rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "0",
+        "_staging": "card__byline: 12px / 400"
+      },
+      "formatLabel": {
+        "use": "SPARK, THREAD, WHAT IF, LONG READ badge",
+        "px": 10,
+        "rem": "0.625rem",
+        "weight": 600,
+        "lineHeight": 1.5,
+        "letterSpacing": "0.08em",
+        "textTransform": "uppercase",
+        "_staging": "card__format: 10px / 600 / 0.8px ls"
+      },
+      "sectionLabel": {
+        "use": "Uppercase group labels (SERVICE AREAS, TOPICS, 01 · CAROUSEL)",
+        "px": 11,
+        "rem": "0.6875rem",
+        "weight": 600,
+        "lineHeight": 1.5,
+        "letterSpacing": "0.08em",
+        "textTransform": "uppercase",
+        "_staging": "eyebrow: 11px / 600 / 0.88px ls"
+      },
+      "body": {
+        "use": "Default body/paragraph text",
+        "px": 14,
+        "rem": "0.875rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "0",
+        "_staging": "card base font-size: 14px"
+      },
+      "nav": {
+        "use": "Navigation links",
+        "px": 15,
+        "rem": "0.9375rem",
+        "weight": 500,
+        "lineHeight": 1.0,
+        "letterSpacing": "0"
+      },
+      "chip": {
+        "use": "Filter chips / tag buttons",
+        "px": 12,
+        "rem": "0.75rem",
+        "weight": 500,
+        "lineHeight": 1.0,
+        "letterSpacing": "0",
+        "_staging": "chip: 12px / 500"
+      },
+      "count": {
+        "use": "Entry counts next to service areas",
+        "px": 12,
+        "rem": "0.75rem",
+        "weight": 400,
+        "lineHeight": 1.3,
+        "letterSpacing": "0"
+      }
+    }
+  },
+
+  "spacing": {
+    "_note": "Reuses the main token set's spacing scale — no changes needed for the feed context.",
+    "scale": {
+      "12": { "rem": "0.75rem", "px": 12 },
+      "16": { "rem": "1rem",    "px": 16 },
+      "24": { "rem": "1.5rem",  "px": 24 },
+      "32": { "rem": "2rem",    "px": 32 },
+      "40": { "rem": "2.5rem",  "px": 40 },
+      "48": { "rem": "3rem",    "px": 48 },
+      "64": { "rem": "4rem",    "px": 64 },
+      "80": { "rem": "5rem",    "px": 80 },
+      "96": { "rem": "6rem",    "px": 96 },
+      "128":{ "rem": "8rem",    "px": 128 }
+    }
+  },
+
+  "layout": {
+    "maxWidth":          { "rem": "80rem", "px": 1280 },
+    "railWidth":         { "rem": "16.25rem", "px": 260 },
+    "feedGap":           { "rem": "4rem", "px": 64 }
+  },
+
+  "border": {
+    "width": "1px",
+    "color": "#2a2a22",
+    "colorSubtle": "rgba(255,255,255,0.06)",
+    "default": "1px solid #2a2a22",
+    "card": "1px solid #2a2a22",
+    "rule": "1px solid rgba(255,255,255,0.08)",
+    "_note": "Light, subtle borders matching staging dark mode"
+  },
+
+  "radius": {
+    "sm":   { "rem": "0.5rem",    "px": 8,  "_staging": "card border-radius" },
+    "md":   { "rem": "0.75rem",   "px": 12 },
+    "lg":   { "rem": "2.8125rem", "px": 45 },
+    "pill": { "px": 999, "_staging": "chip border-radius: 999px" }
+  },
+
+  "shadow": {
+    "sm": "0 1px 4px rgba(0,0,0,0.06)",
+    "md": "0 4px 16px rgba(0,0,0,0.08)"
+  },
+
+  "components": {
+    "button": {
+      "small": {
+        "fontSize": "0.75rem",
+        "padding": "0.5rem 1.125rem",
+        "borderRadius": "999px",
+        "border": "1px solid #dddddd"
+      }
+    },
+    "chip": {
+      "fontSize": "0.75rem",
+      "fontWeight": 500,
+      "padding": "4px 10px",
+      "borderRadius": "999px",
+      "borderActive": "1px solid #f1efe8",
+      "bgActive": "#f1efe8",
+      "borderDefault": "1px solid transparent",
+      "bgDefault": "#22221d",
+      "_staging": "chip: 12px / 500 / 4px 10px / 999px radius"
+    },
+    "card": {
+      "borderRadius": "0.5rem",
+      "bodyPadding": "14px 16px 16px",
+      "bodyGap": "8px",
+      "border": "1px solid #2a2a22",
+      "background": "#1b1b17",
+      "_staging": "card: 8px radius / 16px body pad / 1px border / dark bg"
+    },
+    "carousel": {
+      "gap": "16px",
+      "padding": "0 32px 16px",
+      "_staging": "carousel: 16px gap / 0 32px 16px pad"
+    }
+  },
+
+  "breakpoints": {
+    "mobile":  { "maxWidth": "599px" },
+    "tablet":  { "minWidth": "600px", "maxWidth": "959px" },
+    "desktop": { "minWidth": "960px" }
+  }
+}

@@ -1,0 +1,233 @@
+title: Case Study
+icon: page
+
+tabs:
+  content:
+    label: Content
+    icon: page
+    columns:
+
+      # main
+      left:
+        width: 2/3
+        sections:
+
+          content:
+            type: fields
+            fields:
+
+              eyebrow:
+                label: Client / Project Name
+                type: text
+                help: Short label shown above the hero title. Used on both WOVE and AAD.
+
+              heroTitle:
+                label: Hero Title
+                type: writer
+                inline: true
+                marks:
+                  - bold
+                  - italic
+                required: true
+
+              # Named to match the `image` query in sections/case-studies.yml
+              # so this also becomes the thumbnail in case study listings.
+              caseStudyImages:
+                label: Hero Image
+                type: files
+                max: 1
+                query: page.images
+                info: Used as the hero image and as the thumbnail in case study listings.
+
+              blocksHeadline:
+                type: headline
+                label: Body Content
+
+              blocks:
+                type: blocks
+                help: "Main content of the case study, displayed below the hero. Use a Gallery block for the image carousel."
+                fieldsets:
+                  - heading
+                  - text
+                  - gallery
+                  - image
+                  - quote
+                  - list
+
+              stats:
+                label: Impact Stats
+                type: structure
+                max: 4
+                help: Up to 4 headline numbers shown below the main content (e.g. "40yr").
+                fields:
+                  value:
+                    label: Value
+                    type: text
+                    width: 1/2
+                    placeholder: e.g. 40yr
+                  label:
+                    label: Label
+                    type: textarea
+                    size: small
+                    width: 1/2
+
+              relatedHeading:
+                label: Related Work — Heading
+                type: text
+                default: Design at multiple layers
+                help: Heading shown above the related Wove Mind entries, if any are linked.
+
+              relatedIntro:
+                label: Related Work — Intro
+                type: textarea
+                size: small
+                default: Given the scale and complexity of this work, the articles below explore specific aspects—from building strategic frameworks right through to launching a national campaign. Each demonstrates how strategic design helps organisations navigate complexity, align diverse stakeholders and change how things work for the better.
+                help: Optional intro text shown above the related Wove Mind entries.
+
+          # Prev / Next case studies are handled automatically via
+          # $page->prev() / $page->next() from siblings — no field needed.
+
+      # sidebar
+      right:
+        width: 1/3
+        sections:
+
+          details:
+            type: fields
+            headline: Details
+            fields:
+
+              impactAreas:
+                label: Impact Areas (Tags)
+                type: multiselect
+                options:
+                  type: query
+                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  text: "{{ item.name }}"
+                  value: "{{ item.name.slug }}"
+                help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.
+
+                # options:
+                #   peoplepower: People Power
+                #   systemchange: System Change
+                #   climate: Climate
+                #   education: Education
+                #   design: Design
+                #   whatif: What if
+                #   nature: Nature
+
+              services:
+                label: Services
+                type: multiselect
+                options:
+                  strategy: Strategy
+                  labs: Labs
+                  digital: Digital
+                  brand: Brand
+
+              sectors:
+                label: Sector
+                type: multiselect
+                options:
+                  arts-and-culture: Arts and Culture
+                  public-service: Public Service
+                  higher-education: Higher Education
+                  non-profit: Non-profit and Mission-led
+                  founders-ventures: Founders and Ventures
+                info: Used for sector filtering on the feed and sector collection pages.
+
+              testimonial:
+                label: Client Testimonial
+                type: structure
+                max: 1
+                help: Optional client quote displayed between stats and body content.
+                fields:
+                  quote:
+                    label: Quote
+                    type: textarea
+                    required: true
+                  name:
+                    label: Name
+                    type: text
+                    width: 1/3
+                    required: true
+                  role:
+                    label: Role
+                    type: text
+                    width: 1/3
+                  organisation:
+                    label: Organisation
+                    type: text
+                    width: 1/3
+                  reference_available:
+                    label: Available as a reference
+                    type: toggle
+                    text:
+                      - "No"
+                      - "Yes"
+                    default: true
+                    help: Shows "Available as a reference on request" beneath the quote. If no testimonial is entered but this is on, a fallback line is shown instead.
+
+              team:
+                label: Team
+                type: structure
+                help: Project team members shown alongside "The big picture" intro.
+                fields:
+                  name:
+                    label: Name
+                    type: text
+                    width: 1/2
+                  avatar:
+                    label: Avatar
+                    type: files
+                    max: 1
+                    query: page.images
+                    width: 1/2
+
+              contact:
+                label: Contact Person
+                type: structure
+                max: 1
+                fields:
+                  name:
+                    label: Name
+                    type: text
+                    width: 1/2
+                  email:
+                    label: Email
+                    type: email
+                    width: 1/2
+                  avatar:
+                    label: Avatar
+                    type: files
+                    max: 1
+                    query: page.images
+
+              subStatement:
+                label: Sub-statement (WOVE)
+                type: textarea
+                size: small
+                help: Optional lead line shown on WOVE. Leave blank for AAD.
+
+              ctaPrompt:
+                label: CTA Prompt
+                type: text
+                help: Optional call-to-action text shown in the Details panel.
+
+              date:
+                label: Published on
+                type: date
+                time: true
+                default: now
+                help: Used for sorting in listings.
+
+          files:
+            type: files
+            headline: Files
+            layout: table
+            size: small
+            image:
+              cover: true
+
+  # SEO tab
+  seo: tabs/seo

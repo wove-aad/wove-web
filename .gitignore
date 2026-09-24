@@ -126,8 +126,21 @@ Icon
 # ---------------
 # keep content out of main repo for now
 
-/content
 /content/*
+
+# Exception: the Services section pages are routing stubs with no real
+# editorial content (title + template only) — the actual page content is
+# hardcoded in site/templates/{labs,strategy,brand,digital}.php. Committed
+# so they deploy automatically instead of depending on server-only files.
+!/content/services
+
+# Structural pages: contact, sector, tag ship with the repo so they
+# deploy automatically. wove-mind is NOT tracked — Karl manages it
+# through the Panel and deploying it caused a duplicate-directory bug.
+!/content/contact
+!/content/error
+!/content/sector
+!/content/tag
 
 # Config
 # ---------------

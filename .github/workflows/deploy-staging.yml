@@ -13,7 +13,21 @@ jobs:
     steps:
       - name: 🚚 Get Latest Code
         uses: actions/checkout@v6
-      
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+        # kirby/panel/dist and vendor/ aren't tracked in git (kirby's own
+        # convention — they come from Composer, not version control), so
+        # without this step the FTP deploy below would never refresh them
+        # on the server, letting staging's Panel UI silently drift out of
+        # sync with whatever Kirby version is actually pinned in composer.lock.
+
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:

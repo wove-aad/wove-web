@@ -1,0 +1,27 @@
+# NEWS / BLOG CATEGORIES IN STRUCTURE FIELD
+type: fields
+fields:
+  categories:
+    label: Blog Categories
+    type: structure
+    fields:
+      name:
+        label: Category name
+        type: text
+      slug:
+        label: Category slug
+        type: slug
+        sync: name
+        required: true
+        help: Used in the URL and for filtering articles by category.
+      intro:
+        label: Category Intro
+        type: text
+      active:
+        label: Published
+        type: toggle
+        text:
+          - "No"
+          - "Yes"
+        default: true
+        help: Turn off to hide this category from the site

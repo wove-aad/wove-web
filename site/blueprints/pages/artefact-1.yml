@@ -1,0 +1,33 @@
+title: Artefact 1 — Wove Mind card preview
+
+icon: grid
+
+options:
+  changeTemplate: false
+
+status:
+  unlisted:
+    label: Unlisted
+    text: Accessible via /artefact-1 URL only — not in site navigation.
+  draft: false
+  listed: false
+
+tabs:
+  content:
+    label: About this page
+    icon: info
+    sections:
+      about:
+        type: info
+        headline: Component preview page
+        text: |
+          This page renders itself from **page('wove-mind')->children()** —
+          Spark, Thread, What if and Long read entries flow in automatically.
+          There are no editable fields; add or edit Wove Mind entries to
+          change what shows here.
+
+          Six sections: three carousels (sparks / threads / everything mixed)
+          and two filterable grids (all formats / threads only). Filter chips
+          (tag, case study, service) build themselves from real content.
+
+          Toggle bylines from the header to preview both states.

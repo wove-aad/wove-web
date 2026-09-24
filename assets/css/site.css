@@ -1,0 +1,1628 @@
+/* ============================================================
+   DESIGN TOKENS v0.3
+   Migrated from the Labs page's page-scoped subset to the full set in
+   assets/design-tokens.json (the canonical source going forward). Keep
+   this :root in sync by hand with that file — any new page's tokens
+   should be checked/added there first, then mirrored in here.
+
+   Two conflicts between the JSON spec and what's live below were
+   resolved 2026-07-09 (confirmed by Grace): --size-h1's clamp growing
+   past the figma value on large screens is intentional, and --rhythm-*
+   keeps the values already shipped on the service page — the JSON was
+   updated to match rather than the reverse. See inline notes.
+   ============================================================ */
+:root {
+
+  /* Colour */
+  --color-black:        #111111;
+  --color-white:        #ffffff;
+  --color-off-white:    #f9f9f9;
+  --color-coral:        #ed8c7c;
+  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal. Not in design-tokens.json. */
+  --color-aqua:         #d5faff;
+  --color-text-primary: #111111;
+  --color-text-muted:   #555555;
+  --color-placeholder:  #d9d9d9;
+  --color-border-card:  #aaaaaa;
+  --color-green:        #1D9E75;  /* accent — named "green" in the token export */
+  --color-green-bg:     #E1F5EE;
+  --color-green-text:   #085041;
+  --color-100:          #f5f5f5;
+  --color-200:          #eeeeee;
+  --color-300:          #dddddd;
+  --color-400:          #bbbbbb;
+  --color-500:          #999999;
+  --color-600:          #777777;
+  --color-700:          #555555;
+  --color-800:          #333333;
+  --color-900:          #222222;
+
+  /* Font */
+  --font:            'Ballinger', sans-serif;
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-bold:     700;
+  --weight-xbold:    800;
+  --weight-black:    900;
+
+  /* Type scale */
+  --size-h1:            clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens — intentional growth past the figma spec's fixed 5.5rem, confirmed by Grace 2026-07-09. */
+  --size-h1-xbold:      10.75rem; /* 172px, weight 900, lh 0.51 — homepage hero display only */
+  --size-eyebrow-bold:  5.5rem;   /* 88px, weight 800, lh 1.0 — case study client/project eyebrow */
+  --size-h2:            clamp(2.5rem, 6vw, 4rem);
+  --size-h3:            clamp(2.5rem, 5vw, 3.5rem); /* 56px, weight 800, lh 64px */
+  --size-h3-light:      3.5rem;   /* 56px, weight 300, lh 1.143 — hero subtitle */
+  --size-h4:            2.5rem;   /* 40px, weight 400, lh 1.5 — card titles, smaller section heads */
+  --size-h5:            1.75rem;    /* 28px, weight 800, lh 36px */
+  --size-h6:            1.5rem;   /* 24px, weight 800, lh 1.5 — smallest heading, inline card labels */
+  --size-quote:         clamp(2.5rem, 6vw, 7rem);   /* 88px @1440, grows to 112px on larger screens */
+  --size-p1:            clamp(1.5rem, 2vw, 1.625rem);   /* was flat 30px; now responsive, capping at 26px @1440, floor 24px matches the old mobile override below (now redundant) */
+  --size-p1-bold:       2rem;     /* 32px, weight 800, lh 1.5 — approach commitments headings */
+  --size-p2:            1.5rem;     /* 24px, weight 400, lh 36px */
+  --size-p2-bold:       1.625rem; /* 26px, weight 800, lh 1.462 */
+  --size-p3:            1.375rem;   /* 22px, weight 400, lh 32px */
+  --size-p4:            1.125rem; /* 18px, weight 400, lh 1.778 — smallest body text */
+  --size-p4-bold:       1.125rem; /* 18px, weight 800, lh 1.778 */
+  --size-subtitle:      1.25rem;  /* 20px, weight 400, lh 1.4 — card titles, taglines */
+  --size-cta:           1.5rem;     /* 24px */
+  --size-btn-lg:        1.5rem;   /* 24px — primary button text */
+  --size-btn-sm:        1.125rem;   /* 18px */
+  --size-nav:           1rem;       /* 16px */
+  --size-banner:        clamp(1.75rem, 3vw, 2.5rem); /* 40px contact banner text */
+  --size-attr-name:     2rem;       /* 32px quote attribution */
+
+  /* Line height */
+  --lh-h1:        1.0;
+  --lh-h1-xbold:  0.51;
+  --lh-h2:        1.125;
+  --lh-h3:        1.143;
+  --lh-h5:        1.286;
+  --lh-h6:        1.5;
+  --lh-p1:        1.667;
+  --lh-p1-bold:   1.5;
+  --lh-p2:        1.5;
+  --lh-p2-bold:   1.462;
+  --lh-p3:        1.455;
+  --lh-p4:        1.778;
+  --lh-subtitle:  1.4;
+
+  /* Spacing */
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+  --space-80:  5rem;
+  --space-96:  6rem;
+  --space-128: 8rem;
+
+  /* Vertical rhythm — matches the service-page HTML as sent; design-tokens.json's
+     rhythm scale was reconciled to these values (2026-07-09) rather than vice versa. */
+  --rhythm-xs: 1.5rem;
+  --rhythm-sm: 3rem;
+  --rhythm-md: 6rem;
+  --rhythm-lg: 8rem;
+
+  /* Content widths */
+  --width-header:  85rem;    /* 1360px */
+  --width-block:   80rem;    /* 1280px */
+  --width-content: 51.25rem; /* 820px */
+  --width-text:    40rem;    /* 640px — long-form paragraph measure */
+
+  /* Horizontal gutter */
+  --gutter-x:  var(--space-32);
+
+  /* Border */
+  --border:      1px solid var(--color-300);
+  --border-card: 1px solid var(--color-border-card);
+
+  /* Radius */
+  --radius-sm:   0.75rem;   /* 12px */
+  --radius-md:   1.25rem;   /* 20px */
+  --radius-lg:   2.8125rem; /* 45px */
+  --radius-pill: 100px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+
+  /* Transition */
+  --transition: 200ms ease;
+
+  /* Card hover — shared system, tune to taste. Not in design-tokens.json;
+     implementation-specific to this component, kept as-is. */
+  --card-lift:         -4px;
+  --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.08);
+  --card-transition:   250ms ease;
+
+  /* Feature (case study) card — responsive component tokens.
+     Reused across pages; override per breakpoint below. */
+  --feature-radius:     var(--radius-lg);
+  --feature-ratio:      1289 / 664;   /* landscape on desktop */
+  --feature-title-size: var(--size-h5);
+  --feature-desc-size:  var(--size-cta);
+  --feature-btn-font:   var(--size-cta);
+  --feature-btn-pad:    var(--space-24) var(--space-32);
+
+  /* Stat block (case study) — responsive component token, not in
+     design-tokens.json yet. 96px @1440 per Figma, scales down like h1. */
+  --size-stat: clamp(2.5rem, 6vw, 6rem);
+
+  /* Home hero tagline — Figma-measured (48px/regular/lh 64px). Distinct from
+     the h3-light token (56px/300) design-tokens.json reserves for the same
+     "hero subtitle" use-case; kept separate rather than overloading a value
+     that doesn't match what's actually in the Home frame. Not yet in
+     design-tokens.json. */
+  --size-hero-tagline: 3rem;
+  --lh-hero-tagline: 1.333;
+
+  /* Testimonial banner background — not in design-tokens.json, confirm w/ Fergal. */
+  --color-lavender: #e0bdff;
+
+  /* Long Read card background (no image) — not in design-tokens.json. */
+  --color-cream: #f3eeeb;
+}
+
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  line-height: var(--lh-p2);
+}
+img, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* Real files only exist for 400/700/800 + italic (from dev). No file for
+   300/500/900 — deliberately NOT declaring fake @font-face entries for
+   those; per the CSS font-matching spec, an unmatched weight resolves to
+   the nearest weight actually registered in the same family (e.g. 500
+   resolves to 400), so the page stays in Ballinger throughout rather than
+   falling through to the browser's fallback sans-serif for just those
+   elements — that inconsistency was the real "font changes abruptly" bug. */
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('/assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('/assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Ballinger'; src: url('/assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('/assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: optional; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ============================================================
+   SKIP LINK
+   ============================================================ */
+.skip-link {
+  position: absolute; left: -9999px; top: var(--space-16);
+  background: var(--color-black); color: var(--color-white);
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--size-btn-sm); border-radius: var(--radius-sm);
+  z-index: 9999;
+}
+.skip-link:focus { left: var(--space-16); }
+
+/* Screen-reader-only helper */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--width-block);
+  margin-inline: auto;
+  padding-inline: var(--gutter-x);
+}
+.container--wide { max-width: var(--width-header); }
+.container--narrow { max-width: var(--width-content); }
+
+/* Editorial right-indented text column (intro + "what we can help with") */
+.indent {
+  max-width: var(--width-text);
+  margin-left: auto;
+}
+
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  font-family: var(--font);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+
+.btn--sm { font-size: var(--size-btn-sm); padding: var(--space-12) var(--space-16); border-radius: 3.125rem; }
+.btn--md { font-size: var(--size-cta); padding: var(--space-24) var(--space-32); border-radius: 3.125rem; }
+
+.btn--primary { background: var(--color-black); color: var(--color-white); }
+.btn--primary:hover { opacity: 0.85; }
+
+.btn--ghost { background: transparent; color: var(--color-black); }
+.btn--ghost:hover { background: var(--color-off-white); }
+.btn--ghost:active { background: var(--color-200); }
+
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-32);
+  padding: var(--space-16) var(--gutter-x);
+  border-bottom: var(--border);
+  max-width: var(--width-header);
+  margin: 0 auto;
+  filter: grayscale(1);
+}
+.nav__logo {
+  font-weight: var(--weight-xbold);
+  font-size: var(--size-attr-name);
+  letter-spacing: -0.02em;
+  color: var(--color-black);
+}
+.nav__logo:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }
+.nav__links { display: flex; gap: var(--space-24); align-items: center; }
+.nav__links a {
+  font-size: var(--size-nav);
+  font-weight: var(--weight-medium);
+  color: var(--color-black);
+  transition: opacity var(--transition);
+}
+.nav__links a:hover { opacity: 0.6; }
+.nav__links a[aria-current="page"] { font-weight: var(--weight-bold); }
+.nav__links a:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.nav__cta {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-weight: var(--weight-medium);
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--color-300);
+  border-radius: var(--radius-pill);
+  color: var(--color-black);
+  transition: all var(--transition);
+}
+.nav__cta:hover { background: var(--color-off-white); }
+.nav__cta:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+
+
+/* ============================================================
+   PAGE HEAD — service name + tagline
+   ============================================================ */
+.page-head {
+  background: transparent;
+  padding-block: var(--rhythm-md) var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+}
+.page-head__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+}
+.page-head__title {
+  font-size: var(--size-h1);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h1);
+  color: var(--color-black);
+}
+.page-head__tagline {
+  font-size: var(--size-h1);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h1);
+  color: var(--color-text-muted);
+  margin-top: var(--space-12);
+}
+
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+.section { padding-block: var(--rhythm-md); }
+.section--tight { padding-block: var(--rhythm-sm); }
+.section--flush-top { padding-top: 0; }
+
+.lead {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.lead strong { font-weight: var(--weight-bold); }
+
+.block-label {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--space-24);
+}
+
+
+/* ============================================================
+   CASE STUDY FEATURE CARD
+   ============================================================ */
+.feature-card {
+  display: block;
+  background: var(--color-white);
+  border-radius: var(--feature-radius);
+  overflow: hidden;
+}
+.feature-card__media {
+  aspect-ratio: var(--feature-ratio);
+  background: var(--color-black);
+  border-radius: var(--feature-radius);
+  overflow: hidden;
+}
+.feature-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.feature-card__foot {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-24);
+  padding: var(--space-24) var(--space-24) var(--space-32);
+}
+.feature-card__text { flex: 1; }
+.feature-card__client {
+  font-size: var(--feature-title-size);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--space-12);
+}
+.feature-card__desc {
+  font-size: var(--feature-desc-size);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+.feature-card__arrow {
+  flex-shrink: 0;
+  font-size: var(--feature-btn-font);
+  padding: var(--feature-btn-pad);
+}
+.feature-card:hover .feature-card__arrow { background: var(--color-off-white); }
+.feature-card:hover .feature-card__arrow:hover { background: var(--color-placeholder); }
+
+
+/* ============================================================
+   SERVICE OFFERINGS — 3-col grid
+   ============================================================ */
+.offerings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-24);
+}
+.offering {
+  background: var(--color-off-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-40);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+.offering__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.offering__body {
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p3);
+  color: var(--color-black);
+}
+
+
+/* ============================================================
+   QUOTE BANNER — full-bleed coral
+   ============================================================ */
+.quote {
+  background: var(--color-coral-bright);
+  padding-block: var(--rhythm-lg);
+  padding-inline: var(--gutter-x);
+}
+.quote__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+.quote__text {
+  font-size: var(--size-quote);
+  font-weight: var(--weight-xbold);
+  line-height: 1.0;
+  color: var(--color-black);
+}
+.quote__text em { font-style: italic; }
+.quote__attr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.quote__name { font-size: var(--size-attr-name); font-weight: var(--weight-bold); color: var(--color-black); }
+.quote__role { font-size: var(--size-cta); font-weight: var(--weight-regular); color: var(--color-black); }
+
+
+/* ============================================================
+   WOVEMIND CARDS — "Recent work" grid, image-led placement, 2-col
+   Distinct from wovemind-card (main feed/homepage card). Holds a mix of
+   two card types sharing the same media/body/title/desc treatment:
+     .wovemind-related-card  — linked (thread/whatif/longread), has a
+                               full-card overlay link + internal CTA
+     .wovemind-highlight-card — non-linked (project-highlight), optional
+                               external "Visit website" link instead
+   ============================================================ */
+.section__heading {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  margin-bottom: var(--rhythm-md);
+  max-width: var(--width-content);
+}
+.wovemind-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-64);
+}
+.wovemind-related-card,
+.wovemind-highlight-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.wovemind-related-card__media,
+.wovemind-highlight-card__media {
+  aspect-ratio: 636 / 340;
+  background: var(--color-black);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.wovemind-related-card__body,
+.wovemind-highlight-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  text-align: left;
+}
+.wovemind-related-card__title,
+.wovemind-highlight-card__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  width: 100%;
+}
+.wovemind-related-card__desc,
+.wovemind-highlight-card__desc {
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p3);
+  color: var(--color-black);
+  width: 100%;
+}
+.wovemind-related-card__cta { position: relative; z-index: 2; }
+.wovemind-related-card__link { position: absolute; inset: 0; z-index: 1; }
+.wovemind-related-card:hover .wovemind-related-card__cta { background: var(--color-off-white); }
+.wovemind-related-card:hover .wovemind-related-card__cta:hover { background: var(--color-placeholder); }
+/* Highlight card has no overlay link (nothing to navigate to) — the
+   external link is just a normal in-flow btn, no z-index trick needed. */
+.wovemind-highlight-card:hover .wovemind-highlight-card__external { background: var(--color-off-white); }
+.wovemind-highlight-card:hover .wovemind-highlight-card__external:hover { background: var(--color-placeholder); }
+
+
+/* ============================================================
+   CONTACT BANNER
+   ============================================================ */
+.contact {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+}
+.contact__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  gap: var(--space-40);
+  align-items: flex-start;
+}
+.contact__avatar {
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--color-white);
+}
+.contact__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.contact__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  align-items: flex-start;
+}
+.contact__text {
+  font-size: var(--size-banner);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+
+
+/* ============================================================
+   SERVICE PAGER — prev / next between contact and footer
+   ============================================================ */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-24);
+  padding-block: var(--rhythm-md);
+  border-top: var(--border);
+}
+.pager__link { display: flex; flex-direction: column; gap: var(--space-12); }
+.pager__link--next { align-items: flex-end; text-align: right; }
+.pager__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
+.pager__dir { font-size: var(--size-p4); color: var(--color-text-muted); }
+.pager__name {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.pager__link:hover .pager__name { text-decoration: underline; text-underline-offset: 0.15em; }
+
+
+/* ============================================================
+   CASE STUDY — hero, tags, team/overview, stats, gallery blocks
+   Figma: Case Study frame (147:402)
+   ============================================================ */
+.case-study-hero {
+  background: var(--color-200);
+  padding-block: var(--rhythm-md);
+}
+.case-study-hero .container { display: flex; flex-direction: column; gap: var(--space-32); }
+.case-study-hero .page-head__tagline { margin-top: 0; }
+
+.case-study-tags { display: flex; flex-wrap: wrap; gap: var(--space-12); }
+.tag {
+  background: var(--color-white);
+  color: var(--color-black);
+  font-size: var(--size-p4);
+  line-height: var(--lh-p4);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-pill);
+  border: var(--border);
+}
+
+.case-study-overview {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: var(--space-64);
+  align-items: start;
+}
+.team-list__heading {
+  font-size: var(--size-p2);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+  margin-bottom: var(--space-32);
+}
+.team-list ul { display: flex; flex-direction: column; gap: var(--space-16); }
+.team-member { display: flex; align-items: center; gap: var(--space-12); }
+.team-member__avatar { width: var(--space-48); height: var(--space-48); border-radius: var(--radius-pill); object-fit: cover; flex-shrink: 0; }
+.team-member__name { font-size: var(--size-p2); line-height: var(--lh-p2); color: var(--color-black); }
+
+/* Same body-copy measure as the services page's .indent/.lead pattern —
+   right-aligned within its grid column, same convention as .indent. */
+.case-study-blocks { max-width: var(--width-text); margin-left: auto; }
+.case-study-blocks > :not(:first-child) { margin-top: var(--space-48); }
+.case-study-blocks h1,
+.case-study-blocks h2,
+.case-study-blocks h3 {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.case-study-blocks p {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+
+/* Gallery block — breaks out to full container width (Kirby default
+   markup: figure > ul > li > img + figcaption) */
+.case-study-gallery figure { margin: 0; }
+.case-study-gallery figure ul {
+  display: flex;
+  gap: var(--space-24);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  scrollbar-width: none;
+}
+.case-study-gallery figure ul::-webkit-scrollbar { display: none; }
+.case-study-gallery figure li {
+  flex: 0 0 min(40rem, 80vw);
+  scroll-snap-align: start;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.case-study-gallery figure li img { width: 100%; height: 100%; object-fit: cover; }
+.case-study-gallery figure figcaption {
+  margin-top: var(--space-16);
+  font-size: var(--size-p2);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+}
+.case-study-gallery-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+}
+.case-study-gallery-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-64);
+  height: var(--space-64);
+  border-radius: var(--radius-pill);
+  background: var(--color-200);
+  border: none;
+  color: var(--color-black);
+  font-size: var(--size-p2);
+}
+.case-study-gallery-nav button:hover { background: var(--color-300); }
+.case-study-gallery-nav button:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+.case-study-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-32);
+  max-width: var(--width-content);
+  margin-left: auto;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  padding: var(--space-32) var(--space-12);
+  border-bottom: 1px solid var(--color-black);
+}
+.stat__value {
+  font-size: var(--size-stat);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h1);
+  color: var(--color-black);
+}
+.stat__label {
+  font-size: var(--size-p2);
+  line-height: var(--lh-subtitle);
+  color: var(--color-black);
+}
+
+.case-study-related {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-md);
+}
+.case-study-related-intro { max-width: var(--width-text); margin-bottom: var(--space-48); }
+.case-study-related-intro .lead { margin-top: var(--space-16); }
+
+
+/* ============================================================
+   TOOLTIP (from Wove Mind)
+   ============================================================ */
+.tooltip { position: relative; display: inline; border-bottom: 1px dashed var(--color-400); cursor: help; }
+.tooltip__text {
+  display: none; position: absolute;
+  bottom: calc(100% + var(--space-12)); left: 50%; transform: translateX(-50%);
+  background: var(--color-black); color: var(--color-white);
+  font-size: var(--size-nav); font-weight: var(--weight-regular);
+  line-height: 1.4; padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-sm); width: 240px; text-align: left;
+  z-index: 300; pointer-events: none;
+}
+.tooltip__text::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: var(--color-black);
+}
+.tooltip:hover .tooltip__text,
+.tooltip:focus-within .tooltip__text { display: block; }
+.tooltip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+
+/* Old footer styles removed — now handled by site-footer in feed.css */
+
+
+/* ============================================================
+   CARD HOVER — shared system across all card types
+   Same treatment everywhere; dial via --card-lift / --card-shadow-hover.
+   ============================================================ */
+.feature-card,
+.offering,
+.wovemind-related-card,
+.wovemind-highlight-card,
+.service-card,
+.work-card,
+.wovemind-card--thread,
+.wovemind-card--whatif,
+.wovemind-card--longread {
+  transition: transform var(--card-transition), box-shadow var(--card-transition), opacity var(--card-transition);
+}
+.feature-card:hover,
+.offering:hover,
+.wovemind-related-card:hover,
+.wovemind-highlight-card:hover,
+.service-card:hover,
+.work-card:hover,
+.wovemind-card--thread:hover,
+.wovemind-card--whatif:hover,
+.wovemind-card--longread:hover {
+  transform: translateY(var(--card-lift));
+  box-shadow: var(--card-shadow-hover);
+}
+/* Offerings aren't links — hover acts as a reading spotlight:
+   lift the one you're on, gently recede the rest. */
+.offerings:hover .offering { opacity: 0.5; }
+.offerings .offering:hover { opacity: 1; }
+.services-grid:hover .service-card { opacity: 0.5; }
+.services-grid .service-card:hover { opacity: 1; }
+
+
+/* ============================================================
+   MOTION — pared-back, considered
+   Reveal only on the card grids + quote; reduced-motion aware.
+   ============================================================ */
+.js .offering,
+.js .wovemind-related-card,
+.js .wovemind-highlight-card,
+.js .quote__inner,
+.js .team-member,
+.js .stat,
+.js .case-study-gallery,
+.js .service-card,
+.js .work-card,
+.js .testimonial__inner,
+.js .wovemind-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.js .offering.is-visible,
+.js .wovemind-related-card.is-visible,
+.js .wovemind-highlight-card.is-visible,
+.js .quote__inner.is-visible,
+.js .team-member.is-visible,
+.js .stat.is-visible,
+.js .case-study-gallery.is-visible,
+.js .service-card.is-visible,
+.js .work-card.is-visible,
+.js .testimonial__inner.is-visible,
+.js .wovemind-card.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* Per-row left-to-right stagger on the nine offerings */
+.js .offerings .offering:nth-child(3n+2) { transition-delay: 80ms; }
+.js .offerings .offering:nth-child(3n)   { transition-delay: 160ms; }
+/* Light stagger on the "Recent work" cards (either card type) */
+.js .wovemind-cards > :nth-child(2n) { transition-delay: 100ms; }
+/* Light stagger on the team list and stat grid */
+.js .team-list .team-member:nth-child(2) { transition-delay: 80ms; }
+.js .team-list .team-member:nth-child(3) { transition-delay: 160ms; }
+.js .team-list .team-member:nth-child(4) { transition-delay: 240ms; }
+.js .case-study-stats .stat:nth-child(2n) { transition-delay: 100ms; }
+/* Stagger on the home services grid + work cards */
+.js .services-grid .service-card:nth-child(2) { transition-delay: 80ms; }
+.js .services-grid .service-card:nth-child(3) { transition-delay: 160ms; }
+.js .services-grid .service-card:nth-child(4) { transition-delay: 240ms; }
+.js .work-cards .work-card:nth-child(2) { transition-delay: 80ms; }
+.js .work-cards .work-card:nth-child(3) { transition-delay: 160ms; }
+.js .work-cards .work-card:nth-child(4) { transition-delay: 240ms; }
+
+/* Gentle image zoom on hover for the image-led cards */
+.feature-card__media img,
+.wovemind-related-card__media img,
+.wovemind-highlight-card__media img { transition: transform 400ms ease; }
+.feature-card:hover .feature-card__media img,
+.wovemind-related-card:hover .wovemind-related-card__media img,
+.wovemind-highlight-card:hover .wovemind-highlight-card__media img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .offering,
+  .js .wovemind-related-card,
+  .js .wovemind-highlight-card,
+  .js .quote__inner,
+  .js .team-member,
+  .js .stat,
+  .js .case-study-gallery,
+  .js .service-card,
+  .js .work-card,
+  .js .testimonial__inner,
+  .js .wovemind-card { opacity: 1; transform: none; transition: none; }
+}
+
+/* Mobile: scroll-driven spotlight on offerings (touch analogue of the
+   desktop hover). The card crossing screen-centre lifts; the rest settle back. */
+@media (max-width: 599px) and (prefers-reduced-motion: no-preference) {
+  .offerings.has-focus .offering { opacity: 0.6; }
+  .offerings .offering.is-focus {
+    opacity: 1;
+    transform: translateY(var(--card-lift));
+    box-shadow: var(--card-shadow-hover);
+  }
+}
+
+
+/* ============================================================
+   HOME — hero, section-title, service cards, work cards (case study
+   embed), client marquee, testimonial, about teaser
+   Figma: Home frame (147:190)
+   ============================================================ */
+.home-hero {
+  background: var(--color-off-white);
+  padding-block: var(--rhythm-lg) var(--rhythm-md);
+  padding-inline: var(--gutter-x);
+  overflow: hidden;
+}
+.home-hero__inner {
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-64);
+}
+.home-hero__text { flex: 1; min-width: 0; }
+.home-hero__title {
+  font-size: var(--size-h1-xbold);
+  font-weight: var(--weight-black);
+  line-height: var(--lh-h1-xbold);
+  color: var(--color-black);
+}
+.home-hero__tagline {
+  margin-top: var(--space-32);
+  font-size: var(--size-hero-tagline);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-hero-tagline);
+  color: var(--color-black);
+  max-width: 32rem;
+}
+.home-hero__media { flex-shrink: 0; width: 16rem; }
+.home-hero__media img { width: 100%; height: auto; }
+
+/* Section title — reusable eyebrow + heading pattern used across the
+   "What we do" / "Recent work" / "Who we work with" / "Who we are"
+   sections (Figma's repeated "Section title" component). */
+.section-title { max-width: var(--width-content); margin-bottom: var(--rhythm-md); }
+.section-title__eyebrow {
+  font-size: var(--size-h4);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  color: var(--color-black);
+}
+.section-title__heading {
+  margin-top: var(--space-12);
+  font-size: var(--size-h2);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h2);
+  color: var(--color-black);
+}
+
+/* Services grid — 2x2, links out to the four service pages */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-40);
+}
+.service-card {
+  display: flex;
+  align-items: stretch;
+  background: var(--color-white);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.service-card__media {
+  flex: 0 0 15.3125rem; /* 245px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-24);
+  background: var(--color-aqua);
+}
+.service-card__media img { width: 100%; max-width: 11.3rem; height: auto; }
+.service-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+}
+.service-card__title {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.service-card__desc {
+  font-size: var(--size-p2);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p2);
+  color: var(--color-black);
+}
+.service-card__cta { align-self: flex-end; margin-top: auto; }
+.services-cta { display: flex; justify-content: center; margin-top: var(--rhythm-sm); }
+
+/* Work cards — "Recent work", a Kirby case-studies collection embed
+   (site/collections/case-studies.php), 4 most recent, image-led */
+.work-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-24);
+}
+.work-card { display: block; }
+.work-card__media {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.work-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.work-card__body {
+  margin-top: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+}
+.work-card__title {
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-subtitle);
+  color: var(--color-black);
+}
+
+/* Client marquee — "Who we work with" logo strip */
+.client-marquee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-48) var(--space-64);
+}
+.client-marquee img {
+  max-height: 3.5rem;
+  width: auto;
+  filter: grayscale(1);
+  opacity: 0.8;
+}
+
+/* Testimonial banner — full-bleed lavender, avatar + CTA */
+.testimonial {
+  position: relative;
+  background: var(--color-lavender);
+  padding-block: var(--rhythm-lg);
+  padding-inline: var(--gutter-x);
+  overflow: hidden;
+}
+.testimonial__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--width-header);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+.testimonial__quote {
+  font-size: var(--size-quote);
+  font-weight: var(--weight-xbold);
+  line-height: 1.0;
+  color: var(--color-black);
+  max-width: 62rem;
+}
+.testimonial__quote em { font-style: italic; }
+.testimonial__attr { display: flex; align-items: center; gap: var(--space-24); }
+.testimonial__avatar {
+  width: 5.375rem; height: 5.375rem;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.testimonial__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.testimonial__name { font-size: var(--size-h6); font-weight: var(--weight-xbold); color: var(--color-black); }
+.testimonial__role { font-size: var(--size-p2); font-weight: var(--weight-regular); color: var(--color-black); }
+.testimonial__cta { align-self: flex-start; }
+.testimonial__media {
+  position: absolute;
+  right: 5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14rem;
+  pointer-events: none;
+}
+.testimonial__media img { width: 100%; height: auto; }
+
+/* About teaser — "Who we are" text + closing image, before the footer */
+.about-closing-image {
+  margin-top: var(--rhythm-md);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 1143 / 723;
+  background: var(--color-black);
+}
+.about-closing-image img { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* ============================================================
+   WOVE MIND — single post (Thread / What if / Long read)
+   Figma: Wove Mind post frame (379:5120), reuses .case-study-hero /
+   .team-member / .pager / .contact / .case-study-gallery / .tag
+   ============================================================ */
+.wovemind-post__breadcrumbs { font-size: var(--size-p4); color: var(--color-text-muted); }
+.wovemind-post__breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.wovemind-post__breadcrumbs li { display: flex; align-items: center; gap: 0.5rem; }
+.wovemind-post__breadcrumbs li:not(:last-child)::after { content: '>'; color: var(--color-400); }
+.wovemind-post__breadcrumbs a { color: var(--color-text-muted); text-decoration: underline; text-underline-offset: 0.15em; }
+.wovemind-post__breadcrumbs a:hover { color: var(--color-black); }
+.wovemind-post__breadcrumbs li[aria-current="page"] { color: var(--color-black); font-weight: var(--weight-medium); }
+.wovemind-post__title {
+  margin-top: var(--space-16);
+  font-size: var(--size-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--lh-h1);
+  color: var(--color-black);
+}
+.wovemind-post__lead {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-text-muted);
+  max-width: var(--width-content);
+}
+.wovemind-post__lead p:not(:first-child) { margin-top: var(--space-24); }
+.wovemind-post__meta { display: flex; align-items: center; gap: var(--space-24); }
+.wovemind-post__date { font-size: var(--size-p4); color: var(--color-text-muted); }
+
+/* Featured image (dedicated field) — left-aligned with the centred body
+   column below, but allowed to break out wider to the right. */
+.wovemind-post-featured {
+  margin-left: calc((100% - var(--width-content)) / 2);
+  width: calc((100% + var(--width-content)) / 2);
+  aspect-ratio: 1053 / 658;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.wovemind-post-featured img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Body copy — centred, snapped to the content-width token */
+.wovemind-post-blocks { max-width: var(--width-content); margin-inline: auto; }
+.wovemind-post-blocks > :not(:first-child) { margin-top: var(--space-48); }
+.wovemind-post-blocks h1,
+.wovemind-post-blocks h2,
+.wovemind-post-blocks h3,
+.wovemind-post-blocks h4,
+.wovemind-post-blocks h5,
+.wovemind-post-blocks h6 {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.wovemind-post-blocks p {
+  font-size: var(--size-p1);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.wovemind-post-blocks p a { text-decoration: underline; text-underline-offset: 0.15em; }
+.wovemind-post-blocks blockquote {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+  border-left: 4px solid var(--color-black);
+  padding-left: var(--space-24);
+}
+.wovemind-post-blocks blockquote footer {
+  margin-top: var(--space-16);
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+.wovemind-post-blocks ul,
+.wovemind-post-blocks ol {
+  padding-left: var(--space-24);
+  font-size: var(--size-p1);
+  line-height: var(--lh-p1);
+  color: var(--color-black);
+}
+.wovemind-post-blocks ul { list-style: disc; }
+.wovemind-post-blocks ol { list-style: decimal; }
+.wovemind-post-blocks li + li { margin-top: var(--space-12); }
+
+/* Image / gallery blocks — full width, explicit responsive HEIGHT (not
+   aspect-ratio): taller on mobile and large desktop, shorter in between. */
+.wovemind-post-media {
+  height: 28rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.wovemind-post-media figure { height: 100%; }
+.wovemind-post-media > figure > img,
+.wovemind-post-media > figure > a > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wovemind-post-media figcaption {
+  margin-top: var(--space-16);
+  font-size: var(--size-p2);
+  color: var(--color-black);
+}
+.wovemind-post-media--gallery ul { height: 100%; }
+.wovemind-post-media--gallery li { border-radius: var(--radius-md); }
+
+
+/* ============================================================
+   WOVE MIND — feed page (hero, filter toolbar, card grid, newsletter)
+   Figma: Wove mind frame (165:568)
+   ============================================================ */
+.wovemind-hero-cta { margin-top: var(--space-32); }
+
+/* Filter toolbar */
+.wovemind-filter {
+  background: var(--color-off-white);
+  border-block: var(--border);
+  padding-block: var(--space-16);
+  margin-top: var(--rhythm-sm);
+}
+/* One rhythm step tighter than the shared .section padding-top, for the
+   gap between the toolbar and the card grid specifically. */
+.wovemind-filter + .section { padding-top: var(--rhythm-sm); }
+.wovemind-filter__inner {
+  max-width: var(--width-block);
+  margin-inline: auto;
+  padding-inline: var(--gutter-x);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+.wovemind-filter__btn {
+  font-family: var(--font);
+  font-size: var(--size-btn-sm);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-12) var(--space-24);
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+}
+.wovemind-filter__btn:hover { background: var(--color-200); }
+.wovemind-filter__btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.wovemind-filter__btn.is-active {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+.wovemind-filter__btn.is-active:hover { background: var(--color-black); opacity: 0.85; }
+
+/* Card grid */
+.wovemind-feed__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-24);
+}
+.wovemind-feed__empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--size-p2);
+  padding-block: var(--rhythm-sm);
+}
+
+/* Reusable circular arrow button — decorative, the card's real link is
+   the full-card overlay (.wovemind-card__link) */
+.card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-200);
+  color: var(--color-black);
+  font-size: var(--size-cta);
+  transition: background-color var(--transition);
+}
+.wovemind-card:hover .card-arrow { background: var(--color-300); }
+
+/* Card base + per-format variants */
+.wovemind-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 26rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform var(--card-transition), box-shadow var(--card-transition);
+}
+.wovemind-card__link { position: absolute; inset: 0; z-index: 1; }
+.wovemind-card .card-arrow { position: relative; z-index: 2; }
+
+.wovemind-card--thread,
+.wovemind-card--whatif,
+.wovemind-card--project-highlight {
+  background: var(--color-white);
+  padding: var(--space-32);
+  gap: var(--space-16);
+}
+.wovemind-card--spark { padding: var(--space-32); gap: var(--space-16); }
+.wovemind-card--longread {
+  background: var(--color-cream);
+  padding: var(--space-32);
+  gap: var(--space-32);
+  justify-content: space-between;
+}
+
+/* What if, with an image: bleeds edge-to-edge instead of the standard
+   thread/whatif contained-media treatment above */
+.wovemind-card--whatif.has-image { padding: 0; gap: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__media { border-radius: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__date { padding: var(--space-24) var(--space-32) 0; margin-bottom: 0; }
+.wovemind-card--whatif.has-image .wovemind-card__title { padding: var(--space-12) var(--space-32) 0; }
+.wovemind-card--whatif.has-image .wovemind-card__meta { padding: 0 var(--space-32) var(--space-32); margin-top: auto; }
+
+.wovemind-card__media {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-black);
+}
+.wovemind-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.wovemind-card__title {
+  font-size: var(--size-p2-bold);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-p2-bold);
+  color: var(--color-black);
+}
+.wovemind-card--longread .wovemind-card__title {
+  font-size: var(--size-h3);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-h3);
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.wovemind-card--longread .wovemind-card__excerpt {
+  font-size: var(--size-p3);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p3);
+  color: var(--color-black);
+  flex: 1;
+}
+.wovemind-card__eyebrow {
+  font-size: var(--size-p4-bold);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-p4);
+  color: var(--color-black);
+}
+.wovemind-card__date {
+  display: block;
+  font-size: var(--size-p4);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-12);
+}
+.wovemind-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.wovemind-card--spark .wovemind-card__icon { width: 4rem; height: auto; }
+.wovemind-card__spark-text {
+  font-size: var(--size-p4);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-p4);
+  color: var(--color-black);
+  flex: 1;
+}
+
+
+/* ============================================================
+   NEWSLETTER — static placeholder, not wired up to a service yet
+   ============================================================ */
+.newsletter {
+  background: var(--color-100);
+  border-top: var(--border);
+  padding-block: var(--rhythm-md);
+}
+/* No gap to the footer that follows — this page's last section should
+   flow straight into it, not leave a strip of page background showing. */
+.newsletter__content { max-width: var(--width-content); }
+.newsletter__heading {
+  font-size: var(--size-h5);
+  font-weight: var(--weight-bold);
+  line-height: var(--lh-h5);
+  color: var(--color-black);
+}
+.newsletter__desc {
+  margin-top: var(--space-16);
+  font-size: var(--size-p4);
+  line-height: var(--lh-p4);
+  color: var(--color-text-muted);
+}
+.newsletter__form {
+  margin-top: var(--space-32);
+  display: flex;
+  gap: var(--space-12);
+  flex-wrap: wrap;
+}
+.newsletter__input {
+  flex: 1;
+  min-width: 12rem;
+  font-family: var(--font);
+  font-size: var(--size-p4);
+  padding: var(--space-12) var(--space-24);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-black);
+}
+.newsletter__input::placeholder { color: var(--color-400); }
+.newsletter__input:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1439px) {
+  .wovemind-post-media { height: 20rem; }
+}
+
+@media (max-width: 1279px) {
+  .offerings { grid-template-columns: repeat(2, 1fr); }
+  .work-cards { grid-template-columns: repeat(2, 1fr); }
+  .home-hero__media { width: 12rem; }
+  .wovemind-feed__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 959px) {
+  :root { --gutter-x: var(--space-24); }
+  .indent { margin-left: 0; }
+  .wovemind-cards { grid-template-columns: 1fr; gap: var(--space-48); }
+  .feature-card__foot { flex-direction: column; align-items: flex-start; }
+  .contact__inner { flex-direction: column; }
+  .case-study-overview { grid-template-columns: 1fr; gap: var(--space-48); }
+  .case-study-blocks { max-width: none; }
+  .case-study-stats { grid-template-columns: 1fr; }
+
+  .home-hero__inner { flex-direction: column; align-items: flex-start; gap: var(--space-40); }
+  .home-hero__media { width: 10rem; align-self: flex-end; }
+  .home-hero__title { font-size: clamp(4rem, 16vw, 7rem); }
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card { flex-direction: column; }
+  .service-card__media { flex-basis: auto; }
+  .testimonial__media { display: none; }
+
+  .wovemind-post-media { height: 18rem; }
+
+  .wovemind-filter__inner { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .wovemind-filter__inner::-webkit-scrollbar { display: none; }
+  .wovemind-filter__btn { white-space: nowrap; }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --gutter-x: var(--space-16);
+    --rhythm-md: 3rem;
+    --rhythm-lg: 4.5rem;
+    --size-p2: 1.125rem;   /* 18px, was 24 */
+    --size-p3: 1.0625rem;  /* 17px, was 22 */
+    --size-banner: 1.5rem; /* 24px contact banner */
+    --size-quote:     2.5rem;  /* 40px — kept one step higher per request */
+    --size-attr-name: 1.75rem; /* 28px, was 32 */
+
+    /* Feature card — portrait, tighter radius, smaller text + button */
+    --feature-radius:     var(--radius-md);
+    --feature-ratio:      3 / 4;
+    --feature-title-size: var(--size-cta);   /* 24px, was 28 */
+    --feature-desc-size:  1.25rem;           /* 20px, was 24 */
+    --feature-btn-font:   var(--size-btn-sm);
+    --feature-btn-pad:    var(--space-16) var(--space-24);
+  }
+  .offerings { grid-template-columns: 1fr; }
+  .work-cards { grid-template-columns: 1fr; }
+  .home-hero { padding-block: var(--rhythm-md); }
+  .home-hero__title { font-size: clamp(3rem, 20vw, 5rem); }
+  .home-hero__tagline { font-size: 1.75rem; }
+  .home-hero__media { width: 7rem; }
+  .client-marquee { justify-content: flex-start; gap: var(--space-32) var(--space-40); }
+  .client-marquee img { max-height: 2.25rem; }
+  .wovemind-related-card__body,
+  .wovemind-highlight-card__body { align-items: flex-start; text-align: left; }
+  .wovemind-related-card__title,
+  .wovemind-highlight-card__title { font-size: var(--size-cta); }  /* 24px, was 28 — CMS cards are secondary */
+  .wovemind-related-card__media,
+  .wovemind-highlight-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
+  .quote__role { font-size: 1.375rem; } /* 22px, was 24 */
+  .contact__avatar { width: 120px; height: 120px; }
+  /* Step medium buttons down to small on mobile (mirrors home's lg → md),
+     with padding bumped one increment all round for comfortable tap targets */
+  .btn--sm { padding: var(--space-16) var(--space-24); }
+  .btn--md { font-size: var(--size-btn-sm); padding: var(--space-16) var(--space-24); }
+  .case-study-blocks figure li { flex-basis: 85vw; aspect-ratio: 3 / 4; }
+
+  .wovemind-post__title { font-size: clamp(2.5rem, 12vw, 4rem); }
+  .wovemind-post-featured { margin-left: 0; width: 100%; aspect-ratio: 4 / 3; }
+  .wovemind-post-media { height: 22rem; }
+
+  .wovemind-feed__grid { grid-template-columns: 1fr; }
+  .newsletter__form { flex-direction: column; align-items: stretch; }
+}
+
+
+/* ============================================================
+   OUR WORK — tag-cloud filter pills + 3-col case study grid
+   Template: site/templates/work.php
+   ============================================================ */
+
+/* Filter bar — flat pills, no stroke */
+.our-work-filter {
+  padding-block: var(--space-16);
+  padding-inline: var(--gutter-x);
+}
+.our-work-filter__inner {
+  max-width: var(--width-block);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+.work-pill {
+  font-family: var(--font);
+  font-size: var(--size-btn-sm);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+  background: var(--color-200);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-12) var(--space-24);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+.work-pill:hover { background: var(--color-300); color: var(--color-black); }
+.work-pill:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.work-pill.is-active {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+.work-pill.is-active:hover { opacity: 0.85; }
+
+/* 3-col card grid */
+.our-work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-32);
+}
+.our-work-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--size-p2);
+  padding-block: var(--rhythm-md);
+}
+
+/* Card */
+.work-grid-card {
+  display: block;
+  transition: transform var(--card-transition), box-shadow var(--card-transition);
+}
+.work-grid-card:hover {
+  transform: translateY(var(--card-lift));
+  box-shadow: var(--card-shadow-hover);
+}
+.work-grid-card__media {
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-200);
+}
+.work-grid-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.work-grid-card__body {
+  margin-top: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.work-grid-card__client {
+  font-size: var(--size-p4-bold);
+  font-weight: var(--weight-xbold);
+  line-height: var(--lh-p4);
+  color: var(--color-black);
+}
+.work-grid-card__desc {
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-subtitle);
+  color: var(--color-text-muted);
+}
+
+/* Reveal animation */
+.js .work-grid-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.js .work-grid-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.js .our-work-grid .work-grid-card:nth-child(2) { transition-delay: 80ms; }
+.js .our-work-grid .work-grid-card:nth-child(3) { transition-delay: 160ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+1) { transition-delay: 0ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+2) { transition-delay: 80ms; }
+.js .our-work-grid .work-grid-card:nth-child(3n+3) { transition-delay: 160ms; }
+
+/* Hidden cards (filtered out) */
+.work-grid-card[hidden] { display: none; }
+
+/* Responsive */
+@media (max-width: 1279px) {
+  .our-work-grid { grid-template-columns: repeat(2, 1fr); }
+  .js .our-work-grid .work-grid-card:nth-child(3n+1) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(3n+2) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(3n+3) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(2n+1) { transition-delay: 0ms; }
+  .js .our-work-grid .work-grid-card:nth-child(2n+2) { transition-delay: 80ms; }
+}
+@media (max-width: 599px) {
+  .our-work-grid { grid-template-columns: 1fr; }
+  .our-work-filter__inner { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .our-work-filter__inner::-webkit-scrollbar { display: none; }
+  .work-pill { white-space: nowrap; }
+  .js .our-work-grid .work-grid-card { transition-delay: 0ms; }
+}

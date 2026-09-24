@@ -1,0 +1,26 @@
+# MENU NAVIGATION TAB
+type: fields
+# headline: Site Navigation
+columns:
+  # The first column has one section for the subpages of the `photography` page in card layout
+  # It reuses the pages section defined in `/site/blueprints/sections/albums.yml`
+  - width: 1/2
+    sections:
+      left-column:
+        type: fields
+        fields:
+          # site-nav-headline:
+          #   type: headline
+          #   label: Site Navigation 
+          mainMenu:
+            label: Main Menu
+            extends: sections/mixed-menu
+
+  - width: 1/2
+    sections:
+      right-column:
+        type: fields
+        fields:
+          footerMenu:
+            label: Footer Menu
+            extends: sections/mixed-menu

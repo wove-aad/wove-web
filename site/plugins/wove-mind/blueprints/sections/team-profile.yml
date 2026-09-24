@@ -12,7 +12,8 @@ fields:
     text:
       - "Hidden"
       - "Shown"
-  role:
+  # Not `role`: Kirby reserves that key on users for the account role and drops it on save
+  jobTitle:
     label: Role
     type: text
     placeholder: e.g. Strategy Director

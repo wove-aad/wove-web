@@ -9,7 +9,7 @@ use Kirby\Toolkit\Str;
 /**
  * Wove Team — helpers for the Our People page and author filtering.
  *
- * Team members are Kirby user accounts. Their profile fields (role, bio,
+ * Team members are Kirby user accounts. Their profile fields (job title, bio,
  * LinkedIn, show on team page) come from the team-profile section in the
  * wove-mind plugin's user blueprints; the profile picture is the avatar.
  *
@@ -77,12 +77,13 @@ function wove_entry_author(Page $entry): ?User
 }
 
 /**
- * A team member's role: the "Role" profile field, or failing that the
+ * A team member's role: the "Role" profile field (stored as `jobTitle`,
+ * since Kirby reserves `role` on users), or failing that the
  * "Author role" on their most recent credited Wove Mind entry.
  */
 function wove_member_role(User $user): string
 {
-	$role = trim((string) $user->content()->get('role')->value());
+	$role = trim((string) $user->content()->get('jobTitle')->value());
 	if ($role !== '') return $role;
 
 	foreach (wove_author_entries($user) as $entry) {

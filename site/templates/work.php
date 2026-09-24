@@ -346,4 +346,5 @@ $totalCount = count($feedItems);
 })();
 </script>
 
+<?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

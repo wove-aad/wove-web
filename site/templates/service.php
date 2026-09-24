@@ -75,4 +75,5 @@ $totalCount = count($allEntries);
 })();
 </script>
 
+<?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

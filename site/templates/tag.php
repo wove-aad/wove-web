@@ -134,4 +134,5 @@ $relatedTags = array_slice(array_keys($entryTags), 0, 6);
 })();
 </script>
 
+<?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

@@ -35,6 +35,14 @@
   --weight-xbold:    800;
   --weight-black:    900;
 
+  /* Heading weights (prototype). Headings move to bold across the board. */
+  --weight-h1:       var(--weight-bold);
+  --weight-h2:       var(--weight-bold);
+  --weight-h3:       var(--weight-bold);
+  --weight-h4:       var(--weight-bold);
+  --weight-h5:       var(--weight-bold);
+  --weight-h6:       var(--weight-bold);
+
   /* Type scale */
   --size-h1:            clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens — intentional growth past the figma spec's fixed 5.5rem, confirmed by Grace 2026-07-09. */
   --size-h1-xbold:      10.75rem; /* 172px, weight 900, lh 0.51 — homepage hero display only */
@@ -154,4 +162,8 @@
 
   /* Long Read card background (no image) — not in design-tokens.json. */
   --color-cream: #f3eeeb;
+
+  /* Home hero (prototype) */
+  --color-blush:          #fdf5f3;
+  --color-hero-statement: var(--color-600);
 }

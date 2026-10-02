@@ -117,9 +117,10 @@
   --border-card: 1px solid var(--color-border-card);
 
   /* Radius */
-  --radius-sm:   0.75rem;   /* 12px */
-  --radius-md:   1.25rem;   /* 20px */
-  --radius-lg:   2.8125rem; /* 45px */
+  /* Prototype: radii increased across the board (was 12 / 20 / 45px). */
+  --radius-sm:   1rem;      /* 16px */
+  --radius-md:   1.75rem;   /* 28px */
+  --radius-lg:   3.5rem;    /* 56px */
   --radius-pill: 100px;
 
   /* Shadow */
@@ -166,4 +167,11 @@
   /* Home hero (prototype) */
   --color-blush:          #fdf5f3;
   --color-hero-statement: var(--color-600);
+}
+
+/* Feed radii (prototype). Overrides the values in feed.css; the extra
+   :root raises specificity so this wins although feed.css loads later. */
+:root .feed-wrap {
+  --feed-radius-sm: var(--radius-sm);
+  --feed-radius-md: var(--radius-md);
 }

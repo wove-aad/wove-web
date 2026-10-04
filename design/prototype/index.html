@@ -29,28 +29,16 @@
       <span class="feed__showing label" id="feed-count"></span>
     </div>
 
-    <!-- CLIENT CAROUSEL: filters the feed by case study -->
-    <section class="client-carousel" aria-label="Filter by client">
-      <ul class="client-carousel__track" id="client-track" role="list"></ul>
-      <div class="client-carousel__controls">
-        <input type="range" class="client-carousel__slider" id="client-slider" min="0" max="1000" value="0" aria-label="Scroll clients">
-        <div class="client-carousel__arrows">
-          <button type="button" class="client-carousel__arrow" id="client-prev" aria-label="Previous clients">&larr;</button>
-          <button type="button" class="client-carousel__arrow" id="client-next" aria-label="Next clients">&rarr;</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOPIC PILLS: services and tags, combined with the client filter -->
-    <div class="topic-pills" id="topic-pills" aria-label="Filter by topic"></div>
-
-    <!-- CASE STUDY PANEL: shown when a client is selected -->
-    <section class="case-panel" id="case-panel" aria-live="polite" hidden></section>
+    <!-- FILTERS: rendered by js/home.js in the selected layout -->
+    <div class="filters" id="filters"></div>
 
     <div class="feed-cards feed-cards--home" id="feed-grid"></div>
 
   </main>
 </div>
+
+<!-- Prototype only: switch between filter layouts -->
+<div class="variant-switcher" id="variant-switcher"></div>
 
 <script src="js/data.js"></script>
 <script src="js/home.js"></script>

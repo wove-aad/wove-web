@@ -585,7 +585,7 @@
 
 
 /* ============================================================
-   CONDENSED FILTER BAR (desktop)
+   CONDENSED FILTER BAR
    Clients and topics in one scrolling row, pinned while the feed
    is on screen and the full filter block has scrolled away.
    ============================================================ */
@@ -608,7 +608,13 @@
   transition: transform 250ms ease;
 }
 @media (prefers-reduced-motion: reduce) { .filter-bar, .filter-bar.is-visible { transition: none; } }
-@media (max-width: 959px) { .filter-bar { display: none; } }
+@media (max-width: 600px) {
+  .filter-bar__inner { padding-block: var(--space-8, 0.5rem); }
+  .filter-bar__count { display: none; }
+  .bar-chip { height: 2.25rem; font-size: 0.875rem; }
+}
+/* Touch screens swipe the row; arrows only for mouse users */
+@media (hover: none) { .filter-bar__arrow { display: none; } }
 
 .filter-bar__inner {
   display: flex;

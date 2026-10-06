@@ -231,7 +231,6 @@
   /* ---------- Mount ---------- */
 
   var filters = document.getElementById('filters');
-  var desktop = window.matchMedia('(min-width: 960px)');
   function behaviour() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
   }
@@ -268,10 +267,9 @@
       if (active) {
         var li = active.parentElement;
         if (li.offsetLeft < track.scrollLeft || li.offsetLeft + li.offsetWidth > track.scrollLeft + track.clientWidth) {
-          // On desktop the page scrolls down to the results straight after, and
-          // two smooth scrolls at once can cancel each other (Safari), so this
-          // one jumps.
-          track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: desktop.matches ? 'auto' : behaviour() });
+          // The page scrolls down to the results straight after, and two smooth
+          // scrolls at once can cancel each other (Safari), so this one jumps.
+          track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: 'auto' });
         }
       }
     }
@@ -279,17 +277,11 @@
 
   window.addEventListener('resize', function () { bindCarousel(false); });
 
-  // After a filter change:
-  // - desktop: scroll to the top of the filtered results (case study panel,
-  //   or the first cards), with the condensed filter bar pinned above;
-  // - phones: bring the top of the feed section (heading and carousel) back
-  //   into view if the reader has scrolled past it.
+  // After a filter change, scroll to the top of the filtered results (case
+  // study panel, or the first cards), with the condensed filter bar pinned
+  // above. Same on every screen size.
   var feedTop = document.getElementById('feed');
-  function scrollToFeedTop() {
-    if (desktop.matches) return scrollToResults();
-    if (feedTop.getBoundingClientRect().top >= 0) return;
-    feedTop.scrollIntoView({ behavior: behaviour(), block: 'start' });
-  }
+  function scrollToFeedTop() { scrollToResults(); }
   function scrollToResults() {
     // Wait a frame so the re-rendered filters and cards have laid out.
     requestAnimationFrame(function () {
@@ -421,7 +413,7 @@
 
   window.addEventListener('hashchange', function () { setVariant(location.hash.slice(1)); });
 
-  /* ---------- Condensed filter bar (desktop) ----------
+  /* ---------- Condensed filter bar ----------
      Pinned to the top of the screen once the full filter block has scrolled
      away, while the feed is on screen. Clients and topics share one row. */
 
@@ -460,6 +452,15 @@
     bar.innerHTML = barHTML();
     scroller = bar.querySelector('.filter-bar__scroll');
     scroller.scrollLeft = left;
+    // Keep the active chip clear of the faded edges.
+    var active = bar.querySelector('.bar-chip[aria-pressed="true"]:not([data-client="*"])');
+    if (active) {
+      var pad = 96;
+      var l = active.offsetLeft - scroller.offsetLeft, r = l + active.offsetWidth;
+      if (l < scroller.scrollLeft + pad || r > scroller.scrollLeft + scroller.clientWidth - pad) {
+        scroller.scrollLeft = l - (scroller.clientWidth - active.offsetWidth) / 2;
+      }
+    }
     scroller.addEventListener('scroll', syncBarEdges, { passive: true });
     syncBarEdges();
   }
@@ -482,8 +483,7 @@
   }
 
   function updateBar() {
-    var show = desktop.matches &&
-      controlsBottom() < bar.offsetHeight &&
+    var show = controlsBottom() < bar.offsetHeight &&
       grid.getBoundingClientRect().bottom > bar.offsetHeight + 80;
     if (show === barShown) return;
     barShown = show;
@@ -498,7 +498,6 @@
     barTick = true;
     requestAnimationFrame(function () { barTick = false; updateBar(); });
   }, { passive: true });
-  if (desktop.addEventListener) desktop.addEventListener('change', updateBar);
 
   bar.addEventListener('click', function (ev) {
     var arrow = ev.target.closest('[data-bar-step]');

@@ -1,27 +1,17 @@
-/* Homepage feed: client carousel filter, topic filters, case study panel and card grid.
-   Layouts for the filter area, switched with the bar at the bottom of the page
-   (or #a, #b, #d in the URL; C, a single-block layout, was dropped):
-   A  Current:     carousel, then a flat row of topic pills.
-   B  Linked:      each filter shows counts for the other; a summary of active filters.
-   D  Client first: the panel under the carousel always describes the selection and
-                    holds the topic filter for it.
-   The switcher also toggles between the 20-entry sample and a large one. */
+/* Homepage: hero previews, client carousel and topic filters, case study
+   panel, post cards, and the pinned filter bar with its site menu.
+   Filters: one active filter at a time across clients and topics. */
 (function () {
   var D = window.WOVE;
+  var Cards = window.WoveCards;
   var csBySlug = {};
   D.caseStudies.forEach(function (cs) { csBySlug[cs.slug] = cs; });
 
-  var VARIANTS = {
-    a: { name: 'Current', note: 'Carousel, then a separate row of topic pills.' },
-    b: { name: 'Counts', note: 'Grouped topics with post counts, and a summary of the active filter.' },
-    d: { name: 'Client first', note: 'The panel under the carousel describes the selection and holds the topics.' }
-  };
+  var LIMIT = 12; // homepage shows a fixed number of cards; the rest live on Our Work
+  var state = { client: '*', topic: '*' };
 
-  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '3', nav: 'menu' }; // cards 3 (Framed) chosen; others stay in the switcher
-  var Cards = window.WoveCards;
-
-  // One active filter at a time, across clients and topics: choosing one
-  // clears the other. Choosing the active one again clears it.
+  // Choosing a client clears the topic and the other way round.
+  // Choosing the active one again clears it.
   function choose(kind, value) {
     if (kind === 'client') {
       state.client = state.client === value ? '*' : value;
@@ -31,8 +21,6 @@
       state.client = '*';
     }
   }
-  var LIMIT = 12; // homepage shows a fixed number of cards; the rest live on Our Work
-  D.entries = D.entriesSmall;
 
   /* ---------- Placeholder images ---------- */
 
@@ -56,7 +44,7 @@
 
   var GENERIC = ['#f3eeeb', '#ed8c7c', '#d5faff'];
   var images = {};
-  function cachedPlaceholder(key, palette, seed, w, h) {
+  function image(key, palette, seed, w, h) {
     return images[key] || (images[key] = placeholder(palette, seed, w, h));
   }
 
@@ -93,156 +81,91 @@
     return p[0] === 'service' ? D.services[p[1]] : D.tags[p[1]];
   }
 
-  var TOPIC_GROUPS = [
-    { label: 'Services', items: Object.keys(D.services).map(function (k) { return 'service:' + k; }) },
-    { label: 'Topics', items: Object.keys(D.tags).map(function (k) { return 'tag:' + k; }) }
-  ];
+  // Services first, then editorial tags (the site-wide tag order).
+  var TOPICS = Object.keys(D.services).map(function (k) { return 'service:' + k; })
+    .concat(Object.keys(D.tags).map(function (k) { return 'tag:' + k; }));
 
-  /* ---------- Components ---------- */
+  function behaviour() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
 
-  // Client carousel.
-  function carouselHTML(opts) {
-    opts = opts || {};
+  /* ---------- Hero previews ---------- */
+
+  var AVATAR_TONES = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
+  document.querySelectorAll('[data-thumbs]').forEach(function (el) {
+    el.innerHTML = D.caseStudies.slice(0, 3).map(function (cs, i) {
+      return '<img class="hx-thumb" src="' + image('c' + (i + 1), cs.palette, i + 3) + '" alt="">';
+    }).join('');
+  });
+  document.querySelectorAll('[data-avatars]').forEach(function (el) {
+    el.innerHTML = D.people.slice(0, 4).map(function (p, i) {
+      var initials = p.name.split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0); }).join('');
+      return '<span class="hx-avatar" style="--tone:' + AVATAR_TONES[i] + '">' + esc(initials) + '</span>';
+    }).join('');
+  });
+
+  /* ---------- Filters: client carousel and topic pills ---------- */
+
+  function carouselHTML() {
     var cards = [null].concat(D.caseStudies).map(function (cs, i) {
       var slug = cs ? cs.slug : '*';
-      var n = entriesFor(slug, '*').length;
-      var meta = (cs ? esc(cs.client) + ' · ' : '') + entryWord(n);
+      var meta = (cs ? esc(cs.client) + ' · ' : '') + entryWord(entriesFor(slug, '*').length);
       return '<li class="client-card' + (cs ? '' : ' client-card--all') + '">' +
         '<button type="button" class="client-card__btn" data-client="' + slug + '" aria-pressed="' + (state.client === slug) + '">' +
-          (cs ? '<img class="client-card__img" src="' + cachedPlaceholder('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
+          (cs ? '<img class="client-card__img" src="' + image('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
           '<span class="client-card__logo">' + esc(cs ? cs.logo : 'All work') + '</span>' +
           '<span class="client-card__meta">' + meta + '</span>' +
         '</button>' +
       '</li>';
     }).join('');
 
-    var arrows = '<div class="client-carousel__arrows">' +
-      '<button type="button" class="client-carousel__arrow" data-step="-1" aria-label="Previous clients">&larr;</button>' +
-      '<button type="button" class="client-carousel__arrow" data-step="1" aria-label="Next clients">&rarr;</button>' +
-    '</div>';
-
-    return '<section class="client-carousel' + (opts.compact ? ' client-carousel--compact' : '') + '" aria-label="Filter by client">' +
-      (opts.head ? '<div class="client-carousel__head"><h3 class="filter-label">' + opts.head + '</h3>' + arrows + '</div>' : '') +
+    return '<section class="client-carousel" aria-label="Filter by client">' +
       '<ul class="client-carousel__track" role="list">' + cards + '</ul>' +
       '<div class="client-carousel__controls">' +
         '<input type="range" class="client-carousel__slider" min="0" max="1000" value="0" aria-label="Scroll clients">' +
-        (opts.head ? '' : arrows) +
+        '<div class="client-carousel__arrows">' +
+          '<button type="button" class="client-carousel__arrow" data-step="-1" aria-label="Previous clients">&larr;</button>' +
+          '<button type="button" class="client-carousel__arrow" data-step="1" aria-label="Next clients">&rarr;</button>' +
+        '</div>' +
       '</div>' +
     '</section>';
   }
 
-  // Topic pills. Options: grouped (label per group), counts, allLabel.
-  function pillsHTML(opts) {
-    opts = opts || {};
+  function pillsHTML() {
     function pill(t, label) {
-      var n = entriesFor('*', t).length;
       // "All" is active only when no client or topic is selected.
       var on = t === '*' ? state.topic === '*' && state.client === '*' : state.topic === t;
-      return '<button type="button" class="tag-pill' + (on ? ' is-active' : '') + '" data-topic="' + t + '" aria-pressed="' + on + '"' +
-        '>' + esc(label) +
-        (opts.counts ? ' <span class="tag-pill__count">' + n + '</span>' : '') + '</button>';
+      return '<button type="button" class="tag-pill' + (on ? ' is-active' : '') + '" data-topic="' + t + '" aria-pressed="' + on + '">' + esc(label) + '</button>';
     }
-    if (!opts.grouped) {
-      var all = pill('*', opts.allLabel || 'All');
-      var flat = TOPIC_GROUPS.reduce(function (acc, g) { return acc.concat(g.items); }, []);
-      return '<div class="topic-pills' + (opts.cls ? ' ' + opts.cls : '') + '" aria-label="Filter by topic">' + all +
-        flat.map(function (t) { return pill(t, topicLabel(t)); }).join('') + '</div>';
-    }
-    return '<div class="topic-groups' + (opts.cls ? ' ' + opts.cls : '') + '">' +
-      TOPIC_GROUPS.map(function (g) {
-        var pills = g.items.map(function (t) { return pill(t, topicLabel(t)); }).join('');
-        if (!pills) return '';
-        return '<div class="topic-group"><h3 class="filter-label">' + g.label + '</h3>' +
-          '<div class="topic-group__pills">' + pills + '</div></div>';
-      }).join('') +
-    '</div>';
+    return '<div class="topic-pills topic-pills--ruled" role="group" aria-label="Filter by topic">' +
+      pill('*', 'All') + TOPICS.map(function (t) { return pill(t, topicLabel(t)); }).join('') + '</div>';
   }
 
-  function kpisHTML(cs) {
-    return '<dl class="case-panel__kpis">' + cs.kpis.map(function (k) {
-      return '<div class="case-panel__kpi"><dt>' + esc(k.label) + '</dt><dd>' + esc(k.value) + '</dd></div>';
-    }).join('') + '</dl>';
-  }
-
-  // Case study panel. `extra` is appended to the body (used by D for its topic filter).
-  function panelHTML(cs, opts) {
-    opts = opts || {};
-    return '<section class="case-panel' + (opts.cls ? ' ' + opts.cls : '') + '" aria-live="polite">' +
-      '<div class="case-panel__media"><img src="' + cachedPlaceholder('p' + cs.slug, cs.palette, 11, 900, 640) + '" alt="">' +
+  function panelHTML(cs) {
+    return '<section class="case-panel" aria-label="Case study: ' + esc(cs.client) + '">' +
+      '<div class="case-panel__media"><img src="' + image('p' + cs.slug, cs.palette, 11, 900, 640) + '" alt="">' +
         '<span class="case-panel__logo">' + esc(cs.logo) + '</span></div>' +
       '<div class="case-panel__body">' +
         '<p class="case-panel__eyebrow">Case study · ' + esc(cs.client) + '</p>' +
         '<h3 class="case-panel__title">' + esc(cs.title) + '</h3>' +
         '<p class="case-panel__text">' + esc(cs.text) + '</p>' +
-        kpisHTML(cs) +
+        '<dl class="case-panel__kpis">' + cs.kpis.map(function (k) {
+          return '<div class="case-panel__kpi"><dt>' + esc(k.label) + '</dt><dd>' + esc(k.value) + '</dd></div>';
+        }).join('') + '</dl>' +
         '<a href="#" class="case-panel__cta">See case study <span aria-hidden="true">&rarr;</span></a>' +
-        (opts.extra || '') +
       '</div>' +
     '</section>';
   }
 
-  // Summary of active filters with remove buttons (B).
-  function summaryHTML() {
-    var n = entriesFor(state.client, state.topic).length;
-    var chips = [];
-    if (state.client !== '*') chips.push('<button type="button" class="filter-chip" data-clear="client">' + esc(csBySlug[state.client].client) + ' <span aria-hidden="true">&times;</span><span class="visually-hidden">Remove</span></button>');
-    if (state.topic !== '*') chips.push('<button type="button" class="filter-chip" data-clear="topic">' + esc(topicLabel(state.topic)) + ' <span aria-hidden="true">&times;</span><span class="visually-hidden">Remove</span></button>');
-    return '<div class="filter-summary" aria-live="polite">' +
-      '<span class="filter-summary__count">Showing ' + entryWord(n) + '</span>' +
-      (chips.length ? chips.join('') + '<button type="button" class="filter-summary__clear" data-clear="all">Clear all</button>'
-                    : '<span class="filter-summary__hint">from all clients and topics</span>') +
-    '</div>';
-  }
-
-  /* ---------- Variant layouts ---------- */
-
-  var layouts = {
-    a: function () {
-      var cs = csBySlug[state.client];
-      return carouselHTML() + pillsHTML({ cls: 'topic-pills--ruled' }) + (cs ? panelHTML(cs) : '');
-    },
-
-    b: function () {
-      var cs = csBySlug[state.client];
-      return carouselHTML() +
-        pillsHTML({ grouped: true, counts: true }) +
-        summaryHTML() +
-        (cs ? panelHTML(cs) : '');
-    },
-
-    d: function () {
-      var cs = csBySlug[state.client];
-      var heading = 'Explore by topic';
-      var topics = '<div class="context-topics"><h3 class="filter-label">' + heading + '</h3>' +
-        pillsHTML({ counts: true, allLabel: 'Everything', cls: 'topic-pills--tight' }) + '</div>';
-      var context = cs
-        ? panelHTML(cs, { extra: topics })
-        : '<section class="case-panel case-panel--intro" aria-live="polite">' +
-            '<div class="case-panel__body">' +
-              '<p class="case-panel__eyebrow">All work</p>' +
-              '<h3 class="case-panel__title">Strategic design</h3>' +
-              '<p class="case-panel__text">We use strategic design to help organisations move from insight to delivery, across services, systems and culture. Choose a client above to see their case study and the posts behind it.</p>' +
-              topics +
-            '</div>' +
-          '</section>';
-      return carouselHTML() + context;
-    }
-  };
-
-  /* ---------- Mount ---------- */
-
   var filters = document.getElementById('filters');
-  function behaviour() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-  }
   var grid = document.getElementById('feed-grid');
   var countEl = document.getElementById('feed-count');
+  var more = document.getElementById('feed-more');
   var savedScroll = 0;
 
   function bindCarousel(focusSelected) {
     var track = filters.querySelector('.client-carousel__track');
     var slider = filters.querySelector('.client-carousel__slider');
-    if (!track) return;
     track.scrollLeft = savedScroll;
 
     function maxScroll() { return track.scrollWidth - track.clientWidth; }
@@ -250,7 +173,7 @@
       savedScroll = track.scrollLeft;
       var max = maxScroll();
       slider.value = max > 0 ? Math.round(track.scrollLeft / max * 1000) : 0;
-      // The bar marks the part of the client list currently in view.
+      // The dark segment marks the part of the client list in view.
       var total = track.scrollWidth || 1;
       slider.style.setProperty('--from', (track.scrollLeft / total * 100) + '%');
       slider.style.setProperty('--to', ((track.scrollLeft + track.clientWidth) / total * 100) + '%');
@@ -265,65 +188,47 @@
 
     if (focusSelected) {
       var active = track.querySelector('[aria-pressed="true"]');
-      if (active) {
-        var li = active.parentElement;
-        if (li.offsetLeft < track.scrollLeft || li.offsetLeft + li.offsetWidth > track.scrollLeft + track.clientWidth) {
-          // The page scrolls down to the results straight after, and two smooth
-          // scrolls at once can cancel each other (Safari), so this one jumps.
-          track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: 'auto' });
-        }
+      var li = active && active.parentElement;
+      if (li && (li.offsetLeft < track.scrollLeft || li.offsetLeft + li.offsetWidth > track.scrollLeft + track.clientWidth)) {
+        // The page scrolls to the results straight after, and two smooth
+        // scrolls at once can cancel each other (Safari), so this one jumps.
+        track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: 'auto' });
       }
     }
   }
-
   window.addEventListener('resize', function () { bindCarousel(false); });
 
   // After a filter change, scroll to the top of the filtered results (case
-  // study panel, or the first cards), with the condensed filter bar pinned
-  // above. Same on every screen size.
-  var feedTop = document.getElementById('feed');
-  function scrollToFeedTop() { scrollToResults(); }
+  // study panel, or the first cards), under the pinned bar.
   function scrollToResults() {
-    // Wait a frame so the re-rendered filters and cards have laid out.
     requestAnimationFrame(function () {
-      var target = filters.querySelector('.case-panel:not(.case-panel--intro)') || grid;
+      var target = filters.querySelector('.case-panel') || grid;
       var y = target.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 24;
       window.scrollTo({ top: Math.max(0, y), behavior: behaviour() });
     });
   }
 
   filters.addEventListener('click', function (ev) {
-    var t = ev.target;
-    var client = t.closest('.client-card__btn');
-    var pill = t.closest('.tag-pill');
-    var clear = t.closest('[data-clear]');
-    var arrow = t.closest('.client-carousel__arrow');
-
+    var client = ev.target.closest('.client-card__btn');
+    var pill = ev.target.closest('.tag-pill');
+    var arrow = ev.target.closest('.client-carousel__arrow');
     if (client) {
       choose('client', client.getAttribute('data-client'));
       render(true);
-      scrollToFeedTop();
+      scrollToResults();
     } else if (pill) {
       choose('topic', pill.getAttribute('data-topic'));
       render(false);
-      scrollToFeedTop();
-    } else if (clear) {
-      var what = clear.getAttribute('data-clear');
-      if (what !== 'topic') state.client = '*';
-      if (what !== 'client') state.topic = '*';
-      render(true);
-      scrollToFeedTop();
+      scrollToResults();
     } else if (arrow) {
       var track = filters.querySelector('.client-carousel__track');
       var card = track.querySelector('.client-card');
       var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      track.scrollBy({ left: +arrow.getAttribute('data-step') * (card.offsetWidth + gap), behavior: 'smooth' });
+      track.scrollBy({ left: +arrow.getAttribute('data-step') * (card.offsetWidth + gap), behavior: behaviour() });
     }
   });
 
   /* ---------- Cards ---------- */
-
-  var formatLabels = { whatif: 'What If', longread: 'Long Read' };
 
   function cardTags(e) {
     var t = [];
@@ -333,25 +238,15 @@
     return t.length ? '<div class="card-tags">' + t.join('') + '</div>' : '';
   }
 
-  function card(e) {
-    var i = D.entries.indexOf(e);
-    var meta = '<div class="feed-card__meta">' +
-      (e.author ? '<span class="feed-card__author">' + esc(e.author) + '</span><span class="feed-card__dot">&middot;</span>' : '') +
-      '<time>' + dateLabel(e.daysAgo) + '</time></div>';
-    var format = formatLabels[e.format] ? '<span class="feed-card__format feed-card__format--' + e.format + '">' + formatLabels[e.format] + '</span>' : '';
-
-    if (e.format === 'spark') {
-      return '<article class="feed-card--spark"><p class="feed-card__quote">' + esc(e.quote) + '</p>' + meta + cardTags(e) + '</article>';
-    }
-    var body = format + '<h3 class="feed-card__title">' + esc(e.title) + '</h3>' +
-      (e.excerpt && e.format !== 'thread' ? '<p class="feed-card__excerpt">' + esc(e.excerpt) + '</p>' : '') + meta + cardTags(e);
-    if (e.image) {
+  var cardCtx = {
+    image: function (e) {
+      var i = D.entries.indexOf(e);
       var pal = e.caseStudy ? csBySlug[e.caseStudy].palette : GENERIC;
-      return '<article class="feed-card"><div class="feed-card__media"><img src="' + cachedPlaceholder('e' + i, pal, i + 20) + '" alt=""></div>' +
-        '<div class="feed-card__body">' + body + '</div></article>';
-    }
-    return '<article class="feed-card--compact">' + body + '</article>';
-  }
+      return image('e' + i, pal, i + 20, 800, Math.round(800 / (e.ratio || 1.5)));
+    },
+    tags: cardTags,
+    date: function (e) { return dateLabel(e.daysAgo); }
+  };
 
   grid.addEventListener('click', function (ev) {
     var tag = ev.target.closest('.card-tags__tag');
@@ -359,192 +254,74 @@
     if (tag.hasAttribute('data-client')) choose('client', tag.getAttribute('data-client'));
     if (tag.hasAttribute('data-topic')) choose('topic', tag.getAttribute('data-topic'));
     render(true);
-    scrollToFeedTop();
+    scrollToResults();
   });
 
-  /* ---------- Variant switcher ---------- */
-
-  var switcher = document.getElementById('variant-switcher');
-
-  var Hero = window.WoveHero;
-  var lastChanged = 'feed';
-
-  function renderSwitcher() {
-    var v = VARIANTS[state.variant];
-    var h = Hero.variants[Hero.current];
-    var note = lastChanged === 'hero' ? h : lastChanged === 'cards' ? Cards.styles[state.cards] : v;
-    switcher.innerHTML =
-      '<span class="variant-switcher__label">Hero</span>' +
-      '<div class="variant-switcher__buttons" role="group" aria-label="Hero layout">' +
-        Object.keys(Hero.variants).map(function (k) {
-          return '<button type="button" data-hero="' + k + '" aria-pressed="' + (k === Hero.current) + '">' +
-            k + '<span class="visually-hidden"> ' + Hero.variants[k].name + '</span></button>';
-        }).join('') +
-      '</div>' +
-      '<span class="variant-switcher__label">Cards</span>' +
-      '<div class="variant-switcher__buttons" role="group" aria-label="Card style">' +
-        Object.keys(Cards.styles).map(function (k) {
-          return '<button type="button" data-cards="' + k + '" aria-pressed="' + (k === state.cards) + '">' +
-            k + '<span class="visually-hidden"> ' + Cards.styles[k].name + '</span></button>';
-        }).join('') +
-      '</div>' +
-      '<span class="variant-switcher__label">Nav</span>' +
-      '<div class="variant-switcher__buttons" role="group" aria-label="Site navigation">' +
-        Object.keys(NAV).map(function (k) {
-          return '<button type="button" class="variant-switcher__text" data-nav="' + k + '" aria-pressed="' + (k === state.nav) + '">' + NAV[k] + '</button>';
-        }).join('') +
-      '</div>' +
-      '<span class="variant-switcher__label">Feed</span>' +
-      '<div class="variant-switcher__buttons" role="group" aria-label="Filter layout">' +
-        Object.keys(VARIANTS).map(function (k) {
-          return '<button type="button" data-variant="' + k + '" aria-pressed="' + (k === state.variant) + '">' +
-            k.toUpperCase() + '<span class="visually-hidden"> ' + VARIANTS[k].name + '</span></button>';
-        }).join('') +
-      '</div>' +
-      '<p class="variant-switcher__note" title="' + note.note + '"><strong>' + note.name + '</strong></p>' +
-      '<button type="button" class="variant-switcher__volume" data-volume aria-pressed="' + state.large + '">' +
-        (state.large ? D.entriesLarge.length + ' posts' : '20 posts') + '</button>' +
-      '<button type="button" class="variant-switcher__volume" data-reveal-toggle aria-pressed="' + revealOn() + '">' +
-        'Reveal ' + (revealOn() ? 'on' : 'off') + '</button>';
-  }
-
-  function revealOn() { return !document.documentElement.hasAttribute('data-reveal-off'); }
-
-  switcher.addEventListener('click', function (ev) {
-    if (ev.target.closest('[data-reveal-toggle]')) {
-      document.documentElement.toggleAttribute('data-reveal-off');
-      window.dispatchEvent(new Event('scroll'));
-      renderSwitcher();
-      return;
-    }
-    if (ev.target.closest('[data-volume]')) {
-      state.large = !state.large;
-      D.entries = state.large ? D.entriesLarge : D.entriesSmall;
-      Hero.refresh();
-      renderSwitcher();
-      render(false);
-      return;
-    }
-    var nb = ev.target.closest('[data-nav]');
-    if (nb) {
-      state.nav = nb.getAttribute('data-nav');
-      menuOpen = false;
-      renderBar();
-      updateBar();
-      renderSwitcher();
-      saveHash();
-      return;
-    }
-    var cb = ev.target.closest('[data-cards]');
-    if (cb) {
-      lastChanged = 'cards';
-      state.cards = cb.getAttribute('data-cards');
-      renderGrid();
-      renderSwitcher();
-      saveHash();
-      return;
-    }
-    var hb = ev.target.closest('[data-hero]');
-    if (hb) {
-      lastChanged = 'hero';
-      Hero.set(hb.getAttribute('data-hero'));
-      renderSwitcher();
-      saveHash();
-      window.dispatchEvent(new Event('scroll'));
-      return;
-    }
-    var b = ev.target.closest('[data-variant]');
-    if (!b) return;
-    lastChanged = 'feed';
-    setVariant(b.getAttribute('data-variant'));
-    saveHash();
+  // Masonry columns depend on width.
+  var lastColumns = 0;
+  window.addEventListener('resize', function () {
+    if (Cards.columnCount() !== lastColumns) renderGrid();
   });
 
-  // URL hash holds the choices: feed letter, hero digit, card digit (e.g. #b23).
-  function saveHash() {
-    try { history.replaceState(null, '', '#' + state.variant + Hero.current + state.cards + state.nav.charAt(0)); } catch (e) { /* sandboxed */ }
-  }
-  function readHash() {
-    var h = location.hash.slice(1);
-    if (Hero.variants[h.charAt(1)]) Hero.set(h.charAt(1));
-    if (Cards.styles[h.charAt(2)]) state.cards = h.charAt(2);
-    if (h.charAt(3) === 'm') state.nav = 'menu';
-    if (h.charAt(3) === 'u') state.nav = 'up';
-    return VARIANTS[h.charAt(0)] ? h.charAt(0) : 'a';
-  }
+  function renderGrid() {
+    var list = entriesFor(state.client, state.topic);
+    var shown = list.slice(0, LIMIT);
+    countEl.textContent = entryWord(list.length);
+    grid.innerHTML = list.length
+      ? Cards.masonry(shown.map(function (e) { return Cards.render(e, cardCtx); }))
+      : '<p class="feed-empty">No entries match these filters yet.</p>';
+    lastColumns = Cards.columnCount();
 
-  function setVariant(v) {
-    if (!VARIANTS[v]) return;
-    state.variant = v;
-    document.documentElement.setAttribute('data-variant', v);
-    renderSwitcher();
-    render(true);
+    // "See all" names the active filter, like the live homepage.
+    var name = state.client !== '*' ? csBySlug[state.client].client
+      : state.topic !== '*' ? topicLabel(state.topic) : '';
+    more.innerHTML =
+      (list.length > shown.length ? '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' : '') +
+      '<a href="#our-work" class="feed-more__btn">See all ' + (name ? esc(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span></a>';
   }
 
-  window.addEventListener('hashchange', function () { setVariant(readHash()); });
+  /* ---------- Pinned filter bar and site menu ----------
+     Pinned to the top once the full filter controls have scrolled away,
+     while the feed is on screen. Clients and topics share one row. A menu
+     button at its left opens Back to top, Our work, Our people and Get in
+     touch; the bar also shows (menu only) on scroll-up outside the feed. */
 
-  /* ---------- Condensed filter bar ----------
-     Pinned to the top of the screen once the full filter block has scrolled
-     away, while the feed is on screen. Clients and topics share one row.
-     Site navigation, two options (switcher "Nav"):
-     - up:   scrolling up slides in a site row (logo, Our work, Our people,
-             Get in touch) above the chips; anywhere past the hero.
-     - menu: a menu button at the left of the bar opens Back to top, Our
-             work, Our people and Get in touch; the bar also shows on
-             scroll-up outside the feed, with just the logo and menu. */
-
-  var NAV = { up: 'Scroll up', menu: 'Menu' };
   var MENU_LINKS = [
     ['top', 'Back to top'], ['#our-work', 'Our work'], ['#our-people', 'Our people'], ['#contact', 'Get in touch']
   ];
-  var menuOpen = false;
-
   var bar = document.getElementById('filter-bar');
   var barShown = false;
+  var menuOpen = false;
 
   function barHTML() {
     var clients = [null].concat(D.caseStudies).map(function (cs, i) {
       var slug = cs ? cs.slug : '*';
-      var n = entriesFor(slug, '*').length;
       return '<button type="button" class="bar-chip bar-chip--client" data-client="' + slug + '" aria-pressed="' + (state.client === slug) + '">' +
-        (cs ? '<img class="bar-chip__thumb" src="' + cachedPlaceholder('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
-        esc(cs ? cs.client : 'All work') + ' <span class="bar-chip__count">' + n + '</span></button>';
+        (cs ? '<img class="bar-chip__thumb" src="' + image('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
+        esc(cs ? cs.client : 'All work') + ' <span class="bar-chip__count">' + entriesFor(slug, '*').length + '</span></button>';
     }).join('');
-    var topics = TOPIC_GROUPS.reduce(function (acc, g) { return acc.concat(g.items); }, [])
-      .map(function (t) {
-        return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
-      }).join('');
-    var site = state.nav === 'up'
-      ? '<div class="filter-bar__site"><div class="filter-bar__site-inner">' +
-          '<button type="button" class="filter-bar__logo" data-top aria-label="Wove Group, back to top">Wove.</button>' +
-          '<nav class="filter-bar__links" aria-label="Site">' +
-            '<a href="#our-work">Our work</a><a href="#our-people">Our people</a>' +
-          '</nav>' +
-          '<a href="#contact" class="filter-bar__cta">Get in touch</a>' +
-        '</div></div>'
-      : '';
-    var menuBtn = state.nav === 'menu'
-      ? '<button type="button" class="filter-bar__menu-btn" data-menu aria-expanded="' + menuOpen + '" aria-controls="filter-bar-menu">' +
-          '<span class="filter-bar__menu-icon" aria-hidden="true"></span><span class="filter-bar__menu-label">Wove.</span></button>'
-      : '';
-    var menu = state.nav === 'menu'
-      ? '<div class="filter-bar__menu" id="filter-bar-menu"' + (menuOpen ? '' : ' hidden') + '><ul role="list">' +
-          MENU_LINKS.map(function (l) {
-            return '<li>' + (l[0] === 'top'
-              ? '<button type="button" data-top>' + l[1] + ' <span aria-hidden="true">&uarr;</span></button>'
-              : '<a href="' + l[0] + '">' + l[1] + ' <span aria-hidden="true">&rarr;</span></a>') + '</li>';
-          }).join('') +
-        '</ul></div>'
-      : '';
-    return site + '<div class="filter-bar__inner">' + menuBtn +
+    var topics = TOPICS.map(function (t) {
+      return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
+    }).join('');
+    var menu = '<div class="filter-bar__menu" id="filter-bar-menu"' + (menuOpen ? '' : ' hidden') + '><ul role="list">' +
+      MENU_LINKS.map(function (l) {
+        return '<li>' + (l[0] === 'top'
+          ? '<button type="button" data-top>' + l[1] + ' <span aria-hidden="true">&uarr;</span></button>'
+          : '<a href="' + l[0] + '">' + l[1] + ' <span aria-hidden="true">&rarr;</span></a>') + '</li>';
+      }).join('') +
+    '</ul></div>';
+
+    return '<div class="filter-bar__inner">' +
+      '<button type="button" class="filter-bar__menu-btn" data-menu aria-label="Menu" aria-expanded="' + menuOpen + '" aria-controls="filter-bar-menu">' +
+        '<span class="filter-bar__menu-icon" aria-hidden="true"></span></button>' +
       '<div class="filter-bar__track">' +
-      '<button type="button" class="filter-bar__arrow filter-bar__arrow--prev" data-bar-step="-1" aria-label="Scroll filters left" tabindex="-1">&larr;</button>' +
-      '<div class="filter-bar__scroll">' +
-        '<div class="filter-bar__group" role="group" aria-label="Clients">' + clients + '</div>' +
-        '<span class="filter-bar__divider" aria-hidden="true"></span>' +
-        '<div class="filter-bar__group" role="group" aria-label="Topics">' + topics + '</div>' +
-      '</div>' +
-      '<button type="button" class="filter-bar__arrow filter-bar__arrow--next" data-bar-step="1" aria-label="Scroll filters right" tabindex="-1">&rarr;</button>' +
+        '<button type="button" class="filter-bar__arrow filter-bar__arrow--prev" data-bar-step="-1" aria-label="Scroll filters left" tabindex="-1">&larr;</button>' +
+        '<div class="filter-bar__scroll">' +
+          '<div class="filter-bar__group" role="group" aria-label="Clients">' + clients + '</div>' +
+          '<span class="filter-bar__divider" aria-hidden="true"></span>' +
+          '<div class="filter-bar__group" role="group" aria-label="Topics">' + topics + '</div>' +
+        '</div>' +
+        '<button type="button" class="filter-bar__arrow filter-bar__arrow--next" data-bar-step="1" aria-label="Scroll filters right" tabindex="-1">&rarr;</button>' +
       '</div>' +
       '<span class="filter-bar__count">' + entryWord(entriesFor(state.client, state.topic).length) + '</span>' +
     '</div>' + menu;
@@ -554,7 +331,6 @@
     var scroller = bar.querySelector('.filter-bar__scroll');
     var left = scroller ? scroller.scrollLeft : 0;
     bar.innerHTML = barHTML();
-    bar.setAttribute('data-nav', state.nav);
     scroller = bar.querySelector('.filter-bar__scroll');
     scroller.scrollLeft = left;
     // Keep the active chip clear of the faded edges.
@@ -580,18 +356,15 @@
   }
   window.addEventListener('resize', syncBarEdges);
 
-  // The last filter control in the full block (the case study panel doesn't count).
+  // Bottom of the filter controls (the case study panel doesn't count).
   function controlsBottom() {
-    var controls = [].filter.call(filters.children, function (el) { return !el.classList.contains('case-panel'); });
-    var last = controls[controls.length - 1];
-    return last ? last.getBoundingClientRect().bottom : 0;
+    var pills = filters.querySelector('.topic-pills');
+    return pills ? pills.getBoundingClientRect().bottom : 0;
   }
 
   // Scroll direction, with thresholds so small movements don't flicker the bar.
   var lastY = window.scrollY, travel = 0, scrollingUp = false;
-  var heroEl = function () {
-    return document.querySelector('#hero-alt .hx') || document.querySelector('.hero-bar');
-  };
+  var hero = document.querySelector('.hx');
 
   function updateBar() {
     var y = window.scrollY;
@@ -602,31 +375,24 @@
     if (travel < -40) scrollingUp = true;
     if (travel > 12) { scrollingUp = false; if (menuOpen) toggleMenu(false); }
 
-    var inner = bar.querySelector('.filter-bar__inner');
-    var chipsH = (inner && inner.offsetHeight) || 56;
-    var inFeed = controlsBottom() < chipsH &&
-      grid.getBoundingClientRect().bottom > chipsH + 80;
-    var hero = heroEl();
-    var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
-    var siteUp = scrollingUp && pastHero;
+    var chipsH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
+    var inFeed = controlsBottom() < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
+    var pastHero = hero.getBoundingClientRect().bottom < 0;
+    var show = inFeed || (scrollingUp && pastHero) || menuOpen;
 
     bar.classList.toggle('show-chips', inFeed);
-    bar.classList.toggle('show-site', siteUp || menuOpen);
-    var show = inFeed || siteUp || menuOpen;
     if (show !== barShown) {
       barShown = show;
       bar.classList.toggle('is-visible', show);
-      syncBarEdges();
       bar.inert = !show;
+      syncBarEdges();
     }
   }
 
   function toggleMenu(open) {
     menuOpen = open;
-    var m = bar.querySelector('.filter-bar__menu');
-    var b = bar.querySelector('[data-menu]');
-    if (m) m.hidden = !open;
-    if (b) b.setAttribute('aria-expanded', String(open));
+    bar.querySelector('.filter-bar__menu').hidden = !open;
+    bar.querySelector('[data-menu]').setAttribute('aria-expanded', String(open));
   }
 
   document.addEventListener('click', function (ev) {
@@ -651,7 +417,7 @@
       return;
     }
     if (ev.target.closest('[data-menu]')) { toggleMenu(!menuOpen); return; }
-    if (ev.target.closest('.filter-bar__menu a, .filter-bar__links a, .filter-bar__cta')) { toggleMenu(false); return; }
+    if (ev.target.closest('.filter-bar__menu a')) { toggleMenu(false); return; }
     var arrow = ev.target.closest('[data-bar-step]');
     if (arrow) {
       var sc = bar.querySelector('.filter-bar__scroll');
@@ -660,74 +426,22 @@
     }
     var chip = ev.target.closest('.bar-chip');
     if (!chip) return;
-    if (chip.hasAttribute('data-client')) {
-      choose('client', chip.getAttribute('data-client'));
-    } else {
-      choose('topic', chip.getAttribute('data-topic'));
-    }
+    if (chip.hasAttribute('data-client')) choose('client', chip.getAttribute('data-client'));
+    else choose('topic', chip.getAttribute('data-topic'));
     render(true);
     scrollToResults();
   });
 
   /* ---------- Render ---------- */
 
-  var more = document.getElementById('feed-more');
-  var lastColumns = 0;
-
-  var cardCtx = {
-    image: function (e) {
-      var i = D.entries.indexOf(e);
-      var pal = e.caseStudy ? csBySlug[e.caseStudy].palette : GENERIC;
-      var w = 800, h = Math.round(800 / (e.ratio || 1.5));
-      return cachedPlaceholder('e' + i + ':' + (e.ratio || 1.5), pal, i + 20, w, h);
-    },
-    tags: cardTags,
-    date: function (e) { return dateLabel(e.daysAgo); }
-  };
-
-  // Masonry columns depend on width.
-  window.addEventListener('resize', function () {
-    if (state.cards !== '1' && Cards.columnCount() !== lastColumns) renderGrid();
-  });
-
   function render(focusSelected) {
-    filters.className = 'filters filters--' + state.variant;
-    filters.innerHTML = layouts[state.variant]();
+    var cs = csBySlug[state.client];
+    filters.innerHTML = carouselHTML() + pillsHTML() + (cs ? panelHTML(cs) : '');
     bindCarousel(focusSelected);
     renderGrid();
     renderBar();
     updateBar();
   }
 
-  function renderGrid() {
-    var list = entriesFor(state.client, state.topic);
-    var shown = list.slice(0, LIMIT);
-    countEl.textContent = entryWord(list.length);
-    var styled = state.cards !== '1';
-    grid.className = 'feed-cards feed-cards--home' + (styled ? ' pc-grid cards--' + state.cards : '');
-    grid.innerHTML = !list.length
-      ? '<p class="feed-empty">No entries match these filters yet.</p>'
-      : styled ? Cards.masonry(shown.map(function (e) { return Cards.render(e, cardCtx); }))
-      : shown.map(card).join('');
-    lastColumns = Cards.columnCount();
-
-    // "See all" names the active filter, like the live homepage.
-    var name = state.client !== '*' ? csBySlug[state.client].client
-      : state.topic !== '*' ? topicLabel(state.topic) : '';
-    more.hidden = false;
-    more.innerHTML =
-      (list.length > shown.length ? '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' : '') +
-      '<a href="#" class="feed-more__btn">See all ' + (name ? esc(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span></a>';
-  }
-
-  Hero.init({
-    image: cachedPlaceholder,
-    // Hero links into the feed: select (never toggle off) and jump to results.
-    filter: function (kind, value) {
-      if ((kind === 'client' ? state.client : state.topic) !== value) choose(kind, value);
-      render(true);
-      scrollToResults();
-    }
-  });
-  setVariant(readHash());
+  render(false);
 })();

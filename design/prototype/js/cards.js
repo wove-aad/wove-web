@@ -1,26 +1,12 @@
-/* Feed card treatments, switched from the prototype bar (third character in
-   the URL hash, e.g. #a23).
-   1  Current:      the live feed-card markup (rendered by home.js).
-   2  Open:         no card boxes; type and images sit on the page.
-   3  Framed:       white cards with inset images; format chips.
-   4  Bold formats: each format has its own strong look (What If in solid
-                    blue, threads as plain rows).
-   Shared rules for 2 to 4, from the review of staging:
+/* Post cards (the Framed treatment).
    - images keep their own shape (square, portrait, landscape), no cropping;
    - sparks with an image read as a captioned image, with small quiet text;
    - long reads are image-led editorial cards with a reading time;
-   - What Ifs lead with the question, set larger, with "Explore the idea";
+   - What Ifs lead with the question, set larger, on a pale blue card;
    - threads are the workhorse: compact, title and meta, small thumbnail.
    Cards flow into columns (masonry) so mixed image shapes sit without gaps;
    order runs left to right along each row. */
 (function () {
-  var STYLES = {
-    '1': { name: 'Current', note: 'The live card design.' },
-    '2': { name: 'Open', note: 'No boxes; type and images on the page.' },
-    '3': { name: 'Framed', note: 'White cards, inset images, format chips.' },
-    '4': { name: 'Bold formats', note: 'Each format has its own strong look.' }
-  };
-
   var LABELS = { spark: 'Spark', thread: 'Thread', whatif: 'What If', longread: 'Long Read' };
 
   function esc(s) {
@@ -95,5 +81,5 @@
     return cols.map(function (col) { return '<div class="pc-col">' + col.join('') + '</div>'; }).join('');
   }
 
-  window.WoveCards = { styles: STYLES, render: render, masonry: masonry, columnCount: columnCount };
+  window.WoveCards = { render: render, masonry: masonry, columnCount: columnCount };
 })();

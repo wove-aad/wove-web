@@ -6,13 +6,6 @@
 window.WOVE = {
   services: { strategy: 'Strategy', digital: 'Digital', brand: 'Brand', labs: 'Labs' },
 
-  // Sectors, as named in the homepage description.
-  sectors: {
-    public: 'Public services',
-    culture: 'Cultural institutions',
-    mission: 'Mission-led organisations'
-  },
-
   // Placeholder team for the Our People link.
   people: [
     { name: 'Fergal Walsh', role: 'Founder' },
@@ -43,7 +36,6 @@ window.WOVE = {
   caseStudies: [
     {
       slug: 'circular',
-      sector: 'public',
       client: 'Circular.ie',
       logo: 'circular.ie',
       title: 'Launching a national campaign for the circular economy',
@@ -58,7 +50,6 @@ window.WOVE = {
     },
     {
       slug: 'dcu',
-      sector: 'public',
       client: 'DCU',
       logo: 'DCU',
       title: 'Redesigning the student journey from offer to first week',
@@ -73,7 +64,6 @@ window.WOVE = {
     },
     {
       slug: 'dublin-inquirer',
-      sector: 'mission',
       client: 'Dublin Inquirer',
       logo: 'Dublin Inquirer',
       title: 'A membership model for local, independent journalism',
@@ -88,7 +78,6 @@ window.WOVE = {
     },
     {
       slug: 'pivot-dublin',
-      sector: 'culture',
       client: 'Pivot Dublin',
       logo: 'PIVOT',
       title: 'Designing a city-wide programme for public space',
@@ -103,7 +92,6 @@ window.WOVE = {
     },
     {
       slug: 'silvercloud',
-      sector: 'mission',
       client: 'SilverCloud',
       logo: 'SilverCloud',
       title: 'Making digital mental health support easier to start',
@@ -118,7 +106,6 @@ window.WOVE = {
     },
     {
       slug: 'arts-council',
-      sector: 'culture',
       client: 'Arts Partner',
       logo: 'Arts Partner',
       title: 'A shared digital front door for cultural venues',
@@ -158,66 +145,3 @@ window.WOVE = {
     { format: 'longread', title: 'Small pilots, large systems: how we scope Labs projects', excerpt: 'Why we start with a twelve-week pilot and a clear question, and what happens when the answer is no.', services: ['labs'], tags: ['system-change'], daysAgo: 28, image: true, ratio: 4 / 3, minutes: 6 }
   ]
 };
-
-/* Large sample, for testing how filters and counts hold up at real volumes.
-   Built from the entries above with fixed per-service totals:
-   Labs 44, Digital 30, Brand 22, Strategy 12, plus 16 sparks with no service.
-   About half are linked to a case study, weighted towards the bigger clients.
-   Titles repeat; only the volumes matter here. */
-(function (W) {
-  var base = W.entries;
-  var byFormat = { spark: [], thread: [], whatif: [], longread: [] };
-  base.forEach(function (e) { byFormat[e.format].push(e); });
-
-  var seed = 7;
-  function rand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-  function pick(list) { return list[Math.floor(rand() * list.length)]; }
-
-  var tagKeys = Object.keys(W.tags);
-  var quotas = [['labs', 44], ['digital', 30], ['brand', 22], ['strategy', 12], [null, 16]];
-  var csWeights = [['circular', 20], ['dcu', 14], ['dublin-inquirer', 10], ['pivot-dublin', 8], ['silvercloud', 6], ['arts-council', 4]];
-  var formats = ['longread', 'thread', 'whatif', 'longread', 'thread'];
-
-  var large = [];
-  quotas.forEach(function (q) {
-    for (var i = 0; i < q[1]; i++) {
-      var format = q[0] ? formats[i % formats.length] : 'spark';
-      var src = pick(byFormat[format]);
-      var e = {};
-      for (var k in src) e[k] = src[k];
-      e.services = q[0] ? [q[0]] : [];
-      e.tags = [pick(tagKeys)];
-      if (rand() < 0.4) e.tags.push(pick(tagKeys));
-      e.tags = e.tags.filter(function (t, j, a) { return a.indexOf(t) === j; });
-      e.caseStudy = null;
-      e.image = rand() < (format === 'spark' ? 0.5 : 0.6);
-      e.ratio = [1, 4 / 5, 3 / 2, 16 / 9, 4 / 3][Math.floor(rand() * 5)];
-      if (format === 'longread') e.minutes = 4 + Math.floor(rand() * 9);
-      large.push(e);
-    }
-  });
-
-  // Link case studies, preferring entries in one of the client's services.
-  var csServices = {};
-  W.caseStudies.forEach(function (cs) { csServices[cs.slug] = cs.services; });
-  csWeights.forEach(function (w) {
-    var placed = 0;
-    for (var pass = 0; pass < 2 && placed < w[1]; pass++) {
-      large.forEach(function (e) {
-        if (placed >= w[1] || e.caseStudy || e.format === 'spark' && pass === 0) return;
-        var fits = pass === 1 || e.services.some(function (s) { return csServices[w[0]].indexOf(s) !== -1; });
-        if (fits && rand() < 0.5) { e.caseStudy = w[0]; placed++; }
-      });
-    }
-  });
-
-  // Shuffle, then date newest first.
-  for (var i = large.length - 1; i > 0; i--) {
-    var j = Math.floor(rand() * (i + 1));
-    var t = large[i]; large[i] = large[j]; large[j] = t;
-  }
-  large.forEach(function (e, i) { e.daysAgo = Math.floor(i * 2.9); });
-
-  W.entriesSmall = base;
-  W.entriesLarge = large;
-})(window.WOVE);

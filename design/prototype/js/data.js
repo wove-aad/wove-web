@@ -6,6 +6,29 @@
 window.WOVE = {
   services: { strategy: 'Strategy', digital: 'Digital', brand: 'Brand', labs: 'Labs' },
 
+  // Sectors, as named in the homepage description.
+  sectors: {
+    public: 'Public services',
+    culture: 'Cultural institutions',
+    mission: 'Mission-led organisations'
+  },
+
+  // Placeholder team for the Our People link.
+  people: [
+    { name: 'Fergal Walsh', role: 'Founder' },
+    { name: 'Aoife Byrne', role: 'Strategy Director' },
+    { name: 'Niamh Kelly', role: 'Design Lead' },
+    { name: 'Ciarán Doyle', role: 'Technology Lead' },
+    { name: 'Sinéad Murphy', role: 'Service Designer' },
+    { name: 'Rory Gallagher', role: 'Brand Designer' },
+    { name: 'Orla Kennedy', role: 'Researcher' },
+    { name: 'Darragh Nolan', role: 'Developer' },
+    { name: 'Méabh Quinn', role: 'Producer' },
+    { name: 'Eoin Farrell', role: 'Developer' },
+    { name: 'Clodagh Ryan', role: 'Content Designer' },
+    { name: 'Tadhg Brennan', role: 'Labs Lead' }
+  ],
+
   tags: {
     'system-change': 'System Change',
     climate: 'Climate',
@@ -20,6 +43,7 @@ window.WOVE = {
   caseStudies: [
     {
       slug: 'circular',
+      sector: 'public',
       client: 'Circular.ie',
       logo: 'circular.ie',
       title: 'Launching a national campaign for the circular economy',
@@ -34,6 +58,7 @@ window.WOVE = {
     },
     {
       slug: 'dcu',
+      sector: 'public',
       client: 'DCU',
       logo: 'DCU',
       title: 'Redesigning the student journey from offer to first week',
@@ -48,6 +73,7 @@ window.WOVE = {
     },
     {
       slug: 'dublin-inquirer',
+      sector: 'mission',
       client: 'Dublin Inquirer',
       logo: 'Dublin Inquirer',
       title: 'A membership model for local, independent journalism',
@@ -62,6 +88,7 @@ window.WOVE = {
     },
     {
       slug: 'pivot-dublin',
+      sector: 'culture',
       client: 'Pivot Dublin',
       logo: 'PIVOT',
       title: 'Designing a city-wide programme for public space',
@@ -76,6 +103,7 @@ window.WOVE = {
     },
     {
       slug: 'silvercloud',
+      sector: 'mission',
       client: 'SilverCloud',
       logo: 'SilverCloud',
       title: 'Making digital mental health support easier to start',
@@ -90,6 +118,7 @@ window.WOVE = {
     },
     {
       slug: 'arts-council',
+      sector: 'culture',
       client: 'Arts Partner',
       logo: 'Arts Partner',
       title: 'A shared digital front door for cultural venues',

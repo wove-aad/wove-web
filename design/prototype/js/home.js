@@ -365,16 +365,29 @@
 
   var switcher = document.getElementById('variant-switcher');
 
+  var Hero = window.WoveHero;
+  var lastChanged = 'feed';
+
   function renderSwitcher() {
     var v = VARIANTS[state.variant];
+    var h = Hero.variants[Hero.current];
+    var note = lastChanged === 'hero' ? h : v;
     switcher.innerHTML =
+      '<span class="variant-switcher__label">Hero</span>' +
+      '<div class="variant-switcher__buttons" role="group" aria-label="Hero layout">' +
+        Object.keys(Hero.variants).map(function (k) {
+          return '<button type="button" data-hero="' + k + '" aria-pressed="' + (k === Hero.current) + '">' +
+            k + '<span class="visually-hidden"> ' + Hero.variants[k].name + '</span></button>';
+        }).join('') +
+      '</div>' +
+      '<span class="variant-switcher__label">Feed</span>' +
       '<div class="variant-switcher__buttons" role="group" aria-label="Filter layout">' +
         Object.keys(VARIANTS).map(function (k) {
           return '<button type="button" data-variant="' + k + '" aria-pressed="' + (k === state.variant) + '">' +
             k.toUpperCase() + '<span class="visually-hidden"> ' + VARIANTS[k].name + '</span></button>';
         }).join('') +
       '</div>' +
-      '<p class="variant-switcher__note"><strong>' + v.name + '.</strong> ' + v.note + '</p>' +
+      '<p class="variant-switcher__note" title="' + note.note + '"><strong>' + note.name + '</strong></p>' +
       '<button type="button" class="variant-switcher__volume" data-volume aria-pressed="' + state.large + '">' +
         (state.large ? D.entriesLarge.length + ' posts' : '20 posts') + '</button>' +
       '<button type="button" class="variant-switcher__volume" data-reveal-toggle aria-pressed="' + revealOn() + '">' +
@@ -393,15 +406,36 @@
     if (ev.target.closest('[data-volume]')) {
       state.large = !state.large;
       D.entries = state.large ? D.entriesLarge : D.entriesSmall;
+      Hero.refresh();
       renderSwitcher();
       render(false);
       return;
     }
+    var hb = ev.target.closest('[data-hero]');
+    if (hb) {
+      lastChanged = 'hero';
+      Hero.set(hb.getAttribute('data-hero'));
+      renderSwitcher();
+      saveHash();
+      window.dispatchEvent(new Event('scroll'));
+      return;
+    }
     var b = ev.target.closest('[data-variant]');
     if (!b) return;
+    lastChanged = 'feed';
     setVariant(b.getAttribute('data-variant'));
-    try { history.replaceState(null, '', '#' + state.variant); } catch (e) { /* sandboxed */ }
+    saveHash();
   });
+
+  // URL hash holds both choices: feed letter, then hero digit (e.g. #b3).
+  function saveHash() {
+    try { history.replaceState(null, '', '#' + state.variant + Hero.current); } catch (e) { /* sandboxed */ }
+  }
+  function readHash() {
+    var h = location.hash.slice(1);
+    if (Hero.variants[h.charAt(1)]) Hero.set(h.charAt(1));
+    return VARIANTS[h.charAt(0)] ? h.charAt(0) : 'a';
+  }
 
   function setVariant(v) {
     if (!VARIANTS[v]) return;
@@ -411,7 +445,7 @@
     render(true);
   }
 
-  window.addEventListener('hashchange', function () { setVariant(location.hash.slice(1)); });
+  window.addEventListener('hashchange', function () { setVariant(readHash()); });
 
   /* ---------- Condensed filter bar ----------
      Pinned to the top of the screen once the full filter block has scrolled
@@ -547,5 +581,14 @@
       '<a href="#" class="feed-more__btn">See all ' + (name ? esc(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span></a>';
   }
 
-  setVariant(VARIANTS[location.hash.slice(1)] ? location.hash.slice(1) : 'a');
+  Hero.init({
+    image: cachedPlaceholder,
+    // Hero links into the feed: select (never toggle off) and jump to results.
+    filter: function (kind, value) {
+      if ((kind === 'client' ? state.client : state.topic) !== value) choose(kind, value);
+      render(true);
+      scrollToResults();
+    }
+  });
+  setVariant(readHash());
 })();

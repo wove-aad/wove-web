@@ -50,8 +50,46 @@
   }
 }
 @media (max-width: 600px) {
-  .hero-bar__logo,
-  .hero-bar__statement { font-size: var(--size-h5); }
+  .hero-bar__logo { font-size: var(--size-h5); }
+  /* Statement runs larger than the logo on phones */
+  .hero-bar__statement { font-size: clamp(2rem, 9vw, 2.5rem); line-height: 1.15; }
+}
+
+
+/* ============================================================
+   HOME CONTEXT
+   One paragraph on what the studio does, between the hero and the
+   feed. Sits in the hero's statement column so the two read together.
+   ============================================================ */
+.home-context__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) auto;
+  column-gap: var(--space-32);
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: var(--space-96) var(--gutter-x) 0;
+}
+.home-context__text {
+  grid-column: 2;
+  max-width: 24em;
+  font-size: var(--size-hero-tagline);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-hero-tagline);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+}
+/* Scroll reveal: each word fades from faint to full as the paragraph
+   rises through the viewport. Set by js/reveal.js. */
+.reveal-word { opacity: var(--o, 1); transition: opacity 120ms linear; }
+
+@media (max-width: 960px) {
+  .home-context__inner { grid-template-columns: 1fr; padding-top: var(--space-64); }
+  .home-context__text { grid-column: 1; }
+}
+@media (max-width: 600px) {
+  .home-context__inner { padding-top: var(--space-48); }
+  .home-context__text { font-size: clamp(1.625rem, 7vw, 2rem); line-height: 1.3; }
 }
 
 
@@ -516,6 +554,7 @@
 }
 .feed-more[hidden] { display: none; }
 .feed-more__count { font-size: var(--size-nav); color: var(--feed-text-muted); }
+.feed-wrap .feed-more__btn { text-decoration: none; }
 .feed-more__btn {
   padding: var(--space-16) var(--space-32);
   border: 1px solid var(--color-black);
@@ -529,3 +568,22 @@
 }
 .feed-more__btn:hover { background: var(--color-black); color: var(--color-white); }
 .feed-more__btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+
+
+/* ============================================================
+   PROCESS BLOCK (placeholder, to be designed)
+   ============================================================ */
+.process-placeholder {
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: 0 var(--gutter-x) var(--space-128);
+}
+.process-placeholder__box {
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  border: 2px dashed var(--color-300);
+  border-radius: var(--radius-lg);
+  color: var(--color-500);
+  font-size: var(--size-nav);
+}

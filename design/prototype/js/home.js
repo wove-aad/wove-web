@@ -18,7 +18,7 @@
   };
 
   var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0 };
-  var PAGE = 12; // cards per "Show more"
+  var LIMIT = 9; // homepage shows a fixed number of cards; the rest live on Our Work
   D.entries = D.entriesSmall;
 
   /* ---------- Placeholder images ---------- */
@@ -361,10 +361,20 @@
       '</div>' +
       '<p class="variant-switcher__note"><strong>' + v.name + '.</strong> ' + v.note + '</p>' +
       '<button type="button" class="variant-switcher__volume" data-volume aria-pressed="' + state.large + '">' +
-        (state.large ? D.entriesLarge.length + ' posts' : '20 posts') + '</button>';
+        (state.large ? D.entriesLarge.length + ' posts' : '20 posts') + '</button>' +
+      '<button type="button" class="variant-switcher__volume" data-reveal-toggle aria-pressed="' + revealOn() + '">' +
+        'Reveal ' + (revealOn() ? 'on' : 'off') + '</button>';
   }
 
+  function revealOn() { return !document.documentElement.hasAttribute('data-reveal-off'); }
+
   switcher.addEventListener('click', function (ev) {
+    if (ev.target.closest('[data-reveal-toggle]')) {
+      document.documentElement.toggleAttribute('data-reveal-off');
+      window.dispatchEvent(new Event('scroll'));
+      renderSwitcher();
+      return;
+    }
     if (ev.target.closest('[data-volume]')) {
       state.large = !state.large;
       D.entries = state.large ? D.entriesLarge : D.entriesSmall;
@@ -392,31 +402,29 @@
 
   var more = document.getElementById('feed-more');
 
-  function render(focusSelected, keepPage) {
+  function render(focusSelected) {
     filters.className = 'filters filters--' + state.variant;
     filters.innerHTML = layouts[state.variant]();
     bindCarousel(focusSelected);
-    renderGrid(keepPage);
+    renderGrid();
   }
 
-  function renderGrid(keepPage) {
+  function renderGrid() {
     var list = entriesFor(state.client, state.topic);
-    if (!keepPage) state.shown = PAGE;
-    var shown = list.slice(0, state.shown);
+    var shown = list.slice(0, LIMIT);
     countEl.textContent = entryWord(list.length);
     grid.innerHTML = list.length
       ? shown.map(card).join('')
       : '<p class="feed-empty">No entries match these filters yet.</p>';
-    more.hidden = list.length <= shown.length;
-    more.innerHTML = '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' +
-      '<button type="button" class="feed-more__btn">Show more</button>';
-  }
 
-  more.addEventListener('click', function (ev) {
-    if (!ev.target.closest('.feed-more__btn')) return;
-    state.shown += PAGE;
-    renderGrid(true);
-  });
+    // "See all" names the active filter, like the live homepage.
+    var name = state.client !== '*' ? csBySlug[state.client].client
+      : state.topic !== '*' ? topicLabel(state.topic) : '';
+    more.hidden = false;
+    more.innerHTML =
+      (list.length > shown.length ? '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' : '') +
+      '<a href="#" class="feed-more__btn">See all ' + (name ? esc(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span></a>';
+  }
 
   setVariant(VARIANTS[location.hash.slice(1)] ? location.hash.slice(1) : 'a');
 })();

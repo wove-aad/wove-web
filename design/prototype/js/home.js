@@ -30,7 +30,7 @@
       state.client = '*';
     }
   }
-  var LIMIT = 9; // homepage shows a fixed number of cards; the rest live on Our Work
+  var LIMIT = 12; // homepage shows a fixed number of cards; the rest live on Our Work
   D.entries = D.entriesSmall;
 
   /* ---------- Placeholder images ---------- */

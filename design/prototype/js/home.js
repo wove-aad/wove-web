@@ -1,11 +1,11 @@
 /* Homepage feed: client carousel filter, topic filters, case study panel and card grid.
-   Four layouts for the filter area, switched with the bar at the bottom of the page
-   (or #a, #b, #c, #d in the URL):
+   Layouts for the filter area, switched with the bar at the bottom of the page
+   (or #a, #b, #d in the URL; C, a single-block layout, was dropped):
    A  Current:     carousel, then a flat row of topic pills.
    B  Linked:      each filter shows counts for the other; a summary of active filters.
-   C  One panel:   carousel, case study and grouped topics in a single block.
    D  Client first: the panel under the carousel always describes the selection and
-                    holds the topic filter for it. */
+                    holds the topic filter for it.
+   The switcher also toggles between the 20-entry sample and a large one. */
 (function () {
   var D = window.WOVE;
   var csBySlug = {};
@@ -14,11 +14,12 @@
   var VARIANTS = {
     a: { name: 'Current', note: 'Carousel, then a separate row of topic pills.' },
     b: { name: 'Linked', note: 'Each filter shows counts for the other, with a summary of what is active.' },
-    c: { name: 'One panel', note: 'Clients, case study and grouped topics in a single block.' },
     d: { name: 'Client first', note: 'Topics sit inside the panel for the selected client.' }
   };
 
-  var state = { client: '*', topic: '*', variant: 'a' };
+  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0 };
+  var PAGE = 12; // cards per "Show more"
+  D.entries = D.entriesSmall;
 
   /* ---------- Placeholder images ---------- */
 
@@ -198,15 +199,6 @@
         (cs ? panelHTML(cs) : '');
     },
 
-    c: function () {
-      var cs = csBySlug[state.client];
-      return '<div class="filter-box">' +
-        carouselHTML({ head: 'Clients' }) +
-        (cs ? panelHTML(cs, { cls: 'case-panel--inset' }) : '') +
-        pillsHTML({ grouped: true, hideEmpty: true, cls: 'topic-groups--rows' }) +
-      '</div>';
-    },
-
     d: function () {
       var cs = csBySlug[state.client];
       var heading = cs ? 'Explore ' + esc(cs.client) + ' by topic' : 'Explore by topic';
@@ -244,7 +236,10 @@
       savedScroll = track.scrollLeft;
       var max = maxScroll();
       slider.value = max > 0 ? Math.round(track.scrollLeft / max * 1000) : 0;
-      slider.style.setProperty('--fill', (slider.value / 10) + '%');
+      // The bar marks the part of the client list currently in view.
+      var total = track.scrollWidth || 1;
+      slider.style.setProperty('--from', (track.scrollLeft / total * 100) + '%');
+      slider.style.setProperty('--to', ((track.scrollLeft + track.clientWidth) / total * 100) + '%');
       filters.querySelectorAll('.client-carousel__arrow').forEach(function (b) {
         var dir = +b.getAttribute('data-step');
         b.disabled = dir < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2;
@@ -364,10 +359,19 @@
             k.toUpperCase() + '<span class="visually-hidden"> ' + VARIANTS[k].name + '</span></button>';
         }).join('') +
       '</div>' +
-      '<p class="variant-switcher__note"><strong>' + v.name + '.</strong> ' + v.note + '</p>';
+      '<p class="variant-switcher__note"><strong>' + v.name + '.</strong> ' + v.note + '</p>' +
+      '<button type="button" class="variant-switcher__volume" data-volume aria-pressed="' + state.large + '">' +
+        (state.large ? D.entriesLarge.length + ' posts' : '20 posts') + '</button>';
   }
 
   switcher.addEventListener('click', function (ev) {
+    if (ev.target.closest('[data-volume]')) {
+      state.large = !state.large;
+      D.entries = state.large ? D.entriesLarge : D.entriesSmall;
+      renderSwitcher();
+      render(false);
+      return;
+    }
     var b = ev.target.closest('[data-variant]');
     if (!b) return;
     setVariant(b.getAttribute('data-variant'));
@@ -386,17 +390,33 @@
 
   /* ---------- Render ---------- */
 
-  function render(focusSelected) {
+  var more = document.getElementById('feed-more');
+
+  function render(focusSelected, keepPage) {
     filters.className = 'filters filters--' + state.variant;
     filters.innerHTML = layouts[state.variant]();
     bindCarousel(focusSelected);
+    renderGrid(keepPage);
+  }
 
+  function renderGrid(keepPage) {
     var list = entriesFor(state.client, state.topic);
+    if (!keepPage) state.shown = PAGE;
+    var shown = list.slice(0, state.shown);
     countEl.textContent = entryWord(list.length);
     grid.innerHTML = list.length
-      ? list.map(card).join('')
+      ? shown.map(card).join('')
       : '<p class="feed-empty">No entries match these filters yet.</p>';
+    more.hidden = list.length <= shown.length;
+    more.innerHTML = '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' +
+      '<button type="button" class="feed-more__btn">Show more</button>';
   }
+
+  more.addEventListener('click', function (ev) {
+    if (!ev.target.closest('.feed-more__btn')) return;
+    state.shown += PAGE;
+    renderGrid(true);
+  });
 
   setVariant(VARIANTS[location.hash.slice(1)] ? location.hash.slice(1) : 'a');
 })();

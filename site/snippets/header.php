@@ -2,6 +2,8 @@
 /**
  * Global site header — doctype/head + skip link + main nav
  * Usage: <?php snippet('header') ?>
+ * Pass ['nav' => false] to leave out the main nav (the homepage hero carries
+ * its own logo, links and contact button).
  * Lifted from the Labs service-page prototype (Pass 2) so every template
  * shares one nav. `aria-current="page"` is set dynamically by comparing
  * $page's id against each link's page id, rather than hardcoding it per
@@ -26,7 +28,9 @@ $isCurrent = fn ($id) => $currentId === $id ? ' aria-current="page"' : '';
 // SEO tab fields (site/blueprints/tabs/seo.yml) — all optional, sensible fallbacks.
 // A meta title equal to the slug is treated as empty: Wove Mind entries
 // used to be created with the `{{ page.title }}` default resolved to it.
-$seoTitle       = $page->seoTitle()->value() === $page->slug() ? '' : $page->seoTitle()->value();
+// Cast: a page with no stored meta title gives null, which would skip the fallback.
+$seoTitle       = (string) $page->seoTitle()->value();
+$seoTitle       = $seoTitle === $page->slug() ? '' : $seoTitle;
 $seoTitle       = $seoTitle !== '' ? $seoTitle : $page->title()->value();
 $seoDescription = $page->seoDescription();
 // Wove Mind entries fall back to the start of the post, matching the
@@ -81,6 +85,7 @@ $ogType = $page->ogtype()->or('website')->value();
 
 <a href="#main" class="skip-link">Skip to main content</a>
 
+<?php if ($nav ?? true): ?>
 <!-- NAV -->
 <nav class="nav<?= $hasCurrent ? ' nav--has-current' : '' ?>" aria-label="Main navigation">
   <a href="/" class="nav__logo" aria-label="Wove, go to homepage">wove</a>
@@ -91,3 +96,4 @@ $ogType = $page->ogtype()->or('website')->value();
   </ul>
   <a href="/contact" class="nav__cta"<?= $isCurrent($ctaId) ?>>Get in touch</a>
 </nav>
+<?php endif ?>

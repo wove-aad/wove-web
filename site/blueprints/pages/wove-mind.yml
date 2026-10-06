@@ -13,11 +13,18 @@ tabs:
           hero:
             type: fields
             fields:
-              tagline:
-                label: Hero tagline
+              headline:
+                label: Hero statement
                 type: text
-                default: The studio thinking out loud
-                help: Shown under the page title in the hero.
+                placeholder: Shaping a better Ireland through strategic design and technology
+                help: The opening line of the homepage hero, set in bold grey. Leave empty to use the placeholder text.
+              intro:
+                label: Hero description
+                type: textarea
+                size: small
+                buttons: false
+                placeholder: We help the people running Ireland’s public services, cultural institutions and mission-led organisations move from strategy to delivery.
+                help: Follows the statement in the same paragraph. Leave empty to use the placeholder text.
 
           listed:
             extends: sections/wove-mind-entries

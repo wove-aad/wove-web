@@ -1,7 +1,7 @@
 <?php
 /**
- * Responsive image: a <picture> with a WebP source and a fallback <img> in
- * the original format, both with srcset and sizes.
+ * Responsive image: a <picture> with AVIF and WebP sources and a fallback
+ * <img> in the original format, all with srcset and sizes.
  *
  * Usage:
  *   <?php snippet('picture', [
@@ -14,12 +14,18 @@
  *     'loading' => 'lazy',             // 'eager' for images in the first viewport
  *     'fetchpriority' => null,         // 'high' for the hero image
  *     'attrs'  => [],                  // any other <img> attributes
+ *     'avifQuality' => 60,             // AVIF needs a lower number than JPEG/WebP
  *   ]) ?>
  *
  * - Widths larger than the original (or than the crop allows) are dropped,
  *   so images are never upscaled.
  * - SVGs, GIFs (to keep animation) and other files Kirby can't resize are
  *   output as a plain <img> of the original.
+ * - The AVIF source is only output when the thumbs driver can encode AVIF
+ *   (GD built with AVIF support, or Imagick with an AVIF codec). Kirby
+ *   throws when asked for a format the driver can't write, and browsers
+ *   don't fall back from a <source> that fails to load. Set the
+ *   'picture.avif' option to true or false to override the check.
  * - `picture { display: contents }` in site.css keeps the wrapper out of
  *   layout, so existing `.parent img` and flex/grid rules still apply.
  */
@@ -36,6 +42,16 @@ $loading       = $loading ?? 'lazy';
 $fetchpriority = $fetchpriority ?? null;
 $quality       = $quality ?? null;
 $attrs         = $attrs ?? [];
+$avifQuality   = $avifQuality ?? 60;
+
+$avif = option('picture.avif');
+if ($avif === null) {
+  $avif = match (option('thumbs.driver', 'gd')) {
+    'gd'      => function_exists('imageavif') && (gd_info()['AVIF Support'] ?? false),
+    'imagick' => class_exists('Imagick') && \Imagick::queryFormats('AVIF') !== [],
+    default   => false,
+  };
+}
 
 // Builds the <img> tag by hand: Html::tag() drops empty attributes, and
 // decorative images need alt="".
@@ -85,9 +101,12 @@ $options = function (int $w, ?string $format = null) use ($ratio, $quality) {
   return $o;
 };
 
-$set = function (?string $format = null) use ($file, $widths, $options) {
+$set = function (?string $format = null) use ($file, $widths, $options, $avifQuality) {
   $list = [];
-  foreach ($widths as $w) $list[$w . 'w'] = $options($w, $format);
+  foreach ($widths as $w) {
+    $list[$w . 'w'] = $options($w, $format);
+    if ($format === 'avif') $list[$w . 'w']['quality'] = $avifQuality;
+  }
   return $file->srcset($list);
 };
 
@@ -97,6 +116,9 @@ $fallback      = $file->thumb($options($fallbackWidth));
 $height        = (int) round($ratio ? $fallbackWidth / $ratio : $fallbackWidth * $file->height() / $file->width());
 ?>
 <picture>
+  <?php if ($avif && $file->extension() !== 'avif'): ?>
+  <source type="image/avif" srcset="<?= $set('avif') ?>" sizes="<?= html($sizes) ?>">
+  <?php endif ?>
   <?php if ($file->extension() !== 'webp'): ?>
   <source type="image/webp" srcset="<?= $set('webp') ?>" sizes="<?= html($sizes) ?>">
   <?php endif ?>

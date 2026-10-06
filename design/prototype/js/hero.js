@@ -11,7 +11,7 @@
 (function () {
   var D = window.WOVE;
   var helpers = null;
-  var current = '1';
+  var current = '2'; // chosen direction; the others stay in the switcher for reference
   var open = null; // explainer phrase currently open
 
   var VARIANTS = {

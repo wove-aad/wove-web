@@ -17,7 +17,11 @@ $tags     = implode(',', array_filter($caseStudy->impactAreas()->split(',')));
 
   <div class="work-grid-card__media">
     <?php if ($image): ?>
-      <img src="<?= $image->url() ?>" alt="" width="640" height="427" loading="lazy">
+      <?php snippet('picture', [
+        'file'   => $image,
+        'widths' => [320, 480, 640, 960, 1280],
+        'sizes'  => '(min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
+      ]) ?>
     <?php endif ?>
   </div>
 

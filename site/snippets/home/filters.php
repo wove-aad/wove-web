@@ -26,7 +26,13 @@ $entryWord = fn ($n) => $n . ' entr' . ($n === 1 ? 'y' : 'ies');
         <li class="client-card">
           <button type="button" class="client-card__btn" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
             <?php if ($image): ?>
-              <img class="client-card__img" src="<?= $image->crop(640, 512)->url() ?>" alt="" loading="lazy">
+              <?php snippet('picture', [
+                'file'   => $image,
+                'widths' => [320, 480, 640, 960],
+                'ratio'  => 5 / 4,
+                'sizes'  => '(min-width: 961px) 20vw, (min-width: 601px) 40vw, 70vw',
+                'class'  => 'client-card__img',
+              ]) ?>
             <?php endif ?>
             <span class="client-card__logo">
               <?php if ($logo): ?>
@@ -67,7 +73,12 @@ $entryWord = fn ($n) => $n . ' entr' . ($n === 1 ? 'y' : 'ies');
     <section class="case-panel" data-panel="cs:<?= html($client['slug']) ?>" aria-label="Case study: <?= html($client['name']) ?>" hidden>
       <div class="case-panel__media">
         <?php if ($image): ?>
-          <img src="<?= $image->crop(900, 720)->url() ?>" alt="" loading="lazy">
+          <?php snippet('picture', [
+            'file'   => $image,
+            'widths' => [480, 640, 900, 1200],
+            'ratio'  => 5 / 4,
+            'sizes'  => '(min-width: 961px) 40vw, 100vw',
+          ]) ?>
         <?php endif ?>
         <span class="case-panel__logo">
           <?php if ($logo): ?>

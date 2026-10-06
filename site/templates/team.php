@@ -44,7 +44,12 @@ $intro       = $page->intro()->or('The people behind the work.')->value();
         <button class="team-card__toggle" type="button" aria-expanded="false" aria-controls="<?= html($slug) ?>-details">
           <span class="team-card__photo">
             <?php if ($avatar): ?>
-              <img src="<?= $avatar->crop(600, 600)->url() ?>" alt="" loading="lazy">
+              <?php snippet('picture', [
+                'file'   => $avatar,
+                'widths' => [300, 450, 600, 900],
+                'ratio'  => 1,
+                'sizes'  => '(min-width: 1280px) 20rem, (min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
+              ]) ?>
             <?php else: ?>
               <span class="team-card__initials"><?= html($initials) ?></span>
             <?php endif ?>

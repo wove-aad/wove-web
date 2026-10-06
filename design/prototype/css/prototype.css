@@ -120,8 +120,8 @@
 .client-card__btn[aria-pressed="true"] {
   box-shadow: 0 0 0 3px var(--feed-bg), 0 0 0 6px var(--color-black);
 }
-.client-card__btn[aria-pressed="true"]::after {
-  content: "✓";
+.client-card__btn[aria-pressed="true"]:not([data-client="*"])::after {
+  content: "×";
   position: absolute;
   top: var(--space-16); right: var(--space-16);
   width: 2rem; height: 2rem;
@@ -733,4 +733,14 @@
   .filter-bar__menu-btn { width: 2.25rem; height: 2.25rem; }
   .filter-bar__inner { gap: var(--space-12); }
 }
+
+
+/* Active filters show ×: selecting again clears them. Not on "All". */
+.feed-wrap .tag-pill.is-active:not([data-topic="*"])::after,
+.bar-chip[aria-pressed="true"]:not([data-client="*"])::after {
+  content: "×";
+  margin-left: 0.4rem;
+  font-size: 1.1em;
+  line-height: 1;
 }
+.bar-chip[aria-pressed="true"]:not([data-client="*"]) .bar-chip__count { display: none; }

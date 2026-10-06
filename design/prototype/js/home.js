@@ -215,10 +215,12 @@
     if (client) {
       choose('client', client.getAttribute('data-client'));
       render(true);
+      restoreFocus(client);
       scrollToResults();
     } else if (pill) {
       choose('topic', pill.getAttribute('data-topic'));
       render(false);
+      restoreFocus(pill);
       scrollToResults();
     } else if (arrow) {
       var track = filters.querySelector('.client-carousel__track');
@@ -254,14 +256,13 @@
     if (tag.hasAttribute('data-client')) choose('client', tag.getAttribute('data-client'));
     if (tag.hasAttribute('data-topic')) choose('topic', tag.getAttribute('data-topic'));
     render(true);
+    // The tag itself is gone; move focus to the matching filter control.
+    restoreFocus(tag);
     scrollToResults();
   });
 
-  // Masonry columns depend on width.
-  var lastColumns = 0;
-  window.addEventListener('resize', function () {
-    if (Cards.columnCount() !== lastColumns) renderGrid();
-  });
+  // Row spans depend on card heights, which change with width.
+  if (window.ResizeObserver) new ResizeObserver(function () { Cards.layout(grid); }).observe(grid);
 
   function renderGrid() {
     var list = entriesFor(state.client, state.topic);
@@ -270,7 +271,7 @@
     grid.innerHTML = list.length
       ? Cards.masonry(shown.map(function (e) { return Cards.render(e, cardCtx); }))
       : '<p class="feed-empty">No entries match these filters yet.</p>';
-    lastColumns = Cards.columnCount();
+    Cards.layout(grid);
 
     // "See all" names the active filter, like the live homepage.
     var name = state.client !== '*' ? csBySlug[state.client].client
@@ -429,10 +430,24 @@
     if (chip.hasAttribute('data-client')) choose('client', chip.getAttribute('data-client'));
     else choose('topic', chip.getAttribute('data-topic'));
     render(true);
+    restoreFocus(chip);
     scrollToResults();
   });
 
   /* ---------- Render ---------- */
+
+  // Filters re-render, which would drop keyboard focus to the page. Put it
+  // back on the same control, without scrolling (the page scroll handles that).
+  function restoreFocus(origin) {
+    if (!origin) return;
+    var sel = origin.hasAttribute('data-client')
+      ? '[data-client="' + origin.getAttribute('data-client') + '"]'
+      : '[data-topic="' + origin.getAttribute('data-topic') + '"]';
+    // Bar chips refocus in the bar; carousel, pills and card tags in the filters.
+    var scope = origin.closest('#filter-bar') ? bar : filters;
+    var el = scope.querySelector(sel);
+    if (el) el.focus({ preventScroll: true });
+  }
 
   function render(focusSelected) {
     var cs = csBySlug[state.client];

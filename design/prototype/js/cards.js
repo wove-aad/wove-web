@@ -4,8 +4,9 @@
    - long reads are image-led editorial cards with a reading time;
    - What Ifs lead with the question, set larger, on a pale blue card;
    - threads are the workhorse: compact, title and meta, small thumbnail.
-   Cards flow into columns (masonry) so mixed image shapes sit without gaps;
-   order runs left to right along each row. */
+   Cards sit in a grid in recency order (so reading and tab order match),
+   each spanning rows by its height, so mixed image shapes pack without
+   gaps. */
 (function () {
   var LABELS = { spark: 'Spark', thread: 'Thread', whatif: 'What If', longread: 'Long Read' };
 
@@ -72,14 +73,16 @@
     return w >= 960 ? 3 : w >= 600 ? 2 : 1;
   }
 
-  // Deal cards into columns left to right, so recency reads along each row.
-  function masonry(htmlList) {
-    var n = columnCount();
-    var cols = [];
-    for (var c = 0; c < n; c++) cols.push([]);
-    htmlList.forEach(function (h, i) { cols[i % n].push(h); });
-    return cols.map(function (col) { return '<div class="pc-col">' + col.join('') + '</div>'; }).join('');
+  // Cards in DOM order; layout() sizes each one's row span.
+  function masonry(htmlList) { return htmlList.join(''); }
+
+  var ROW = 4;   // px, matches grid-auto-rows
+  var GAP = 24;  // px, vertical space between cards
+  function layout(grid) {
+    [].forEach.call(grid.querySelectorAll('.pc'), function (el) {
+      el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + GAP) / ROW);
+    });
   }
 
-  window.WoveCards = { render: render, masonry: masonry, columnCount: columnCount };
+  window.WoveCards = { render: render, masonry: masonry, layout: layout, columnCount: columnCount };
 })();

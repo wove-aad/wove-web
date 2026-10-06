@@ -167,7 +167,7 @@
   /* Post format colours (prototype), from the Wove Mind Panel tokens */
   --format-spark:         #c6841e;
   --format-spark-tint:    #f7ecd3;
-  --format-thread:        #2f7a57;
+  --format-thread:        #256446; /* darker than the Panel's #2f7a57 for 4.5:1 on its tint */
   --format-thread-tint:   #e1eee7;
   --format-whatif:        #2a50f3;
   --format-whatif-tint:   #ebf0fe;

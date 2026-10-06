@@ -112,7 +112,7 @@ $partner = $page->strategy_partner()->toUser();
           <div class="contact-partner">
             <div class="contact-partner__avatar">
               <?php if ($avatar = $partner->avatar()): ?>
-                <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+                <?php snippet('picture', ['file' => $avatar, 'widths' => [48, 96], 'ratio' => 1, 'sizes' => '48px']) ?>
               <?php endif ?>
             </div>
             <div>

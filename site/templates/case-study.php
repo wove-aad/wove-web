@@ -90,7 +90,15 @@ $next = $page->nextListed();
   <?php if ($heroImage): ?>
     <div class="cs-hero-image">
       <div class="cs-hero-image__inner">
-        <img src="<?= $heroImage->url() ?>" alt="<?= $page->eyebrow()->html() ?>" loading="eager">
+        <?php snippet('picture', [
+          'file'          => $heroImage,
+          'widths'        => [640, 960, 1280, 1600, 2000, 2560],
+          'ratio'         => 21 / 9,
+          'sizes'         => '(min-width: 85rem) 79rem, calc(100vw - 2rem)',
+          'alt'           => $page->eyebrow()->value(),
+          'loading'       => 'eager',
+          'fetchpriority' => 'high',
+        ]) ?>
       </div>
     </div>
   <?php endif ?>
@@ -174,7 +182,7 @@ $next = $page->nextListed();
           <div class="cs-team__member">
             <div class="cs-team__avatar">
               <?php if ($avatar): ?>
-                <img src="<?= $avatar->url() ?>" alt="" width="40" height="40" loading="lazy">
+                <?php snippet('picture', ['file' => $avatar, 'widths' => [40, 80], 'ratio' => 1, 'sizes' => '40px', 'attrs' => ['width' => 40, 'height' => 40]]) ?>
               <?php endif ?>
             </div>
             <div class="cs-team__name"><?= $member->name()->html() ?></div>

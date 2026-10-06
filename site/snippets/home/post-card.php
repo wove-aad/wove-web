@@ -29,7 +29,6 @@ $dateLabel    = match (true) {
 
 $excerpt = $post->body()->isNotEmpty() ? $post->body()->excerpt(160) : '';
 $ratio   = $image && $image->height() ? $image->width() . ' / ' . $image->height() : null;
-$src     = $image ? $image->resize(800)->url() : null;
 
 // Reading time for long reads, from the body and blocks text.
 $minutes = null;
@@ -42,7 +41,11 @@ $labels = ['spark' => 'Spark', 'thread' => 'Thread', 'whatif' => 'What If', 'lon
 $linked = $format !== 'spark';
 
 $media = $image
-  ? '<div class="pc__media" style="aspect-ratio: ' . $ratio . '"><img src="' . $src . '" alt="" loading="lazy" width="' . $image->width() . '" height="' . $image->height() . '"></div>'
+  ? '<div class="pc__media" style="aspect-ratio: ' . $ratio . '">' . snippet('picture', [
+      'file'   => $image,
+      'widths' => [320, 480, 640, 960, 1280],
+      'sizes'  => '(min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
+    ], true) . '</div>'
   : '';
 $meta = function () use ($author, $postMidnight, $dateLabel) { ?>
   <p class="pc__meta">
@@ -71,7 +74,7 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
       <div class="pc__row">
         <?php $title() ?>
         <?php if ($image): ?>
-          <img class="pc__thumb" src="<?= $image->resize(240)->url() ?>" alt="" loading="lazy" style="aspect-ratio: <?= $ratio ?>">
+          <?php snippet('picture', ['file' => $image, 'widths' => [120, 240], 'sizes' => '7rem', 'class' => 'pc__thumb', 'attrs' => ['style' => 'aspect-ratio: ' . $ratio]]) ?>
         <?php endif ?>
       </div>
       <?php $meta() ?>

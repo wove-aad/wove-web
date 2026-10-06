@@ -132,11 +132,21 @@ foreach ($usedTags as $slug => $label) {
 }
 foreach ($caseStudies as $cs) {
   $heroImg = $cs->caseStudyImages()->toFile();
+  // WebP srcset for the hero image the script swaps in (21:9 box, cropped by CSS)
+  $heroSrcset = null;
+  if ($heroImg && $heroImg->isResizable()) {
+    $set = [];
+    foreach ([640, 960, 1280, 1600, 2000, 2560] as $w) {
+      if ($w <= $heroImg->width()) $set[$w . 'w'] = ['width' => $w, 'format' => 'webp'];
+    }
+    $heroSrcset = $set ? $heroImg->srcset($set) : null;
+  }
   $heroData['caseStudies'][$cs->slug()] = [
     'eyebrow'  => $cs->eyebrow()->value() ?: '',
     'title'    => strip_tags($cs->heroTitle()->value() ?: $cs->title()->value()),
     'subtitle' => $cs->subStatement()->value() ?: '',
-    'image'    => $heroImg ? $heroImg->url() : null,
+    'image'    => $heroImg ? $heroImg->thumb(['width' => min(1280, $heroImg->width())])->url() : null,
+    'srcset'   => $heroSrcset,
     'url'      => $cs->url(),
   ];
 }
@@ -159,7 +169,7 @@ $totalCount = count($feedItems);
 
   <div class="feed-hero-image" id="feed-hero-image" hidden>
     <div class="feed-hero-image__inner">
-      <img id="feed-hero-img" src="" alt="">
+      <img id="feed-hero-img" src="" alt="" sizes="(min-width: 85rem) 79rem, calc(100vw - 2rem)">
     </div>
   </div>
 
@@ -351,6 +361,7 @@ $totalCount = count($feedItems);
       var isCS = parts2[0] === 'cs';
       var csSlug = parts2.slice(1).join(':');
       if (isCS && data.caseStudies && data.caseStudies[csSlug] && data.caseStudies[csSlug].image) {
+        heroImg.srcset = data.caseStudies[csSlug].srcset || '';
         heroImg.src = data.caseStudies[csSlug].image;
         heroImg.alt = data.caseStudies[csSlug].eyebrow || '';
         heroImageWrap.hidden = false;

@@ -221,6 +221,10 @@
   /* ---------- Mount ---------- */
 
   var filters = document.getElementById('filters');
+  var desktop = window.matchMedia('(min-width: 960px)');
+  function behaviour() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
   var grid = document.getElementById('feed-grid');
   var countEl = document.getElementById('feed-count');
   var savedScroll = 0;
@@ -254,7 +258,10 @@
       if (active) {
         var li = active.parentElement;
         if (li.offsetLeft < track.scrollLeft || li.offsetLeft + li.offsetWidth > track.scrollLeft + track.clientWidth) {
-          track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+          // On desktop the page scrolls down to the results straight after, and
+          // two smooth scrolls at once can cancel each other (Safari), so this
+          // one jumps.
+          track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: desktop.matches ? 'auto' : behaviour() });
         }
       }
     }
@@ -268,19 +275,18 @@
   // - phones: bring the top of the feed section (heading and carousel) back
   //   into view if the reader has scrolled past it.
   var feedTop = document.getElementById('feed');
-  var desktop = window.matchMedia('(min-width: 960px)');
-  function behaviour() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-  }
   function scrollToFeedTop() {
     if (desktop.matches) return scrollToResults();
     if (feedTop.getBoundingClientRect().top >= 0) return;
     feedTop.scrollIntoView({ behavior: behaviour(), block: 'start' });
   }
   function scrollToResults() {
-    var target = filters.querySelector('.case-panel:not(.case-panel--intro)') || grid;
-    var y = target.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 24;
-    window.scrollTo({ top: y, behavior: behaviour() });
+    // Wait a frame so the re-rendered filters and cards have laid out.
+    requestAnimationFrame(function () {
+      var target = filters.querySelector('.case-panel:not(.case-panel--intro)') || grid;
+      var y = target.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 24;
+      window.scrollTo({ top: Math.max(0, y), behavior: behaviour() });
+    });
   }
 
   filters.addEventListener('click', function (ev) {
@@ -432,10 +438,14 @@
         return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
       }).join('');
     return '<div class="filter-bar__inner">' +
+      '<div class="filter-bar__track">' +
+      '<button type="button" class="filter-bar__arrow filter-bar__arrow--prev" data-bar-step="-1" aria-label="Scroll filters left" tabindex="-1">&larr;</button>' +
       '<div class="filter-bar__scroll">' +
         '<div class="filter-bar__group" role="group" aria-label="Clients">' + clients + '</div>' +
         '<span class="filter-bar__divider" aria-hidden="true"></span>' +
         '<div class="filter-bar__group" role="group" aria-label="Topics">' + topics + '</div>' +
+      '</div>' +
+      '<button type="button" class="filter-bar__arrow filter-bar__arrow--next" data-bar-step="1" aria-label="Scroll filters right" tabindex="-1">&rarr;</button>' +
       '</div>' +
       '<span class="filter-bar__count">' + entryWord(entriesFor(state.client, state.topic).length) + '</span>' +
     '</div>';
@@ -445,8 +455,21 @@
     var scroller = bar.querySelector('.filter-bar__scroll');
     var left = scroller ? scroller.scrollLeft : 0;
     bar.innerHTML = barHTML();
-    bar.querySelector('.filter-bar__scroll').scrollLeft = left;
+    scroller = bar.querySelector('.filter-bar__scroll');
+    scroller.scrollLeft = left;
+    scroller.addEventListener('scroll', syncBarEdges, { passive: true });
+    syncBarEdges();
   }
+
+  // Fades and arrows show only on a side with more to scroll.
+  function syncBarEdges() {
+    var sc = bar.querySelector('.filter-bar__scroll');
+    var track = bar.querySelector('.filter-bar__track');
+    if (!sc) return;
+    track.classList.toggle('has-left', sc.scrollLeft > 2);
+    track.classList.toggle('has-right', sc.scrollLeft < sc.scrollWidth - sc.clientWidth - 2);
+  }
+  window.addEventListener('resize', syncBarEdges);
 
   // The last filter control in the full block (the case study panel doesn't count).
   function controlsBottom() {
@@ -462,6 +485,7 @@
     if (show === barShown) return;
     barShown = show;
     bar.classList.toggle('is-visible', show);
+    syncBarEdges();
     bar.inert = !show;
   }
 
@@ -474,6 +498,12 @@
   if (desktop.addEventListener) desktop.addEventListener('change', updateBar);
 
   bar.addEventListener('click', function (ev) {
+    var arrow = ev.target.closest('[data-bar-step]');
+    if (arrow) {
+      var sc = bar.querySelector('.filter-bar__scroll');
+      sc.scrollBy({ left: +arrow.getAttribute('data-bar-step') * sc.clientWidth * 0.6, behavior: behaviour() });
+      return;
+    }
     var chip = ev.target.closest('.bar-chip');
     if (!chip) return;
     if (chip.hasAttribute('data-client')) {

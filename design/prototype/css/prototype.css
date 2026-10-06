@@ -623,19 +623,46 @@
   margin: 0 auto;
   padding: var(--space-12) var(--gutter-x);
 }
-.filter-bar__scroll {
+.filter-bar__track {
+  --fade-l: 0rem;
+  --fade-r: 0rem;
+  position: relative;
   flex: 1;
   min-width: 0;
+}
+.filter-bar__track.has-left  { --fade-l: 6rem; }
+.filter-bar__track.has-right { --fade-r: 6rem; }
+.filter-bar__scroll {
   display: flex;
   align-items: center;
   gap: var(--space-16);
   overflow-x: auto;
   scrollbar-width: none;
-  /* Fade the edges so it reads as scrollable */
-  mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
-  padding-inline: 1rem;
-  margin-inline: -1rem;
+  /* Fade whichever edge has more to scroll */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
+.filter-bar__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 2.25rem; height: 2.25rem;
+  margin-top: -1.125rem;
+  border: 1px solid var(--color-300);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+  box-shadow: var(--shadow-md);
+  font-size: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+.filter-bar__arrow--prev { left: 0; }
+.filter-bar__arrow--next { right: 0; }
+.has-left  > .filter-bar__arrow--prev,
+.has-right > .filter-bar__arrow--next { opacity: 1; pointer-events: auto; }
+.filter-bar__arrow:hover { background: var(--color-black); color: var(--color-white); }
 .filter-bar__scroll::-webkit-scrollbar { display: none; }
 .filter-bar__group { display: flex; gap: var(--space-8, 0.5rem); flex-shrink: 0; }
 .filter-bar__divider { flex: 0 0 1px; align-self: stretch; margin-block: 0.25rem; background: var(--color-300); }

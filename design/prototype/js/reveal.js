@@ -1,8 +1,8 @@
 /* Scroll reveal for [data-reveal] paragraphs.
    Words go from faint to full opacity, in reading order, as the paragraph
-   rises from the bottom of the viewport until its last line is 65% of the
-   way down. Where the paragraph already sits that high on load (most
-   desktop screens), it shows in full and nothing animates. The text
+   rises from the bottom of the viewport until its top is 20% of the way
+   down. On most screens the paragraph loads partly revealed and completes
+   over the first few hundred pixels of scroll. The text
    is in the HTML and fully visible without JS; with reduced motion, or when
    the prototype switcher turns it off, it stays fully visible. */
 (function () {
@@ -28,8 +28,8 @@
       if (off()) { words.forEach(function (w) { w.style.removeProperty('--o'); }); return; }
       var r = el.getBoundingClientRect();
       // 0 when the top of the paragraph reaches the bottom of the screen,
-      // 1 when its bottom reaches 65% of the way down.
-      var endTop = vh * 0.65 - r.height;
+      // 1 when its top reaches 20% of the way down.
+      var endTop = vh * 0.2;
       var p = Math.min(1, Math.max(0, (vh - r.top) / (vh - endTop)));
       // Spread the words across the progress, with a little overlap.
       var n = words.length;

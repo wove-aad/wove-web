@@ -262,13 +262,25 @@
 
   window.addEventListener('resize', function () { bindCarousel(false); });
 
-  // After any filter change, bring the top of the feed section (heading and
-  // carousel) back into view if the reader has scrolled past it.
+  // After a filter change:
+  // - desktop: scroll to the top of the filtered results (case study panel,
+  //   or the first cards), with the condensed filter bar pinned above;
+  // - phones: bring the top of the feed section (heading and carousel) back
+  //   into view if the reader has scrolled past it.
   var feedTop = document.getElementById('feed');
+  var desktop = window.matchMedia('(min-width: 960px)');
+  function behaviour() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
   function scrollToFeedTop() {
+    if (desktop.matches) return scrollToResults();
     if (feedTop.getBoundingClientRect().top >= 0) return;
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    feedTop.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    feedTop.scrollIntoView({ behavior: behaviour(), block: 'start' });
+  }
+  function scrollToResults() {
+    var target = filters.querySelector('.case-panel:not(.case-panel--intro)') || grid;
+    var y = target.getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 24;
+    window.scrollTo({ top: y, behavior: behaviour() });
   }
 
   filters.addEventListener('click', function (ev) {
@@ -398,6 +410,84 @@
 
   window.addEventListener('hashchange', function () { setVariant(location.hash.slice(1)); });
 
+  /* ---------- Condensed filter bar (desktop) ----------
+     Pinned to the top of the screen once the full filter block has scrolled
+     away, while the feed is on screen. Clients and topics share one row. */
+
+  var bar = document.getElementById('filter-bar');
+  var barShown = false;
+
+  function barHTML() {
+    var clients = [null].concat(D.caseStudies).map(function (cs, i) {
+      var slug = cs ? cs.slug : '*';
+      var n = entriesFor(slug, '*').length;
+      return '<button type="button" class="bar-chip bar-chip--client" data-client="' + slug + '" aria-pressed="' + (state.client === slug) + '">' +
+        (cs ? '<img class="bar-chip__thumb" src="' + cachedPlaceholder('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
+        esc(cs ? cs.client : 'All work') + ' <span class="bar-chip__count">' + n + '</span></button>';
+    }).join('');
+    // Topics narrow to the selected client, as in the full filter block.
+    var topics = TOPIC_GROUPS.reduce(function (acc, g) { return acc.concat(g.items); }, [])
+      .filter(function (t) { return entriesFor(state.client, t).length > 0; })
+      .map(function (t) {
+        return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
+      }).join('');
+    return '<div class="filter-bar__inner">' +
+      '<div class="filter-bar__scroll">' +
+        '<div class="filter-bar__group" role="group" aria-label="Clients">' + clients + '</div>' +
+        '<span class="filter-bar__divider" aria-hidden="true"></span>' +
+        '<div class="filter-bar__group" role="group" aria-label="Topics">' + topics + '</div>' +
+      '</div>' +
+      '<span class="filter-bar__count">' + entryWord(entriesFor(state.client, state.topic).length) + '</span>' +
+    '</div>';
+  }
+
+  function renderBar() {
+    var scroller = bar.querySelector('.filter-bar__scroll');
+    var left = scroller ? scroller.scrollLeft : 0;
+    bar.innerHTML = barHTML();
+    bar.querySelector('.filter-bar__scroll').scrollLeft = left;
+  }
+
+  // The last filter control in the full block (the case study panel doesn't count).
+  function controlsBottom() {
+    var controls = [].filter.call(filters.children, function (el) { return !el.classList.contains('case-panel'); });
+    var last = controls[controls.length - 1];
+    return last ? last.getBoundingClientRect().bottom : 0;
+  }
+
+  function updateBar() {
+    var show = desktop.matches &&
+      controlsBottom() < bar.offsetHeight &&
+      grid.getBoundingClientRect().bottom > bar.offsetHeight + 80;
+    if (show === barShown) return;
+    barShown = show;
+    bar.classList.toggle('is-visible', show);
+    bar.inert = !show;
+  }
+
+  var barTick = false;
+  window.addEventListener('scroll', function () {
+    if (barTick) return;
+    barTick = true;
+    requestAnimationFrame(function () { barTick = false; updateBar(); });
+  }, { passive: true });
+  if (desktop.addEventListener) desktop.addEventListener('change', updateBar);
+
+  bar.addEventListener('click', function (ev) {
+    var chip = ev.target.closest('.bar-chip');
+    if (!chip) return;
+    if (chip.hasAttribute('data-client')) {
+      var slug = chip.getAttribute('data-client');
+      state.client = state.client === slug && slug !== '*' ? '*' : slug;
+      if (state.topic !== '*' && entriesFor(state.client, state.topic).length === 0) state.topic = '*';
+    } else {
+      var t = chip.getAttribute('data-topic');
+      state.topic = state.topic === t ? '*' : t;
+    }
+    render(true);
+    scrollToResults();
+  });
+
   /* ---------- Render ---------- */
 
   var more = document.getElementById('feed-more');
@@ -407,6 +497,8 @@
     filters.innerHTML = layouts[state.variant]();
     bindCarousel(focusSelected);
     renderGrid();
+    renderBar();
+    updateBar();
   }
 
   function renderGrid() {

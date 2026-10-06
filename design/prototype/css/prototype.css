@@ -102,9 +102,9 @@
   padding: var(--space-80) var(--gutter-x) var(--space-128);
 }
 .feed--home .feed__title {
-  font-size: var(--size-h3);
-  font-weight: var(--weight-h3);
-  line-height: var(--lh-h3);
+  font-size: var(--size-h5);
+  font-weight: var(--weight-h5);
+  line-height: var(--lh-h5);
 }
 .feed--home .feed__header { margin-bottom: var(--space-40); scroll-margin-top: var(--space-24); }
 
@@ -587,3 +587,90 @@
   color: var(--color-500);
   font-size: var(--size-nav);
 }
+
+
+/* ============================================================
+   CONDENSED FILTER BAR (desktop)
+   Clients and topics in one scrolling row, pinned while the feed
+   is on screen and the full filter block has scrolled away.
+   ============================================================ */
+.filter-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 40;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: color-mix(in srgb, var(--feed-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: var(--feed-rule-line);
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform 250ms ease, visibility 0s linear 250ms;
+}
+.filter-bar.is-visible {
+  transform: none;
+  visibility: visible;
+  transition: transform 250ms ease;
+}
+@media (prefers-reduced-motion: reduce) { .filter-bar, .filter-bar.is-visible { transition: none; } }
+@media (max-width: 959px) { .filter-bar { display: none; } }
+
+.filter-bar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: var(--space-12) var(--gutter-x);
+}
+.filter-bar__scroll {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Fade the edges so it reads as scrollable */
+  mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
+  padding-inline: 1rem;
+  margin-inline: -1rem;
+}
+.filter-bar__scroll::-webkit-scrollbar { display: none; }
+.filter-bar__group { display: flex; gap: var(--space-8, 0.5rem); flex-shrink: 0; }
+.filter-bar__divider { flex: 0 0 1px; align-self: stretch; margin-block: 0.25rem; background: var(--color-300); }
+.filter-bar__count {
+  flex-shrink: 0;
+  font-size: var(--feed-fs-label);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--feed-ls-label);
+  text-transform: uppercase;
+  color: var(--feed-text-dim);
+}
+
+.bar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 var(--space-16);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--feed-raised);
+  color: var(--feed-text);
+  font: inherit;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+}
+.bar-chip--client { padding-left: 0.25rem; }
+.bar-chip--client[data-client="*"] { padding-left: var(--space-16); }
+.bar-chip:hover { background: var(--feed-border); }
+.bar-chip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.bar-chip[aria-pressed="true"] { background: var(--color-black); color: var(--color-white); }
+.feed-wrap img.bar-chip__thumb {
+  width: 2rem; height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.bar-chip__count { font-size: 0.8em; opacity: 0.6; font-variant-numeric: tabular-nums; }

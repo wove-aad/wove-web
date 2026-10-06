@@ -274,8 +274,6 @@
   font-size: var(--size-nav);
   padding: var(--space-12) var(--space-24);
 }
-.tag-pill:disabled { opacity: 0.35; cursor: default; }
-.tag-pill:disabled:hover { background: var(--feed-raised); color: var(--feed-text-muted); }
 
 
 /* ============================================================
@@ -431,9 +429,6 @@
   margin-bottom: var(--space-16);
 }
 
-/* B: client cards with nothing for the active topic step back */
-.client-card.is-empty .client-card__btn { opacity: 0.4; }
-.client-card.is-empty .client-card__btn:hover { opacity: 0.7; }
 
 /* B: active filter summary */
 .filter-summary {

@@ -13,11 +13,23 @@
 
   var VARIANTS = {
     a: { name: 'Current', note: 'Carousel, then a separate row of topic pills.' },
-    b: { name: 'Linked', note: 'Each filter shows counts for the other, with a summary of what is active.' },
-    d: { name: 'Client first', note: 'Topics sit inside the panel for the selected client.' }
+    b: { name: 'Counts', note: 'Grouped topics with post counts, and a summary of the active filter.' },
+    d: { name: 'Client first', note: 'The panel under the carousel describes the selection and holds the topics.' }
   };
 
   var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0 };
+
+  // One active filter at a time, across clients and topics: choosing one
+  // clears the other. Choosing the active one again clears it.
+  function choose(kind, value) {
+    if (kind === 'client') {
+      state.client = state.client === value ? '*' : value;
+      state.topic = '*';
+    } else {
+      state.topic = state.topic === value ? '*' : value;
+      state.client = '*';
+    }
+  }
   var LIMIT = 9; // homepage shows a fixed number of cards; the rest live on Our Work
   D.entries = D.entriesSmall;
 
@@ -87,17 +99,14 @@
 
   /* ---------- Components ---------- */
 
-  // Client carousel. `relational` shows counts for the active topic and dims clients with none.
+  // Client carousel.
   function carouselHTML(opts) {
     opts = opts || {};
-    var topic = opts.relational ? state.topic : '*';
     var cards = [null].concat(D.caseStudies).map(function (cs, i) {
       var slug = cs ? cs.slug : '*';
-      var n = entriesFor(slug, topic).length;
-      var meta = (cs ? esc(cs.client) + ' · ' : '') + entryWord(n) +
-        (opts.relational && topic !== '*' ? ' on ' + esc(topicLabel(topic)) : '');
-      var empty = opts.relational && n === 0;
-      return '<li class="client-card' + (cs ? '' : ' client-card--all') + (empty ? ' is-empty' : '') + '">' +
+      var n = entriesFor(slug, '*').length;
+      var meta = (cs ? esc(cs.client) + ' · ' : '') + entryWord(n);
+      return '<li class="client-card' + (cs ? '' : ' client-card--all') + '">' +
         '<button type="button" class="client-card__btn" data-client="' + slug + '" aria-pressed="' + (state.client === slug) + '">' +
           (cs ? '<img class="client-card__img" src="' + cachedPlaceholder('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
           '<span class="client-card__logo">' + esc(cs ? cs.logo : 'All work') + '</span>' +
@@ -121,18 +130,19 @@
     '</section>';
   }
 
-  // Topic pills. Options: grouped (label per group), counts, hideEmpty, allLabel.
+  // Topic pills. Options: grouped (label per group), counts, allLabel.
   function pillsHTML(opts) {
     opts = opts || {};
     function pill(t, label) {
-      var n = t === '*' ? entriesFor(state.client, '*').length : entriesFor(state.client, t).length;
-      if (opts.hideEmpty && n === 0 && t !== '*') return '';
-      return '<button type="button" class="tag-pill' + (state.topic === t ? ' is-active' : '') + '" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '"' +
-        (n === 0 && t !== '*' ? ' disabled' : '') + '>' + esc(label) +
+      var n = entriesFor('*', t).length;
+      // "All" is active only when no client or topic is selected.
+      var on = t === '*' ? state.topic === '*' && state.client === '*' : state.topic === t;
+      return '<button type="button" class="tag-pill' + (on ? ' is-active' : '') + '" data-topic="' + t + '" aria-pressed="' + on + '"' +
+        '>' + esc(label) +
         (opts.counts ? ' <span class="tag-pill__count">' + n + '</span>' : '') + '</button>';
     }
     if (!opts.grouped) {
-      var all = pill('*', opts.allLabel || 'All topics');
+      var all = pill('*', opts.allLabel || 'All');
       var flat = TOPIC_GROUPS.reduce(function (acc, g) { return acc.concat(g.items); }, []);
       return '<div class="topic-pills' + (opts.cls ? ' ' + opts.cls : '') + '" aria-label="Filter by topic">' + all +
         flat.map(function (t) { return pill(t, topicLabel(t)); }).join('') + '</div>';
@@ -193,17 +203,17 @@
 
     b: function () {
       var cs = csBySlug[state.client];
-      return carouselHTML({ relational: true }) +
-        pillsHTML({ grouped: true, counts: true, hideEmpty: state.client !== '*' }) +
+      return carouselHTML() +
+        pillsHTML({ grouped: true, counts: true }) +
         summaryHTML() +
         (cs ? panelHTML(cs) : '');
     },
 
     d: function () {
       var cs = csBySlug[state.client];
-      var heading = cs ? 'Explore ' + esc(cs.client) + ' by topic' : 'Explore by topic';
+      var heading = 'Explore by topic';
       var topics = '<div class="context-topics"><h3 class="filter-label">' + heading + '</h3>' +
-        pillsHTML({ counts: true, hideEmpty: true, allLabel: 'Everything', cls: 'topic-pills--tight' }) + '</div>';
+        pillsHTML({ counts: true, allLabel: 'Everything', cls: 'topic-pills--tight' }) + '</div>';
       var context = cs
         ? panelHTML(cs, { extra: topics })
         : '<section class="case-panel case-panel--intro" aria-live="polite">' +
@@ -297,16 +307,11 @@
     var arrow = t.closest('.client-carousel__arrow');
 
     if (client) {
-      var slug = client.getAttribute('data-client');
-      state.client = state.client === slug && slug !== '*' ? '*' : slug;
-      // A topic the new client has no entries for would leave an empty feed.
-      if (state.topic !== '*' && entriesFor(state.client, state.topic).length === 0 && state.variant !== 'b') state.topic = '*';
+      choose('client', client.getAttribute('data-client'));
       render(true);
       scrollToFeedTop();
-    } else if (pill && !pill.disabled) {
-      var topic = pill.getAttribute('data-topic');
-      // Grouped layouts have no "All" pill, so the active pill toggles off.
-      state.topic = state.topic === topic && pill.closest('.topic-groups') ? '*' : topic;
+    } else if (pill) {
+      choose('topic', pill.getAttribute('data-topic'));
       render(false);
       scrollToFeedTop();
     } else if (clear) {
@@ -358,8 +363,8 @@
   grid.addEventListener('click', function (ev) {
     var tag = ev.target.closest('.card-tags__tag');
     if (!tag) return;
-    if (tag.hasAttribute('data-client')) state.client = tag.getAttribute('data-client');
-    if (tag.hasAttribute('data-topic')) state.topic = tag.getAttribute('data-topic');
+    if (tag.hasAttribute('data-client')) choose('client', tag.getAttribute('data-client'));
+    if (tag.hasAttribute('data-topic')) choose('topic', tag.getAttribute('data-topic'));
     render(true);
     scrollToFeedTop();
   });
@@ -431,9 +436,7 @@
         (cs ? '<img class="bar-chip__thumb" src="' + cachedPlaceholder('c' + i, cs.palette, i + 2) + '" alt="">' : '') +
         esc(cs ? cs.client : 'All work') + ' <span class="bar-chip__count">' + n + '</span></button>';
     }).join('');
-    // Topics narrow to the selected client, as in the full filter block.
     var topics = TOPIC_GROUPS.reduce(function (acc, g) { return acc.concat(g.items); }, [])
-      .filter(function (t) { return entriesFor(state.client, t).length > 0; })
       .map(function (t) {
         return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
       }).join('');
@@ -507,12 +510,9 @@
     var chip = ev.target.closest('.bar-chip');
     if (!chip) return;
     if (chip.hasAttribute('data-client')) {
-      var slug = chip.getAttribute('data-client');
-      state.client = state.client === slug && slug !== '*' ? '*' : slug;
-      if (state.topic !== '*' && entriesFor(state.client, state.topic).length === 0) state.topic = '*';
+      choose('client', chip.getAttribute('data-client'));
     } else {
-      var t = chip.getAttribute('data-topic');
-      state.topic = state.topic === t ? '*' : t;
+      choose('topic', chip.getAttribute('data-topic'));
     }
     render(true);
     scrollToResults();

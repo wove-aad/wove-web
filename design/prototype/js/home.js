@@ -17,7 +17,7 @@
     d: { name: 'Client first', note: 'The panel under the carousel describes the selection and holds the topics.' }
   };
 
-  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '3' }; // cards 3 (Framed) chosen; others stay in the switcher
+  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '3', nav: 'up' }; // cards 3 (Framed) chosen; others stay in the switcher
   var Cards = window.WoveCards;
 
   // One active filter at a time, across clients and topics: choosing one
@@ -388,6 +388,12 @@
             k + '<span class="visually-hidden"> ' + Cards.styles[k].name + '</span></button>';
         }).join('') +
       '</div>' +
+      '<span class="variant-switcher__label">Nav</span>' +
+      '<div class="variant-switcher__buttons" role="group" aria-label="Site navigation">' +
+        Object.keys(NAV).map(function (k) {
+          return '<button type="button" class="variant-switcher__text" data-nav="' + k + '" aria-pressed="' + (k === state.nav) + '">' + NAV[k] + '</button>';
+        }).join('') +
+      '</div>' +
       '<span class="variant-switcher__label">Feed</span>' +
       '<div class="variant-switcher__buttons" role="group" aria-label="Filter layout">' +
         Object.keys(VARIANTS).map(function (k) {
@@ -419,6 +425,16 @@
       render(false);
       return;
     }
+    var nb = ev.target.closest('[data-nav]');
+    if (nb) {
+      state.nav = nb.getAttribute('data-nav');
+      menuOpen = false;
+      renderBar();
+      updateBar();
+      renderSwitcher();
+      saveHash();
+      return;
+    }
     var cb = ev.target.closest('[data-cards]');
     if (cb) {
       lastChanged = 'cards';
@@ -446,12 +462,14 @@
 
   // URL hash holds the choices: feed letter, hero digit, card digit (e.g. #b23).
   function saveHash() {
-    try { history.replaceState(null, '', '#' + state.variant + Hero.current + state.cards); } catch (e) { /* sandboxed */ }
+    try { history.replaceState(null, '', '#' + state.variant + Hero.current + state.cards + state.nav.charAt(0)); } catch (e) { /* sandboxed */ }
   }
   function readHash() {
     var h = location.hash.slice(1);
     if (Hero.variants[h.charAt(1)]) Hero.set(h.charAt(1));
     if (Cards.styles[h.charAt(2)]) state.cards = h.charAt(2);
+    if (h.charAt(3) === 'm') state.nav = 'menu';
+    if (h.charAt(3) === 'u') state.nav = 'up';
     return VARIANTS[h.charAt(0)] ? h.charAt(0) : 'a';
   }
 
@@ -467,7 +485,19 @@
 
   /* ---------- Condensed filter bar ----------
      Pinned to the top of the screen once the full filter block has scrolled
-     away, while the feed is on screen. Clients and topics share one row. */
+     away, while the feed is on screen. Clients and topics share one row.
+     Site navigation, two options (switcher "Nav"):
+     - up:   scrolling up slides in a site row (logo, Our work, Our people,
+             Get in touch) above the chips; anywhere past the hero.
+     - menu: a menu button at the left of the bar opens Back to top, Our
+             work, Our people and Get in touch; the bar also shows on
+             scroll-up outside the feed, with just the logo and menu. */
+
+  var NAV = { up: 'Scroll up', menu: 'Menu' };
+  var MENU_LINKS = [
+    ['top', 'Back to top'], ['#our-work', 'Our work'], ['#our-people', 'Our people'], ['#contact', 'Get in touch']
+  ];
+  var menuOpen = false;
 
   var bar = document.getElementById('filter-bar');
   var barShown = false;
@@ -484,7 +514,29 @@
       .map(function (t) {
         return '<button type="button" class="bar-chip" data-topic="' + t + '" aria-pressed="' + (state.topic === t) + '">' + esc(topicLabel(t)) + '</button>';
       }).join('');
-    return '<div class="filter-bar__inner">' +
+    var site = state.nav === 'up'
+      ? '<div class="filter-bar__site"><div class="filter-bar__site-inner">' +
+          '<button type="button" class="filter-bar__logo" data-top aria-label="Wove Group, back to top">Wove.</button>' +
+          '<nav class="filter-bar__links" aria-label="Site">' +
+            '<a href="#our-work">Our work</a><a href="#our-people">Our people</a>' +
+          '</nav>' +
+          '<a href="#contact" class="filter-bar__cta">Get in touch</a>' +
+        '</div></div>'
+      : '';
+    var menuBtn = state.nav === 'menu'
+      ? '<button type="button" class="filter-bar__menu-btn" data-menu aria-expanded="' + menuOpen + '" aria-controls="filter-bar-menu">' +
+          '<span class="filter-bar__menu-icon" aria-hidden="true"></span><span class="filter-bar__menu-label">Wove.</span></button>'
+      : '';
+    var menu = state.nav === 'menu'
+      ? '<div class="filter-bar__menu" id="filter-bar-menu"' + (menuOpen ? '' : ' hidden') + '><ul role="list">' +
+          MENU_LINKS.map(function (l) {
+            return '<li>' + (l[0] === 'top'
+              ? '<button type="button" data-top>' + l[1] + ' <span aria-hidden="true">&uarr;</span></button>'
+              : '<a href="' + l[0] + '">' + l[1] + ' <span aria-hidden="true">&rarr;</span></a>') + '</li>';
+          }).join('') +
+        '</ul></div>'
+      : '';
+    return site + '<div class="filter-bar__inner">' + menuBtn +
       '<div class="filter-bar__track">' +
       '<button type="button" class="filter-bar__arrow filter-bar__arrow--prev" data-bar-step="-1" aria-label="Scroll filters left" tabindex="-1">&larr;</button>' +
       '<div class="filter-bar__scroll">' +
@@ -495,13 +547,14 @@
       '<button type="button" class="filter-bar__arrow filter-bar__arrow--next" data-bar-step="1" aria-label="Scroll filters right" tabindex="-1">&rarr;</button>' +
       '</div>' +
       '<span class="filter-bar__count">' + entryWord(entriesFor(state.client, state.topic).length) + '</span>' +
-    '</div>';
+    '</div>' + menu;
   }
 
   function renderBar() {
     var scroller = bar.querySelector('.filter-bar__scroll');
     var left = scroller ? scroller.scrollLeft : 0;
     bar.innerHTML = barHTML();
+    bar.setAttribute('data-nav', state.nav);
     scroller = bar.querySelector('.filter-bar__scroll');
     scroller.scrollLeft = left;
     // Keep the active chip clear of the faded edges.
@@ -534,15 +587,54 @@
     return last ? last.getBoundingClientRect().bottom : 0;
   }
 
+  // Scroll direction, with thresholds so small movements don't flicker the bar.
+  var lastY = window.scrollY, travel = 0, scrollingUp = false;
+  var heroEl = function () {
+    return document.querySelector('#hero-alt .hx') || document.querySelector('.hero-bar');
+  };
+
   function updateBar() {
-    var show = controlsBottom() < bar.offsetHeight &&
-      grid.getBoundingClientRect().bottom > bar.offsetHeight + 80;
-    if (show === barShown) return;
-    barShown = show;
-    bar.classList.toggle('is-visible', show);
-    syncBarEdges();
-    bar.inert = !show;
+    var y = window.scrollY;
+    var dy = y - lastY;
+    lastY = y;
+    if ((dy < 0) !== (travel < 0)) travel = 0;
+    travel += dy;
+    if (travel < -40) scrollingUp = true;
+    if (travel > 12) { scrollingUp = false; if (menuOpen) toggleMenu(false); }
+
+    var inner = bar.querySelector('.filter-bar__inner');
+    var chipsH = (inner && inner.offsetHeight) || 56;
+    var inFeed = controlsBottom() < chipsH &&
+      grid.getBoundingClientRect().bottom > chipsH + 80;
+    var hero = heroEl();
+    var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
+    var siteUp = scrollingUp && pastHero;
+
+    bar.classList.toggle('show-chips', inFeed);
+    bar.classList.toggle('show-site', siteUp || menuOpen);
+    var show = inFeed || siteUp || menuOpen;
+    if (show !== barShown) {
+      barShown = show;
+      bar.classList.toggle('is-visible', show);
+      syncBarEdges();
+      bar.inert = !show;
+    }
   }
+
+  function toggleMenu(open) {
+    menuOpen = open;
+    var m = bar.querySelector('.filter-bar__menu');
+    var b = bar.querySelector('[data-menu]');
+    if (m) m.hidden = !open;
+    if (b) b.setAttribute('aria-expanded', String(open));
+  }
+
+  document.addEventListener('click', function (ev) {
+    if (menuOpen && !bar.contains(ev.target)) { toggleMenu(false); updateBar(); }
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && menuOpen) { toggleMenu(false); bar.querySelector('[data-menu]').focus(); }
+  });
 
   var barTick = false;
   window.addEventListener('scroll', function () {
@@ -552,6 +644,14 @@
   }, { passive: true });
 
   bar.addEventListener('click', function (ev) {
+    if (ev.target.closest('[data-top]')) {
+      toggleMenu(false);
+      scrollingUp = false;
+      window.scrollTo({ top: 0, behavior: behaviour() });
+      return;
+    }
+    if (ev.target.closest('[data-menu]')) { toggleMenu(!menuOpen); return; }
+    if (ev.target.closest('.filter-bar__menu a, .filter-bar__links a, .filter-bar__cta')) { toggleMenu(false); return; }
     var arrow = ev.target.closest('[data-bar-step]');
     if (arrow) {
       var sc = bar.querySelector('.filter-bar__scroll');

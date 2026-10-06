@@ -17,7 +17,7 @@
     d: { name: 'Client first', note: 'The panel under the carousel describes the selection and holds the topics.' }
   };
 
-  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '1' };
+  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '3' }; // cards 3 (Framed) chosen; others stay in the switcher
   var Cards = window.WoveCards;
 
   // One active filter at a time, across clients and topics: choosing one

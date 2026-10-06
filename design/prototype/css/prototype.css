@@ -918,6 +918,9 @@
   .hx-row .hero-bar__logo { font-size: var(--size-h5); }
   .hx-row .hero-bar__statement { font-size: clamp(2rem, 9vw, 2.5rem); line-height: 1.15; }
   .hx-voice__text { font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  /* The hero links below cover Our work and Our people on phones */
+  .hx-nav { display: none; }
+  .hx-row--nav { row-gap: 0; }
   .hx-explainer__text, .hx-signposts__text { font-size: clamp(1.375rem, 6vw, 1.625rem); }
   .hx-signposts__cards { grid-template-columns: 1fr; }
   .hx-drawer { padding: var(--space-16); border-radius: var(--radius-md); }
@@ -926,3 +929,117 @@
 /* Switcher labels */
 .variant-switcher__label { font-size: 0.75rem; opacity: 0.6; margin-left: var(--space-8, 0.5rem); }
 @media (max-width: 600px) { .variant-switcher__label { display: none; } }
+
+
+/* ============================================================
+   POST CARDS, TREATMENTS 2 TO 4 (js/cards.js)
+   Shared: masonry columns, images at their own shape, quiet image
+   sparks, compact threads, distinct long reads and What Ifs.
+   ============================================================ */
+.feed-cards.pc-grid {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-24);
+}
+.pc-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-24); }
+
+.pc { position: relative; color: var(--color-black); }
+.pc__body { display: flex; flex-direction: column; gap: var(--space-8, 0.5rem); }
+.pc__media { overflow: hidden; border-radius: var(--radius-sm); background: var(--color-200); max-width: 100%; }
+.feed-wrap .pc__media img { width: 100%; height: 100%; object-fit: cover; }
+.pc__label {
+  font-size: var(--feed-fs-label);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--feed-ls-label);
+  text-transform: uppercase;
+}
+.pc__time { margin-left: 0.5em; font-weight: var(--weight-regular); letter-spacing: 0; text-transform: none; color: var(--color-text-muted); font-size: 0.8125rem; }
+.pc__title { font-weight: var(--weight-bold); letter-spacing: -0.01em; text-wrap: pretty; }
+.pc__excerpt { font-size: 0.9375rem; line-height: 1.55; color: var(--color-800); }
+.pc__meta { font-size: 0.8125rem; color: var(--color-text-muted); }
+.pc .card-tags { margin-top: var(--space-4, 0.25rem); }
+.pc__cta { font-size: 0.9375rem; font-weight: var(--weight-bold); }
+
+/* Long read: image-led editorial */
+.pc--longread .pc__label { color: var(--format-longread); }
+.pc--longread .pc__title { font-size: 1.375rem; line-height: 1.25; }
+
+/* What If: the question leads */
+.pc--whatif .pc__label { color: var(--format-whatif); }
+.pc--whatif .pc__title { font-size: 1.625rem; line-height: 1.2; font-weight: var(--weight-regular); letter-spacing: -0.015em; }
+.pc__foot { display: flex; flex-direction: column; gap: var(--space-8, 0.5rem); }
+
+/* Thread: the workhorse */
+.pc--thread .pc__label { color: var(--format-thread); }
+.pc--thread .pc__title { font-size: 1.0625rem; line-height: 1.35; flex: 1; min-width: 0; }
+.pc__row { display: flex; gap: var(--space-16); align-items: flex-start; }
+.feed-wrap .pc__thumb { height: 4.5rem; width: auto; max-width: 7rem; border-radius: 0.5rem; object-fit: cover; flex-shrink: 0; }
+
+/* Spark with image: the picture leads, quiet caption */
+.pc--spark-image .pc__caption { font-size: 0.9375rem; line-height: 1.5; color: var(--color-800); }
+.pc--spark-image .pc__body { padding-top: var(--space-12); }
+
+/* Spark without image: unchanged for now (colour system to come) */
+.pc--spark-text .pc__quote { font-size: 1.25rem; line-height: 1.4; }
+
+
+/* ---------- 2: Open ---------- */
+.cards--2 .pc-col { gap: var(--space-48); }
+.cards--2 .pc__media { border-radius: var(--radius-md); }
+.cards--2 .pc--longread .pc__body,
+.cards--2 .pc--whatif .pc__foot { padding-top: var(--space-16); }
+.cards--2 .pc--whatif .pc__title { font-size: 1.875rem; }
+.cards--2 .pc--whatif.has-image .pc__media { margin-top: var(--space-16); }
+.cards--2 .pc--thread { padding-top: var(--space-16); border-top: 1px solid var(--color-300); }
+.cards--2 .pc--spark-text { padding: var(--space-24); border-radius: var(--radius-md); background: var(--color-white); }
+
+/* ---------- 3: Framed ---------- */
+.cards--3 .pc {
+  padding: var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  transition: transform var(--card-transition), box-shadow var(--card-transition);
+}
+.cards--3 .pc:hover { transform: translateY(var(--card-lift)); box-shadow: var(--card-shadow-hover); }
+.cards--3 .pc__body, .cards--3 .pc__foot { padding: var(--space-12) var(--space-12) var(--space-8, 0.5rem); }
+.cards--3 .pc__label {
+  align-self: flex-start;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.04em;
+}
+.cards--3 .pc--longread .pc__label { background: var(--format-longread-tint); }
+.cards--3 .pc--thread .pc__label { background: var(--format-thread-tint); }
+.cards--3 .pc--whatif { background: var(--format-whatif-tint); }
+.cards--3 .pc--whatif .pc__label { background: var(--color-white); }
+.cards--3 .pc--whatif .pc__body { padding-top: var(--space-16); }
+.cards--3 .pc--whatif.has-image .pc__media { margin: var(--space-8, 0.5rem) 0; }
+.cards--3 .pc--thread { padding: var(--space-8, 0.5rem); }
+
+/* ---------- 4: Bold formats ---------- */
+.cards--4 .pc--longread { border-radius: var(--radius-md); background: var(--color-white); overflow: hidden; }
+.cards--4 .pc--longread .pc__media { border-radius: 0; }
+.cards--4 .pc--longread .pc__body { padding: var(--space-24); }
+.cards--4 .pc--longread .pc__title { font-size: 1.625rem; line-height: 1.15; }
+
+.cards--4 .pc--whatif {
+  padding: var(--space-32) var(--space-24) var(--space-24);
+  border-radius: var(--radius-md);
+  background: var(--format-whatif);
+  color: var(--color-white);
+}
+.cards--4 .pc--whatif .pc__label,
+.cards--4 .pc--whatif .pc__excerpt,
+.cards--4 .pc--whatif .pc__meta { color: rgba(255,255,255,0.85); }
+.cards--4 .pc--whatif .pc__title { font-size: 2rem; line-height: 1.1; font-weight: var(--weight-bold); }
+.cards--4 .pc--whatif .pc__title::before { content: "?"; display: block; font-size: 4rem; line-height: 0.9; margin-bottom: var(--space-12); }
+.cards--4 .pc--whatif .pc__foot { margin-top: var(--space-24); }
+.cards--4 .pc--whatif.has-image .pc__media { margin-top: var(--space-24); }
+.feed-wrap .cards--4 .pc--whatif .card-tags__tag { color: var(--color-white); }
+
+.cards--4 .pc--thread { padding: var(--space-16) 0; border-top: 2px solid var(--color-black); }
+.cards--4 .pc--thread .pc__label { color: var(--color-black); }
+
+.cards--4 .pc--spark-image .pc__media { border-radius: var(--radius-md); }
+.cards--4 .pc--spark-image .pc__caption { font-style: italic; }
+.cards--4 .pc--spark-text { padding: var(--space-24); border-radius: var(--radius-md); background: var(--color-white); }

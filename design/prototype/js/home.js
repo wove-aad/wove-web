@@ -17,7 +17,8 @@
     d: { name: 'Client first', note: 'The panel under the carousel describes the selection and holds the topics.' }
   };
 
-  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0 };
+  var state = { client: '*', topic: '*', variant: 'a', large: false, shown: 0, cards: '1' };
+  var Cards = window.WoveCards;
 
   // One active filter at a time, across clients and topics: choosing one
   // clears the other. Choosing the active one again clears it.
@@ -371,13 +372,20 @@
   function renderSwitcher() {
     var v = VARIANTS[state.variant];
     var h = Hero.variants[Hero.current];
-    var note = lastChanged === 'hero' ? h : v;
+    var note = lastChanged === 'hero' ? h : lastChanged === 'cards' ? Cards.styles[state.cards] : v;
     switcher.innerHTML =
       '<span class="variant-switcher__label">Hero</span>' +
       '<div class="variant-switcher__buttons" role="group" aria-label="Hero layout">' +
         Object.keys(Hero.variants).map(function (k) {
           return '<button type="button" data-hero="' + k + '" aria-pressed="' + (k === Hero.current) + '">' +
             k + '<span class="visually-hidden"> ' + Hero.variants[k].name + '</span></button>';
+        }).join('') +
+      '</div>' +
+      '<span class="variant-switcher__label">Cards</span>' +
+      '<div class="variant-switcher__buttons" role="group" aria-label="Card style">' +
+        Object.keys(Cards.styles).map(function (k) {
+          return '<button type="button" data-cards="' + k + '" aria-pressed="' + (k === state.cards) + '">' +
+            k + '<span class="visually-hidden"> ' + Cards.styles[k].name + '</span></button>';
         }).join('') +
       '</div>' +
       '<span class="variant-switcher__label">Feed</span>' +
@@ -411,6 +419,15 @@
       render(false);
       return;
     }
+    var cb = ev.target.closest('[data-cards]');
+    if (cb) {
+      lastChanged = 'cards';
+      state.cards = cb.getAttribute('data-cards');
+      renderGrid();
+      renderSwitcher();
+      saveHash();
+      return;
+    }
     var hb = ev.target.closest('[data-hero]');
     if (hb) {
       lastChanged = 'hero';
@@ -427,13 +444,14 @@
     saveHash();
   });
 
-  // URL hash holds both choices: feed letter, then hero digit (e.g. #b3).
+  // URL hash holds the choices: feed letter, hero digit, card digit (e.g. #b23).
   function saveHash() {
-    try { history.replaceState(null, '', '#' + state.variant + Hero.current); } catch (e) { /* sandboxed */ }
+    try { history.replaceState(null, '', '#' + state.variant + Hero.current + state.cards); } catch (e) { /* sandboxed */ }
   }
   function readHash() {
     var h = location.hash.slice(1);
     if (Hero.variants[h.charAt(1)]) Hero.set(h.charAt(1));
+    if (Cards.styles[h.charAt(2)]) state.cards = h.charAt(2);
     return VARIANTS[h.charAt(0)] ? h.charAt(0) : 'a';
   }
 
@@ -554,6 +572,23 @@
   /* ---------- Render ---------- */
 
   var more = document.getElementById('feed-more');
+  var lastColumns = 0;
+
+  var cardCtx = {
+    image: function (e) {
+      var i = D.entries.indexOf(e);
+      var pal = e.caseStudy ? csBySlug[e.caseStudy].palette : GENERIC;
+      var w = 800, h = Math.round(800 / (e.ratio || 1.5));
+      return cachedPlaceholder('e' + i + ':' + (e.ratio || 1.5), pal, i + 20, w, h);
+    },
+    tags: cardTags,
+    date: function (e) { return dateLabel(e.daysAgo); }
+  };
+
+  // Masonry columns depend on width.
+  window.addEventListener('resize', function () {
+    if (state.cards !== '1' && Cards.columnCount() !== lastColumns) renderGrid();
+  });
 
   function render(focusSelected) {
     filters.className = 'filters filters--' + state.variant;
@@ -568,9 +603,13 @@
     var list = entriesFor(state.client, state.topic);
     var shown = list.slice(0, LIMIT);
     countEl.textContent = entryWord(list.length);
-    grid.innerHTML = list.length
-      ? shown.map(card).join('')
-      : '<p class="feed-empty">No entries match these filters yet.</p>';
+    var styled = state.cards !== '1';
+    grid.className = 'feed-cards feed-cards--home' + (styled ? ' pc-grid cards--' + state.cards : '');
+    grid.innerHTML = !list.length
+      ? '<p class="feed-empty">No entries match these filters yet.</p>'
+      : styled ? Cards.masonry(shown.map(function (e) { return Cards.render(e, cardCtx); }))
+      : shown.map(card).join('');
+    lastColumns = Cards.columnCount();
 
     // "See all" names the active filter, like the live homepage.
     var name = state.client !== '*' ? csBySlug[state.client].client

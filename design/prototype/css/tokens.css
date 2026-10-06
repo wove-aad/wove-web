@@ -164,6 +164,16 @@
   /* Long Read card background (no image) — not in design-tokens.json. */
   --color-cream: #f3eeeb;
 
+  /* Post format colours (prototype), from the Wove Mind Panel tokens */
+  --format-spark:         #c6841e;
+  --format-spark-tint:    #f7ecd3;
+  --format-thread:        #2f7a57;
+  --format-thread-tint:   #e1eee7;
+  --format-whatif:        #2a50f3;
+  --format-whatif-tint:   #ebf0fe;
+  --format-longread:      #6b3ec2;
+  --format-longread-tint: #ede6f8;
+
   /* Home hero (prototype) */
   --color-blush:          #fdf5f3;
   --color-hero-statement: var(--color-600);

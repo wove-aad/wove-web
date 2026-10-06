@@ -135,27 +135,27 @@ window.WOVE = {
 
   // Formats: spark, thread, whatif, longread. `daysAgo` drives the date label.
   entries: [
-    { format: 'longread', title: 'How do you launch a national campaign for something people have never heard of?', excerpt: 'The challenge was to explain the circular economy to everyone, from people taking their first step to organisations ready to change.', caseStudy: 'circular', services: ['brand'], tags: ['climate'], daysAgo: 2, image: true },
-    { format: 'longread', title: 'Building a future-proofed platform for multiple audiences', excerpt: 'One digital platform that serves individuals, businesses and community groups, each with their own starting point.', caseStudy: 'circular', services: ['digital'], tags: ['system-change'], daysAgo: 4, image: true },
-    { format: 'spark', quote: 'People do not need to understand the term "circular economy" to want less waste in their lives. Start with the habit, not the theory.', author: 'Aoife Byrne', caseStudy: 'circular', tags: ['climate'], daysAgo: 9 },
-    { format: 'thread', title: 'What we learned running twelve co-design sessions with first-year students', caseStudy: 'dcu', services: ['strategy'], tags: ['education'], daysAgo: 6, image: true },
+    { format: 'longread', title: 'How do you launch a national campaign for something people have never heard of?', excerpt: 'The challenge was to explain the circular economy to everyone, from people taking their first step to organisations ready to change.', caseStudy: 'circular', services: ['brand'], tags: ['climate'], daysAgo: 2, image: true, ratio: 3 / 2, minutes: 8 },
+    { format: 'longread', title: 'Building a future-proofed platform for multiple audiences', excerpt: 'One digital platform that serves individuals, businesses and community groups, each with their own starting point.', caseStudy: 'circular', services: ['digital'], tags: ['system-change'], daysAgo: 4, image: true, ratio: 16 / 9, minutes: 6 },
+    { format: 'spark', quote: 'People do not need to understand the term "circular economy" to want less waste in their lives. Start with the habit, not the theory.', author: 'Aoife Byrne', caseStudy: 'circular', tags: ['climate'], daysAgo: 9, image: true, ratio: 1 },
+    { format: 'thread', title: 'What we learned running twelve co-design sessions with first-year students', caseStudy: 'dcu', services: ['strategy'], tags: ['education'], daysAgo: 6, image: true, ratio: 4 / 3 },
     { format: 'whatif', title: 'What if orientation started the day you accepted your offer?', excerpt: 'Most of the anxiety we heard about happens in the summer before term. That is where the service should begin.', caseStudy: 'dcu', tags: ['education', 'design'], daysAgo: 14 },
-    { format: 'longread', title: 'Paying for local news: designing membership people want to keep', excerpt: 'Why the renewal moment matters more than the sign-up, and what we changed to support it.', caseStudy: 'dublin-inquirer', services: ['digital'], tags: ['people-power'], daysAgo: 11, image: true },
-    { format: 'thread', title: 'A new identity for an independent newsroom', caseStudy: 'dublin-inquirer', services: ['brand'], tags: ['design'], daysAgo: 21, image: true },
+    { format: 'longread', title: 'Paying for local news: designing membership people want to keep', excerpt: 'Why the renewal moment matters more than the sign-up, and what we changed to support it.', caseStudy: 'dublin-inquirer', services: ['digital'], tags: ['people-power'], daysAgo: 11, image: true, ratio: 4 / 5, minutes: 11 },
+    { format: 'thread', title: 'A new identity for an independent newsroom', caseStudy: 'dublin-inquirer', services: ['brand'], tags: ['design'], daysAgo: 21, image: true, ratio: 1 },
     { format: 'whatif', title: 'What if every council had a public space open call?', excerpt: 'Pivot showed that small, well-run open calls can move faster than large capital projects.', caseStudy: 'pivot-dublin', services: ['labs'], tags: ['people-power', 'system-change'], daysAgo: 17 },
-    { format: 'longread', title: 'Lowering the threshold: onboarding for digital mental health', excerpt: 'Small changes to the first five minutes had the largest effect on whether people came back.', caseStudy: 'silvercloud', services: ['digital'], tags: ['design'], daysAgo: 25, image: true },
-    { format: 'thread', title: 'Mapping how audiences find out what is on', caseStudy: 'arts-council', services: ['strategy'], tags: ['people-power'], daysAgo: 30, image: true },
+    { format: 'longread', title: 'Lowering the threshold: onboarding for digital mental health', excerpt: 'Small changes to the first five minutes had the largest effect on whether people came back.', caseStudy: 'silvercloud', services: ['digital'], tags: ['design'], daysAgo: 25, image: true, ratio: 3 / 2, minutes: 7 },
+    { format: 'thread', title: 'Mapping how audiences find out what is on', caseStudy: 'arts-council', services: ['strategy'], tags: ['people-power'], daysAgo: 30, image: true, ratio: 16 / 9 },
 
-    { format: 'spark', quote: 'Strategy that cannot survive contact with delivery is not strategy. It is a wish list.', author: 'Fergal Walsh', tags: ['system-change'], daysAgo: 1 },
+    { format: 'spark', quote: 'Strategy that cannot survive contact with delivery is not strategy. It is a wish list.', author: 'Fergal Walsh', tags: ['system-change'], daysAgo: 1, image: true, ratio: 4 / 5 },
     { format: 'whatif', title: 'What if public services were designed around life events?', excerpt: 'Moving house, having a child, losing a job. People think in moments, not departments.', services: ['strategy'], tags: ['system-change'], daysAgo: 3 },
-    { format: 'longread', title: 'Designing for nature: what biodiversity data tells us about place', excerpt: 'Notes from a Labs project looking at how communities can read and act on local nature data.', services: ['labs'], tags: ['nature', 'climate'], daysAgo: 5, image: true },
+    { format: 'longread', title: 'Designing for nature: what biodiversity data tells us about place', excerpt: 'Notes from a Labs project looking at how communities can read and act on local nature data.', services: ['labs'], tags: ['nature', 'climate'], daysAgo: 5, image: true, ratio: 3 / 2, minutes: 9 },
     { format: 'thread', title: 'Our approach to accessible design systems', services: ['digital'], tags: ['design'], daysAgo: 8 },
-    { format: 'spark', quote: 'The best research question we asked this year: "What did you do the last time this went wrong?"', author: 'Niamh Kelly', tags: ['design'], daysAgo: 10 },
-    { format: 'longread', title: 'Brand as infrastructure for mission-led organisations', excerpt: 'A brand is the set of decisions that lets a small team act consistently without asking permission every time.', services: ['brand'], tags: ['people-power'], daysAgo: 13, image: true },
-    { format: 'whatif', title: 'What if schools could share their best timetabling tools?', excerpt: 'Every school solves the same scheduling problem alone. A shared toolkit could free up hours each week.', services: ['labs'], tags: ['education'], daysAgo: 16 },
-    { format: 'thread', title: 'Running a climate assembly online: what worked', services: ['strategy'], tags: ['climate', 'people-power'], daysAgo: 19, image: true },
+    { format: 'spark', quote: 'The best research question we asked this year: "What did you do the last time this went wrong?"', author: 'Niamh Kelly', tags: ['design'], daysAgo: 10, image: true, ratio: 16 / 9 },
+    { format: 'longread', title: 'Brand as infrastructure for mission-led organisations', excerpt: 'A brand is the set of decisions that lets a small team act consistently without asking permission every time.', services: ['brand'], tags: ['people-power'], daysAgo: 13, image: true, ratio: 1, minutes: 5 },
+    { format: 'whatif', title: 'What if schools could share their best timetabling tools?', excerpt: 'Every school solves the same scheduling problem alone. A shared toolkit could free up hours each week.', services: ['labs'], tags: ['education'], daysAgo: 16, image: true, ratio: 4 / 3 },
+    { format: 'thread', title: 'Running a climate assembly online: what worked', services: ['strategy'], tags: ['climate', 'people-power'], daysAgo: 19, image: true, ratio: 3 / 2 },
     { format: 'spark', quote: 'If a service needs a user guide, the service is the problem.', author: 'Fergal Walsh', tags: ['design'], daysAgo: 23 },
-    { format: 'longread', title: 'Small pilots, large systems: how we scope Labs projects', excerpt: 'Why we start with a twelve-week pilot and a clear question, and what happens when the answer is no.', services: ['labs'], tags: ['system-change'], daysAgo: 28, image: true }
+    { format: 'longread', title: 'Small pilots, large systems: how we scope Labs projects', excerpt: 'Why we start with a twelve-week pilot and a clear question, and what happens when the answer is no.', services: ['labs'], tags: ['system-change'], daysAgo: 28, image: true, ratio: 4 / 3, minutes: 6 }
   ]
 };
 
@@ -190,7 +190,9 @@ window.WOVE = {
       if (rand() < 0.4) e.tags.push(pick(tagKeys));
       e.tags = e.tags.filter(function (t, j, a) { return a.indexOf(t) === j; });
       e.caseStudy = null;
-      e.image = format !== 'spark' && rand() < 0.6;
+      e.image = rand() < (format === 'spark' ? 0.5 : 0.6);
+      e.ratio = [1, 4 / 5, 3 / 2, 16 / 9, 4 / 3][Math.floor(rand() * 5)];
+      if (format === 'longread') e.minutes = 4 + Math.floor(rand() * 9);
       large.push(e);
     }
   });

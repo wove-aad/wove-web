@@ -1,0 +1,108 @@
+/* ================================================================
+   SITE FOOTER (site/snippets/footer.php). Loaded on every page.
+   A dark ground to close the page, in the new design's type: bold
+   headings, pill buttons. Uses the site.css :root tokens only, as some
+   older pages don't sit inside .home.
+   ================================================================ */
+.ft {
+  --ft-fg: var(--color-white);
+  --ft-muted: #b5b0a8;
+  --ft-rule: rgba(255, 255, 255, 0.14);
+  background: var(--color-black);
+  color: var(--ft-fg);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+.ft a { color: inherit; text-decoration: none; }
+.ft a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ft a:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 3px; border-radius: 2px; }
+.ft ul { list-style: none; margin: 0; padding: 0; }
+.ft__inner {
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: var(--space-96) var(--gutter-x) var(--space-32);
+}
+
+/* Lead: statement and get in touch */
+.ft__lead {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-48);
+  align-items: end;
+  padding-bottom: var(--space-64);
+  border-bottom: 1px solid var(--ft-rule);
+}
+.ft__statement {
+  max-width: 18em;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-bold);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ft__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-16) var(--space-32); justify-self: end; }
+.ft__btn {
+  display: inline-flex; align-items: center; gap: var(--space-12);
+  padding: var(--space-16) var(--space-24);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-black) !important;
+  font-weight: var(--weight-bold);
+}
+.ft__btn:hover { text-decoration: none !important; opacity: 0.9; }
+.ft__email { font-size: var(--size-subtitle); font-weight: var(--weight-bold); }
+
+/* Columns */
+.ft__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr);
+  gap: var(--space-48) var(--space-32);
+  padding-block: var(--space-48) var(--space-64);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.ft__label {
+  margin-bottom: var(--space-16);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ft-muted);
+}
+.ft__col li + li { margin-top: 0.5rem; }
+.ft__col address { font-style: normal; color: var(--ft-fg); margin-bottom: var(--space-12); }
+.ft__routes { display: flex; gap: var(--space-16); margin-top: var(--space-12); }
+.ft__col--positions li { color: var(--ft-muted); }
+.ft__marks { display: flex; flex-wrap: wrap; gap: var(--space-12); margin-top: var(--space-24); }
+.ft__mark {
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--ft-rule);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  color: var(--ft-muted);
+}
+
+/* Bar */
+.ft__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-12) var(--space-32);
+  padding-top: var(--space-24);
+  border-top: 1px solid var(--ft-rule);
+  font-size: 0.8125rem;
+  color: var(--ft-muted);
+}
+.ft__logo { font-size: var(--size-subtitle); font-weight: var(--weight-bold); letter-spacing: -0.02em; color: var(--ft-fg) !important; }
+.ft__bar-links { display: flex; flex-wrap: wrap; gap: var(--space-24); margin-left: auto; }
+
+@media (max-width: 960px) {
+  .ft__lead { grid-template-columns: 1fr; align-items: start; }
+  .ft__cta { justify-self: start; }
+  .ft__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .ft__inner { padding-top: var(--space-64); }
+  .ft__cols { grid-template-columns: 1fr; gap: var(--space-32); }
+  .ft__bar-links { margin-left: 0; }
+}

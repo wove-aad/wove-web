@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wove Homepage</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/prototype.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="tpl-home" data-limit="12">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- HERO: statement and description as one paragraph, with links to the two other pages -->
+<header class="hx">
+  <div class="hx__inner">
+    <div class="hx-row">
+      <a href="index.html" class="hero-bar__logo">Wove Group.</a>
+      <nav class="hx-nav" aria-label="Main">
+        <a href="work.html">Our work</a>
+        <a href="people.html">Our people</a>
+      </nav>
+      <a href="#contact" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
+    </div>
+    <div class="hx-body">
+      <h1 class="hx-voice__text"><span class="hx-voice__statement">Shaping a better Ireland through strategic design and technology.</span> We help the people running Ireland’s public services, cultural institutions and mission-led organisations move from strategy to delivery.</h1>
+      <div class="hx-voice__links">
+        <a class="hx-link" href="work.html"><span class="hx-thumbs" data-thumbs aria-hidden="true"></span><span>See our work <span aria-hidden="true">&rarr;</span></span></a>
+        <a class="hx-link" href="people.html"><span class="hx-avatars" data-avatars aria-hidden="true"></span><span>Meet our people <span aria-hidden="true">&rarr;</span></span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="feed-wrap">
+
+  <!-- PINNED FILTER BAR AND SITE MENU: shows once the full filters scroll away -->
+  <div class="filter-bar" id="filter-bar" aria-label="Filters" role="region" inert></div>
+
+  <main class="feed feed--home" id="main">
+
+    <div class="feed__header" id="feed">
+      <h2 class="feed__title">Recent work</h2>
+      <span class="feed__showing label" id="feed-count" role="status" aria-live="polite"></span>
+    </div>
+
+    <!-- FILTERS: client carousel, topic pills and case study panel (js/home.js) -->
+    <div class="filters" id="filters"></div>
+
+    <div class="feed-cards feed-cards--home pc-grid" id="feed-grid"></div>
+    <div class="feed-more" id="feed-more"></div>
+
+  </main>
+
+  <!-- PROCESS BLOCK: to be designed -->
+  <section class="process-placeholder" aria-label="Process">
+    <div class="process-placeholder__box">Process block (to be designed)</div>
+  </section>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/feed.js"></script>
+
+</body>
+</html>

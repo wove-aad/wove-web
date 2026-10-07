@@ -1,11 +1,17 @@
-/* Homepage behaviour (site/templates/wove-mind.php).
+/* Feed behaviour: the homepage (site/templates/wove-mind.php) and Our work
+ * (snippets/feed/work-view.php, also used by the service and tag pages).
  *
  * Filters: the client carousel, topic pills, the pinned bar chips and the
  * tags on cards all set one active filter ("cs:slug", "service:x",
  * "tag:y", or "*" for all). Choosing the active one again clears it. Cards
- * carry data-filters; the first N matches show (N = data-limit on the grid).
- * Selecting a client shows its case study panel. After a change the page
- * scrolls to the results, under the pinned bar.
+ * carry data-filters; the first N matches show (N = data-limit on the grid,
+ * all of them when it has none). Selecting a filter shows its context
+ * panel (data-panel): the case study for a client, or the service, tag,
+ * sector or person. After a change the page scrolls to the results, under
+ * the pinned bar.
+ *
+ * Our work: the grid's data-initial is the filter to start with, and
+ * data-url is the Our work address, kept in step with ?filter=.
  *
  * Layout: cards stay in date order in the DOM and pack with grid row spans,
  * so reading and tab order match what you see.
@@ -21,7 +27,8 @@
   if (!filters || !grid || !bar) return;
 
   var cards = [].slice.call(grid.querySelectorAll('.pc'));
-  var limit = parseInt(grid.getAttribute('data-limit'), 10) || 12;
+  var limit = grid.hasAttribute('data-limit') ? parseInt(grid.getAttribute('data-limit'), 10) || 12 : Infinity;
+  var workUrl = grid.getAttribute('data-url');
   var countEl = document.getElementById('feed-count');
   var barCount = bar.querySelector('[data-count]');
   var empty = document.getElementById('feed-empty');
@@ -42,7 +49,10 @@
 
   function labelFor(key) {
     var el = document.querySelector('#filter-bar [data-filter="' + key + '"]');
-    if (!el) return '';
+    if (!el) {
+      var panel = filters.querySelector('[data-panel="' + key + '"]');
+      return panel ? panel.getAttribute('data-label') || '' : '';
+    }
     var clone = el.cloneNode(true);
     var count = clone.querySelector('.bar-chip__count');
     if (count) count.remove();
@@ -60,7 +70,7 @@
       el.classList.toggle('is-active', on);
     });
 
-    [].forEach.call(filters.querySelectorAll('.case-panel'), function (p) {
+    [].forEach.call(filters.querySelectorAll('[data-panel]'), function (p) {
       p.hidden = p.getAttribute('data-panel') !== key;
     });
 
@@ -94,9 +104,18 @@
     return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
   }
 
-  // Choosing the active filter again clears it.
+  // Choosing the active filter again clears it. On Our work the address
+  // follows, so a filtered view can be shared.
   function choose(key) {
     apply(active === key && key !== '*' ? '*' : key);
+    if (workUrl) history.replaceState(null, '', workUrl + (active === '*' ? '' : '?filter=' + encodeURIComponent(active)));
+  }
+
+  // Whether any card or panel answers to a filter key.
+  function known(key) {
+    if (key === '*') return true;
+    if (filters.querySelector('[data-panel="' + key + '"]')) return true;
+    return cards.some(function (c) { return (' ' + c.getAttribute('data-filters') + ' ').indexOf(' ' + key + ' ') !== -1; });
   }
 
   /* ---------- Card layout (grid row spans) ---------- */
@@ -112,13 +131,13 @@
 
   /* ---------- Scroll to results ---------- */
 
-  function scrollToResults() {
+  function scrollToResults(instant) {
     requestAnimationFrame(function () {
-      var panel = filters.querySelector('.case-panel:not([hidden])');
+      var panel = filters.querySelector('[data-panel]:not([hidden])');
       var target = panel || grid;
       var barH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
       var y = target.getBoundingClientRect().top + window.scrollY - barH - 24;
-      window.scrollTo({ top: Math.max(0, y), behavior: behaviour() });
+      window.scrollTo({ top: Math.max(0, y), behavior: instant ? 'auto' : behaviour() });
     });
   }
 
@@ -164,6 +183,7 @@
   /* ---------- Filter clicks ---------- */
 
   function onFilterClick(ev) {
+    if (ev.target.closest('[data-clear]')) { choose('*'); scrollToResults(); return; }
     var el = ev.target.closest('[data-filter]');
     if (!el) return;
     choose(el.getAttribute('data-filter'));
@@ -171,16 +191,17 @@
   }
   filters.addEventListener('click', onFilterClick);
 
-  // Card tags link to Our Work; filter in place when the homepage has that filter.
+  // Card tags link to Our Work; filter in place when this page has that
+  // filter (a control on the homepage; any matching card on Our work).
   grid.addEventListener('click', function (ev) {
     var a = ev.target.closest('a.card-tags__tag');
     if (!a) return;
     var key = new URL(a.href, location.href).searchParams.get('filter');
     var control = key && filters.querySelector('[data-filter="' + key + '"]');
-    if (!control) return;
+    if (!control && !(workUrl && key && known(key))) return;
     ev.preventDefault();
-    if (active !== key) apply(key);
-    control.focus({ preventScroll: true });
+    if (active !== key) choose(key);
+    (control || grid).focus({ preventScroll: true });
     scrollToResults();
   });
 
@@ -278,6 +299,10 @@
   /* ---------- Start ---------- */
 
   document.documentElement.classList.add('home-js');
-  apply('*');
+  var initial = grid.getAttribute('data-initial') || '*';
+  apply(known(initial) ? initial : '*');
   updateBar();
+  // Arriving with a filter (a service or tag page, or ?filter=): start at
+  // its panel and results.
+  if (active !== '*') window.addEventListener('load', function () { scrollToResults(true); });
 })();

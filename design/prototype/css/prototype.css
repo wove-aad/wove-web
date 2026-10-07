@@ -1,46 +1,4 @@
-/* ================================================================
-   HOMEPAGE (site/templates/wove-mind.php)
-   Loaded after site.css and feed.css on the homepage only. Ported from
-   the HTML prototype in design/prototype (branch
-   claude/sleepy-sagan-w0r3of).
-
-   Tokens new to this design are scoped to .home, so other pages keep
-   the current values: bold headings, larger radii, the blush hero
-   ground and the post format colours. Promote them to site.css :root
-   (and design-tokens.json) once the direction is settled.
-   ================================================================ */
-
-.home {
-  /* Heading weights: headings move to bold */
-  --weight-h1: var(--weight-bold);
-  --weight-h2: var(--weight-bold);
-  --weight-h3: var(--weight-bold);
-  --weight-h4: var(--weight-bold);
-  --weight-h5: var(--weight-bold);
-  --weight-h6: var(--weight-bold);
-
-  /* Radii increased (site.css: 12 / 20 / 45px) */
-  --radius-sm: 1rem;
-  --radius-md: 1.75rem;
-  --radius-lg: 3.5rem;
-
-  /* Hero */
-  --color-blush:          #fdf5f3;
-  --color-hero-statement: var(--color-600);
-
-  /* Post format colours, from the Wove Mind Panel tokens (thread darkened
-     from #2f7a57 for 4.5:1 contrast on its tint) */
-  --format-thread:        #256446;
-  --format-thread-tint:   #e1eee7;
-  --format-whatif:        #2a50f3;
-  --format-whatif-tint:   #ebf0fe;
-  --format-longread:      #6b3ec2;
-  --format-longread-tint: #ede6f8;
-}
-.home .feed-wrap {
-  --feed-radius-sm: var(--radius-sm);
-  --feed-radius-md: var(--radius-md);
-}
+/* Prototype-only components. Loaded after site.css. */
 
 /* ============================================================
    HERO: logo and button (shared with the hero row below)
@@ -162,7 +120,7 @@
 .client-card__btn[aria-pressed="true"] {
   box-shadow: 0 0 0 3px var(--feed-bg), 0 0 0 6px var(--color-black);
 }
-.client-card__btn[aria-pressed="true"]:not([data-filter="*"])::after {
+.client-card__btn[aria-pressed="true"]:not([data-client="*"])::after {
   content: "×";
   position: absolute;
   top: var(--space-16); right: var(--space-16);
@@ -175,7 +133,7 @@
   font-weight: var(--weight-bold);
 }
 /* When a client is selected, the others step back */
-.client-carousel__track:has([aria-pressed="true"]:not([data-filter="*"])) .client-card__btn[aria-pressed="false"] .client-card__img {
+.client-carousel__track:has([aria-pressed="true"]:not([data-client="*"])) .client-card__btn[aria-pressed="false"] .client-card__img {
   filter: grayscale(1);
   opacity: 0.6;
 }
@@ -350,7 +308,6 @@
   .feed--home { padding-top: var(--space-48); }
   .case-panel { border-radius: var(--radius-md); padding: var(--space-12); }
   .case-panel__kpi dd { font-size: var(--size-h6); }
-  .case-panel__kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-16); }
 }
 
 
@@ -387,6 +344,25 @@
 }
 .feed-more__btn:hover { background: var(--color-black); color: var(--color-white); }
 .feed-more__btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+
+
+/* ============================================================
+   PROCESS BLOCK (placeholder, to be designed)
+   ============================================================ */
+.process-placeholder {
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: 0 var(--gutter-x) var(--space-128);
+}
+.process-placeholder__box {
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  border: 2px dashed var(--color-300);
+  border-radius: var(--radius-lg);
+  color: var(--color-700);
+  font-size: var(--size-nav);
+}
 
 
 /* ============================================================
@@ -497,7 +473,7 @@
   transition: background var(--transition), color var(--transition);
 }
 .bar-chip--client { padding-left: 0.25rem; }
-.bar-chip--all { padding-left: var(--space-16); }
+.bar-chip--client[data-client="*"] { padding-left: var(--space-16); }
 .bar-chip:hover { background: var(--feed-border); }
 .bar-chip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 .bar-chip[aria-pressed="true"] { background: var(--color-black); color: var(--color-white); }
@@ -759,108 +735,12 @@
 }
 
 
-/* ============================================================
-   ACTIVE FILTERS SHOW ×
-   Selecting the active filter again clears it; the × says so. Not on
-   the "All" filters, which have nothing to clear.
-   ============================================================ */
-.home .tag-pill.is-active:not([data-filter="*"])::after,
-.home .bar-chip[aria-pressed="true"]:not([data-filter="*"])::after {
+/* Active filters show ×: selecting again clears them. Not on "All". */
+.feed-wrap .tag-pill.is-active:not([data-topic="*"])::after,
+.bar-chip[aria-pressed="true"]:not([data-client="*"])::after {
   content: "×";
   margin-left: 0.4rem;
   font-size: 1.1em;
   line-height: 1;
 }
-.home .bar-chip[aria-pressed="true"]:not([data-filter="*"]) .bar-chip__count { display: none; }
-
-
-/* ============================================================
-   LOGOS, LINKS AND OTHER KIRBY-ONLY DETAILS
-   ============================================================ */
-/* Client logo files over the carousel image and on the case panel */
-.client-card__logo img { max-width: 70%; max-height: 40%; object-fit: contain; }
-.case-panel__logo img { display: block; height: 1.5rem; width: auto; }
-
-/* Whole card is the link (title link stretched); tags sit above it */
-.pc__link { color: inherit; text-decoration: none; }
-.pc__link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
-.pc__link:focus-visible { outline: none; }
-.pc:has(.pc__link:focus-visible) { outline: 2px solid var(--color-black); outline-offset: 3px; }
-.pc .card-tags, .pc .card-tags__more { position: relative; z-index: 2; }
-.home .feed-wrap a.card-tags__tag { display: inline-flex; align-items: center; min-height: 1.5rem; }
-.home .feed-wrap a.card-tags__tag:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; border-radius: 2px; }
-
-/* Hidden cards and panels stay out of the grid */
-.pc[hidden], .case-panel[hidden], .feed-empty[hidden] { display: none; }
-
-/* The homepage is light; the footer keeps the site's own palette */
-.home { background: var(--feed-bg, #f5f4f0); }
-
-
-/* ============================================================
-   CONTEXT PANELS FOR SERVICES, TAGS AND SECTORS
-   Shown above the cards when that filter is selected, in the place of
-   the case study panel (snippets/feed/panels.php). A service with a
-   featured image gets it beside the text.
-   ============================================================ */
-.topic-panel {
-  display: grid;
-  gap: var(--space-48);
-  align-items: center;
-  margin-top: var(--space-40);
-  padding: var(--space-40) var(--space-48);
-  border-radius: var(--radius-lg);
-  background: var(--color-blush);
-  animation: panel-in 300ms ease;
-}
-.topic-panel[hidden] { display: none; }
-.topic-panel.has-image { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); padding: var(--space-24); }
-.topic-panel__media { aspect-ratio: 5 / 4; border-radius: var(--radius-md); overflow: hidden; }
-.feed-wrap .topic-panel__media img { width: 100%; height: 100%; object-fit: cover; }
-.topic-panel.has-image .topic-panel__body { padding-right: var(--space-24); }
-.topic-panel__eyebrow { font-size: var(--size-nav); color: var(--color-text-muted); margin-bottom: var(--space-12); }
-.topic-panel__title {
-  font-size: var(--size-h4);
-  font-weight: var(--weight-h4);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-.topic-panel__text {
-  max-width: 36em;
-  margin-top: var(--space-16);
-  font-size: var(--size-p4);
-  line-height: var(--lh-p2);
-  color: var(--color-800);
-  text-wrap: pretty;
-}
-.topic-panel .pg-btn { margin-top: var(--space-32); }
-@media (prefers-reduced-motion: reduce) { .topic-panel { animation: none; } }
-@media (max-width: 960px) {
-  .topic-panel.has-image { grid-template-columns: 1fr; gap: var(--space-24); }
-  .topic-panel.has-image .topic-panel__body { padding: 0 var(--space-12) var(--space-12); }
-}
-@media (max-width: 600px) {
-  .topic-panel { padding: var(--space-32) var(--space-24); border-radius: var(--radius-md); }
-  .topic-panel.has-image { padding: var(--space-12); }
-  .topic-panel__title { font-size: var(--size-h5); }
-}
-
-/* Pill buttons: black, and outlined (--ghost) */
-.pg-btn {
-  display: inline-flex; align-items: center; gap: var(--space-12);
-  border: 0;
-  font-family: inherit;
-  cursor: pointer;
-  padding: var(--space-16) var(--space-24);
-  border-radius: var(--radius-pill);
-  background: var(--color-black);
-  color: var(--color-white);
-  font-size: var(--size-nav);
-  font-weight: var(--weight-bold);
-}
-.feed-wrap .pg-btn { color: var(--color-white); }
-.pg-btn:hover { opacity: 0.85; }
-.pg-btn--ghost { background: transparent; color: var(--color-black); border: 1px solid var(--color-black); }
-.feed-wrap .pg-btn--ghost { color: var(--color-black); }
-.pg-btn--ghost:hover { background: var(--color-black); color: var(--color-white); opacity: 1; }
-.feed-wrap .pg-btn--ghost:hover { color: var(--color-white); }
+.bar-chip[aria-pressed="true"]:not([data-client="*"]) .bar-chip__count { display: none; }

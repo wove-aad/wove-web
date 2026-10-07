@@ -1,32 +1,33 @@
 <?php
 /**
- * Wove Mind — single entry template (Thread / What if / Long read)
+ * Wove Mind post page (Thread / What If / Long Read, and sparks)
  * File: site/templates/wove-mind-entry.php
  *
- * Uses the feed design system (feed.css) to match the case study page.
- * Includes Schema.org structured data for E-E-A-T.
+ * Header: "All work" back link and the format chip, the title, the lead
+ * (the "Excerpt / Lead" field, when the post has blocks) and the byline.
+ * What Ifs use their pale blue in place of blush, like their cards. Wide
+ * images (3:2 and wider) lead under the header; square and portrait ones
+ * sit in the text column. Then the body, tags (site-wide order), an author
+ * card, the case study this post belongs to, and more posts (the same
+ * project first). Includes Schema.org structured data.
  */
 
-$format = $page->format()->value();
+$format = $page->format()->value() ?: 'thread';
 $formatLabels = [
+  'spark'    => 'Spark',
   'thread'   => 'Thread',
-  'whatif'   => 'What if',
-  'longread' => 'Long read',
+  'whatif'   => 'What If',
+  'longread' => 'Long Read',
 ];
 $formatLabel = $formatLabels[$format] ?? $format;
 
-$image      = $page->content()->get('image')->toFile();
-$showAuthor = $page->show_author()->isTrue();
-$author     = $showAuthor ? $page->author()->toUser() : null;
-$authorAvatar = $author ? $author->avatar() : null;
-$tags       = array_filter($page->tags()->split(','));
+$image  = $page->content()->get('image')->toFile();
+$author = wove_entry_author($page);
+$ratio  = $image && $image->height() ? $image->width() / $image->height() : null;
+$wide   = $ratio && $ratio >= 1.4;
 
-$allBlocks  = $page->blocks()->toBlocks();
-$hasBlocks  = $allBlocks->count() > 0;
-
-$serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
-$serviceSlugs  = array_filter($page->services()->split(','));
-$serviceTags   = array_map(fn ($slug) => $serviceLabels[$slug] ?? ucfirst($slug), $serviceSlugs);
+$allBlocks = $page->blocks()->toBlocks();
+$hasBlocks = $allBlocks->count() > 0;
 
 $wordCount = 0;
 if ($hasBlocks) {
@@ -37,27 +38,55 @@ if ($page->body()->isNotEmpty()) {
 }
 $readingTime = max(1, (int) ceil($wordCount / 200));
 
-$pagerFormats  = ['thread', 'whatif', 'longread'];
-$pagerSiblings = $page->parent()->children()->listed()
-  ->filter(fn ($p) => in_array($p->format()->value(), $pagerFormats));
-$pagerIndex = $pagerSiblings->indexOf($page);
-$prev = $pagerIndex > 0 ? $pagerSiblings->nth($pagerIndex - 1) : null;
-$next = $pagerSiblings->nth($pagerIndex + 1);
-
-$relatedEntries = $pagerSiblings->not($page)->sortBy('date', 'desc')->limit(4);
-
-$publishedDate   = $page->date()->toDate('Y-m-d');
-$publishedDisplay = $page->date()->toDate('j M Y');
-$modifiedDate    = date('Y-m-d', $page->modified());
+$publishedDate    = $page->date()->toDate('Y-m-d');
+$publishedDisplay = $page->date()->toDate('j F Y');
+$modifiedDate     = date('Y-m-d', $page->modified());
 
 $description = $page->seoDescription()->isNotEmpty()
   ? $page->seoDescription()->value()
   : ($page->body()->isNotEmpty()
     ? Str::short(strip_tags($page->body()->value()), 160)
     : '');
+
+// Tags in the site-wide order: case study, services, editorial tags, sectors
+$workUrl  = url('our-work');
+$filter   = fn ($key) => $workUrl . '?filter=' . urlencode($key);
+$services = wove_service_labels();
+$sectors  = wove_sector_labels();
+$siteTags = $site->tags()->toStructure();
+$caseStudy = $page->case_study()->toPages()->first();
+$pills = [];
+foreach ($page->case_study()->toPages() as $cs) {
+  $pills[] = ['label' => $cs->eyebrow()->or($cs->title())->value(), 'url' => $filter('cs:' . $cs->slug())];
+}
+foreach ($page->services()->split(',') as $s) {
+  if (isset($services[$s])) $pills[] = ['label' => $services[$s], 'url' => $filter('service:' . $s)];
+}
+foreach ($page->tags()->split(',') as $t) {
+  $tag = $siteTags->findBy('slug', Str::slug($t)) ?? $siteTags->findBy('name', $t);
+  if ($tag && $tag->active()->toBool() !== false) $pills[] = ['label' => $tag->name()->value(), 'url' => $filter('tag:' . $tag->slug())];
+}
+foreach ($page->sectors()->split(',') as $s) {
+  if (isset($sectors[$s])) $pills[] = ['label' => $sectors[$s], 'url' => $filter('sector:' . $s)];
+}
+
+// More posts: the same project first, then the newest others
+$others = $page->siblings()->listed()->not($page)
+  ->filter(fn ($p) => $p->format()->value() !== 'project-highlight')
+  ->sortBy('date', 'desc');
+$same = $caseStudy ? $others->filter(fn ($p) => $p->case_study()->toPages()->has($caseStudy)) : new \Kirby\Cms\Pages();
+$more = $same->merge($others->not($same))->limit(6);
+$feedKeys = wove_feed()['keys'];
+
+$avatarHtml = function ($user, $size) {
+  $avatar = $user->avatar();
+  return '<span class="avatar" style="--tone: #e0bdff" aria-hidden="true">'
+    . ($avatar ? '<img src="' . $avatar->crop($size * 2, $size * 2)->url() . '" alt="">' : html(wove_initials($user->name()->value())))
+    . '</span>';
+};
 ?>
 
-<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
+<?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
 <script type="application/ld+json">
 <?php
@@ -117,180 +146,125 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
 </script>
 
-<div class="feed-wrap">
 
-  <nav class="cs-breadcrumb" aria-label="Breadcrumb">
-    <a href="/">Feed</a>
-    <span class="cs-breadcrumb__sep">/</span>
-    <span><?= html($formatLabel) ?></span>
-  </nav>
+<div class="home" data-theme="light">
 
-  <header class="cs-hero">
-    <div class="entry-format entry-format--<?= $format ?>"><?= html($formatLabel) ?></div>
-
-    <?php if ($page->title()->isNotEmpty()): ?>
-      <h1 class="cs-hero__title"><?= $page->title()->html() ?></h1>
-    <?php endif ?>
-
-    <?php if ($hasBlocks && $page->body()->isNotEmpty()): ?>
-      <div class="entry-lead"><?= $page->body() ?></div>
-    <?php endif ?>
-
-    <div class="entry-byline">
-      <?php if ($author): ?>
-        <div class="entry-byline__author">
-          <?php if ($authorAvatar): ?>
-            <?php snippet('picture', ['file' => $authorAvatar, 'widths' => [40, 80], 'ratio' => 1, 'sizes' => '40px', 'class' => 'entry-byline__avatar', 'attrs' => ['width' => 40, 'height' => 40]]) ?>
-          <?php endif ?>
-          <div class="entry-byline__info">
-            <span class="entry-byline__name"><?= $author->name()->html() ?></span>
-            <?php if ($page->author_role()->isNotEmpty()): ?>
-              <span class="entry-byline__role"><?= $page->author_role()->html() ?></span>
-            <?php endif ?>
-          </div>
+  <header class="hx hx--page<?= $format === 'whatif' ? ' hx--whatif' : '' ?><?= $wide ? ' hx--lead' : '' ?>">
+    <div class="hx__inner">
+      <?php snippet('brand/header-row') ?>
+      <div class="hx-body">
+        <div class="ph__top">
+          <a class="ph__back" href="<?= $workUrl ?>"><span aria-hidden="true">&larr;</span> All work</a>
+          <p class="post-chip post-chip--<?= html($format) ?>"><?= html($formatLabel) ?></p>
         </div>
-      <?php endif ?>
-      <div class="entry-byline__meta">
-        <time datetime="<?= $publishedDate ?>"><?= $publishedDisplay ?></time>
-        <span class="entry-byline__dot">&middot;</span>
-        <span><?= $readingTime ?> min read</span>
+        <h1 class="ph__title"><?= $page->title()->html() ?></h1>
+        <?php if ($hasBlocks && $page->body()->isNotEmpty()): ?>
+          <div class="ph__intro"><?= $page->body() ?></div>
+        <?php endif ?>
+        <div class="byline">
+          <?php if ($author): ?>
+            <span class="byline__who">
+              <a href="<?= url('our-people') ?>#<?= html(wove_author_slug($author)) ?>">
+                <?= $avatarHtml($author, 40) ?>
+                <span>
+                  <span class="byline__name"><?= $author->name()->html() ?></span>
+                  <?php if ($page->author_role()->isNotEmpty()): ?><span class="byline__role"><?= $page->author_role()->html() ?></span><?php endif ?>
+                </span>
+              </a>
+            </span>
+          <?php endif ?>
+          <span class="byline__meta"><time datetime="<?= $publishedDate ?>"><?= $publishedDisplay ?></time> · <?= $readingTime ?> min read</span>
+        </div>
       </div>
     </div>
   </header>
 
-  <?php if ($image): ?>
-    <div class="cs-hero-image">
-      <div class="cs-hero-image__inner">
+  <div class="feed-wrap">
+    <?php snippet('brand/menu-bar') ?>
+
+    <?php if ($wide): ?>
+      <div class="pg-lead-image">
         <?php snippet('picture', [
           'file'          => $image,
           'widths'        => [640, 960, 1280, 1600, 2000, 2560],
-          'ratio'         => 21 / 9,
           'sizes'         => '(min-width: 85rem) 79rem, calc(100vw - 2rem)',
           'alt'           => $image->alt()->value(),
           'loading'       => 'eager',
           'fetchpriority' => 'high',
         ]) ?>
       </div>
-    </div>
-  <?php endif ?>
+    <?php endif ?>
 
-  <article class="cs-body">
-    <div class="cs-body__inner">
-      <?php if ($hasBlocks): ?>
-        <?php foreach ($allBlocks as $block): ?>
-          <?= $block ?>
-        <?php endforeach ?>
-      <?php else: ?>
-        <?= $page->body() ?>
-      <?php endif ?>
-    </div>
-  </article>
+    <main class="pg" id="main">
+      <article class="pg-section post-body">
+        <div class="prose">
+          <?php if ($image && !$wide): ?>
+            <figure>
+              <?php snippet('picture', ['file' => $image, 'widths' => [480, 640, 960, 1280], 'sizes' => '(min-width: 960px) 40rem, 100vw', 'alt' => $image->alt()->value()]) ?>
+            </figure>
+          <?php endif ?>
+          <?php if ($hasBlocks): ?>
+            <?php foreach ($allBlocks as $block): ?>
+              <?= $block ?>
+            <?php endforeach ?>
+          <?php else: ?>
+            <?= $page->body() ?>
+          <?php endif ?>
+        </div>
 
-  <?php
-    // Global tag order: case study, services, editorial tags, sectors
-    $cloudPills = [];
-    foreach ($page->case_study()->toPages() as $linkedCs) {
-      $cloudPills[] = ['label' => $linkedCs->eyebrow()->or($linkedCs->title())->value(), 'url' => '/our-work?filter=cs:' . $linkedCs->slug()];
-    }
-    foreach ($serviceSlugs as $sSlug) {
-      $cloudPills[] = ['label' => $serviceLabels[$sSlug] ?? ucfirst($sSlug), 'url' => '/our-work?filter=service:' . $sSlug];
-    }
-    $tagStructureCloud = $site->tags()->toStructure();
-    foreach ($tags as $t) {
-      $tagData = $tagStructureCloud->findBy('slug', Str::slug($t)) ?: $tagStructureCloud->findBy('name', $t);
-      $tagSlug = $tagData ? $tagData->slug()->value() : Str::slug($t);
-      $tagLabel = $tagData ? $tagData->name()->value() : $t;
-      $cloudPills[] = ['label' => $tagLabel, 'url' => '/our-work?filter=tag:' . $tagSlug];
-    }
-    $sectorLabels = [
-      'arts-and-culture'  => 'Arts and Culture',
-      'public-service'    => 'Public Service',
-      'higher-education'  => 'Higher Education',
-      'non-profit'        => 'Non-profit and Mission-led',
-      'founders-ventures' => 'Founders and Ventures',
-    ];
-    foreach ($page->sectors()->split(',') as $sec) {
-      $sec = trim($sec);
-      if ($sec && isset($sectorLabels[$sec])) {
-        $cloudPills[] = ['label' => $sectorLabels[$sec], 'url' => '/our-work?filter=sector:' . $sec];
-      }
-    }
-  ?>
-  <?php if ($cloudPills): ?>
-    <div class="entry-tags">
-      <nav class="tag-cloud" aria-label="Tags">
-        <?php foreach ($cloudPills as $pill): ?>
-          <a href="<?= $pill['url'] ?>" class="tag-pill"><?= html($pill['label']) ?></a>
-        <?php endforeach ?>
-      </nav>
-    </div>
-  <?php endif ?>
-
-  <?php if ($author): ?>
-    <div class="entry-bio">
-      <div class="entry-bio__label">About the author</div>
-      <div class="entry-bio__card">
-        <?php if ($authorAvatar): ?>
-          <?php snippet('picture', ['file' => $authorAvatar, 'widths' => [56, 112], 'ratio' => 1, 'sizes' => '56px', 'class' => 'entry-bio__avatar', 'attrs' => ['width' => 56, 'height' => 56]]) ?>
+        <?php if ($pills): ?>
+          <nav class="post-tags" aria-label="Tags">
+            <?php foreach ($pills as $pill): ?>
+              <a href="<?= $pill['url'] ?>"><?= html($pill['label']) ?></a>
+            <?php endforeach ?>
+          </nav>
         <?php endif ?>
-        <div class="entry-bio__content">
-          <div class="entry-bio__name"><?= $author->name()->html() ?></div>
-          <?php if ($page->author_role()->isNotEmpty()): ?>
-            <div class="entry-bio__role"><?= $page->author_role()->html() ?></div>
-          <?php endif ?>
-          <?php if ($page->author_bio()->isNotEmpty()): ?>
-            <p class="entry-bio__text"><?= $page->author_bio()->html() ?></p>
-          <?php endif ?>
-        </div>
-      </div>
-    </div>
-  <?php endif ?>
 
-  <?php if ($prev || $next): ?>
-    <nav class="entry-pager" aria-label="More articles">
-      <?php if ($prev): ?>
-        <a href="<?= $prev->url() ?>" class="entry-pager__link entry-pager__link--prev" rel="prev">
-          <span class="entry-pager__dir">&larr; Previous</span>
-          <span class="entry-pager__name"><?= $prev->title()->html() ?></span>
-        </a>
-      <?php else: ?>
-        <span></span>
+        <?php if ($author):
+          $bio   = $page->author_bio()->or($author->content()->get('bio'))->value();
+          $count = wove_author_entries($author)->count();
+          $first = explode(' ', trim($author->name()->value()))[0];
+          $slug  = wove_author_slug($author);
+        ?>
+          <aside class="author-card" aria-label="About the author">
+            <?= $avatarHtml($author, 64) ?>
+            <div>
+              <p class="author-card__label">Written by</p>
+              <p class="author-card__name"><?= $author->name()->html() ?></p>
+              <?php if ($page->author_role()->isNotEmpty()): ?><p class="author-card__role"><?= $page->author_role()->html() ?></p><?php endif ?>
+              <?php if ($bio): ?><p class="author-card__bio"><?= html($bio) ?></p><?php endif ?>
+              <p class="author-card__links">
+                <a href="<?= url('our-people') ?>#<?= html($slug) ?>">View profile <span aria-hidden="true">&rarr;</span></a>
+                <a href="<?= $filter('author:' . $slug) ?>">See all <?= html($first) ?>’s posts (<?= $count ?>) <span aria-hidden="true">&rarr;</span></a>
+              </p>
+            </div>
+          </aside>
+        <?php endif ?>
+      </article>
+
+      <?php if ($caseStudy): ?>
+        <section class="pg-section" aria-labelledby="post-case-title">
+          <div class="pg-section__head"><h2 class="pg-section__title" id="post-case-title">From the project</h2></div>
+          <?php snippet('home/case-panel', ['cs' => $caseStudy]) ?>
+        </section>
       <?php endif ?>
-      <?php if ($next): ?>
-        <a href="<?= $next->url() ?>" class="entry-pager__link entry-pager__link--next" rel="next">
-          <span class="entry-pager__dir">Next &rarr;</span>
-          <span class="entry-pager__name"><?= $next->title()->html() ?></span>
-        </a>
+
+      <?php if ($more->count()): ?>
+        <section class="pg-section" aria-labelledby="post-more-title">
+          <div class="pg-section__head">
+            <h2 class="pg-section__title" id="post-more-title">More from Wove</h2>
+            <a class="pg-section__link" href="<?= $workUrl ?>">See all work <span aria-hidden="true">&rarr;</span></a>
+          </div>
+          <div class="feed-cards pc-grid">
+            <?php foreach ($more as $post): ?>
+              <?php snippet('home/post-card', ['post' => $post, 'filters' => $feedKeys[$post->id()] ?? [], 'hidden' => false]) ?>
+            <?php endforeach ?>
+          </div>
+        </section>
       <?php endif ?>
-    </nav>
-  <?php endif ?>
-
-  <?php if ($relatedEntries->count()): ?>
-    <div class="cs-related">
-      <div class="cs-related__header">
-        <div>
-          <div class="cs-related__label">Keep reading</div>
-          <h2 class="cs-related__title">More from Wove Mind</h2>
-        </div>
-        <a href="/" class="cs-related__link">View all &rarr;</a>
-      </div>
-      <div class="feed-cards">
-        <?php foreach ($relatedEntries as $entry): ?>
-          <?php snippet('feed-card', ['post' => $entry]) ?>
-        <?php endforeach ?>
-      </div>
-    </div>
-  <?php endif ?>
-
+    </main>
+  </div>
 </div>
 
-<script>
-(function() {
-  var h = new Date().getHours();
-  if (h >= 7 && h < 19) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-})();
-</script>
-
+<script src="/assets/js/pages.js" defer></script>
 <?php snippet('footer') ?>

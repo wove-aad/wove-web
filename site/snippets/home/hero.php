@@ -13,14 +13,7 @@ $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
 ?>
 <header class="hx">
   <div class="hx__inner">
-    <div class="hx-row">
-      <a href="<?= url() ?>" class="hero-bar__logo"><?= $site->title()->html() ?>.</a>
-      <nav class="hx-nav" aria-label="Main">
-        <a href="<?= url('our-work') ?>">Our work</a>
-        <a href="<?= url('our-people') ?>">Our people</a>
-      </nav>
-      <a href="<?= url('contact') ?>" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
-    </div>
+    <?php snippet('brand/header-row') ?>
     <div class="hx-body">
       <h1 class="hx-voice__text"><span class="hx-voice__statement"><?= html(rtrim($statement, '.')) ?>.</span> <?= html($description) ?></h1>
       <div class="hx-voice__links">

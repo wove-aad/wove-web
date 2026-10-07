@@ -645,3 +645,50 @@ html:not(.js) .person-detail__close { display: none; }
   .contact-route { padding: var(--space-24); }
   .contact-direct { padding: var(--space-32) var(--space-24); border-radius: var(--radius-md); }
 }
+
+/* Form states */
+.contact-form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.contact-form__req { color: var(--color-text-muted); }
+.contact-form__error {
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-sm);
+  background: #fdecea;
+  color: #8a1c12;
+  font-size: 0.9375rem;
+}
+.contact-form__done {
+  padding: var(--space-16);
+  border-radius: var(--radius-sm);
+  background: var(--format-thread-tint);
+  color: var(--format-thread);
+  font-weight: var(--weight-bold);
+}
+.contact-route { position: relative; }
+
+
+/* ============================================================
+   ERROR AND DEFAULT PAGES
+   ============================================================ */
+.error-links { display: flex; flex-wrap: wrap; gap: var(--space-12); margin-top: var(--space-40); }
+.pg-section .ph__pills { margin-top: 0; }
+
+/* Child pages as link cards (e.g. the sector list) */
+.link-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-24); }
+.link-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  height: 100%;
+  padding: var(--space-32) var(--space-32) var(--space-64);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  transition: transform var(--card-transition), box-shadow var(--card-transition);
+}
+.link-card:hover { transform: translateY(var(--card-lift)); box-shadow: var(--card-shadow-hover); }
+.link-card:focus-visible { outline: 3px solid var(--color-black); outline-offset: 3px; }
+.link-card__title { font-size: var(--size-h6); font-weight: var(--weight-h6); line-height: 1.25; }
+.link-card__text { color: var(--color-700); }
+.link-card__more { position: absolute; left: var(--space-32); bottom: var(--space-24); font-size: 1.25rem; }
+@media (max-width: 960px) { .link-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .link-cards { grid-template-columns: 1fr; } }

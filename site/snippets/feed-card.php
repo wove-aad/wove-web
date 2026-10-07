@@ -49,7 +49,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php if ($author): ?>
         <span class="feed-card__avatar">
           <?php if ($avatar = $author->avatar()): ?>
-            <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+            <?php snippet('picture', ['file' => $avatar, 'widths' => [20, 40], 'ratio' => 1, 'sizes' => '20px']) ?>
           <?php else: ?>
             <?= html($authorInitials) ?>
           <?php endif ?>
@@ -66,7 +66,12 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
 
   <article class="feed-card">
     <div class="feed-card__media">
-      <img src="<?= $image->url() ?>" alt="" loading="lazy">
+      <?php snippet('picture', [
+        'file'   => $image,
+        'widths' => [320, 480, 640, 960, 1280],
+        'ratio'  => 16 / 10,
+        'sizes'  => '(min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
+      ]) ?>
     </div>
     <div class="feed-card__body">
       <p class="feed-card__quote"><?= $post->body()->excerpt(200) ?></p>
@@ -74,7 +79,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <?php if ($author): ?>
           <span class="feed-card__avatar">
             <?php if ($avatar = $author->avatar()): ?>
-              <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+              <?php snippet('picture', ['file' => $avatar, 'widths' => [20, 40], 'ratio' => 1, 'sizes' => '20px']) ?>
             <?php else: ?>
               <?= html($authorInitials) ?>
             <?php endif ?>
@@ -92,7 +97,12 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
 
   <article class="feed-card">
     <div class="feed-card__media">
-      <img src="<?= $image->url() ?>" alt="" loading="lazy">
+      <?php snippet('picture', [
+        'file'   => $image,
+        'widths' => [320, 480, 640, 960, 1280],
+        'ratio'  => 16 / 10,
+        'sizes'  => '(min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
+      ]) ?>
     </div>
     <div class="feed-card__body">
       <?php if ($showFormat): ?>
@@ -106,7 +116,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
         <?php if ($author): ?>
           <span class="feed-card__avatar">
             <?php if ($avatar = $author->avatar()): ?>
-              <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+              <?php snippet('picture', ['file' => $avatar, 'widths' => [20, 40], 'ratio' => 1, 'sizes' => '20px']) ?>
             <?php else: ?>
               <?= html($authorInitials) ?>
             <?php endif ?>
@@ -137,7 +147,7 @@ $formatLabels = ['whatif' => 'What If', 'longread' => 'Long Read'];
       <?php if ($author): ?>
         <span class="feed-card__avatar">
           <?php if ($avatar = $author->avatar()): ?>
-            <img src="<?= $avatar->url() ?>" alt="" loading="lazy">
+            <?php snippet('picture', ['file' => $avatar, 'widths' => [20, 40], 'ratio' => 1, 'sizes' => '20px']) ?>
           <?php else: ?>
             <?= html($authorInitials) ?>
           <?php endif ?>

@@ -181,6 +181,9 @@ body {
   line-height: var(--lh-p2);
 }
 img, svg { display: block; max-width: 100%; height: auto; }
+/* The picture snippet wraps <img> in <picture>; keep the wrapper out of layout
+   so rules written against the <img> (flex items, height: 100%) still apply. */
+picture { display: contents; }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font-family: inherit; cursor: pointer; }

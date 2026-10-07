@@ -1,6 +1,6 @@
 # wove-web — project context
 
-_Last updated 2026-09-24. Kirby CMS build for wove.group._
+_Last updated 2026-10-06. Kirby CMS build for wove.group._
 
 ## Branches
 
@@ -19,6 +19,9 @@ _Last updated 2026-09-24. Kirby CMS build for wove.group._
 - `assets/css/site.css` — the full design-token/component stylesheet, migrated from the Labs prototype's inline `<style>` into a shared file. `assets/design-tokens.json` is the canonical token source (`_meta._repoNote` explains the sync process — `site.css`'s `:root` is kept in sync with it by hand, no build step yet). Feed pages use a separate set: `assets/css/feed.css` and `assets/design-tokens-feed.json` (see "Feed design tokens" below).
 - `assets/fonts/Ballinger-*.{woff,woff2}` — real font files (Regular/Bold/X-Bold/Italic), pulled from `dev`'s own asset scaffold. **No files exist for weights 300 (light) / 500 (medium) / 900 (black)** — deliberately not faked; per the CSS font-matching spec an unregistered weight resolves to the nearest registered weight in the same family, so text stays in Ballinger rather than falling through to a different fallback font. `font-display: optional` (not `swap`) to avoid a visible font-swap jump on slow/uncached loads.
 
+### Responsive images (2026-10-06)
+`site/snippets/picture.php` outputs a `<picture>` with a WebP `<source>` and a fallback `<img>` in the original format, both with `srcset`/`sizes`, plus `width`/`height`, `loading` and `decoding`. Pass `file`, `widths`, `sizes`, and optionally `ratio` (crops to width / height), `alt`, `class`, `loading`, `fetchpriority`, `quality` and `attrs`. Widths larger than the original are dropped, so nothing is upscaled; SVGs and GIFs are output as a plain `<img>`. `picture { display: contents }` in `site.css` keeps the wrapper out of layout, so CSS written against the `<img>` still applies. Used for the case study and Wove Mind entry heroes (21:9, `fetchpriority="high"`), feed, work grid and homepage cards, the client carousel and case panel, team photos and avatars. The Our Work hero (swapped in by script) gets a WebP `srcset` from `work.php`. **Use this snippet for any new raster image.** The old named `thumbs.srcsets` presets were removed from `config.php` on 2026-10-06, as nothing used them.
+
 ### Service pages
 One shared template, `site/templates/service.php`, replaced the four per-service templates (`{labs,strategy,brand,digital}.php`, now removed along with `case-study-feature-card.php`, `wovemind-highlight-card.php` and `wovemind-related-card.php`). It uses the feed design system (`assets/css/feed.css`):
 - Breadcrumb (Feed / Our Work / service), a `tag-hero` with the page title, intro (`$page->intro()`, falling back to a hardcoded intro per service) and an entry count, then the `tag-cloud` snippet.
@@ -36,18 +39,35 @@ Content pages for the services are tracked in git at `content/services/{labs,str
 ### Panel
 Working locally — first-account installation completed, a real `project-highlight` entry ("Circular.ie," tagged Strategy) exists and renders correctly on the Strategy service page.
 
-### Homepage feed (2026-09-24)
-The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site/config/config.php`), not `home.php`.
-- **Case studies are in the feed**: `kirby()->collection('case-studies')` is merged with listed Wove Mind entries and sorted by `date`, rendered through `stream-card`. Services come from `services`; tags come from `tags` (entries) or `impactAreas` (case studies), normalised to site tag slugs so both match the tag pills. The template loads `service-page-scripts` so case study cards get revealed.
-- **Case study card styling in feeds**: `.feed-wrap .work-grid-card` in `feed.css` matches `.feed-card` (surface background, border, `--feed-radius-sm`, 16:10 image, padded body, regular-weight title). It overrides the `site.css` `.work-grid-card` rules (image radius, body margin), which still apply outside `.feed-wrap`.
-- **Hero title weight**: `.feed-hero__title` uses `--feed-fw-semibold` (600). On 2026-09-24 semibold was also tried on page titles, post titles and the work grid card client, then rolled back to regular, so only the hero title is semibold.
-- Clicking a filter pill scrolls back to the top of `.feed-shell` if the reader has scrolled past it (instant for reduced-motion users). `home.php` has the same behaviour.
-- The footer link always shows: "See all {filter}" linking to `/our-work?filter=…` when a filter has more than 5 matches, otherwise "See all work" linking to `/our-work`. `.feed__footer` sets `display: flex`, so it needs an explicit `[hidden] { display: none; }` rule in `feed.css`.
-- **Service promo card**: when a service filter is active, a `.feed-promo` card appears second in the grid (or after the only match). It links to `/our-work?filter=service:{slug}` and shows the service page's featured image as a thumbnail (a grey placeholder when none is set) above a centred outline button, "See all our {Service} work →". No card background or border.
-- **Case study filters**: the rail also has a pill per case study (labelled by `eyebrow`, falling back to title), filtering with `cs:{slug}`. Items carry `data-casestudies`: a case study's own slug, or an entry's linked `case_study` pages. The promo for a case study filter reads "See case study →", links to the case study and uses its `caseStudyImages` image as the thumbnail. Promos and footer labels are keyed by the full filter string (`service:…`, `cs:…`).
-- **Card tags**: `site/snippets/card-tags.php` (used by `feed-card.php` and `work-grid-card.php`) lists, in this order, a card's case study (the case study itself, or an entry's linked `case_study` pages, linking to `cs:{slug}`), services, editorial tags (`tags`, or `impactAreas` for case studies) and sectors as small blue links to `/our-work?filter=…`. The first four show; a "+N" button expands the rest and then reads "See less" to collapse them (click handler in `service-page-scripts.php`; extras carry `.card-tags__tag--extra`). `.feed-wrap a` sets `color: inherit`, so tag colour rules need the `.feed-wrap` prefix.
-- **`work-grid-card` markup**: the card is now a `<div>` with a stretched `.work-grid-card__link` overlay (same pattern as `.feed-card__link`), so the tag links inside it aren't nested anchors. Tags sit above the overlay with `z-index: 2`.
-- **Author avatars on feed cards**: `feed-card.php` shows the author's Panel profile image, or their initials when none is uploaded. User accounts are gitignored, so profile images only exist on the server where they were uploaded.
+### Homepage (redesign, 2026-10-06, PR #35)
+The homepage is `site/templates/wove-mind.php` (`'home' => 'wove-mind'` in `site/config/config.php`), not `home.php`. Data comes from `site/controllers/wove-mind.php`; markup from `site/snippets/home/` (`hero`, `filters`, `post-card`, `filter-bar`); styles `assets/css/home.css`; behaviour `assets/js/home.js`. The design was prototyped in `design/prototype/` on branch `claude/sleepy-sagan-w0r3of`.
+- **Hero ("One voice")**: logo, Our work / Our people nav and Get in touch, then the statement (bold grey) and description in one paragraph, then preview links to Our work (case study thumbnails) and Our people (team avatars or initials). Text comes from the Wove Mind page's new `headline` and `intro` fields, with defaults. The template calls `snippet('header', ['nav' => false])`, so the global nav is left out on this page only (the header snippet now takes a `nav` option).
+- **Recent work**: a client carousel (one card per listed case study: hero image, `logo` or the eyebrow as text, post count), topic pills (services, then editorial tags, used ones only) and a case study panel per client (image, logo, title, new `summary` field falling back to `subStatement`, first three `stats`, link). **One filter is active at a time** across clients and topics; choosing the active one again clears it, and active filters show a ×. After a change the page scrolls to the results (the panel, or the first cards) under the pinned bar.
+- **Cards** (`home/post-card.php`, "Framed"): images keep their own shape (aspect ratio from the file's width and height), cards pack in a grid with row spans set by `home.js` so DOM order stays in date order. Long reads show a reading time from body and blocks; What Ifs sit on a pale blue card; threads are compact with a thumbnail; sparks with an image are a captioned image. Card tags still link to Our Work; on the homepage `home.js` filters in place when the homepage has that filter. Case studies are not cards in this feed.
+- **Limit**: 12 cards (`feedLimit` in the controller). The rest are rendered but hidden; "See all … work" links to `/our-work?filter=…` for the active filter.
+- **Pinned bar**: once the full filter controls scroll away (while the feed is on screen) a bar pins to the top with clients and topics in one row, fades and arrows at the edges, and a quiet menu button (Back to top, Our work, Our people, Get in touch). Elsewhere past the hero it shows (menu only) when scrolling up.
+- **Scoped tokens**: `home.css` sets the new tokens on `.home` only (bold heading weights `--weight-h1`…`h6`, larger radii, `--color-blush`, `--format-*` colours), so other pages are unchanged. Promote them to `site.css` and `design-tokens.json` once settled.
+- The homepage content is always light (`data-theme="light"` on `.home`); the footer keeps the time-of-day palette.
+- Accessibility: the result count is a live region; active state is `aria-pressed`; card tag targets are 24px; the thread colour is darkened to `#256446` for contrast.
+- **New fields** (fill in per server): case studies have **Client logo** (`logo`, white or single-colour SVG/PNG) and **Homepage summary** (`summary`). The Wove Mind page's **Hero tagline** (`tagline`) was replaced by **Hero statement** (`headline`) and **Hero description** (`intro`); old tagline content is no longer shown.
+- **`header.php` changes**: a `nav` option (`snippet('header', ['nav' => false])`), and the meta title is cast to a string first. Before 2026-10-06 a page with no stored `seotitle` gave `null`, which skipped the fallback and rendered an empty `<title>` on every such page.
+
+#### How the homepage design was decided (2026-10-02 to 10-06)
+Explored as a static HTML prototype, `design/prototype/` on branch `claude/sleepy-sagan-w0r3of` (`python3 build.py` bundles it into one file in `dist/`; it has its own copy of the tokens in `css/tokens.css`). Chosen, and built:
+- Hero "One voice" over a separate header row plus large description, an expandable "explainer" and link cards.
+- Filters: client carousel (5:4 cards, logo over image, slider bar without a thumb) plus a flat row of topic pills. A single bordered block, grouped pills with counts, and topics nested in the client panel were tried and dropped.
+- **One active filter at a time.** Narrowing topics to the selected client was dropped: on mobile it looked like filters were missing, and combinations often left one or two posts.
+- Cards "Framed" over "Open" (no boxes) and "Bold formats" (solid blue What Ifs). Driven by staging feedback: image sparks had large, distracting text and every image was cropped to one landscape box.
+- Site navigation through a quiet menu in the pinned bar. A floating back-to-top button was rejected; a header that reappears on scroll-up was built and dropped for the menu.
+- On phones the hero nav links are hidden; "See our work" and "Meet our people" sit just below.
+
+#### Parked for later
+- A colour system for sparks without an image (they are plain quote cards for now).
+- Topping up small filter results (one or two posts) with related posts under a "Related" divider.
+- On phones, collapsing the filters to a single "Showing: Client ×" chip once one is selected.
+- The process block under the feed (still the old placeholder, which fails contrast).
+- Promoting the `.home`-scoped tokens to `site.css` `:root` and `design-tokens.json`.
+- Scroll reveal on the hero text was tried and removed with the hero direction it belonged to.
 
 ### Service page blueprint (2026-09-24)
 `site/blueprints/pages/service.yml` adds a **Featured image** field (`image`) to service pages, used by the homepage promo card. `strategy.yml`, `labs.yml`, `digital.yml` and `brand.yml` each just `extends: pages/service`. **Keep them**: the service content files are named after each service (`strategy.txt` etc.), so these are the blueprints the Panel actually uses.
@@ -99,9 +119,14 @@ Wherever tags or filter pills are listed, the order is **case study, services, e
 
 ## Local dev environment
 
+**Linux / cloud containers (2026-10-06):** `composer install` here put Kirby in `vendor/getkirby/cms/` rather than `./kirby/`, and Kirby then derived the wrong index root, so every page 404'd ("The home page does not exist"). Workarounds that kept the repo untouched: symlink `vendor/getkirby/cms` to `../../kirby`, and start the server with a router outside the repo that renders `new Kirby(['roots' => ['index' => '<repo path>']])`. For error details locally, add `site/config/config.127.0.0.1.php` returning `['debug' => true]` (gitignored by the `/site/config/*` rule). Test content can go straight into `content/`: everything there except the tracked service, contact, error, sector and tag pages is gitignored.
+
+
 PHP 8.3 (via `winget install --id PHP.PHP.8.3 --source winget`) — the winget build ships with no `php.ini` configured, needs `openssl`/`curl`/`mbstring`/`fileinfo`/`zip`/`gd`/`intl` enabled manually. Composer via a standalone `composer.phar` (no system install needed). Run `composer install` **at the project root** (not inside `kirby/`) — Kirby's custom installer (`getkirby/composer-installer`) redirects the package install into `./kirby/` directly rather than `vendor/getkirby/cms/`, which is also where the Panel's built frontend assets (`kirby/panel/dist/`, gitignored) come from. `composer start` (or `php -S localhost:8000 kirby/router.php`) boots the dev server.
 
 ## Deploy state
+
+**2026-10-06:** the homepage redesign (PR #35, `feature/homepage-redesign`) was merged into `dev` and deployed to staging. It needs the new case study fields (logo, summary) filled in. Team avatars in the hero were not tested locally (no user accounts). `main`/production untouched.
 
 **2026-09-24:** today's work was pushed to `dev` and deployed to staging: Panel avatars, case study reveal fix, homepage feed changes (scroll to feed, "See all" link, case studies in the feed, service and case study promos, card tags), the service blueprint, the global tag order, the Our People page with the author filter (later reworked into a 4-per-row card grid, then the A2 focused-panel design: shadow lift, other cards fade back, compact panel centred under the open card; on open the page scrolls so the whole panel is in view; team mockups folder deleted), the service page 404 fix, the team Role field fix (`role` renamed to `jobTitle`) with a role fallback from entries, feed token clean-up and new tokens (`--feed-fs-tag`, `--feed-fs-avatar`, `--feed-shadow-lift`, `--feed-transition-slow`, `--feed-panel-w`) and the re-sync of `design-tokens-feed.json`. `main`/production untouched.
 

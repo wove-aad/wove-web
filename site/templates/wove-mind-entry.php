@@ -140,7 +140,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
       <?php if ($author): ?>
         <div class="entry-byline__author">
           <?php if ($authorAvatar): ?>
-            <img src="<?= $authorAvatar->url() ?>" alt="" class="entry-byline__avatar" width="40" height="40" loading="lazy">
+            <?php snippet('picture', ['file' => $authorAvatar, 'widths' => [40, 80], 'ratio' => 1, 'sizes' => '40px', 'class' => 'entry-byline__avatar', 'attrs' => ['width' => 40, 'height' => 40]]) ?>
           <?php endif ?>
           <div class="entry-byline__info">
             <span class="entry-byline__name"><?= $author->name()->html() ?></span>
@@ -161,7 +161,15 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
   <?php if ($image): ?>
     <div class="cs-hero-image">
       <div class="cs-hero-image__inner">
-        <img src="<?= $image->url() ?>" alt="<?= $image->alt()->html() ?>" loading="eager" fetchpriority="high">
+        <?php snippet('picture', [
+          'file'          => $image,
+          'widths'        => [640, 960, 1280, 1600, 2000, 2560],
+          'ratio'         => 21 / 9,
+          'sizes'         => '(min-width: 85rem) 79rem, calc(100vw - 2rem)',
+          'alt'           => $image->alt()->value(),
+          'loading'       => 'eager',
+          'fetchpriority' => 'high',
+        ]) ?>
       </div>
     </div>
   <?php endif ?>
@@ -223,7 +231,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
       <div class="entry-bio__label">About the author</div>
       <div class="entry-bio__card">
         <?php if ($authorAvatar): ?>
-          <img src="<?= $authorAvatar->url() ?>" alt="" class="entry-bio__avatar" width="56" height="56" loading="lazy">
+          <?php snippet('picture', ['file' => $authorAvatar, 'widths' => [56, 112], 'ratio' => 1, 'sizes' => '56px', 'class' => 'entry-bio__avatar', 'attrs' => ['width' => 56, 'height' => 56]]) ?>
         <?php endif ?>
         <div class="entry-bio__content">
           <div class="entry-bio__name"><?= $author->name()->html() ?></div>

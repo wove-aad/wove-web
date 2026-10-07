@@ -13,15 +13,14 @@
   var hx = document.getElementById('post-hx');
   if (e.format === 'whatif') hx.classList.add('hx--whatif');
 
-  var crumbs = '<nav class="ph__trail" aria-label="Breadcrumb"><a href="work.html">Our work</a>' +
-    (cs ? '<span aria-hidden="true">/</span><a href="' + U.filterUrl('client', cs.slug) + '">' + esc(cs.client) + '</a>' : '') + '</nav>';
+  var top = '<div class="ph__top"><a class="ph__back" href="work.html"><span aria-hidden="true">&larr;</span> All work</a>' +
+    '<p class="post-chip post-chip--' + e.format + '">' + LABELS[e.format] + '</p></div>';
   var byline = '<div class="byline">' +
     (person ? '<span class="byline__who"><a href="' + U.personUrl(person) + '">' + U.avatar(person) +
       '<span><span class="byline__name">' + esc(person.name) + '</span><span class="byline__role">' + esc(person.role) + '</span></span></a></span>' : '') +
     '<span class="byline__meta"><time>' + U.fullDate(e.daysAgo) + '</time> · ' + minutes + ' min read</span>' +
   '</div>';
-  document.getElementById('post-header').innerHTML = crumbs +
-    '<p class="post-chip post-chip--' + e.format + '">' + LABELS[e.format] + '</p>' +
+  document.getElementById('post-header').innerHTML = top +
     '<h1 class="ph__title">' + esc(e.title) + '</h1>' +
     (e.excerpt ? '<p class="ph__intro">' + esc(e.excerpt) + '</p>' : '') + byline;
 

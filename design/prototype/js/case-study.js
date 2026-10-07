@@ -12,13 +12,16 @@
   }
 
   document.getElementById('cs-header').innerHTML =
-    '<nav class="ph__trail" aria-label="Breadcrumb"><a href="work.html">Our work</a><span aria-hidden="true">/</span>' +
-      '<a href="' + U.filterUrl('client', cs.slug) + '">' + esc(cs.client) + '</a></nav>' +
+    '<div class="ph__top"><a class="ph__back" href="work.html"><span aria-hidden="true">&larr;</span> All work</a>' +
+      '<p class="ph__kicker">Case study · ' + esc(cs.client) + '</p></div>' +
     '<h1 class="ph__title">' + esc(cs.title) + '</h1>' +
     '<p class="ph__intro">' + esc(cs.text) + '</p>' +
+    // Services, then editorial tags (the site-wide tag order; the sector is in the facts).
     '<div class="ph__pills">' + cs.services.map(function (s) {
       return '<a class="ph__pill" href="' + U.filterUrl('topic', 'service:' + s) + '">' + D.services[s] + '</a>';
-    }).join('') + '</div>';
+    }).concat((cs.tags || []).map(function (t) {
+      return '<a class="ph__pill" href="' + U.filterUrl('topic', 'tag:' + t) + '">' + D.tags[t] + '</a>';
+    })).join('') + '</div>';
 
   document.getElementById('cs-image').innerHTML =
     '<img src="' + U.caseImage(cs, 1600, 686) + '" alt="" width="1600" height="686" style="aspect-ratio:21/9">';

@@ -21,8 +21,9 @@
     return ctx.url ? '<a class="pc__link" href="' + ctx.url(e) + '">' + esc(e.title) + '</a>' : esc(e.title);
   }
 
-  // Case study card (Our work): a condensed case study panel across two
-  // columns. Image with the client logo beside title, summary and figures.
+  // Case study card (Our work): one column like the other cards, a large
+  // image with the client logo, then the title and summary. The figures
+  // stay on the panel and the case study page.
   function renderCase(cs, ctx) {
     var tags = (cs.services || []).map(function (s) {
       return '<a class="card-tags__tag" data-topic="service:' + s + '" href="' + window.WoveUI.filterUrl('topic', 'service:' + s) + '">' + window.WOVE.services[s] + '</a>';
@@ -33,10 +34,6 @@
         '<p class="pc__label">Case study · ' + esc(cs.client) + '</p>' +
         '<h3 class="pc__title"><a class="pc__link" href="' + ctx.caseUrl(cs) + '">' + esc(cs.title) + '</a></h3>' +
         '<p class="pc__excerpt">' + esc(cs.text) + '</p>' +
-        '<dl class="pc__kpis">' + cs.kpis.map(function (k) {
-          return '<div class="pc__kpi"><dt>' + esc(k.label) + '</dt><dd>' + esc(k.value) + '</dd></div>';
-        }).join('') + '</dl>' +
-        '<span class="pc__cta">See case study <span aria-hidden="true">&rarr;</span></span>' +
         (tags ? '<div class="card-tags">' + tags + '</div>' : '') +
       '</div></article>';
   }

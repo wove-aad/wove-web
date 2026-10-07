@@ -47,7 +47,7 @@
    ============================================================ */
 .hero-bar__logo {
   white-space: nowrap;
-  font-size: var(--size-h4);
+  font-size: 2rem;
   font-weight: var(--weight-h4);
   line-height: var(--lh-h3);
   letter-spacing: -0.02em;
@@ -56,7 +56,7 @@
 }
 .hero-bar__cta { align-self: start; }
 @media (max-width: 600px) {
-  .hero-bar__logo { font-size: var(--size-h5); }
+  .hero-bar__logo { font-size: 1.5rem; }
 }
 
 
@@ -569,7 +569,7 @@
 .hx-voice__text {
   margin-top: var(--space-80);
   max-width: 21em;
-  font-size: var(--size-h4);
+  font-size: clamp(2.5rem, 3.6vw, 3.25rem);
   font-weight: var(--weight-regular);
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -589,8 +589,8 @@
   .hx-nav { padding-top: 0; }
 }
 @media (max-width: 600px) {
-  .hx-row .hero-bar__logo { font-size: var(--size-h5); }
-  .hx-voice__text { font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  .hx-row .hero-bar__logo { font-size: 1.5rem; }
+  .hx-voice__text { font-size: clamp(2rem, 9vw, 2.5rem); }
   /* The hero links below cover Our work and Our people on phones */
   .hx-nav { display: none; }
   .hx-row--nav { row-gap: 0; }
@@ -795,3 +795,72 @@
 
 /* The homepage is light; the footer keeps the site's own palette */
 .home { background: var(--feed-bg, #f5f4f0); }
+
+
+/* ============================================================
+   CONTEXT PANELS FOR SERVICES, TAGS AND SECTORS
+   Shown above the cards when that filter is selected, in the place of
+   the case study panel (snippets/feed/panels.php). A service with a
+   featured image gets it beside the text.
+   ============================================================ */
+.topic-panel {
+  display: grid;
+  gap: var(--space-48);
+  align-items: center;
+  margin-top: var(--space-40);
+  padding: var(--space-40) var(--space-48);
+  border-radius: var(--radius-lg);
+  background: var(--color-blush);
+  animation: panel-in 300ms ease;
+}
+.topic-panel[hidden] { display: none; }
+.topic-panel.has-image { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); padding: var(--space-24); }
+.topic-panel__media { aspect-ratio: 5 / 4; border-radius: var(--radius-md); overflow: hidden; }
+.feed-wrap .topic-panel__media img { width: 100%; height: 100%; object-fit: cover; }
+.topic-panel.has-image .topic-panel__body { padding-right: var(--space-24); }
+.topic-panel__eyebrow { font-size: var(--size-nav); color: var(--color-text-muted); margin-bottom: var(--space-12); }
+.topic-panel__title {
+  font-size: var(--size-h4);
+  font-weight: var(--weight-h4);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.topic-panel__text {
+  max-width: 36em;
+  margin-top: var(--space-16);
+  font-size: var(--size-p4);
+  line-height: var(--lh-p2);
+  color: var(--color-800);
+  text-wrap: pretty;
+}
+.topic-panel .pg-btn { margin-top: var(--space-32); }
+@media (prefers-reduced-motion: reduce) { .topic-panel { animation: none; } }
+@media (max-width: 960px) {
+  .topic-panel.has-image { grid-template-columns: 1fr; gap: var(--space-24); }
+  .topic-panel.has-image .topic-panel__body { padding: 0 var(--space-12) var(--space-12); }
+}
+@media (max-width: 600px) {
+  .topic-panel { padding: var(--space-32) var(--space-24); border-radius: var(--radius-md); }
+  .topic-panel.has-image { padding: var(--space-12); }
+  .topic-panel__title { font-size: var(--size-h5); }
+}
+
+/* Pill buttons: black, and outlined (--ghost) */
+.pg-btn {
+  display: inline-flex; align-items: center; gap: var(--space-12);
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  padding: var(--space-16) var(--space-24);
+  border-radius: var(--radius-pill);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-bold);
+}
+.feed-wrap .pg-btn { color: var(--color-white); }
+.pg-btn:hover { opacity: 0.85; }
+.pg-btn--ghost { background: transparent; color: var(--color-black); border: 1px solid var(--color-black); }
+.feed-wrap .pg-btn--ghost { color: var(--color-black); }
+.pg-btn--ghost:hover { background: var(--color-black); color: var(--color-white); opacity: 1; }
+.feed-wrap .pg-btn--ghost:hover { color: var(--color-white); }

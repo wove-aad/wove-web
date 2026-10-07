@@ -3,7 +3,10 @@
  * Homepage filters: client carousel (one card per case study), topic pills,
  * and a case study panel per client, shown when that client is selected.
  * One filter is active at a time; assets/js/home.js handles selection.
- * Usage: <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics]) ?>
+ * Context panels for services and tags (and, on Our work, sectors and
+ * people) come from feed/panels.
+ * Usage: <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics,
+ *        'sectors' => [...], 'authors' => [...]]) ?>
  */
 
 $entryWord = fn ($n) => $n . ' entr' . ($n === 1 ? 'y' : 'ies');
@@ -105,5 +108,7 @@ $entryWord = fn ($n) => $n . ' entr' . ($n === 1 ? 'y' : 'ies');
       </div>
     </section>
   <?php endforeach ?>
+
+  <?php snippet('feed/panels', ['topics' => $topics, 'sectors' => $sectors ?? [], 'authors' => $authors ?? []]) ?>
 
 </div>

@@ -93,3 +93,12 @@ function wove_member_role(User $user): string
 
 	return '';
 }
+
+/**
+ * Up to two initials for a name, for avatars without a photo.
+ */
+function wove_initials(string $name): string
+{
+	$words = array_slice(preg_split('/\s+/', trim($name)) ?: [], 0, 2);
+	return Str::upper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), $words)));
+}

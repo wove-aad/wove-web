@@ -1,4 +1,4 @@
-/* Case study page: ?cs=<slug> (defaults to the first case study). */
+/* Case study page: #cs.<slug> (defaults to the first case study). */
 (function () {
   var D = window.WOVE, U = window.WoveUI, Cards = window.WoveCards, esc = U.esc;
   var cs = U.csBySlug[U.param('cs')] || D.caseStudies[0];
@@ -12,9 +12,8 @@
   }
 
   document.getElementById('cs-header').innerHTML =
-    '<nav class="ph__crumbs" aria-label="Breadcrumb"><a href="work.html">Our work</a><span aria-hidden="true">/</span>' +
+    '<nav class="ph__trail" aria-label="Breadcrumb"><a href="work.html">Our work</a><span aria-hidden="true">/</span>' +
       '<a href="' + U.filterUrl('client', cs.slug) + '">' + esc(cs.client) + '</a></nav>' +
-    '<p class="ph__eyebrow">Case study · ' + esc(cs.client) + '</p>' +
     '<h1 class="ph__title">' + esc(cs.title) + '</h1>' +
     '<p class="ph__intro">' + esc(cs.text) + '</p>' +
     '<div class="ph__pills">' + cs.services.map(function (s) {
@@ -80,5 +79,6 @@
       '</div>' +
     '</article>';
 
+  U.freshOnHashChange();
   U.menuBar(document.getElementById('filter-bar'), document.querySelector('.hx'));
 })();

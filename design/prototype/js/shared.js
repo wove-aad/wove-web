@@ -87,12 +87,29 @@
 
   /* ---------- Links ---------- */
 
-  function entryUrl(e) { return 'post.html?e=' + D.entries.indexOf(e); }
-  function caseUrl(cs) { return 'case-study.html?cs=' + cs.slug; }
+  // Page state lives in the hash as a plain token (name.value): the artifact
+  // viewer drops query strings and #key=value. Topics use a dot for the
+  // colon, e.g. work.html#topic.service.strategy.
+  function hashFor(kind, value) { return '#' + kind + '.' + String(value).replace(':', '.'); }
+  function entryUrl(e) { return 'post.html' + hashFor('e', D.entries.indexOf(e)); }
+  function caseUrl(cs) { return 'case-study.html' + hashFor('cs', cs.slug); }
   function personUrl(p) { return 'people.html#' + p.slug; }
-  function filterUrl(kind, value) { return 'work.html?' + kind + '=' + encodeURIComponent(value); }
+  function filterUrl(kind, value) { return 'work.html' + hashFor(kind, value); }
 
-  function param(name) { return new URLSearchParams(location.search).get(name); }
+  function param(name) {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (h.indexOf(name + '.') !== 0) return null;
+    var v = h.slice(name.length + 1);
+    return name === 'topic' ? v.replace('.', ':') : v;
+  }
+
+  // A new post or case study should open at the top, not where the last
+  // one was scrolled to.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function freshOnHashChange() {
+    window.addEventListener('hashchange', function () { location.reload(); });
+    window.scrollTo(0, 0);
+  }
 
   /* ---------- Cards ---------- */
 
@@ -201,7 +218,8 @@
     image: image, caseImage: caseImage, entryImage: entryImage,
     esc: esc, dateLabel: dateLabel, fullDate: fullDate, initials: initials, tone: tone, avatar: avatar,
     entryWord: entryWord, postWord: postWord,
-    entryUrl: entryUrl, caseUrl: caseUrl, personUrl: personUrl, filterUrl: filterUrl, param: param,
+    hashFor: hashFor, entryUrl: entryUrl, caseUrl: caseUrl, personUrl: personUrl, filterUrl: filterUrl, param: param,
+    freshOnHashChange: freshOnHashChange,
     cardTags: cardTags, cardCtx: cardCtx, behaviour: behaviour,
     MENU_LINKS: MENU_LINKS, menuHTML: menuHTML, menuButton: menuButton, menuBar: menuBar
   };

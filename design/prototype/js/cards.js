@@ -21,20 +21,22 @@
     return ctx.url ? '<a class="pc__link" href="' + ctx.url(e) + '">' + esc(e.title) + '</a>' : esc(e.title);
   }
 
-  // Case study card (Our work): the client's image with its logo, then the
-  // title, summary and a headline figure.
+  // Case study card (Our work): a condensed case study panel across two
+  // columns. Image with the client logo beside title, summary and figures.
   function renderCase(cs, ctx) {
     var tags = (cs.services || []).map(function (s) {
-      return '<a class="card-tags__tag" data-topic="service:' + s + '" href="work.html?topic=service:' + s + '">' + window.WOVE.services[s] + '</a>';
+      return '<a class="card-tags__tag" data-topic="service:' + s + '" href="' + window.WoveUI.filterUrl('topic', 'service:' + s) + '">' + window.WOVE.services[s] + '</a>';
     }).join('');
-    var k = cs.kpis[0];
     return '<article class="pc pc--case">' +
       '<div class="pc__media pc__media--case"><img src="' + ctx.caseImage(cs) + '" alt=""><span class="pc__logo">' + esc(cs.logo) + '</span></div>' +
       '<div class="pc__body">' +
-        '<p class="pc__label">Case study</p>' +
+        '<p class="pc__label">Case study · ' + esc(cs.client) + '</p>' +
         '<h3 class="pc__title"><a class="pc__link" href="' + ctx.caseUrl(cs) + '">' + esc(cs.title) + '</a></h3>' +
         '<p class="pc__excerpt">' + esc(cs.text) + '</p>' +
-        '<p class="pc__kpi"><strong>' + esc(k.value) + '</strong> ' + esc(k.label) + '</p>' +
+        '<dl class="pc__kpis">' + cs.kpis.map(function (k) {
+          return '<div class="pc__kpi"><dt>' + esc(k.label) + '</dt><dd>' + esc(k.value) + '</dd></div>';
+        }).join('') + '</dl>' +
+        '<span class="pc__cta">See case study <span aria-hidden="true">&rarr;</span></span>' +
         (tags ? '<div class="card-tags">' + tags + '</div>' : '') +
       '</div></article>';
   }

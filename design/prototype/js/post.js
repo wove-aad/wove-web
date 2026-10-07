@@ -1,4 +1,4 @@
-/* Post page: ?e=<entry index> (defaults to the newest long read).
+/* Post page: #e.<entry index> (defaults to the newest long read).
    Threads, What Ifs and long reads have pages; sparks live in the feed. */
 (function () {
   var D = window.WOVE, U = window.WoveUI, Cards = window.WoveCards, esc = U.esc;
@@ -13,7 +13,7 @@
   var hx = document.getElementById('post-hx');
   if (e.format === 'whatif') hx.classList.add('hx--whatif');
 
-  var crumbs = '<nav class="ph__crumbs" aria-label="Breadcrumb"><a href="work.html">Our work</a>' +
+  var crumbs = '<nav class="ph__trail" aria-label="Breadcrumb"><a href="work.html">Our work</a>' +
     (cs ? '<span aria-hidden="true">/</span><a href="' + U.filterUrl('client', cs.slug) + '">' + esc(cs.client) + '</a>' : '') + '</nav>';
   var byline = '<div class="byline">' +
     (person ? '<span class="byline__who"><a href="' + U.personUrl(person) + '">' + U.avatar(person) +
@@ -117,5 +117,6 @@
   Cards.layout(grid);
   if (window.ResizeObserver) new ResizeObserver(function () { Cards.layout(grid); }).observe(grid);
 
+  U.freshOnHashChange();
   U.menuBar(document.getElementById('filter-bar'), hx);
 })();

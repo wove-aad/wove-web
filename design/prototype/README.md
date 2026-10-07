@@ -21,8 +21,10 @@ markup into Kirby templates.
 - `js/case-study.js`, `js/post.js`, `js/people.js`: the inner pages.
 
 Pages: `index.html` (homepage), `work.html` (Our work, filters in the URL:
-`?client=`, `?topic=`, `?author=`), `people.html` (Our people, `#slug` opens
-a person), `case-study.html?cs=<slug>` and `post.html?e=<entry index>`.
+`#client.dcu`, `#topic.service.strategy`, `#author.aoife-byrne`), `people.html`
+(Our people, `#slug` opens a person), `case-study.html#cs.<slug>` and
+`post.html#e.<entry index>`. State is in the hash because the artifact viewer
+drops query strings.
 
 Open `index.html` in a browser from a checkout, or run `python3 build.py` to
 bundle each page (CSS, JS, fonts) into `dist/<page>.html`, which opens on its

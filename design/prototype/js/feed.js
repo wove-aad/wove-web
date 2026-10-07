@@ -27,8 +27,7 @@
     state = { client: '*', topic: '*', author: '*' };
     state[kind] = next;
     if (URL_STATE) {
-      var q = next === '*' ? '' : '?' + kind + '=' + encodeURIComponent(next);
-      history.replaceState(null, '', location.pathname + q);
+      history.replaceState(null, '', location.pathname + (next === '*' ? '' : U.hashFor(kind, next)));
     }
   }
 
@@ -273,8 +272,8 @@
     if (LIMIT === Infinity) { more.hidden = true; return; }
     // "See all" names the active filter and opens Our work with it.
     var name = activeName();
-    var q = state.client !== '*' ? '?client=' + state.client
-      : state.topic !== '*' ? '?topic=' + encodeURIComponent(state.topic) : '';
+    var q = state.client !== '*' ? U.hashFor('client', state.client)
+      : state.topic !== '*' ? U.hashFor('topic', state.topic) : '';
     more.innerHTML =
       (list.length > shown.length ? '<span class="feed-more__count">Showing ' + shown.length + ' of ' + list.length + '</span>' : '') +
       '<a href="work.html' + q + '" class="feed-more__btn">See all ' + (name ? esc(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span></a>';

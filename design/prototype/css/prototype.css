@@ -5,7 +5,7 @@
    ============================================================ */
 .hero-bar__logo {
   white-space: nowrap;
-  font-size: var(--size-h4);
+  font-size: 2rem;
   font-weight: var(--weight-h4);
   line-height: var(--lh-h3);
   letter-spacing: -0.02em;
@@ -14,7 +14,7 @@
 }
 .hero-bar__cta { align-self: start; }
 @media (max-width: 600px) {
-  .hero-bar__logo { font-size: var(--size-h5); }
+  .hero-bar__logo { font-size: 1.5rem; }
 }
 
 
@@ -545,7 +545,7 @@
 .hx-voice__text {
   margin-top: var(--space-80);
   max-width: 21em;
-  font-size: var(--size-h4);
+  font-size: clamp(2.5rem, 3.6vw, 3.25rem);
   font-weight: var(--weight-regular);
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -565,8 +565,8 @@
   .hx-nav { padding-top: 0; }
 }
 @media (max-width: 600px) {
-  .hx-row .hero-bar__logo { font-size: var(--size-h5); }
-  .hx-voice__text { font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  .hx-row .hero-bar__logo { font-size: 1.5rem; }
+  .hx-voice__text { font-size: clamp(2rem, 9vw, 2.5rem); }
   /* The hero links below cover Our work and Our people on phones */
   .hx-nav { display: none; }
   .hx-row--nav { row-gap: 0; }

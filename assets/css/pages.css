@@ -552,3 +552,7 @@
 
 /* Avatar images fill their circle */
 .avatar img, .person-panel__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Team members without a profile on Our people */
+.csp-team__person { display: flex; align-items: center; gap: var(--space-12); }
+.csp-team__person .avatar { width: 2rem; height: 2rem; font-size: 0.6875rem; }

@@ -65,48 +65,8 @@ $entryWord = fn ($n) => $n . ' entr' . ($n === 1 ? 'y' : 'ies');
     <?php endforeach ?>
   </div>
 
-  <?php foreach ($clients as $client):
-    $cs    = $client['page'];
-    $image = $cs->caseStudyImages()->toFile();
-    $logo  = $cs->logo()->toFile();
-    $title = $cs->heroTitle()->isNotEmpty() ? strip_tags($cs->heroTitle()->value()) : $cs->title()->value();
-    $text  = $cs->summary()->or($cs->subStatement())->value();
-    $stats = $cs->stats()->toStructure()->limit(3);
-  ?>
-    <section class="case-panel" data-panel="cs:<?= html($client['slug']) ?>" aria-label="Case study: <?= html($client['name']) ?>" hidden>
-      <div class="case-panel__media">
-        <?php if ($image): ?>
-          <?php snippet('picture', [
-            'file'   => $image,
-            'widths' => [480, 640, 900, 1200],
-            'ratio'  => 5 / 4,
-            'sizes'  => '(min-width: 961px) 40vw, 100vw',
-          ]) ?>
-        <?php endif ?>
-        <span class="case-panel__logo">
-          <?php if ($logo): ?>
-            <img src="<?= $logo->url() ?>" alt="<?= html($client['name']) ?>">
-          <?php else: ?>
-            <?= html($client['name']) ?>
-          <?php endif ?>
-        </span>
-      </div>
-      <div class="case-panel__body">
-        <p class="case-panel__eyebrow">Case study · <?= html($client['name']) ?></p>
-        <h3 class="case-panel__title"><?= html($title) ?></h3>
-        <?php if ($text): ?>
-          <p class="case-panel__text"><?= html($text) ?></p>
-        <?php endif ?>
-        <?php if ($stats->count()): ?>
-          <dl class="case-panel__kpis">
-            <?php foreach ($stats as $stat): ?>
-              <div class="case-panel__kpi"><dt><?= $stat->label()->html() ?></dt><dd><?= $stat->value()->html() ?></dd></div>
-            <?php endforeach ?>
-          </dl>
-        <?php endif ?>
-        <a href="<?= $cs->url() ?>" class="case-panel__cta">See case study <span aria-hidden="true">&rarr;</span></a>
-      </div>
-    </section>
+  <?php foreach ($clients as $client): ?>
+    <?php snippet('home/case-panel', ['cs' => $client['page'], 'hidden' => true]) ?>
   <?php endforeach ?>
 
   <?php snippet('feed/panels', ['topics' => $topics, 'sectors' => $sectors ?? [], 'authors' => $authors ?? []]) ?>

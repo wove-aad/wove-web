@@ -1,267 +1,124 @@
 <?php
 /**
- * Our People — team page
- * File: site/templates/team.php
+ * Our People
+ * File: site/templates/team.php. Route: /our-people
+ * (see site/plugins/wove-team/index.php).
  *
- * A grid of team cards (Kirby users with "Show on the Our People page"
- * on), 4 per row on wide screens. Each card shows photo, name and role;
- * clicking it opens a compact panel below that row, centred under the
- * card, with the bio, their latest Wove Mind entries, a LinkedIn link and
- * a link to Our Work filtered by author. The other cards fade back.
- *
- * Route: /our-people (see site/plugins/wove-team/index.php)
+ * A grid of team members (Kirby users with "Show on the Our People page"
+ * on), 4 per row on wide screens: photo (or initials on a colour), name and
+ * role. Choosing one opens a panel under that row with the bio, their
+ * latest posts, "See all {name}'s posts" (Our work filtered by author) and
+ * LinkedIn; the other cards step back. /our-people#{slug} opens that
+ * person. Without JavaScript the details show inside each card.
+ * Behaviour: assets/js/pages.js.
  */
 
-$members     = wove_team_members();
-$latestLimit = 3;
-$intro       = $page->intro()->or('The people behind the work.')->value();
+$members = wove_team_members();
+$intro   = $page->intro()->or('Strategists, designers, researchers and developers, working as one team. Choose a person to read about them and what they have written.')->value();
+$tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
 ?>
+<?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
-<?php snippet('header', ['css' => ['/assets/css/feed.css']]) ?>
+<div class="home" data-theme="light">
 
-<div class="feed-wrap">
+  <header class="hx hx--page">
+    <div class="hx__inner">
+      <?php snippet('brand/header-row', ['current' => 'people']) ?>
+      <div class="hx-body">
+        <h1 class="ph__title"><?= $page->title()->or('Our people')->html() ?></h1>
+        <p class="ph__intro"><?= html($intro) ?></p>
+      </div>
+    </div>
+  </header>
 
-  <div class="tag-hero">
-    <h1 class="tag-hero__name"><?= $page->title()->html() ?></h1>
-    <p class="tag-hero__intro"><?= html($intro) ?></p>
-  </div>
+  <div class="feed-wrap">
+    <?php snippet('brand/menu-bar') ?>
 
-  <?php if ($members): ?>
-  <div class="team-grid" id="team-grid">
-    <?php foreach ($members as $member):
-      $slug     = wove_author_slug($member);
-      $avatar   = $member->avatar();
-      $name     = $member->name()->value() ?: $member->email();
-      $initials = Str::upper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', trim($name)), 0, 2))));
-      $role     = wove_member_role($member);
-      $bio      = $member->content()->get('bio');
-      $linkedin = $member->content()->get('linkedin');
-      $entries   = wove_author_entries($member);
-      $postCount = $entries->count();
-      $latest    = $entries->limit($latestLimit);
-    ?>
-      <article class="team-card" id="<?= html($slug) ?>">
-        <button class="team-card__toggle" type="button" aria-expanded="false" aria-controls="<?= html($slug) ?>-details">
-          <span class="team-card__photo">
-            <?php if ($avatar): ?>
-              <?php snippet('picture', [
-                'file'   => $avatar,
-                'widths' => [300, 450, 600, 900],
-                'ratio'  => 1,
-                'sizes'  => '(min-width: 1280px) 20rem, (min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
-              ]) ?>
-            <?php else: ?>
-              <span class="team-card__initials"><?= html($initials) ?></span>
-            <?php endif ?>
-          </span>
-          <span class="team-card__summary">
-            <span class="team-card__name"><?= html($name) ?></span>
-            <?php if ($role !== ''): ?>
-              <span class="team-card__role"><?= html($role) ?></span>
-            <?php endif ?>
-          </span>
-          <span class="team-card__icon" aria-hidden="true"></span>
-        </button>
+    <main class="pg" id="main">
+      <?php if ($members): ?>
+        <section class="pg-section" aria-label="Team">
+          <ul class="people-grid" id="people-grid" role="list">
+            <?php foreach ($members as $i => $member):
+              $slug     = wove_author_slug($member);
+              $name     = $member->name()->value() ?: $member->email();
+              $first    = explode(' ', trim($name))[0];
+              $avatar   = $member->avatar();
+              $role     = wove_member_role($member);
+              $bio      = $member->content()->get('bio');
+              $linkedin = $member->content()->get('linkedin');
+              $entries  = wove_author_entries($member);
+              $latest   = $entries->filter(fn ($e) => $e->format()->value() !== 'spark')->limit(3);
+            ?>
+              <li class="person-card" id="<?= html($slug) ?>">
+                <button type="button" class="person-card__btn" aria-expanded="false" aria-controls="<?= html($slug) ?>-details" data-person="<?= html($slug) ?>">
+                  <span class="person-card__photo" style="--tone: <?= $tones[$i % count($tones)] ?>" aria-hidden="true">
+                    <?php if ($avatar): ?>
+                      <?php snippet('picture', [
+                        'file'   => $avatar,
+                        'widths' => [300, 450, 600, 900],
+                        'ratio'  => 4 / 5,
+                        'sizes'  => '(min-width: 1280px) 20rem, (min-width: 960px) 33vw, 50vw',
+                      ]) ?>
+                    <?php else: ?>
+                      <?= html(wove_initials($name)) ?>
+                    <?php endif ?>
+                  </span>
+                  <span class="person-card__name"><?= html($name) ?></span>
+                  <?php if ($role !== ''): ?><span class="person-card__role"><?= html($role) ?></span><?php endif ?>
+                </button>
 
-        <div class="team-card__details" id="<?= html($slug) ?>-details" aria-label="<?= html($name) ?>">
-          <div class="team-card__head">
-            <p class="team-card__head-title">
-              <span class="team-card__head-name"><?= html($name) ?></span>
-              <?php if ($role !== ''): ?><span class="team-card__role"><?= html($role) ?></span><?php endif ?>
-            </p>
-            <button class="team-card__close" type="button" aria-label="Close">&times;</button>
+                <div class="person-card__details" id="<?= html($slug) ?>-details" role="region" aria-label="<?= html($name) ?>" tabindex="-1">
+                  <div class="person-detail__head">
+                    <div>
+                      <p class="person-detail__name"><?= html($name) ?></p>
+                      <?php if ($role !== ''): ?><p class="person-detail__role"><?= html($role) ?></p><?php endif ?>
+                    </div>
+                    <button type="button" class="person-detail__close" aria-label="Close">&times;</button>
+                  </div>
+                  <?php if ($bio->isNotEmpty()): ?>
+                    <p class="person-detail__bio"><?= $bio->html() ?></p>
+                  <?php else: ?>
+                    <div></div>
+                  <?php endif ?>
+                  <?php if ($latest->count()): ?>
+                    <div>
+                      <p class="person-detail__label">Latest</p>
+                      <div class="person-detail__posts">
+                        <?php foreach ($latest as $entry): ?>
+                          <a href="<?= $entry->url() ?>"><strong><?= $entry->title()->html() ?></strong><span><?= $entry->date()->toDate('j M Y') ?></span></a>
+                        <?php endforeach ?>
+                      </div>
+                    </div>
+                  <?php endif ?>
+                  <?php if ($entries->count() || $linkedin->isNotEmpty()): ?>
+                    <div class="person-detail__foot">
+                      <?php if ($entries->count()): ?>
+                        <a class="pg-btn" href="<?= url('our-work') ?>?filter=author:<?= html($slug) ?>">See all <?= html($first) ?>’s posts (<?= $entries->count() ?>) <span aria-hidden="true">&rarr;</span></a>
+                      <?php endif ?>
+                      <?php if ($linkedin->isNotEmpty()): ?>
+                        <a class="pg-btn pg-btn--ghost" href="<?= $linkedin->html() ?>" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">&nearr;</span></a>
+                      <?php endif ?>
+                    </div>
+                  <?php endif ?>
+                </div>
+              </li>
+            <?php endforeach ?>
+          </ul>
+        </section>
+      <?php endif ?>
+
+      <section class="pg-section" aria-label="Work with us">
+        <div class="people-join">
+          <div>
+            <h2>Want to work with us?</h2>
+            <p>We are always glad to hear from people who care about public services, culture and climate.</p>
           </div>
-
-          <div class="team-card__body">
-            <?php if ($bio->isNotEmpty()): ?>
-              <p class="team-card__bio"><?= $bio->html() ?></p>
-            <?php endif ?>
-            <?php if ($latest->count()): ?>
-              <div class="team-card__latest">
-                <p class="team-card__label">Latest</p>
-                <ul class="team-card__articles">
-                  <?php foreach ($latest as $entry): ?>
-                    <li>
-                      <a href="<?= $entry->url() ?>"><?= $entry->title()->html() ?></a>
-                      <time datetime="<?= $entry->date()->toDate('Y-m-d') ?>"><?= $entry->date()->toDate('j M Y') ?></time>
-                    </li>
-                  <?php endforeach ?>
-                </ul>
-              </div>
-            <?php endif ?>
-          </div>
-
-          <?php if ($linkedin->isNotEmpty() || $postCount): ?>
-            <div class="team-card__foot">
-              <?php if ($linkedin->isNotEmpty()): ?>
-                <a class="team-card__linkedin" href="<?= $linkedin->html() ?>" target="_blank" rel="noopener">LinkedIn &nearr;</a>
-              <?php endif ?>
-              <?php if ($postCount): ?>
-                <a class="team-card__all" href="<?= url('our-work') . '?filter=' . rawurlencode('author:' . $slug) ?>">See all <?= html(explode(' ', $name)[0]) ?>'s posts (<?= $postCount ?>) &rarr;</a>
-              <?php endif ?>
-            </div>
-          <?php endif ?>
+          <a class="pg-btn" href="<?= url('contact') ?>">Get in touch <span aria-hidden="true">&rarr;</span></a>
         </div>
-      </article>
-    <?php endforeach ?>
+      </section>
+    </main>
   </div>
-  <?php else: ?>
-    <p class="our-work-empty">No team members to show yet.</p>
-  <?php endif ?>
-
 </div>
 
-<script>
-/* Team cards — clicking a card opens its details in a panel below that
-   card's row. The panel is centred under the card (kept inside the grid)
-   with a notch pointing at it; the other cards fade back. One open at a
-   time; Esc or the close button closes it and returns focus to the card.
-   Details stay inline in each card if JS doesn't run.
-   /our-people#{slug} opens that card on load. */
-(function () {
-  var grid  = document.getElementById('team-grid');
-  var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll('.team-card')) : [];
-  if (!cards.length) return;
-
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var panel  = document.createElement('div');
-  panel.className = 'team-panel';
-  panel.setAttribute('role', 'region');
-  panel.innerHTML = '<div class="team-panel__clip"><div class="team-panel__box"><span class="team-panel__notch" aria-hidden="true"></span></div></div>';
-  var box = panel.querySelector('.team-panel__box'), notch = panel.querySelector('.team-panel__notch');
-  var openCard = null, closeTimer;
-
-  cards.forEach(function (card) {
-    card.querySelector('.team-card__details').hidden = true;
-    card.classList.add('is-enhanced');
-  });
-
-  // Last card on the same visual row as the given card
-  function rowEnd(card) {
-    var last = card;
-    cards.forEach(function (c) { if (c.offsetTop === card.offsetTop) last = c; });
-    return last;
-  }
-
-  // Put the panel after the row, centre the box under the card, point the notch at it
-  function place() {
-    if (!openCard) return;
-    rowEnd(openCard).after(panel);
-    // Measure against the panel itself: the grid has page padding
-    var g = panel.getBoundingClientRect(), c = openCard.getBoundingClientRect();
-    var mid = c.left - g.left + c.width / 2, bw = box.offsetWidth;
-    var left = Math.max(0, Math.min(mid - bw / 2, g.width - bw));
-    box.style.marginLeft = left + 'px';
-    notch.style.left = (mid - left) + 'px';
-  }
-
-  // Scroll so the open card and its panel are both on screen, keeping the
-  // card's top at least a header's height from the top of the viewport. If
-  // they don't fit, the panel wins: its bottom is brought into view, and if
-  // the panel alone is too tall its top goes just below the header height.
-  function reveal(card) {
-    var nav    = document.querySelector('.nav');
-    var offset = (nav ? nav.offsetHeight : 0) + 16;
-    var margin = 16;
-    var room   = window.innerHeight - offset - margin;
-    var top    = card.getBoundingClientRect().top;
-    var boxR   = box.getBoundingClientRect();
-    var delta  = 0;
-
-    if (boxR.bottom - top <= room) {
-      // Card and panel fit together
-      if (boxR.bottom > window.innerHeight - margin) delta = boxR.bottom - (window.innerHeight - margin);
-      else if (top < offset) delta = top - offset;
-    } else if (boxR.height <= room) {
-      // Only the panel fits: show all of it
-      delta = boxR.bottom - (window.innerHeight - margin);
-    } else {
-      // Panel taller than the screen: its top just below the header height
-      delta = boxR.top - offset;
-    }
-    if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior: reduce ? 'auto' : 'smooth' });
-  }
-
-  function detach(card) {
-    var details = box.querySelector('.team-card__details');
-    if (details) { details.hidden = true; card.appendChild(details); }
-    card.classList.remove('is-open');
-    card.querySelector('.team-card__toggle').setAttribute('aria-expanded', 'false');
-  }
-
-  function close(returnFocus) {
-    if (!openCard) return;
-    var card = openCard;
-    openCard = null;
-    detach(card);
-    grid.classList.remove('has-open');
-    panel.classList.remove('is-in');
-    clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () { if (!openCard) panel.remove(); }, reduce ? 0 : 300);
-    if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
-    if (returnFocus) card.querySelector('.team-card__toggle').focus();
-  }
-
-  function open(card, scroll) {
-    var sameRow = openCard && rowEnd(openCard) === rowEnd(card);
-    if (openCard) detach(openCard);
-    clearTimeout(closeTimer);
-
-    var details = card.querySelector('.team-card__details');
-    box.appendChild(details);
-    details.hidden = false;
-    panel.setAttribute('aria-label', details.getAttribute('aria-label'));
-    card.classList.add('is-open');
-    card.querySelector('.team-card__toggle').setAttribute('aria-expanded', 'true');
-    grid.classList.add('has-open');
-    openCard = card;
-
-    if (!sameRow) panel.classList.remove('is-in');
-    place();
-    if (history.replaceState) history.replaceState(null, '', '#' + card.id);
-
-    requestAnimationFrame(function () { requestAnimationFrame(function () {
-      panel.classList.add('is-in');
-      // Wait for the panel to finish opening so its full height is measured
-      setTimeout(function () {
-        if (scroll) reveal(card);
-        var closeBtn = details.querySelector('.team-card__close');
-        if (closeBtn) closeBtn.focus({ preventScroll: true });
-      }, reduce ? 0 : 320);
-    }); });
-  }
-
-  cards.forEach(function (card) {
-    card.querySelector('.team-card__toggle').addEventListener('click', function () {
-      openCard === card ? close(true) : open(card, true);
-    });
-    var closeBtn = card.querySelector('.team-card__close');
-    if (closeBtn) closeBtn.addEventListener('click', function () { close(true); });
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') close(true);
-  });
-
-  // Rows change with the viewport, so re-seat the panel after resizing
-  var resizeTimer;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(place, 100);
-  });
-
-  var target = window.location.hash && document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-  if (target && target.classList.contains('team-card')) open(target, true);
-})();
-</script>
-
-<script>
-(function() {
-  var h = new Date().getHours();
-  if (h >= 7 && h < 19) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-})();
-</script>
-
+<script src="/assets/js/pages.js" defer></script>
 <?php snippet('footer') ?>

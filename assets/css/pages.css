@@ -460,7 +460,7 @@
   color: rgba(17,17,17,0.85);
   transition: transform var(--card-transition), box-shadow var(--card-transition);
 }
-.person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.person-card__photo picture, .person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .person-card__photo::after {
   content: "+";
   position: absolute;
@@ -477,18 +477,27 @@
 .person-card__btn:hover .person-card__photo { transform: translateY(var(--card-lift)); box-shadow: var(--card-shadow-hover); }
 .person-card__btn:focus-visible { outline: 3px solid var(--color-black); outline-offset: 4px; }
 .person-card__btn[aria-expanded="true"] .person-card__photo { box-shadow: 0 0 0 3px var(--feed-bg), 0 0 0 6px var(--color-black); }
-.person-card__btn[aria-expanded="true"] .person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
-.person-card__photo::after { content: "×"; background: var(--color-black); color: var(--color-white); }
+.person-card__btn[aria-expanded="true"] .person-card__photo::after { content: "×"; background: var(--color-black); color: var(--color-white); }
+.person-card__photo picture, .person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .person-card__name { display: block; margin-top: var(--space-16); font-size: var(--size-subtitle); font-weight: var(--weight-bold); line-height: 1.3; }
 .person-card__role { display: block; color: var(--color-700); font-size: 0.9375rem; }
 .people-grid.has-open .person-card__btn[aria-expanded="false"] { opacity: 0.45; }
 .people-grid.has-open .person-card__btn[aria-expanded="false"]:hover { opacity: 1; }
 
-.person-detail {
-  grid-column: 1 / -1;
+/* The open person's details move into a panel under their row
+   (assets/js/pages.js). Without JavaScript they show inside each card. */
+.person-card__details { display: grid; gap: var(--space-16); margin-top: var(--space-16); }
+.js .person-card .person-card__details { display: none; }
+html:not(.js) .person-detail__close { display: none; }
+.person-detail .person-card__details {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
   gap: var(--space-48);
+  margin: 0;
+}
+.person-card__details:focus { outline: none; }
+.person-detail {
+  grid-column: 1 / -1;
   padding: var(--space-48);
   border-radius: var(--radius-lg);
   background: var(--color-white);
@@ -538,11 +547,12 @@
 @media (max-width: 1279px) { .people-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 959px) {
   .people-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32) var(--space-16); }
-  .person-detail { grid-template-columns: 1fr; gap: var(--space-24); padding: var(--space-32); }
+  .person-detail { padding: var(--space-32); }
+  .person-detail .person-card__details { grid-template-columns: 1fr; gap: var(--space-24); }
 }
 @media (max-width: 600px) {
   .person-detail { padding: var(--space-24); border-radius: var(--radius-md); }
-  .person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  .person-card__photo picture, .person-card__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .person-card__photo::after { width: 2rem; height: 2rem; right: var(--space-12); bottom: var(--space-12); }
   .person-card__name { font-size: var(--size-p4); }
   .people-join { grid-template-columns: 1fr; padding: var(--space-32) var(--space-24); border-radius: var(--radius-md); }

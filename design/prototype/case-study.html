@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wove Case Study</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/prototype.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="tpl-case-study">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<div class="feed-wrap">
+  <div class="filter-bar" id="filter-bar" aria-label="Site menu" role="region" inert></div>
+
+  <!-- PAGE HEADER: crumbs, client, title, summary, services (js/case-study.js) -->
+  <header class="hx hx--page hx--lead">
+    <div class="hx__inner">
+      <div class="hx-row">
+        <a href="index.html" class="hero-bar__logo">Wove Group.</a>
+        <nav class="hx-nav" aria-label="Main" data-current="work.html">
+          <a href="work.html">Our work</a>
+          <a href="people.html">Our people</a>
+        </nav>
+        <a href="#contact" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
+      </div>
+      <div class="hx-body" id="cs-header"></div>
+    </div>
+  </header>
+
+  <!-- LEAD IMAGE: pulled up into the blush band -->
+  <div class="pg-lead-image" id="cs-image"></div>
+
+  <main class="pg" id="main">
+    <!-- KEY FIGURES -->
+    <section class="pg-section" aria-label="Key figures">
+      <dl class="csp-stats" id="csp-stats"></dl>
+    </section>
+
+    <!-- BODY: facts beside the story -->
+    <section class="pg-section cs-main" aria-label="Case study">
+      <aside class="cs-aside" id="cs-facts"></aside>
+      <div class="prose" id="cs-body"></div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section class="pg-section" aria-label="Testimonial">
+      <figure class="cs-quote" id="cs-quote"></figure>
+    </section>
+
+    <!-- POSTS ABOUT THIS PROJECT -->
+    <section class="pg-section" aria-labelledby="cs-posts-title" id="cs-posts-section">
+      <div class="pg-section__head">
+        <h2 class="pg-section__title" id="cs-posts-title">In this collection</h2>
+        <a class="pg-section__link" id="cs-posts-all" href="work.html">See all <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="feed-cards pc-grid" id="cs-posts"></div>
+    </section>
+
+    <!-- NEXT CASE STUDY -->
+    <section class="pg-section" aria-label="Next case study" id="cs-next"></section>
+  </main>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/case-study.js"></script>
+
+</body>
+</html>

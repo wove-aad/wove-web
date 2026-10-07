@@ -16,8 +16,33 @@
     });
   }
 
-  // ctx: { image(e) -> src, tags(e) -> html, date(e) -> label }
+  // Title linked to the post page; the link covers the card (see .pc__link).
+  function title(e, ctx) {
+    return ctx.url ? '<a class="pc__link" href="' + ctx.url(e) + '">' + esc(e.title) + '</a>' : esc(e.title);
+  }
+
+  // Case study card (Our work): the client's image with its logo, then the
+  // title, summary and a headline figure.
+  function renderCase(cs, ctx) {
+    var tags = (cs.services || []).map(function (s) {
+      return '<a class="card-tags__tag" data-topic="service:' + s + '" href="work.html?topic=service:' + s + '">' + window.WOVE.services[s] + '</a>';
+    }).join('');
+    var k = cs.kpis[0];
+    return '<article class="pc pc--case">' +
+      '<div class="pc__media pc__media--case"><img src="' + ctx.caseImage(cs) + '" alt=""><span class="pc__logo">' + esc(cs.logo) + '</span></div>' +
+      '<div class="pc__body">' +
+        '<p class="pc__label">Case study</p>' +
+        '<h3 class="pc__title"><a class="pc__link" href="' + ctx.caseUrl(cs) + '">' + esc(cs.title) + '</a></h3>' +
+        '<p class="pc__excerpt">' + esc(cs.text) + '</p>' +
+        '<p class="pc__kpi"><strong>' + esc(k.value) + '</strong> ' + esc(k.label) + '</p>' +
+        (tags ? '<div class="card-tags">' + tags + '</div>' : '') +
+      '</div></article>';
+  }
+
+  // ctx: { image(e) -> src, tags(e) -> html, date(e) -> label, url(e) -> href,
+  //        caseImage(cs) -> src, caseUrl(cs) -> href }
   function render(e, ctx) {
+    if (e.client) return renderCase(e, ctx);
     var ratio = e.ratio || 3 / 2;
     var img = e.image
       ? '<div class="pc__media" style="aspect-ratio:' + ratio + '"><img src="' + ctx.image(e) + '" alt=""></div>'
@@ -43,7 +68,7 @@
         : '';
       return '<article class="pc pc--thread' + (e.image ? ' has-thumb' : '') + '"><div class="pc__body">' +
         '<p class="pc__label">' + LABELS.thread + '</p>' +
-        '<div class="pc__row"><h3 class="pc__title">' + esc(e.title) + '</h3>' + thumb + '</div>' +
+        '<div class="pc__row"><h3 class="pc__title">' + title(e, ctx) + '</h3>' + thumb + '</div>' +
         meta + tags + '</div></article>';
     }
 
@@ -51,7 +76,7 @@
       return '<article class="pc pc--whatif' + (e.image ? ' has-image' : '') + '">' +
         '<div class="pc__body">' +
           '<p class="pc__label">' + LABELS.whatif + '</p>' +
-          '<h3 class="pc__title">' + esc(e.title) + '</h3>' +
+          '<h3 class="pc__title">' + title(e, ctx) + '</h3>' +
           (e.excerpt ? '<p class="pc__excerpt">' + esc(e.excerpt) + '</p>' : '') +
         '</div>' + img +
         '<div class="pc__foot"><span class="pc__cta">Explore the idea <span aria-hidden="true">&rarr;</span></span>' + meta + tags + '</div>' +
@@ -62,7 +87,7 @@
     return '<article class="pc pc--longread' + (e.image ? ' has-image' : '') + '">' + img +
       '<div class="pc__body">' +
         '<p class="pc__label">' + LABELS.longread + (e.minutes ? ' <span class="pc__time">' + e.minutes + ' min read</span>' : '') + '</p>' +
-        '<h3 class="pc__title">' + esc(e.title) + '</h3>' +
+        '<h3 class="pc__title">' + title(e, ctx) + '</h3>' +
         (e.excerpt ? '<p class="pc__excerpt">' + esc(e.excerpt) + '</p>' : '') +
         meta + tags +
       '</div></article>';

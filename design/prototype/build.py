@@ -2,7 +2,7 @@
 
 Inlines the stylesheets, scripts and Ballinger fonts so the page opens
 correctly on its own (file viewers, artifacts, email).
-Usage: python3 build.py            -> writes dist/index.html
+Usage: python3 build.py            -> writes dist/<page>.html for every page
 """
 import base64, pathlib, re
 
@@ -34,7 +34,9 @@ def build(page):
     # Artifact variant: the host supplies the document shell, so drop it and
     # carry the theme on a wrapper. The prototype is light only for now.
     art = re.sub(r'<!DOCTYPE html>\s*|</?html[^>]*>|</?head>|<meta [^>]*>|</?body[^>]*>', '', html)
-    art = art.replace('<a href="#main"', '<div data-theme="light" class="tpl-home">\n<a href="#main"', 1)
+    tpl = re.search(r'<body class="([^"]+)"', html).group(1)
+    attrs = re.search(r'<body class="[^"]+"([^>]*)>', html).group(1)
+    art = art.replace('<a href="#main"', f'<div data-theme="light" class="{tpl}"{attrs}>\n<a href="#main"', 1)
     art = art.replace('<script>', '</div>\n<script>', 1)
     art = '<style>:root { color-scheme: light; }</style>\n' + art.strip()
     # <title> must sit in the first 8KB
@@ -45,5 +47,8 @@ def build(page):
     print(f'{a.relative_to(ROOT)}  {a.stat().st_size // 1024} KB')
 
 
+PAGES = ['index.html', 'work.html', 'people.html', 'case-study.html', 'post.html']
+
 if __name__ == '__main__':
-    build('index.html')
+    for page in PAGES:
+        build(page)

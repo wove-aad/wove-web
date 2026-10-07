@@ -8,9 +8,9 @@ window.WOVE = {
 
   // Placeholder team for the Our People link.
   people: [
-    { name: 'Fergal Walsh', role: 'Founder' },
-    { name: 'Aoife Byrne', role: 'Strategy Director' },
-    { name: 'Niamh Kelly', role: 'Design Lead' },
+    { name: 'Fergal Walsh', role: 'Founder', bio: 'Fergal founded Wove to bring strategy, design and technology under one roof for organisations working in the public interest. He leads the studio and its client relationships.' },
+    { name: 'Aoife Byrne', role: 'Strategy Director', bio: 'Aoife leads strategy projects across climate, public services and higher education. Before Wove she worked in policy and programme design.' },
+    { name: 'Niamh Kelly', role: 'Design Lead', bio: 'Niamh leads design research and service design. She is most at home in a room full of post-its and people who disagree.' },
     { name: 'Ciarán Doyle', role: 'Technology Lead' },
     { name: 'Sinéad Murphy', role: 'Service Designer' },
     { name: 'Rory Gallagher', role: 'Brand Designer' },
@@ -46,7 +46,8 @@ window.WOVE = {
         { value: '42', label: 'Partner organisations' }
       ],
       services: ['strategy', 'brand', 'digital'],
-      palette: ['#ff8fb1', '#ffd23f', '#1d9e75']
+      palette: ['#ff8fb1', '#ffd23f', '#1d9e75'],
+      daysAgo: 3, year: 2025, sector: 'Public Service', tags: ['climate', 'system-change'], quote: { text: 'Wove turned a policy idea into something people could actually use. The campaign gave us a language the whole sector now shares.', name: 'Programme Lead', org: 'Circular.ie' }, team: ['Aoife Byrne', 'Rory Gallagher', 'Darragh Nolan', 'Clodagh Ryan']
     },
     {
       slug: 'dcu',
@@ -60,7 +61,8 @@ window.WOVE = {
         { value: '12', label: 'Services redesigned' }
       ],
       services: ['strategy', 'digital'],
-      palette: ['#1b2a6b', '#5ec8f2', '#f5f4f0']
+      palette: ['#1b2a6b', '#5ec8f2', '#f5f4f0'],
+      daysAgo: 12, year: 2025, sector: 'Higher Education', tags: ['education'], quote: { text: 'Students were part of every decision. The result feels like it was made for them, because it was.', name: 'Head of Student Experience', org: 'DCU' }, team: ['Sinéad Murphy', 'Orla Kennedy', 'Niamh Kelly']
     },
     {
       slug: 'dublin-inquirer',
@@ -74,7 +76,8 @@ window.WOVE = {
         { value: '9', label: 'Months to launch' }
       ],
       services: ['brand', 'digital'],
-      palette: ['#111111', '#ed8c7c', '#f3eeeb']
+      palette: ['#111111', '#ed8c7c', '#f3eeeb'],
+      daysAgo: 20, year: 2024, sector: 'Non-profit and Mission-led', tags: ['people-power'], quote: { text: 'Membership used to be an afterthought. Now it is the heart of how we talk to readers.', name: 'Editor', org: 'Dublin Inquirer' }, team: ['Rory Gallagher', 'Eoin Farrell', 'Méabh Quinn']
     },
     {
       slug: 'pivot-dublin',
@@ -88,7 +91,8 @@ window.WOVE = {
         { value: '5', label: 'Councils involved' }
       ],
       services: ['strategy', 'labs'],
-      palette: ['#e0bdff', '#2a50f3', '#d5faff']
+      palette: ['#e0bdff', '#2a50f3', '#d5faff'],
+      daysAgo: 26, year: 2024, sector: 'Public Service', tags: ['people-power', 'system-change'], quote: { text: 'The open call brought people into the conversation who had never been asked before.', name: 'Programme Director', org: 'Pivot Dublin' }, team: ['Tadhg Brennan', 'Aoife Byrne', 'Orla Kennedy']
     },
     {
       slug: 'silvercloud',
@@ -102,7 +106,8 @@ window.WOVE = {
         { value: '1.2m', label: 'Users reached' }
       ],
       services: ['digital', 'labs'],
-      palette: ['#2f7a57', '#e1eee7', '#c6841e']
+      palette: ['#2f7a57', '#e1eee7', '#c6841e'],
+      daysAgo: 31, year: 2023, sector: 'Founders and Ventures', tags: ['design'], quote: { text: 'Small changes, carefully tested, made a large difference to the people using the service.', name: 'Head of Product', org: 'SilverCloud' }, team: ['Niamh Kelly', 'Ciarán Doyle', 'Clodagh Ryan']
     },
     {
       slug: 'arts-council',
@@ -116,32 +121,33 @@ window.WOVE = {
         { value: '6', label: 'Counties' }
       ],
       services: ['strategy', 'digital'],
-      palette: ['#c6841e', '#f7ecd3', '#6b3ec2']
+      palette: ['#c6841e', '#f7ecd3', '#6b3ec2'],
+      daysAgo: 40, year: 2023, sector: 'Arts and Culture', tags: ['people-power'], quote: { text: 'The research changed how venues think about their audiences, not only how they list events.', name: 'Development Officer', org: 'Arts Partner' }, team: ['Sinéad Murphy', 'Ciarán Doyle', 'Méabh Quinn']
     }
   ],
 
   // Formats: spark, thread, whatif, longread. `daysAgo` drives the date label.
   entries: [
-    { format: 'longread', title: 'How do you launch a national campaign for something people have never heard of?', excerpt: 'The challenge was to explain the circular economy to everyone, from people taking their first step to organisations ready to change.', caseStudy: 'circular', services: ['brand'], tags: ['climate'], daysAgo: 2, image: true, ratio: 3 / 2, minutes: 8 },
-    { format: 'longread', title: 'Building a future-proofed platform for multiple audiences', excerpt: 'One digital platform that serves individuals, businesses and community groups, each with their own starting point.', caseStudy: 'circular', services: ['digital'], tags: ['system-change'], daysAgo: 4, image: true, ratio: 16 / 9, minutes: 6 },
+    { author: 'Aoife Byrne', format: 'longread', title: 'How do you launch a national campaign for something people have never heard of?', excerpt: 'The challenge was to explain the circular economy to everyone, from people taking their first step to organisations ready to change.', caseStudy: 'circular', services: ['brand'], tags: ['climate'], daysAgo: 2, image: true, ratio: 3 / 2, minutes: 8 },
+    { author: 'Rory Gallagher', format: 'longread', title: 'Building a future-proofed platform for multiple audiences', excerpt: 'One digital platform that serves individuals, businesses and community groups, each with their own starting point.', caseStudy: 'circular', services: ['digital'], tags: ['system-change'], daysAgo: 4, image: true, ratio: 16 / 9, minutes: 6 },
     { format: 'spark', quote: 'People do not need to understand the term "circular economy" to want less waste in their lives. Start with the habit, not the theory.', author: 'Aoife Byrne', caseStudy: 'circular', tags: ['climate'], daysAgo: 9, image: true, ratio: 1 },
-    { format: 'thread', title: 'What we learned running twelve co-design sessions with first-year students', caseStudy: 'dcu', services: ['strategy'], tags: ['education'], daysAgo: 6, image: true, ratio: 4 / 3 },
-    { format: 'whatif', title: 'What if orientation started the day you accepted your offer?', excerpt: 'Most of the anxiety we heard about happens in the summer before term. That is where the service should begin.', caseStudy: 'dcu', tags: ['education', 'design'], daysAgo: 14 },
-    { format: 'longread', title: 'Paying for local news: designing membership people want to keep', excerpt: 'Why the renewal moment matters more than the sign-up, and what we changed to support it.', caseStudy: 'dublin-inquirer', services: ['digital'], tags: ['people-power'], daysAgo: 11, image: true, ratio: 4 / 5, minutes: 11 },
-    { format: 'thread', title: 'A new identity for an independent newsroom', caseStudy: 'dublin-inquirer', services: ['brand'], tags: ['design'], daysAgo: 21, image: true, ratio: 1 },
-    { format: 'whatif', title: 'What if every council had a public space open call?', excerpt: 'Pivot showed that small, well-run open calls can move faster than large capital projects.', caseStudy: 'pivot-dublin', services: ['labs'], tags: ['people-power', 'system-change'], daysAgo: 17 },
-    { format: 'longread', title: 'Lowering the threshold: onboarding for digital mental health', excerpt: 'Small changes to the first five minutes had the largest effect on whether people came back.', caseStudy: 'silvercloud', services: ['digital'], tags: ['design'], daysAgo: 25, image: true, ratio: 3 / 2, minutes: 7 },
-    { format: 'thread', title: 'Mapping how audiences find out what is on', caseStudy: 'arts-council', services: ['strategy'], tags: ['people-power'], daysAgo: 30, image: true, ratio: 16 / 9 },
+    { author: 'Sinéad Murphy', format: 'thread', title: 'What we learned running twelve co-design sessions with first-year students', caseStudy: 'dcu', services: ['strategy'], tags: ['education'], daysAgo: 6, image: true, ratio: 4 / 3 },
+    { author: 'Niamh Kelly', format: 'whatif', title: 'What if orientation started the day you accepted your offer?', excerpt: 'Most of the anxiety we heard about happens in the summer before term. That is where the service should begin.', caseStudy: 'dcu', tags: ['education', 'design'], daysAgo: 14 },
+    { author: 'Eoin Farrell', format: 'longread', title: 'Paying for local news: designing membership people want to keep', excerpt: 'Why the renewal moment matters more than the sign-up, and what we changed to support it.', caseStudy: 'dublin-inquirer', services: ['digital'], tags: ['people-power'], daysAgo: 11, image: true, ratio: 4 / 5, minutes: 11 },
+    { author: 'Rory Gallagher', format: 'thread', title: 'A new identity for an independent newsroom', caseStudy: 'dublin-inquirer', services: ['brand'], tags: ['design'], daysAgo: 21, image: true, ratio: 1 },
+    { author: 'Tadhg Brennan', format: 'whatif', title: 'What if every council had a public space open call?', excerpt: 'Pivot showed that small, well-run open calls can move faster than large capital projects.', caseStudy: 'pivot-dublin', services: ['labs'], tags: ['people-power', 'system-change'], daysAgo: 17 },
+    { author: 'Niamh Kelly', format: 'longread', title: 'Lowering the threshold: onboarding for digital mental health', excerpt: 'Small changes to the first five minutes had the largest effect on whether people came back.', caseStudy: 'silvercloud', services: ['digital'], tags: ['design'], daysAgo: 25, image: true, ratio: 3 / 2, minutes: 7 },
+    { author: 'Méabh Quinn', format: 'thread', title: 'Mapping how audiences find out what is on', caseStudy: 'arts-council', services: ['strategy'], tags: ['people-power'], daysAgo: 30, image: true, ratio: 16 / 9 },
 
     { format: 'spark', quote: 'Strategy that cannot survive contact with delivery is not strategy. It is a wish list.', author: 'Fergal Walsh', tags: ['system-change'], daysAgo: 1, image: true, ratio: 4 / 5 },
-    { format: 'whatif', title: 'What if public services were designed around life events?', excerpt: 'Moving house, having a child, losing a job. People think in moments, not departments.', services: ['strategy'], tags: ['system-change'], daysAgo: 3 },
-    { format: 'longread', title: 'Designing for nature: what biodiversity data tells us about place', excerpt: 'Notes from a Labs project looking at how communities can read and act on local nature data.', services: ['labs'], tags: ['nature', 'climate'], daysAgo: 5, image: true, ratio: 3 / 2, minutes: 9 },
-    { format: 'thread', title: 'Our approach to accessible design systems', services: ['digital'], tags: ['design'], daysAgo: 8 },
+    { author: 'Aoife Byrne', format: 'whatif', title: 'What if public services were designed around life events?', excerpt: 'Moving house, having a child, losing a job. People think in moments, not departments.', services: ['strategy'], tags: ['system-change'], daysAgo: 3 },
+    { author: 'Tadhg Brennan', format: 'longread', title: 'Designing for nature: what biodiversity data tells us about place', excerpt: 'Notes from a Labs project looking at how communities can read and act on local nature data.', services: ['labs'], tags: ['nature', 'climate'], daysAgo: 5, image: true, ratio: 3 / 2, minutes: 9 },
+    { author: 'Ciarán Doyle', format: 'thread', title: 'Our approach to accessible design systems', services: ['digital'], tags: ['design'], daysAgo: 8 },
     { format: 'spark', quote: 'The best research question we asked this year: "What did you do the last time this went wrong?"', author: 'Niamh Kelly', tags: ['design'], daysAgo: 10, image: true, ratio: 16 / 9 },
-    { format: 'longread', title: 'Brand as infrastructure for mission-led organisations', excerpt: 'A brand is the set of decisions that lets a small team act consistently without asking permission every time.', services: ['brand'], tags: ['people-power'], daysAgo: 13, image: true, ratio: 1, minutes: 5 },
-    { format: 'whatif', title: 'What if schools could share their best timetabling tools?', excerpt: 'Every school solves the same scheduling problem alone. A shared toolkit could free up hours each week.', services: ['labs'], tags: ['education'], daysAgo: 16, image: true, ratio: 4 / 3 },
-    { format: 'thread', title: 'Running a climate assembly online: what worked', services: ['strategy'], tags: ['climate', 'people-power'], daysAgo: 19, image: true, ratio: 3 / 2 },
+    { author: 'Rory Gallagher', format: 'longread', title: 'Brand as infrastructure for mission-led organisations', excerpt: 'A brand is the set of decisions that lets a small team act consistently without asking permission every time.', services: ['brand'], tags: ['people-power'], daysAgo: 13, image: true, ratio: 1, minutes: 5 },
+    { author: 'Orla Kennedy', format: 'whatif', title: 'What if schools could share their best timetabling tools?', excerpt: 'Every school solves the same scheduling problem alone. A shared toolkit could free up hours each week.', services: ['labs'], tags: ['education'], daysAgo: 16, image: true, ratio: 4 / 3 },
+    { author: 'Aoife Byrne', format: 'thread', title: 'Running a climate assembly online: what worked', services: ['strategy'], tags: ['climate', 'people-power'], daysAgo: 19, image: true, ratio: 3 / 2 },
     { format: 'spark', quote: 'If a service needs a user guide, the service is the problem.', author: 'Fergal Walsh', tags: ['design'], daysAgo: 23 },
-    { format: 'longread', title: 'Small pilots, large systems: how we scope Labs projects', excerpt: 'Why we start with a twelve-week pilot and a clear question, and what happens when the answer is no.', services: ['labs'], tags: ['system-change'], daysAgo: 28, image: true, ratio: 4 / 3, minutes: 6 }
+    { author: 'Tadhg Brennan', format: 'longread', title: 'Small pilots, large systems: how we scope Labs projects', excerpt: 'Why we start with a twelve-week pilot and a clear question, and what happens when the answer is no.', services: ['labs'], tags: ['system-change'], daysAgo: 28, image: true, ratio: 4 / 3, minutes: 6 }
   ]
 };

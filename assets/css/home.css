@@ -69,14 +69,14 @@
 .feed--home {
   max-width: var(--width-header);
   margin: 0 auto;
-  padding: var(--space-80) var(--gutter-x) var(--space-128);
+  padding: var(--space-96) var(--gutter-x) var(--space-128);
 }
 .feed--home .feed__title {
   font-size: var(--size-h5);
   font-weight: var(--weight-h5);
   line-height: var(--lh-h5);
 }
-.feed--home .feed__header { margin-bottom: var(--space-40); scroll-margin-top: var(--space-24); }
+.feed--home .feed__header { margin-bottom: var(--space-48); scroll-margin-top: var(--space-24); }
 
 
 /* ============================================================
@@ -590,11 +590,16 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx { background: var(--color-blush); color: var(--color-black); }
 
 /* Homepage: the hero fills the first screen, so nothing below it shows
-   on landing. The title and links sit in the middle of the space under
-   the header row. */
+   on landing. The title and links sit low in it, 96px (48px on phones)
+   above the bottom edge.
+   Vertical rhythm (2026-10-08): one scale for the top of the homepage,
+   24 / 48 / 96px on desktop and 48px between sections on phones. The
+   intro and Our work size to their content. */
 .hx--home { display: flex; flex-direction: column; min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
-.hx--home .hx-body { margin-block: auto; padding-block: var(--space-48); }
+.hx--home .hx-body { margin-block: auto 0; padding-block: var(--space-96); }
+.hx--home .hx-voice__title { color: var(--color-black); }
+.hx--home .hx-voice__links { margin-top: var(--space-48); }
 .hx--home .hx-voice__title,
 .hx--home .hx-title-row { margin-top: 0; }
 .hx__inner {
@@ -765,13 +770,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    Intro (snippets/home/intro.php): the description and four services,
    between the hero and the feed. Services jump to the filtered feed.
    ------------------------------------------------------------ */
-.hx-intro {
-  /* Most of a screen, with the text and services centred in it */
-  display: flex;
-  align-items: center;
-  min-height: 85svh;
-  background: var(--color-white);
-}
+.hx-intro { background: var(--color-white); }
 .hx-intro__inner {
   width: 100%;
   display: grid;
@@ -793,7 +792,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-24);
-  margin: var(--space-64) 0 0;
+  margin: var(--space-48) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -815,9 +814,12 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-service:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }
 
 @media (max-width: 960px) {
-  .hx-intro__inner { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-64); }
+  .hx-intro__inner { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-48); }
+  .hx--home .hx-body { padding-block: var(--space-48); }
+  .feed--home { padding-top: var(--space-48); }
+  .feed--home .feed__header { margin-bottom: var(--space-24); }
   .hx-intro__inner > * { grid-column: 1; }
-  .hx-services { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-48); row-gap: var(--space-32); }
+  .hx-services { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-32); row-gap: var(--space-24); }
 }
 @media (max-width: 600px) {
   .hx-intro__text { font-size: 1.75rem; line-height: 1.3; }

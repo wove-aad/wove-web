@@ -51,34 +51,6 @@ tabs:
                 type: text
                 default: "We'll confirm receipt within one working day."
 
-              strategy_heading:
-                label: "Card 3: Strategy heading"
-                type: text
-                default: Book a strategy conversation
-
-              strategy_desc:
-                label: "Card 3: Strategy description"
-                type: textarea
-                size: small
-                default: A 30-minute conversation with our strategy lead to explore how we might help.
-
-              strategy_partner:
-                label: "Card 3: Named partner"
-                type: users
-                max: 1
-                help: The person shown on the strategy card (e.g. Karl Twomey).
-
-              strategy_partner_intro:
-                label: "Card 3: Partner intro"
-                type: textarea
-                size: small
-                default: "Karl works across public sector, cultural institutions, and mission-led organisations. He'll help you figure out whether Wove is the right fit — and if not, point you to someone who is."
-
-              strategy_response:
-                label: "Card 3: Response time"
-                type: text
-                default: "We'll be in touch within 48 hours."
-
       sidebar:
         width: 1/3
         sections:
@@ -98,10 +70,5 @@ tabs:
                 type: email
                 default: tenders@wove.group
                 help: Tender invite form submissions go here.
-
-              strategy_email:
-                label: Strategy inbox
-                type: email
-                help: Strategy conversation requests go here (or leave blank to use the partner's email).
 
   seo: tabs/seo

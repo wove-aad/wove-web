@@ -2,7 +2,7 @@
 /**
  * Contact page controller: handles the three forms on site/templates/contact.php.
  *
- * Each form posts its `form_type` (enquiry, tender or strategy). A valid
+ * Each form posts its `form_type` (enquiry or tender). A valid
  * submission is emailed to that route's inbox (the Form Routing fields on
  * the contact page, with defaults), with the sender's address as Reply-To,
  * then the page redirects to ?sent={type}#{card} so a reload doesn't send
@@ -21,7 +21,6 @@ return function ($kirby, $page) {
     $routes = [
         'enquiry'  => ['anchor' => 'enquiries', 'label' => 'Project enquiry',        'required' => ['name', 'email'], 'fields' => ['name' => 'Name', 'email' => 'Email', 'organisation' => 'Organisation', 'scope' => 'Scope note', 'timeline' => 'Timeline']],
         'tender'   => ['anchor' => 'tenders',   'label' => 'Tender invite',          'required' => ['email'],         'fields' => ['email' => 'Email', 'rft_reference' => 'RFT reference', 'portal' => 'Portal', 'closing_date' => 'Closing date', 'framework' => 'Framework', 'note' => 'Note']],
-        'strategy' => ['anchor' => 'strategy',  'label' => 'Strategy conversation',  'required' => ['name', 'email'], 'fields' => ['name' => 'Name', 'email' => 'Email', 'organisation' => 'Organisation']],
     ];
 
     $sent      = in_array(get('sent'), array_keys($routes), true) ? get('sent') : null;
@@ -57,11 +56,9 @@ return function ($kirby, $page) {
         }
 
         if (!$error) {
-            $partner = $page->strategy_partner()->toUser();
             $to = match ($type) {
                 'enquiry'  => $page->enquiry_email()->or('hello@wove.group')->value(),
                 'tender'   => $page->tender_email()->or('tenders@wove.group')->value(),
-                'strategy' => $page->strategy_email()->value() ?: ($partner?->email() ?: $page->enquiry_email()->or('hello@wove.group')->value()),
             };
 
             $lines = [];

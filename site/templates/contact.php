@@ -1,18 +1,16 @@
 <?php
 /**
- * Contact page: three routes, each with its own form
+ * Contact page: two routes, each with its own form
  * File: site/templates/contact.php
  * Blueprint: site/blueprints/pages/contact.yml
  *
- * Discuss a project, Invite us to tender, Book a strategy conversation
- * (with the named strategy partner), then the studio's email, phone and
+ * Discuss a project and Invite us to tender (the strategy conversation
+ * card was removed on 2026-10-08), then the studio's email, phone and
  * address from the site's contact details. Submissions are checked and
  * emailed by site/controllers/contact.php, which passes $sent (the form just
  * sent), $error and $errorType (a form to show again with its values) and
  * $data (those values).
  */
-
-$partner = $page->strategy_partner()->toUser();
 
 // Hidden fields: which form, Kirby's CSRF token, and a field people leave
 // empty (bots fill it in). Shows this form's error, if any.
@@ -117,40 +115,6 @@ $address = array_filter([
                 <button class="pg-btn contact-form__submit" type="submit">Submit tender invite</button>
                 <p class="contact-form__ack"><?= $page->tender_ack()->or('We\'ll confirm receipt within one working day.')->html() ?></p>
               </form>
-            <?php endif ?>
-          </div>
-
-          <!-- Strategy conversation -->
-          <div class="contact-route" id="strategy">
-            <h2 class="contact-card__heading"><?= $page->strategy_heading()->or('Book a strategy conversation')->html() ?></h2>
-            <p class="contact-card__desc"><?= $page->strategy_desc()->or('A 30-minute conversation with our strategy lead to explore how we might help.')->html() ?></p>
-            <?php if ($partner): ?>
-              <div class="contact-partner">
-                <div class="contact-partner__avatar">
-                  <?php if ($avatar = $partner->avatar()): ?>
-                    <?php snippet('picture', ['file' => $avatar, 'widths' => [48, 96], 'ratio' => 1, 'sizes' => '48px']) ?>
-                  <?php endif ?>
-                </div>
-                <div>
-                  <div class="contact-partner__name"><?= $partner->name()->html() ?></div>
-                  <div class="contact-partner__role">Strategy Lead</div>
-                </div>
-              </div>
-              <?php if ($page->strategy_partner_intro()->isNotEmpty()): ?>
-                <p class="contact-partner__intro"><?= $page->strategy_partner_intro()->html() ?></p>
-              <?php endif ?>
-            <?php endif ?>
-            <?php if ($sent === 'strategy'): ?>
-              <p class="contact-form__done" role="status">Thanks, we have your request. <?= $page->strategy_response()->or('We\'ll be in touch within 48 hours.')->html() ?></p>
-            <?php else: ?>
-              <form class="contact-form" method="post" action="<?= $page->url() ?>#strategy">
-                <?php $hidden('strategy') ?>
-                <?php $field('strategy', 'name', 'Your name', 'text', true) ?>
-                <?php $field('strategy', 'email', 'Your email', 'email', true) ?>
-                <?php $field('strategy', 'organisation', 'Organisation') ?>
-                <button class="pg-btn contact-form__submit" type="submit">Request a conversation</button>
-              </form>
-              <p class="contact-partner__response"><?= $page->strategy_response()->or('We\'ll be in touch within 48 hours.')->html() ?></p>
             <?php endif ?>
           </div>
 

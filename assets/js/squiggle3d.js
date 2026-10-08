@@ -20,9 +20,10 @@
     [638, 140]
   ];
   // Depth at each point (artwork units): pulls the crossings apart
+  // Each loop passes behind the stroke it crosses, like a coil
   var DEPTH = [
-    0, 10, 20, 30, 30, 20, 0, -30, -50, -40, -10, 20,
-    40, 50, 40, 20, -10, -30, -30, -10, 20, 40, 40, 30,
+    0, 10, 20, 30, 40, 45, 50, 50, 45, 30, 10, -10,
+    -30, -45, -55, -55, -45, -30, -10, 10, 30, 40, 40, 30,
     10, -10, -30, -30, -20, -10, 0
   ];
   var SCALE = 1 / 300, CX = 375, CY = 390;

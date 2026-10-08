@@ -382,37 +382,97 @@
   update();
 })();
 
-/* Homepage: a gentle snap between the hero, the intro and Our work. When
- * you stop scrolling with one of their top edges within a fifth of the
- * screen of the top, the page eases it into place. It acts only after
- * your own scrolling (not the page's jumps to results), never inside the
- * feed, and not with reduced motion. CSS scroll-snap was tried first: its
- * "proximity" mode pulled back even deliberate scrolls of 300px. */
+/* Homepage: section paging between the hero, the intro and Our work.
+ * In that top stretch a scroll gesture (wheel, trackpad, swipe or
+ * Page Down / arrow / space) carries straight on to the next section in a
+ * quick ease, as if your own scroll were lengthened; scrolling up from the
+ * top of Our work goes back to the intro. Inside the feed and below it,
+ * scrolling is the browser's own. Trackpad and touch momentum after a
+ * move is absorbed so it doesn't overshoot. Off with reduced motion.
+ * Earlier tries: CSS scroll-snap "proximity" (pulled back deliberate
+ * scrolls) and an ease-in after scrolling stopped (felt late). */
 (function () {
   var hero = document.querySelector('.hx--home');
-  if (!hero) return;
-  var stops = [hero, document.querySelector('.hx-intro'), document.getElementById('feed')].filter(Boolean);
+  var intro = document.querySelector('.hx-intro');
+  var feed = document.getElementById('feed');
+  if (!hero || !intro || !feed) return;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var lastInput = 0, timer = null, snapping = false;
+  var DURATION = 650;
+  var moving = false, lockUntil = 0, lastWheel = 0;
 
-  ['wheel', 'touchmove', 'keydown'].forEach(function (type) {
-    window.addEventListener(type, function () { lastInput = Date.now(); snapping = false; }, { passive: true });
-  });
-
-  function settle() {
-    if (still.matches || snapping || Date.now() - lastInput > 1200) return;
-    var range = window.innerHeight * 0.2, best = null;
-    stops.forEach(function (el) {
-      var top = el.getBoundingClientRect().top;
-      if (Math.abs(top) > 2 && Math.abs(top) < range && (!best || Math.abs(top) < Math.abs(best))) best = top;
-    });
-    if (best === null) return;
-    snapping = true;
-    window.scrollTo({ top: window.scrollY + best, behavior: 'smooth' });
+  // Section tops; when the intro is taller than the screen (phones) it
+  // gets a second stop so its end shows before Our work
+  function stops() {
+    var y = window.scrollY, vh = window.innerHeight;
+    var r = intro.getBoundingClientRect(), introTop = r.top + y;
+    var list = [0, introTop];
+    if (r.height > vh + 8) list.push(introTop + r.height - vh);
+    list.push(feed.getBoundingClientRect().top + y);
+    return list.map(Math.round);
+  }
+  // Where a gesture in this direction should go, or null to scroll natively
+  function target(dir) {
+    var y = window.scrollY, s = stops(), feedTop = s[s.length - 1];
+    if (dir > 0 && y < feedTop - 4) return s.filter(function (v) { return v > y + 4; })[0];
+    if (dir < 0 && y > 0 && y <= feedTop + 4) return s.filter(function (v) { return v < y - 4; }).pop();
+    return null;
+  }
+  function ease(t) { return 1 - Math.pow(1 - t, 4); }
+  function go(to) {
+    var from = window.scrollY, start = performance.now();
+    moving = true;
+    (function step(now) {
+      var t = Math.min(1, (now - start) / DURATION);
+      window.scrollTo({ top: from + (to - from) * ease(t), behavior: 'instant' });
+      if (t < 1) requestAnimationFrame(step);
+      else { moving = false; lockUntil = performance.now() + 450; }
+    })(start);
+  }
+  function busy() {
+    var bar = document.getElementById('filter-bar');
+    return still.matches || (bar && bar.querySelector('[aria-expanded="true"]'));
   }
 
-  window.addEventListener('scroll', function () {
-    clearTimeout(timer);
-    timer = setTimeout(settle, 160);
+  // Wheel and trackpad
+  window.addEventListener('wheel', function (ev) {
+    if (busy() || ev.ctrlKey || Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
+    var now = performance.now(), gap = now - lastWheel;
+    lastWheel = now;
+    // Swallow the rest of a gesture (and its momentum) after a move
+    if (moving || (now < lockUntil && gap < 120)) { ev.preventDefault(); if (!moving) lockUntil = now + 200; return; }
+    var to = target(ev.deltaY > 0 ? 1 : -1);
+    if (to == null) return;
+    ev.preventDefault();
+    go(to);
+  }, { passive: false });
+
+  // Touch: a swipe in the top stretch moves a whole section
+  var touchY = null, touchTo = null;
+  window.addEventListener('touchstart', function (ev) {
+    touchY = ev.touches.length === 1 ? ev.touches[0].clientY : null;
+    touchTo = undefined;
   }, { passive: true });
+  window.addEventListener('touchmove', function (ev) {
+    if (touchY === null || busy()) return;
+    var dy = touchY - ev.touches[0].clientY;
+    if (moving) { ev.preventDefault(); return; }
+    if (touchTo === undefined && Math.abs(dy) > 6) touchTo = target(dy > 0 ? 1 : -1);
+    if (touchTo != null) ev.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchend', function () {
+    if (touchTo != null && !moving) go(touchTo);
+    touchY = null;
+  }, { passive: true });
+
+  // Keyboard
+  window.addEventListener('keydown', function (ev) {
+    if (busy() || moving || ev.altKey || ev.ctrlKey || ev.metaKey) return;
+    if (ev.target.closest && ev.target.closest('input, textarea, select, [contenteditable]')) return;
+    var dir = { PageDown: 1, ArrowDown: 1, ' ': ev.shiftKey ? -1 : 1, PageUp: -1, ArrowUp: -1 }[ev.key];
+    if (!dir) return;
+    var to = target(dir);
+    if (to == null) return;
+    ev.preventDefault();
+    go(to);
+  });
 })();

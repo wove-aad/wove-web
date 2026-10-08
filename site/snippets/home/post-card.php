@@ -9,10 +9,10 @@
  * - Long reads: image-led, with a reading time.
  * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
  * - Threads: compact title and meta with a small thumbnail.
- * The date sits at the top right, beside the format label (sparks, which
- * have no label, keep it in the footer). The footer has
+ * The footer has
  * the author with their photo or initials when one is credited (a link
- * that filters the feed to their posts), then the tags. Tags are links to the work feed; on the homepage assets/js/home.js filters in
+ * that filters the feed to their posts), then the tags with the date in the
+ * bottom right corner. Tags are links to the work feed; on the homepage assets/js/home.js filters in
  * place instead. `filters` (from the controller) drives the data-filters
  * attribute the script matches against.
  */
@@ -51,16 +51,15 @@ $media = $image
     ], true) . '</div>'
   : '';
 $date = '<time class="pc__date" datetime="' . date('Y-m-d', $postMidnight) . '">' . $dateLabel . '</time>';
-// Label row: the format pill on the left, the date on the right
-$top = function (string $label) use ($date) { ?>
-  <div class="pc__top"><p class="pc__label"><?= $label ?></p><?= $date ?></div>
+$top = function (string $label) { ?>
+  <p class="pc__label"><?= $label ?></p>
 <?php };
-// Footer: author (photo or initials) and, for sparks, the date; then tags
-$end = function (bool $withDate = false) use ($post, $author, $date) {
+// Footer: author (photo or initials), then tags with the date at the right
+$end = function () use ($post, $author, $date) {
   $avatar = $author?->avatar();
   ?>
   <div class="pc__end">
-    <?php if ($author || $withDate): ?>
+    <?php if ($author): ?>
       <div class="pc__by">
         <?php if ($author): ?>
           <a class="pc__author" href="<?= wove_work_url('author:' . wove_author_slug($author)) ?>">
@@ -72,10 +71,12 @@ $end = function (bool $withDate = false) use ($post, $author, $date) {
             <span><?= $author->name()->html() ?></span>
           </a>
         <?php endif ?>
-        <?php if ($withDate): ?><?= $date ?><?php endif ?>
       </div>
     <?php endif ?>
-    <?php snippet('card-tags', ['post' => $post]) ?>
+    <div class="pc__last">
+      <?php snippet('card-tags', ['post' => $post]) ?>
+      <?= $date ?>
+    </div>
   </div>
 <?php };
 $title = function () use ($post, $linked) { ?>
@@ -89,7 +90,7 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
     <?= $media ?>
     <div class="pc__body">
       <p class="<?= $image ? 'pc__caption' : 'pc__quote' ?>"><?= $post->body()->isNotEmpty() ? $post->body()->excerpt(200) : $post->title()->html() ?></p>
-      <?php $end(true) ?>
+      <?php $end() ?>
     </div>
 
   <?php elseif ($format === 'thread'): ?>

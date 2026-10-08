@@ -868,8 +868,10 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .pc__title { font-weight: var(--weight-bold); letter-spacing: -0.01em; text-wrap: pretty; }
 .pc__excerpt { font-size: 0.9375rem; line-height: 1.55; color: var(--color-800); }
 .pc__meta { font-size: 0.8125rem; color: var(--color-text-muted); }
-/* Label pill left, date right */
-.pc__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
+/* Last row: tags on the left, the date in the bottom right corner */
+.pc__last { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-12); }
+.pc__last .card-tags { flex: 1; min-width: 0; }
+.pc__last .pc__date { margin-left: auto; padding-bottom: 0.2rem; }
 .pc__date { flex-shrink: 0; font-size: 0.8125rem; color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Footer: author, then tags (a hairline above it was tried and dropped
    as too busy) */
@@ -881,7 +883,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 .pc .pc__end .card-tags { margin-top: 0; padding-top: 0; }
 .pc__by { display: flex; align-items: center; gap: 0.5rem; min-height: 1.5rem; font-size: 0.875rem; color: var(--color-black); }
-.pc__by .pc__date { margin-left: auto; }
 .pc__author { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 1.5rem; color: inherit; text-decoration: none; }
 .feed-wrap .pc__author:hover span:last-child { text-decoration: underline; text-underline-offset: 2px; }
 .pc__author:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; border-radius: 2px; }

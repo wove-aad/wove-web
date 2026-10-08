@@ -589,7 +589,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-row--no-nav { grid-template-columns: minmax(0, 1fr) auto; }
 .hx-voice__title {
   margin-top: var(--space-80);
-  font-size: clamp(3rem, 7vw, 5.5rem); /* 88px from about 1260px wide */
+  /* As large as the column allows "Human Centred" on one line: 130px at
+     1440, scaling with the window either side (and with the root above 1440) */
+  font-size: clamp(3rem, 9vw, 9rem);
   font-weight: var(--weight-h1);
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -702,8 +704,15 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    Intro (snippets/home/intro.php): the description and four services,
    between the hero and the feed. Services jump to the filtered feed.
    ------------------------------------------------------------ */
-.hx-intro { background: var(--color-white); }
+.hx-intro {
+  /* Most of a screen, with the text and services centred in it */
+  display: flex;
+  align-items: center;
+  min-height: 85svh;
+  background: var(--color-white);
+}
 .hx-intro__inner {
+  width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem;
   column-gap: var(--space-32);
@@ -714,7 +723,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-intro__inner > * { grid-column: 2 / -1; min-width: 0; }
 .hx-intro__text {
   max-width: 24em;
-  font-size: var(--size-h5);
+  font-size: clamp(1.5rem, 2.8vw, 2.5rem);
   line-height: 1.35;
   letter-spacing: -0.01em;
   text-wrap: pretty;
@@ -750,7 +759,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   .hx-services { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-48); row-gap: var(--space-32); }
 }
 @media (max-width: 600px) {
-  .hx-intro__text { font-size: var(--size-subtitle); }
+  .hx-intro__text { font-size: 1.5rem; }
   .hx-services { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -761,7 +770,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   .hx-row--nav { row-gap: var(--space-16); }
   .hx-body { grid-template-columns: minmax(0, 1fr); }
   .hx-body > * { grid-column: 1; }
-  .hx-voice__title { margin-top: var(--space-48); }
+  .hx-voice__title { margin-top: var(--space-48); font-size: clamp(2.75rem, 13vw, 7rem); }
   .hx-row--no-nav > :nth-child(2) { grid-column: auto; grid-row: auto; }
   .hx-nav { padding-top: 0; }
 }

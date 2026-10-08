@@ -8,7 +8,7 @@
  * links to Our work and Our people. The page's own nav is in the hero, so
  * the global header nav is left out.
  *
- * Recent work: a client carousel (one card per case study) and topic pills
+ * Our work: a client carousel (one card per case study) and topic pills
  * filter the feed in place, one filter at a time. Selecting a client opens
  * its case study panel. The feed shows 12 cards; "See all" goes to Our Work
  * with the active filter. A pinned bar repeats the filters and holds the
@@ -33,7 +33,7 @@ $totalCount = $entries->count();
     <main class="feed feed--home" id="main">
 
       <div class="feed__header" id="feed">
-        <h2 class="feed__title">Recent work</h2>
+        <h2 class="feed__title">Our work</h2>
       </div>
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'totalCount' => $totalCount]) ?>

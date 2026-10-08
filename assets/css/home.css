@@ -518,12 +518,13 @@
    Blush band; logo / nav / button row; statement and description as
    one paragraph in a column that starts at about 30%; preview links.
    ============================================================ */
-/* Fluid scale (2026-10-08): on the redesigned pages the root size grows
-   with the window from 1440px wide (16px) to about 2520px (22px). Sizes
-   and spacing are in rem, so type, spacing and the 85rem content width
-   all scale together, the way america.gov does. Below 1440px it stays
+/* Fluid scale (2026-10-08): above 1440px wide the root size grows in
+   proportion to the window (16px at 1440, 22px at 1980, up to 28px at
+   2520), so a large screen looks like the 1440 design made bigger, the
+   way america.gov does. Sizes and spacing are in rem, so type, spacing
+   and the 85rem content width all scale together. Below 1440px it stays
    16px and the layouts' own breakpoints take over. */
-html:has(.home) { font-size: clamp(16px, calc(8px + 0.5556vw), 22px); }
+html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 .hx { background: var(--color-blush); color: var(--color-black); }
 

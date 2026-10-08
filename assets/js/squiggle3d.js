@@ -3,7 +3,7 @@
  *
  * The path is traced from the brand "Wiggle B" artwork (750px square,
  * y down) and given some depth where the loops cross, so it reads as a
- * single bent tube when it turns. With prefers-reduced-motion it is drawn
+ * single bent tube when it turns. The ends are open and cut straight. With prefers-reduced-motion it is drawn
  * once, still. Without WebGL the canvas stays empty.
  */
 (function () {
@@ -53,61 +53,81 @@
   function norm(a) { var l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
   function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
 
-  // Tube mesh with parallel-transport frames, plus a round cap at each end
+  // Open tube with parallel-transport frames: an outer wall, an inner wall
+  // and a flat rim at each end, so the ends are cut straight and you can
+  // see into the tube. Each end runs on straight for a short way.
+  var WALL = 0.78; // inner radius as a share of the outer
+  var LEAD = 0.16; // length of the straight run at each end
+  var TOWARD = 1.1; // how far the straight runs turn towards the viewer
   function buildMesh() {
-    var pos = [], nrm = [], idx = [];
+    var pos = [], nrm = [], shade = [], idx = [];
     var pts = [];
     for (var s = 0; s <= SEGMENTS; s++) pts.push(curve(s / SEGMENTS));
+      // The straight runs turn towards the viewer, so the open ends show
+    function toViewer(v) { return norm([v[0], v[1], v[2] + TOWARD]); }
+    var t0 = toViewer(norm(sub(pts[0], pts[2]))), t1 = toViewer(norm(sub(pts[pts.length - 1], pts[pts.length - 3])));
+    var head = [], tail = [];
+    for (var k = 12; k >= 1; k--) head.push(pts[0].map(function (v, i) { return v + t0[i] * LEAD * k / 12; }));
+    for (k = 1; k <= 12; k++) tail.push(pts[pts.length - 1].map(function (v, i) { return v + t1[i] * LEAD * k / 12; }));
+    pts = head.concat(pts, tail);
+    var last = pts.length - 1;
     var tangents = pts.map(function (p, i) {
-      return norm(sub(pts[Math.min(pts.length - 1, i + 1)], pts[Math.max(0, i - 1)]));
+      return norm(sub(pts[Math.min(last, i + 1)], pts[Math.max(0, i - 1)]));
     });
-    var n = norm(cross(tangents[0], [0, 0, 1]));
-    for (var i = 0; i <= SEGMENTS; i++) {
+    var frames = [], n = norm(cross(tangents[0], [0, 0, 1]));
+    for (var i = 0; i <= last; i++) {
       var t = tangents[i];
       n = norm(sub(n, t.map(function (v) { return v * dot(n, t); })));
-      var b = cross(t, n);
+      frames.push([n, cross(t, n)]);
+    }
+    function dir(i, j) {
+      var a = j / SIDES * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a), f = frames[i];
+      return [f[0][0] * c + f[1][0] * sn, f[0][1] * c + f[1][1] * sn, f[0][2] * c + f[1][2] * sn];
+    }
+    function vert(p, nn, sh) { pos.push(p[0], p[1], p[2]); nrm.push(nn[0], nn[1], nn[2]); shade.push(sh); }
+    function wall(radius, inward, sh) {
+      var base = pos.length / 3;
+      for (var i = 0; i <= last; i++) {
+        for (var j = 0; j <= SIDES; j++) {
+          var d = dir(i, j);
+          vert([pts[i][0] + d[0] * radius, pts[i][1] + d[1] * radius, pts[i][2] + d[2] * radius],
+            inward ? [-d[0], -d[1], -d[2]] : d, sh);
+        }
+      }
+      for (i = 0; i < last; i++) {
+        for (j = 0; j < SIDES; j++) {
+          var r0 = base + i * (SIDES + 1) + j, r1 = r0 + SIDES + 1;
+          idx.push(r0, r1, r0 + 1, r1, r1 + 1, r0 + 1);
+        }
+      }
+    }
+    wall(RADIUS, false, 1);
+    wall(RADIUS * WALL, true, 0.55); // the inside reads darker
+    // Flat rims joining the walls at both ends
+    [[0, -1], [last, 1]].forEach(function (end) {
+      var i = end[0], tn = tangents[i].map(function (v) { return v * end[1]; });
+      var base = pos.length / 3;
       for (var j = 0; j <= SIDES; j++) {
-        var a = j / SIDES * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a);
-        var d = [n[0] * c + b[0] * sn, n[1] * c + b[1] * sn, n[2] * c + b[2] * sn];
-        pos.push(pts[i][0] + d[0] * RADIUS, pts[i][1] + d[1] * RADIUS, pts[i][2] + d[2] * RADIUS);
-        nrm.push(d[0], d[1], d[2]);
+        var d = dir(i, j);
+        vert([pts[i][0] + d[0] * RADIUS, pts[i][1] + d[1] * RADIUS, pts[i][2] + d[2] * RADIUS], tn, 1);
+        vert([pts[i][0] + d[0] * RADIUS * WALL, pts[i][1] + d[1] * RADIUS * WALL, pts[i][2] + d[2] * RADIUS * WALL], tn, 1);
       }
-    }
-    for (i = 0; i < SEGMENTS; i++) {
       for (j = 0; j < SIDES; j++) {
-        var r0 = i * (SIDES + 1) + j, r1 = r0 + SIDES + 1;
-        idx.push(r0, r1, r0 + 1, r1, r1 + 1, r0 + 1);
-      }
-    }
-    [pts[0], pts[pts.length - 1]].forEach(function (centre) {
-      var base = pos.length / 3, rings = 10;
-      for (var y = 0; y <= rings; y++) {
-        var phi = y / rings * Math.PI;
-        for (var x = 0; x <= SIDES; x++) {
-          var th = x / SIDES * Math.PI * 2;
-          var d = [Math.sin(phi) * Math.cos(th), Math.cos(phi), Math.sin(phi) * Math.sin(th)];
-          pos.push(centre[0] + d[0] * RADIUS, centre[1] + d[1] * RADIUS, centre[2] + d[2] * RADIUS);
-          nrm.push(d[0], d[1], d[2]);
-        }
-      }
-      for (y = 0; y < rings; y++) {
-        for (x = 0; x < SIDES; x++) {
-          var q0 = base + y * (SIDES + 1) + x, q1 = q0 + SIDES + 1;
-          idx.push(q0, q1, q0 + 1, q1, q1 + 1, q0 + 1);
-        }
+        var q = base + j * 2;
+        idx.push(q, q + 1, q + 2, q + 1, q + 3, q + 2);
       }
     });
-    return { pos: new Float32Array(pos), nrm: new Float32Array(nrm), idx: new Uint32Array(idx) };
+    return { pos: new Float32Array(pos), nrm: new Float32Array(nrm), shade: new Float32Array(shade), idx: new Uint32Array(idx) };
   }
 
-  var VERT = 'attribute vec3 p; attribute vec3 n; uniform mat4 m; uniform mat4 proj; varying vec3 vn; varying vec3 vp;' +
-    'void main(){ vec4 w = m * vec4(p,1.0); vn = mat3(m) * n; vp = w.xyz; gl_Position = proj * w; }';
-  var FRAG = 'precision mediump float; varying vec3 vn; varying vec3 vp; uniform vec3 c;' +
+  var VERT = 'attribute vec3 p; attribute vec3 n; attribute float s; uniform mat4 m; uniform mat4 proj; varying vec3 vn; varying vec3 vp; varying float vs;' +
+    'void main(){ vec4 w = m * vec4(p,1.0); vn = mat3(m) * n; vp = w.xyz; vs = s; gl_Position = proj * w; }';
+  var FRAG = 'precision mediump float; varying vec3 vn; varying vec3 vp; varying float vs; uniform vec3 c;' +
     'void main(){ vec3 N = normalize(vn); vec3 L = normalize(vec3(-0.5,0.7,0.6)); vec3 V = normalize(-vp);' +
     // Matte plastic: soft wrapped light, no highlight, edges a touch darker
     ' float d = max((dot(N,L) + 0.5) / 1.5, 0.0);' +
     ' float edge = mix(0.82, 1.0, max(dot(N,V),0.0));' +
-    ' vec3 col = c * (0.62 + 0.45 * d) * edge;' +
+    ' vec3 col = c * (0.62 + 0.45 * d) * edge * vs;' +
     ' gl_FragColor = vec4(col,1.0); }';
 
   function perspective(fov, aspect, near, far) {
@@ -135,16 +155,17 @@
     gl.linkProgram(prog);
     gl.useProgram(prog);
 
-    function attr(name, data) {
+    function attr(name, data, size) {
       var buf = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, buf);
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
       var loc = gl.getAttribLocation(prog, name);
       gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(loc, size || 3, gl.FLOAT, false, 0, 0);
     }
     attr('p', mesh.pos);
     attr('n', mesh.nrm);
+    attr('s', mesh.shade, 1);
     var ibuf = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mesh.idx, gl.STATIC_DRAW);

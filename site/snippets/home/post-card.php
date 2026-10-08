@@ -9,10 +9,9 @@
  * - Long reads: image-led, with a reading time.
  * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
  * - Threads: compact title and meta with a small thumbnail.
- * The footer has
- * the author with their photo or initials when one is credited (a link
- * that filters the feed to their posts), then the tags with the date in the
- * bottom right corner. Tags are links to the work feed; on the homepage assets/js/home.js filters in
+ * The footer has one row with the author (photo or initials, a link that
+ * filters the feed to their posts) and the date on the right, then the
+ * tags underneath, small and quiet. Tags are links to the work feed; on the homepage assets/js/home.js filters in
  * place instead. `filters` (from the controller) drives the data-filters
  * attribute the script matches against.
  */
@@ -59,8 +58,7 @@ $end = function () use ($post, $author, $date) {
   $avatar = $author?->avatar();
   ?>
   <div class="pc__end">
-    <?php if ($author): ?>
-      <div class="pc__by">
+    <div class="pc__by">
         <?php if ($author): ?>
           <a class="pc__author" href="<?= wove_work_url('author:' . wove_author_slug($author)) ?>">
             <?php if ($avatar): ?>
@@ -71,12 +69,9 @@ $end = function () use ($post, $author, $date) {
             <span><?= $author->name()->html() ?></span>
           </a>
         <?php endif ?>
-      </div>
-    <?php endif ?>
-    <div class="pc__last">
-      <?php snippet('card-tags', ['post' => $post]) ?>
-      <?= $date ?>
+        <?= $date ?>
     </div>
+    <?php snippet('card-tags', ['post' => $post]) ?>
   </div>
 <?php };
 $title = function () use ($post, $linked) { ?>

@@ -875,10 +875,13 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .pc__title { font-weight: var(--weight-bold); letter-spacing: -0.01em; text-wrap: pretty; }
 .pc__excerpt { font-size: 0.9375rem; line-height: 1.55; color: var(--color-800); }
 .pc__meta { font-size: 0.8125rem; color: var(--color-text-muted); }
-/* Last row: tags on the left, the date in the bottom right corner */
-.pc__last { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-12); }
-.pc__last .card-tags { flex: 1; min-width: 0; }
-.pc__last .pc__date { margin-left: auto; padding-bottom: 0.2rem; }
+/* Footer row: author on the left, date on the right; tags underneath in
+   the small tag size and a quiet colour (--pc-tag) */
+.pc__by .pc__date { margin-left: auto; }
+.pc { --pc-tag: var(--color-700); } /* grey; var(--feed-blue) for the accent blue */
+.home .pc .card-tags { font-size: var(--feed-fs-tag); }
+.home .feed-wrap .pc a.card-tags__tag { color: var(--pc-tag); }
+.home .feed-wrap .pc a.card-tags__tag:hover { color: var(--color-black); }
 .pc__date { flex-shrink: 0; font-size: 0.8125rem; color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Footer: author, then tags (a hairline above it was tried and dropped
    as too busy) */

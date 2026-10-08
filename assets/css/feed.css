@@ -404,47 +404,6 @@
 .feed-card { position: relative; }
 .feed-card--compact { position: relative; }
 
-/* --- Process block --------------------------------------------- */
-.feed-process {
-  margin-top: var(--feed-space-64);
-  padding: var(--feed-space-48) var(--feed-page-px);
-  max-width: var(--feed-max-w);
-  margin-left: auto;
-  margin-right: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--feed-space-40);
-  align-items: start;
-}
-@media (min-width: 960px) {
-  .feed-process {
-    grid-template-columns: var(--feed-rail-w) 1fr;
-    gap: var(--feed-space-64);
-  }
-}
-.feed-process__title {
-  font-size: var(--feed-fs-card-title);
-  font-weight: var(--feed-fw-regular);
-  line-height: var(--feed-lh-tight);
-  letter-spacing: -0.01em;
-  margin-bottom: var(--feed-space-8);
-}
-.feed-process__desc {
-  font-size: var(--feed-fs-body);
-  color: var(--feed-text-muted);
-  line-height: var(--feed-lh-body);
-}
-.feed-process__ph {
-  padding: var(--feed-space-48);
-  border: 1px dashed var(--feed-border);
-  border-radius: var(--feed-radius-sm);
-  color: var(--feed-text-dim);
-  font-size: var(--feed-fs-meta);
-  letter-spacing: var(--feed-ls-label);
-  text-transform: uppercase;
-  text-align: center;
-}
-
 /* --- Contact page ---------------------------------------------- */
 .contact-page {
   padding: var(--feed-space-64) var(--feed-page-px);

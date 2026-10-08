@@ -60,16 +60,6 @@ $initial = get('filter') ?: '*';
 
     </main>
 
-    <!-- PROCESS BLOCK (to be designed) -->
-    <section class="feed-process">
-      <div class="feed-process__intro">
-        <h2 class="feed-process__title">Transforming process</h2>
-        <p class="feed-process__desc">How strategic design reshapes the way organisations move from insight through to delivery.</p>
-      </div>
-      <div class="feed-process__diagram">
-        <div class="feed-process__ph">Double Diamond / Process Diagram Placeholder</div>
-      </div>
-    </section>
 
   </div>
 </div>

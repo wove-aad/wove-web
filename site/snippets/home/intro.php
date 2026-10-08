@@ -1,6 +1,6 @@
 <?php
 /**
- * Homepage intro, between the hero and the feed: what we do, then the
+ * Homepage intro, between the hero and the feed: the description, then the
  * four services, each with a one-line description (wove_service_intro()).
  * Each service links to Our work filtered by it; on the homepage
  * assets/js/home.js filters the feed in place and scrolls to it instead.
@@ -12,9 +12,8 @@ $text     = $page->intro()->or('We help the people running Ireland’s public se
 $labels   = wove_service_labels();
 $services = ['labs', 'strategy', 'brand', 'digital'];
 ?>
-<section class="hx-intro" aria-labelledby="hx-intro-title">
+<section class="hx-intro" aria-label="What we do">
   <div class="hx-intro__inner">
-    <h2 class="hx-intro__eyebrow" id="hx-intro-title">What we do</h2>
     <p class="hx-intro__text"><?= html($text) ?></p>
     <ul class="hx-services" role="list">
       <?php foreach ($services as $slug): ?>

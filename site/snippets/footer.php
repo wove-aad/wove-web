@@ -73,8 +73,23 @@ $company = $site->companyName()->or($site->title())->value();
           <li>Investing in our people, and teams that reflect the communities we serve.</li>
         </ul>
         <div class="ft__marks">
-          <span class="ft__mark" aria-label="Certified B Corporation">B Corp</span>
-          <span class="ft__mark" aria-label="Design Declares">Design Declares</span>
+          <?php
+          // Logos show in white once their files are in assets/images/marks/
+          // (an SVG or PNG); until then each mark is a text pill.
+          $marks = [
+            ['file' => 'bcorp',          'label' => 'Certified B Corporation', 'text' => 'B Corp',          'href' => 'https://www.bcorporation.net/en-us/find-a-b-corp/company/wove-strategic-consulting-design/'],
+            ['file' => 'design-declares', 'label' => 'Design Declares',         'text' => 'Design Declares', 'href' => 'https://designdeclares.com/'],
+          ];
+          foreach ($marks as $mark):
+            $src = null;
+            foreach (['svg', 'png'] as $ext) {
+              if (is_file($kirby->root('index') . '/assets/images/marks/' . $mark['file'] . '.' . $ext)) { $src = '/assets/images/marks/' . $mark['file'] . '.' . $ext; break; }
+            }
+          ?>
+            <a class="ft__mark<?= $src ? ' ft__mark--logo' : '' ?>" href="<?= $mark['href'] ?>" rel="noopener" aria-label="<?= $mark['label'] ?>">
+              <?php if ($src): ?><img src="<?= wove_asset($src) ?>" alt=""><?php else: ?><?= $mark['text'] ?><?php endif ?>
+            </a>
+          <?php endforeach ?>
         </div>
       </div>
     </div>

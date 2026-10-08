@@ -30,7 +30,6 @@
   gap: var(--space-48);
   align-items: end;
   padding-bottom: var(--space-64);
-  border-bottom: 1px solid var(--ft-rule);
 }
 .ft__statement {
   max-width: 18em;
@@ -81,6 +80,10 @@
   font-size: 0.8125rem;
   color: var(--ft-muted);
 }
+/* Logo files (assets/images/marks/) drawn in white */
+.ft__mark--logo { display: inline-flex; align-items: center; padding: 0; border: 0; border-radius: 0; }
+.ft__mark--logo img { display: block; height: 3rem; width: auto; filter: brightness(0) invert(1); }
+.ft__mark--logo:hover img { opacity: 0.8; }
 
 /* Bar */
 .ft__bar {

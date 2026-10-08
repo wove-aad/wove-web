@@ -58,7 +58,7 @@ $address = array_filter([
       <?php snippet('brand/header-row', ['current' => 'contact']) ?>
       <div class="hx-body">
         <h1 class="ph__title"><?= $page->headline()->or('Get in touch')->html() ?></h1>
-        <p class="ph__intro"><?= $page->intro()->or('Whether you\'re exploring a project, responding to a tender, or looking for strategic advice, start here.')->html() ?></p>
+        <p class="ph__intro"><?= $page->intro()->or('Whether you\'re exploring a project or responding to a tender, start here.')->html() ?></p>
       </div>
     </div>
   </header>

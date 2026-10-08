@@ -10,7 +10,7 @@
  * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
  * - Threads: compact title and meta with a small thumbnail.
  * The date sits at the top right, beside the format label (sparks, which
- * have no label, keep it in the footer). The footer, under a hairline, has
+ * have no label, keep it in the footer). The footer has
  * the author with their photo or initials when one is credited (a link
  * that filters the feed to their posts), then the tags. Tags are links to the work feed; on the homepage assets/js/home.js filters in
  * place instead. `filters` (from the controller) drives the data-filters

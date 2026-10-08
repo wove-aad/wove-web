@@ -72,7 +72,13 @@
       });
     };
     layout();
-    if (window.ResizeObserver) new ResizeObserver(layout).observe(grid);
+    // Watch each card as well as the grid, so a card that grows (its tags
+    // expanding, an image loading) takes more rows.
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(layout);
+      ro.observe(grid);
+      [].forEach.call(grid.querySelectorAll('.pc'), function (el) { ro.observe(el); });
+    }
     window.addEventListener('load', layout);
   });
 })();

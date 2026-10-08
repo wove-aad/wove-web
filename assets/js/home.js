@@ -132,7 +132,13 @@
       if (!el.hidden) el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + GAP) / ROW);
     });
   }
-  if (window.ResizeObserver) new ResizeObserver(layout).observe(grid);
+  // Watch each card as well as the grid, so a card that grows (its tags
+  // expanding, an image loading) takes more rows.
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(layout);
+    ro.observe(grid);
+    cards.forEach(function (el) { ro.observe(el); });
+  }
   window.addEventListener('load', layout);
 
   /* ---------- Scroll to results ---------- */

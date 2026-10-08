@@ -12,6 +12,9 @@
  *   a: the squiggle draws once on load
  *   b: the squiggle draws as you scroll
  *   c: the squiggle draws in and out on a slow loop
+ * ?hero=3d keeps the blush hero and puts the squiggle beside the title as
+ * a blue 3D tube that turns a little back and forth
+ * (assets/js/squiggle3d.js).
  * Without ?hero= the blush hero shows as before.
  */
 
@@ -19,12 +22,20 @@ $statement   = $page->headline()->or('Human Centred Transformation')->value();
 $thumbs      = array_filter(array_map(fn ($c) => $c['page']->caseStudyImages()->toFile(), array_slice($clients, 0, 3)));
 $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
 $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null;
+$shape       = get('hero') === '3d';
 ?>
 <header class="hx<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
   <div class="hx__inner">
     <?php snippet('brand/header-row', ['nav' => false]) ?>
     <div class="hx-body">
-      <h1 class="hx-voice__title"><?= html($statement) ?></h1>
+      <?php if ($shape): ?>
+        <div class="hx-title-row">
+          <h1 class="hx-voice__title"><?= html($statement) ?></h1>
+          <canvas class="hx-shape" data-squiggle3d aria-hidden="true"></canvas>
+        </div>
+      <?php else: ?>
+        <h1 class="hx-voice__title"><?= html($statement) ?></h1>
+      <?php endif ?>
       <div class="hx-voice__links">
         <a class="hx-link" href="<?= url('our-work') ?>">
           <?php if ($thumbs): ?>
@@ -61,3 +72,4 @@ $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null
     <?php endif ?>
   </div>
 </header>
+<?php if ($shape): ?><script src="/assets/js/squiggle3d.js" defer></script><?php endif ?>

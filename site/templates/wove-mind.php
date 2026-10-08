@@ -24,6 +24,7 @@ $totalCount = $entries->count();
 <div class="home" data-theme="light">
 
   <?php snippet('home/hero', ['clients' => $clients, 'people' => $people]) ?>
+  <?php snippet('home/intro') ?>
 
   <div class="feed-wrap">
 

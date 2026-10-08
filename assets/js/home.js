@@ -231,6 +231,19 @@
     scrollToResults();
   });
 
+  // Homepage intro services: filter the feed in place and jump to it, when
+  // the feed has that filter; otherwise the link goes to Our work.
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest('a[data-jump-filter]');
+    if (!a) return;
+    var key = a.getAttribute('data-jump-filter');
+    if (!known(key)) return;
+    ev.preventDefault();
+    if (active !== key) choose(key);
+    grid.focus({ preventScroll: true });
+    scrollToResults();
+  });
+
   /* ---------- Pinned bar ---------- */
 
   var scroller = bar.querySelector('.filter-bar__scroll');

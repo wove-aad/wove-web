@@ -579,15 +579,6 @@
   color: var(--color-hero-statement);
   text-wrap: balance;
 }
-.hx-voice__text {
-  margin-top: var(--space-32);
-  max-width: 21em;
-  font-size: var(--size-h3);
-  font-weight: var(--weight-regular);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-}
 .hx-voice__links { display: flex; flex-wrap: wrap; gap: var(--space-16) var(--space-48); margin-top: var(--space-48); }
 
 /* ------------------------------------------------------------
@@ -662,6 +653,73 @@
   .hx-squiggle path { animation: none !important; stroke-dashoffset: 0 !important; }
 }
 
+/* ------------------------------------------------------------
+   Intro (snippets/home/intro.php): what we do and the four services,
+   between the hero and the feed. Services jump to the filtered feed.
+   ------------------------------------------------------------ */
+.hx-intro { background: var(--color-white); }
+.hx-intro__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem;
+  column-gap: var(--space-32);
+  max-width: var(--width-header);
+  margin: 0 auto;
+  padding: var(--space-96) var(--gutter-x);
+}
+.hx-intro__inner > * { grid-column: 2 / -1; min-width: 0; }
+.hx-intro__eyebrow {
+  grid-column: 1;
+  padding-top: 0.5rem;
+  font-size: var(--size-nav);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-600);
+}
+.hx-intro__text {
+  grid-row: 1;
+  max-width: 24em;
+  font-size: var(--size-h5);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.hx-services {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-24);
+  margin: var(--space-64) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hx-service {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8, 0.5rem);
+  height: 100%;
+  padding-top: var(--space-16);
+  border-top: 2px solid var(--color-black);
+  color: var(--color-black);
+  text-decoration: none;
+}
+.hx-service__name { font-size: var(--size-h6); font-weight: var(--weight-h6); line-height: 1.25; }
+.hx-service__name span { display: inline-block; transition: transform var(--transition); }
+.hx-service__line { font-size: var(--feed-fs-body, 1rem); line-height: 1.45; color: var(--color-700); }
+.hx-service:hover .hx-service__name span { transform: translateY(3px); }
+.hx-service:hover .hx-service__name { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.hx-service:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 2px; }
+
+@media (max-width: 960px) {
+  .hx-intro__inner { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-64); }
+  .hx-intro__inner > *, .hx-intro__eyebrow { grid-column: 1; }
+  .hx-intro__text { grid-row: auto; margin-top: var(--space-16); }
+  .hx-services { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-48); row-gap: var(--space-32); }
+}
+@media (max-width: 600px) {
+  .hx-intro__text { font-size: var(--size-subtitle); }
+  .hx-services { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (max-width: 960px) {
   .hx__inner { padding-block: var(--space-32) var(--space-64); }
   .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: center; }
@@ -675,7 +733,6 @@
 }
 @media (max-width: 600px) {
   .hx-row .hero-bar__logo { font-size: 1.5rem; }
-  .hx-voice__text { font-size: clamp(2rem, 9vw, 2.5rem); }
   /* The hero links below cover Our work and Our people on phones */
   .hx-nav { display: none; }
   .hx-row--nav { row-gap: 0; }

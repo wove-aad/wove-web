@@ -59,14 +59,12 @@
   // see into the tube. Each end runs on straight for a short way.
   var WALL = 0.78; // inner radius as a share of the outer
   var LEAD = 0.16; // length of the straight run at each end
-  var TOWARD = 1.1; // how far the straight runs turn towards the viewer
   function buildMesh() {
     var pos = [], nrm = [], shade = [], idx = [];
     var pts = [];
     for (var s = 0; s <= SEGMENTS; s++) pts.push(curve(s / SEGMENTS));
-      // The straight runs turn towards the viewer, so the open ends show
-    function toViewer(v) { return norm([v[0], v[1], v[2] + TOWARD]); }
-    var t0 = toViewer(norm(sub(pts[0], pts[2]))), t1 = toViewer(norm(sub(pts[pts.length - 1], pts[pts.length - 3])));
+      // The straight runs carry on along the line of the curve
+    var t0 = norm(sub(pts[0], pts[2])), t1 = norm(sub(pts[pts.length - 1], pts[pts.length - 3]));
     var head = [], tail = [];
     for (var k = 12; k >= 1; k--) head.push(pts[0].map(function (v, i) { return v + t0[i] * LEAD * k / 12; }));
     for (k = 1; k <= 12; k++) tail.push(pts[pts.length - 1].map(function (v, i) { return v + t1[i] * LEAD * k / 12; }));

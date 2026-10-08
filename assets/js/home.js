@@ -193,6 +193,41 @@
   });
   syncCarousel();
 
+  // Click and drag with a mouse (touch screens swipe natively). A drag of
+  // more than a few pixels doesn't count as a click on the card under it.
+  var drag = null, dragged = false;
+  track.addEventListener('pointerdown', function (ev) {
+    if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
+    drag = { x: ev.clientX, left: track.scrollLeft, id: ev.pointerId };
+    dragged = false;
+  });
+  track.addEventListener('pointermove', function (ev) {
+    if (!drag || ev.pointerId !== drag.id) return;
+    var dx = ev.clientX - drag.x;
+    if (!dragged && Math.abs(dx) > 5) {
+      dragged = true;
+      track.setPointerCapture(drag.id);
+      track.classList.add('is-dragging');
+    }
+    if (dragged) track.scrollLeft = drag.left - dx;
+  });
+  function endDrag() {
+    if (!drag) return;
+    drag = null;
+    if (!dragged) return;
+    track.classList.remove('is-dragging');
+    // Settle on the nearest card, as the snap would
+    var card = track.querySelector('.client-card');
+    var step = card.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    track.scrollTo({ left: Math.round(track.scrollLeft / step) * step, behavior: behaviour() });
+  }
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+  track.addEventListener('click', function (ev) {
+    if (dragged) { ev.preventDefault(); ev.stopPropagation(); dragged = false; }
+  }, true);
+  track.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
+
   /* ---------- Filter clicks ---------- */
 
   function onFilterClick(ev) {

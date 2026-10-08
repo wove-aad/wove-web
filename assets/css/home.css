@@ -97,6 +97,10 @@
   margin: -14px;
 }
 .client-carousel__track::-webkit-scrollbar { display: none; }
+/* Mouse drag (home.js): grab cursor, and no snapping mid-drag */
+@media (hover: hover) and (pointer: fine) { .client-carousel__track { cursor: grab; } }
+.client-carousel__track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.client-carousel__track.is-dragging .client-card__btn { pointer-events: none; }
 
 .client-card {
   flex: 0 0 calc((100% - var(--gap) * (var(--cards) - 1)) / var(--cards));

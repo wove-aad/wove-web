@@ -9,7 +9,10 @@
  * - Long reads: image-led, with a reading time.
  * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
  * - Threads: compact title and meta with a small thumbnail.
- * Tags are links to Our Work; on the homepage assets/js/home.js filters in
+ * The date sits at the top right, beside the format label (sparks, which
+ * have no label, keep it in the footer). The footer, under a hairline, has
+ * the author with their photo or initials when one is credited (a link
+ * that filters the feed to their posts), then the tags. Tags are links to the work feed; on the homepage assets/js/home.js filters in
  * place instead. `filters` (from the controller) drives the data-filters
  * attribute the script matches against.
  */
@@ -47,11 +50,33 @@ $media = $image
       'sizes'  => '(min-width: 960px) 33vw, (min-width: 600px) 50vw, 100vw',
     ], true) . '</div>'
   : '';
-$meta = function () use ($author, $postMidnight, $dateLabel) { ?>
-  <p class="pc__meta">
-    <?php if ($author): ?><span><?= $author->name()->html() ?></span><span aria-hidden="true"> &middot; </span><?php endif ?>
-    <time datetime="<?= date('Y-m-d', $postMidnight) ?>"><?= $dateLabel ?></time>
-  </p>
+$date = '<time class="pc__date" datetime="' . date('Y-m-d', $postMidnight) . '">' . $dateLabel . '</time>';
+// Label row: the format pill on the left, the date on the right
+$top = function (string $label) use ($date) { ?>
+  <div class="pc__top"><p class="pc__label"><?= $label ?></p><?= $date ?></div>
+<?php };
+// Footer: author (photo or initials) and, for sparks, the date; then tags
+$end = function (bool $withDate = false) use ($post, $author, $date) {
+  $avatar = $author?->avatar();
+  ?>
+  <div class="pc__end">
+    <?php if ($author || $withDate): ?>
+      <div class="pc__by">
+        <?php if ($author): ?>
+          <a class="pc__author" href="<?= wove_work_url('author:' . wove_author_slug($author)) ?>">
+            <?php if ($avatar): ?>
+              <img class="pc__avatar" src="<?= $avatar->crop(48, 48)->url() ?>" alt="" width="24" height="24">
+            <?php else: ?>
+              <span class="pc__avatar pc__avatar--initials" aria-hidden="true"><?= html(wove_initials((string) $author->name())) ?></span>
+            <?php endif ?>
+            <span><?= $author->name()->html() ?></span>
+          </a>
+        <?php endif ?>
+        <?php if ($withDate): ?><?= $date ?><?php endif ?>
+      </div>
+    <?php endif ?>
+    <?php snippet('card-tags', ['post' => $post]) ?>
+  </div>
 <?php };
 $title = function () use ($post, $linked) { ?>
   <h3 class="pc__title"><?php if ($linked): ?><a class="pc__link" href="<?= $post->url() ?>"><?= $post->title()->html() ?></a><?php else: ?><?= $post->title()->html() ?><?php endif ?></h3>
@@ -64,44 +89,40 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
     <?= $media ?>
     <div class="pc__body">
       <p class="<?= $image ? 'pc__caption' : 'pc__quote' ?>"><?= $post->body()->isNotEmpty() ? $post->body()->excerpt(200) : $post->title()->html() ?></p>
-      <?php $meta() ?>
-      <?php snippet('card-tags', ['post' => $post]) ?>
+      <?php $end(true) ?>
     </div>
 
   <?php elseif ($format === 'thread'): ?>
     <div class="pc__body">
-      <p class="pc__label"><?= $labels['thread'] ?></p>
+      <?php $top($labels['thread']) ?>
       <div class="pc__row">
         <?php $title() ?>
         <?php if ($image): ?>
           <?php snippet('picture', ['file' => $image, 'widths' => [160, 320], 'sizes' => '9rem', 'class' => 'pc__thumb', 'attrs' => ['style' => 'aspect-ratio: ' . $ratio]]) ?>
         <?php endif ?>
       </div>
-      <?php $meta() ?>
-      <?php snippet('card-tags', ['post' => $post]) ?>
+      <?php $end() ?>
     </div>
 
   <?php elseif ($format === 'whatif'): ?>
     <div class="pc__body">
-      <p class="pc__label"><?= $labels['whatif'] ?></p>
+      <?php $top($labels['whatif']) ?>
       <?php $title() ?>
       <?php if ($excerpt): ?><p class="pc__excerpt"><?= $excerpt ?></p><?php endif ?>
     </div>
     <?= $media ?>
     <div class="pc__foot">
       <span class="pc__cta" aria-hidden="true">Explore the idea &rarr;</span>
-      <?php $meta() ?>
-      <?php snippet('card-tags', ['post' => $post]) ?>
+      <?php $end() ?>
     </div>
 
   <?php else: ?>
     <?= $media ?>
     <div class="pc__body">
-      <p class="pc__label"><?= $labels['longread'] ?><?php if ($minutes): ?> <span class="pc__time"><?= $minutes ?> min read</span><?php endif ?></p>
+      <?php $top($labels['longread'] . ($minutes ? ' <span class="pc__time">' . $minutes . ' min read</span>' : '')) ?>
       <?php $title() ?>
       <?php if ($excerpt): ?><p class="pc__excerpt"><?= $excerpt ?></p><?php endif ?>
-      <?php $meta() ?>
-      <?php snippet('card-tags', ['post' => $post]) ?>
+      <?php $end() ?>
     </div>
   <?php endif ?>
 

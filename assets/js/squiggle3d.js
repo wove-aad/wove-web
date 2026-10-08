@@ -26,7 +26,7 @@
     10, -10, -30, -30, -20, -10, 0
   ];
   var SCALE = 1 / 300, CX = 375, CY = 390;
-  var RADIUS = 0.072, SEGMENTS = 420, SIDES = 18;
+  var RADIUS = 0.11, SEGMENTS = 420, SIDES = 18;
   var COLOUR = [42 / 255, 80 / 255, 243 / 255]; // #2a50f3
 
   function point(i) {
@@ -104,9 +104,10 @@
     'void main(){ vec4 w = m * vec4(p,1.0); vn = mat3(m) * n; vp = w.xyz; gl_Position = proj * w; }';
   var FRAG = 'precision mediump float; varying vec3 vn; varying vec3 vp; uniform vec3 c;' +
     'void main(){ vec3 N = normalize(vn); vec3 L = normalize(vec3(-0.5,0.7,0.6)); vec3 V = normalize(-vp);' +
-    ' float d = max(dot(N,L),0.0); float s = pow(max(dot(reflect(-L,N),V),0.0), 24.0);' +
-    ' float rim = pow(1.0 - max(dot(N,V),0.0), 3.0);' +
-    ' vec3 col = c * (0.45 + 0.7 * d) + vec3(0.35) * s + c * 0.25 * rim;' +
+    // Matte plastic: soft wrapped light, no highlight, edges a touch darker
+    ' float d = max((dot(N,L) + 0.5) / 1.5, 0.0);' +
+    ' float edge = mix(0.82, 1.0, max(dot(N,V),0.0));' +
+    ' vec3 col = c * (0.62 + 0.45 * d) * edge;' +
     ' gl_FragColor = vec4(col,1.0); }';
 
   function perspective(fov, aspect, near, far) {

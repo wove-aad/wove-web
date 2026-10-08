@@ -37,7 +37,7 @@ $shape       = get('hero') === '3d';
         <h1 class="hx-voice__title"><?= html($statement) ?></h1>
       <?php endif ?>
       <div class="hx-voice__links">
-        <a class="hx-link" href="<?= url('our-work') ?>">
+        <a class="hx-link" href="<?= url('our-work') ?>" data-jump-filter="*">
           <?php if ($thumbs): ?>
             <span class="hx-thumbs" aria-hidden="true">
               <?php foreach ($thumbs as $img): ?>

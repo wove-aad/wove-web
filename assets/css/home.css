@@ -11,6 +11,13 @@
    ================================================================ */
 
 .home {
+  /* Page grid for heroes, page headers, the intro, posts and contact:
+     a lead column (empty space on the left), the main column, and an
+     8.5rem column on the right. The lead column was 3fr / 7fr until
+     2026-10-08; 2.5fr / 7.5fr moves content about 55px left at 1440. */
+  --lead-fr: 2.5;
+  --main-fr: 7.5;
+  --grid-page: minmax(0, 2.5fr) minmax(0, 7.5fr) 8.5rem;
   /* Heading weights: headings move to bold */
   --weight-h1: var(--weight-bold);
   --weight-h2: var(--weight-bold);
@@ -610,7 +617,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-row,
 .hx-body {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem;
+  grid-template-columns: var(--grid-page);
   column-gap: var(--space-32);
   align-items: start;
 }
@@ -774,7 +781,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-intro__inner {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem;
+  grid-template-columns: var(--grid-page);
   column-gap: var(--space-32);
   max-width: var(--width-header);
   margin: 0 auto;

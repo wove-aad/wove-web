@@ -293,7 +293,7 @@
 
 .cs-main {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem;
+  grid-template-columns: var(--grid-page);
   column-gap: var(--space-32);
   align-items: start;
 }
@@ -390,7 +390,7 @@
 .byline__role { display: block; color: var(--color-700); }
 .byline__meta { color: var(--color-700); }
 
-.post-body { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) 8.5rem; column-gap: var(--space-32); }
+.post-body { display: grid; grid-template-columns: var(--grid-page); column-gap: var(--space-32); }
 .post-body > * { grid-column: 2; }
 .post-tags { display: flex; flex-wrap: wrap; gap: var(--space-8, 0.5rem); margin-top: var(--space-64); }
 .post-tags a {
@@ -573,12 +573,12 @@ html:not(.js) .person-detail__close { display: none; }
    Two routes side by side, each a white card with its form, then the
    studio's details. The cards keep the narrow width they had as three
    across: on wide screens they start in line with the page title (the
-   header's 3fr / 7fr / 8.5rem columns, 32px gaps).
+   header's --grid-page columns, 32px gaps).
    ============================================================ */
 .contact-routes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding-left: calc((100% - 8.5rem - 2 * var(--space-32)) * 0.3 + var(--space-32));
+  padding-left: calc((100% - 8.5rem - 2 * var(--space-32)) * var(--lead-fr) / (var(--lead-fr) + var(--main-fr)) + var(--space-32));
   gap: var(--space-24);
   align-items: start;
 }

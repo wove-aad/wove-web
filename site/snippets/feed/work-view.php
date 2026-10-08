@@ -52,7 +52,7 @@ $intro   = $kirby->page('work')?->intro()->or('')->value()
         'totalCount' => $total,
       ]) ?>
 
-      <div class="feed-cards pc-grid" id="feed-grid" tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url('our-work') ?>">
+      <div class="feed-cards pc-grid" id="feed-grid" tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url('our-work') ?>" data-page="12">
         <?php foreach ($feed['items'] as $item): ?>
           <?php if ($item->intendedTemplate()->name() === 'case-study'): ?>
             <?php snippet('home/case-card', ['cs' => $item, 'filters' => $feed['keys'][$item->id()] ?? []]) ?>
@@ -61,6 +61,11 @@ $intro   = $kirby->page('work')?->intro()->or('')->value()
           <?php endif ?>
         <?php endforeach ?>
         <p class="feed-empty" id="feed-empty" hidden>No entries match this filter yet.</p>
+      </div>
+
+      <div class="feed-more" id="feed-more" hidden>
+        <span class="feed-more__count" id="feed-more-count"></span>
+        <button type="button" class="feed-more__btn" id="feed-load-more">Load more</button>
       </div>
 
     </main>

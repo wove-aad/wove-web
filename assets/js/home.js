@@ -5,7 +5,8 @@
  * tags on cards all set one active filter ("cs:slug", "service:x",
  * "tag:y", or "*" for all). Choosing the active one again clears it. Cards
  * carry data-filters; the first N matches show (N = data-limit on the grid,
- * all of them when it has none). Selecting a filter shows its context
+ * all of them when it has none). With data-page (Our work) N starts at that
+ * many and "Load more" adds the same again; choosing a filter resets it. Selecting a filter shows its context
  * panel (data-panel): the case study for a client, or the service, tag,
  * sector or person. After a change the page scrolls to the results, under
  * the pinned bar.
@@ -27,13 +28,16 @@
   if (!filters || !grid || !bar) return;
 
   var cards = [].slice.call(grid.querySelectorAll('.pc'));
-  var limit = grid.hasAttribute('data-limit') ? parseInt(grid.getAttribute('data-limit'), 10) || 12 : Infinity;
+  var pageSize = grid.hasAttribute('data-page') ? parseInt(grid.getAttribute('data-page'), 10) || 12 : 0;
+  var limit = pageSize || (grid.hasAttribute('data-limit') ? parseInt(grid.getAttribute('data-limit'), 10) || 12 : Infinity);
   var workUrl = grid.getAttribute('data-url');
   var countEl = document.getElementById('feed-count');
   var barCount = bar.querySelector('[data-count]');
   var empty = document.getElementById('feed-empty');
   var moreCount = document.getElementById('feed-more-count');
   var moreLink = document.getElementById('feed-more-link');
+  var more = document.getElementById('feed-more');
+  var loadMore = document.getElementById('feed-load-more');
   var ourWork = moreLink ? moreLink.getAttribute('href') : '/our-work';
   var hero = document.querySelector('.hx');
   var active = '*';
@@ -89,6 +93,7 @@
       moreCount.hidden = matched <= shown;
       moreCount.textContent = 'Showing ' + shown + ' of ' + matched;
     }
+    if (loadMore) more.hidden = matched <= shown;
     if (moreLink) {
       var name = key === '*' ? '' : labelFor(key);
       moreLink.href = key === '*' ? ourWork : ourWork + '?filter=' + encodeURIComponent(key);
@@ -107,6 +112,7 @@
   // Choosing the active filter again clears it. On Our work the address
   // follows, so a filtered view can be shared.
   function choose(key) {
+    if (pageSize) limit = pageSize;
     apply(active === key && key !== '*' ? '*' : key);
     if (workUrl) history.replaceState(null, '', workUrl + (active === '*' ? '' : '?filter=' + encodeURIComponent(active)));
   }
@@ -190,6 +196,17 @@
     scrollToResults();
   }
   filters.addEventListener('click', onFilterClick);
+
+  // Our work: show the next page of matches, and move focus to the first
+  // new card so keyboard users carry on from there.
+  if (loadMore) loadMore.addEventListener('click', function () {
+    var before = cards.filter(function (c) { return !c.hidden; }).length;
+    limit += pageSize;
+    apply(active);
+    var next = cards.filter(function (c) { return !c.hidden; })[before];
+    var link = next && (next.querySelector('.pc__link') || next.querySelector('a[href]'));
+    if (link) link.focus({ preventScroll: true });
+  });
 
   // Card tags link to Our Work; filter in place when this page has that
   // filter (a control on the homepage; any matching card on Our work).

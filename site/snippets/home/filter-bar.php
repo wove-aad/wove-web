@@ -3,6 +3,9 @@
  * Pinned filter bar with the site menu. Shown by assets/js/home.js once the
  * full filter controls have scrolled away (while the feed is on screen), and
  * on scroll-up elsewhere past the hero (menu button only).
+ * Chips show a round thumbnail of the featured image where one is set: the
+ * case study's hero image for clients, the service page's featured image
+ * for services. Editorial tags have no image.
  * Usage: <?php snippet('home/filter-bar', ['clients' => $clients, 'topics' => $topics]) ?>
  */
 ?>
@@ -19,7 +22,7 @@
           <?php foreach ($clients as $client):
             $image = $client['page']->caseStudyImages()->toFile();
           ?>
-            <button type="button" class="bar-chip bar-chip--client" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
+            <button type="button" class="bar-chip bar-chip--client<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
               <?php if ($image): ?><img class="bar-chip__thumb" src="<?= $image->crop(64, 64)->url() ?>" alt="" width="32" height="32"><?php endif ?>
               <?= html($client['name']) ?> <span class="bar-chip__count"><?= $client['count'] ?></span>
             </button>
@@ -27,8 +30,14 @@
         </div>
         <span class="filter-bar__divider" aria-hidden="true"></span>
         <div class="filter-bar__group" role="group" aria-label="Topics">
-          <?php foreach ($topics as $key => $label): ?>
-            <button type="button" class="bar-chip" data-filter="<?= html($key) ?>" aria-pressed="false"><?= html($label) ?></button>
+          <?php foreach ($topics as $key => $label):
+            [$type, $slug] = explode(':', $key, 2);
+            $image = $type === 'service' ? page('services/' . $slug)?->content()->get('image')->toFile() : null;
+          ?>
+            <button type="button" class="bar-chip<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="<?= html($key) ?>" aria-pressed="false">
+              <?php if ($image): ?><img class="bar-chip__thumb" src="<?= $image->crop(64, 64)->url() ?>" alt="" width="32" height="32"><?php endif ?>
+              <?= html($label) ?>
+            </button>
           <?php endforeach ?>
         </div>
       </div>

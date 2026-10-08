@@ -419,11 +419,8 @@
 @media (prefers-reduced-motion: reduce) { .filter-bar, .filter-bar.is-visible { transition: none; } }
 @media (max-width: 600px) {
   .filter-bar__inner { padding-block: var(--space-8, 0.5rem); }
-  .filter-bar__count { display: none; }
   .bar-chip { height: 2.25rem; font-size: 0.875rem; }
 }
-/* Touch screens swipe the row; arrows only for mouse users */
-@media (hover: none) { .filter-bar__arrow { display: none; } }
 
 .filter-bar__inner {
   display: flex;
@@ -433,57 +430,99 @@
   margin: 0 auto;
   padding: var(--space-12) var(--gutter-x);
 }
+/* All work, three clients and two services, then More. No sideways
+   scrolling on wide screens; on narrow ones the chips swipe and More
+   stays put. */
 .filter-bar__track {
-  --fade-l: 0rem;
-  --fade-r: 0rem;
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8, 0.5rem);
   flex: 1;
   min-width: 0;
 }
-.filter-bar__track.has-left  { --fade-l: 6rem; }
-.filter-bar__track.has-right { --fade-r: 6rem; }
-.filter-bar__scroll {
+.filter-bar__chips {
   display: flex;
   align-items: center;
-  gap: var(--space-16);
+  gap: var(--space-8, 0.5rem);
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
-  /* Fade whichever edge has more to scroll */
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
-          mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
-.filter-bar__arrow {
+.filter-bar__chips::-webkit-scrollbar { display: none; }
+@media (max-width: 760px) {
+  .filter-bar__chips {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+  }
+}
+.filter-bar__chips > * { flex-shrink: 0; }
+.filter-bar__divider { flex: 0 0 1px; align-self: stretch; margin: 0.25rem var(--space-8, 0.5rem); background: var(--color-300); }
+
+/* More: a button, then a panel under the bar with clients, services and
+   topics in columns. */
+.bar-chip--more { flex-shrink: 0; }
+.bar-chip__caret {
+  width: 0.45rem; height: 0.45rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--transition);
+}
+.bar-chip--more[aria-expanded="true"] .bar-chip__caret { transform: translateY(2px) rotate(-135deg); }
+.bar-chip--more.is-active { background: var(--color-black); color: var(--color-white); }
+.filter-more {
   position: absolute;
-  top: 50%;
-  z-index: 1;
-  width: 2.25rem; height: 2.25rem;
-  margin-top: -1.125rem;
-  border: 1px solid var(--color-300);
-  border-radius: 50%;
-  background: var(--color-white);
-  color: var(--color-black);
-  box-shadow: var(--shadow-md);
-  font-size: 1rem;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition), background var(--transition), color var(--transition);
+  top: 100%;
+  left: 0; right: 0;
+  padding: var(--space-8, 0.5rem) var(--gutter-x) var(--space-16);
+  animation: panel-in 150ms ease;
 }
-.filter-bar__arrow--prev { left: 0; }
-.filter-bar__arrow--next { right: 0; }
-.has-left  > .filter-bar__arrow--prev,
-.has-right > .filter-bar__arrow--next { opacity: 1; pointer-events: auto; }
-.filter-bar__arrow:hover { background: var(--color-black); color: var(--color-white); }
-.filter-bar__scroll::-webkit-scrollbar { display: none; }
-.filter-bar__group { display: flex; gap: var(--space-8, 0.5rem); flex-shrink: 0; }
-.filter-bar__divider { flex: 0 0 1px; align-self: stretch; margin-block: 0.25rem; background: var(--color-300); }
-.filter-bar__count {
-  flex-shrink: 0;
+.filter-more[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .filter-more { animation: none; } }
+.filter-more__inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-24) var(--space-32);
+  max-width: calc(var(--width-header) - 2 * var(--gutter-x));
+  max-height: min(70svh, 34rem);
+  margin: 0 auto;
+  padding: var(--space-24);
+  overflow-y: auto;
+  border: var(--feed-border-line);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+.filter-more__group { display: flex; flex-direction: column; gap: 0.125rem; min-width: 0; }
+.filter-more__label {
+  margin-bottom: var(--space-8, 0.5rem);
   font-size: var(--feed-fs-label);
   font-weight: var(--weight-bold);
   letter-spacing: var(--feed-ls-label);
   text-transform: uppercase;
   color: var(--feed-text-muted);
 }
+.filter-more__item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 0;
+  border-radius: 0.625rem;
+  background: none;
+  color: var(--color-black);
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  transition: background var(--transition);
+}
+.filter-more__item:hover { background: var(--color-100); }
+.filter-more__item:focus-visible { outline: 2px solid var(--color-black); outline-offset: -2px; }
+.filter-more__item[aria-pressed="true"] { background: var(--color-black); color: var(--color-white); }
+.filter-more__item[aria-pressed="true"] .bar-chip__count { color: inherit; opacity: 0.75; }
+.filter-more__item .bar-chip__count { margin-left: auto; }
+.feed-wrap .filter-more__item img.bar-chip__thumb { width: 1.75rem; height: 1.75rem; }
 
 .bar-chip {
   display: inline-flex;
@@ -866,7 +905,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    ============================================================ */
 /* Outside the feed only the menu button shows. */
 .filter-bar:not(.show-chips) .filter-bar__track,
-.filter-bar:not(.show-chips) .filter-bar__count { display: none; }
+.filter-bar:not(.show-chips) .filter-more { display: none; }
 
 /* Menu button at the left of the bar. Kept quiet: it matches the chips,
    and the panel is a light list. */
@@ -888,6 +927,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .filter-bar__menu-btn:hover,
 .filter-bar__menu-btn[aria-expanded="true"] { background: var(--feed-border); }
 .filter-bar__menu-btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.filter-bar__home-icon { width: 1.125rem; height: 1.125rem; }
 .filter-bar__menu-icon,
 .filter-bar__menu-icon::before {
   display: block;

@@ -1,49 +1,107 @@
 <?php
 /**
- * Pinned filter bar with the site menu. Shown by assets/js/home.js once the
- * full filter controls have scrolled away (while the feed is on screen), and
- * on scroll-up elsewhere past the hero (menu button only).
- * Chips show a round thumbnail of the featured image where one is set: the
- * case study's hero image for clients, the service page's featured image
- * for services. Editorial tags have no image.
+ * Pinned filter bar. Shown by assets/js/home.js once the full filter
+ * controls have scrolled away (while the feed is on screen), and on
+ * scroll-up elsewhere past the hero (home button only). The home button
+ * goes back to the top of the homepage; on other pages it links home.
+ * (It replaced a site menu on 2026-10-08: Our people is two clicks away
+ * from the top either way.)
+ *
+ * In the bar: All work, the three newest clients (case studies, newest
+ * first) and the two services used most recently (by the newest post that
+ * has them). Everything else is in the More panel, grouped as clients,
+ * services, then tags. Client and service chips show a round thumbnail of
+ * the featured image where one is set: the case study's hero image, the
+ * service page's featured image. Tags have no image.
  * Usage: <?php snippet('home/filter-bar', ['clients' => $clients, 'topics' => $topics]) ?>
  */
+
+// Services by the newest post or case study that uses them
+$serviceOrder = [];
+$feed = wove_feed();
+foreach ($feed['items'] as $item) {
+  foreach ($feed['keys'][$item->id()] ?? [] as $key) {
+    if (str_starts_with($key, 'service:') && isset($topics[$key]) && !in_array($key, $serviceOrder, true)) {
+      $serviceOrder[] = $key;
+    }
+  }
+}
+foreach (array_keys($topics) as $key) {
+  if (str_starts_with($key, 'service:') && !in_array($key, $serviceOrder, true)) $serviceOrder[] = $key;
+}
+$tagKeys = array_values(array_filter(array_keys($topics), fn ($k) => !str_starts_with($k, 'service:')));
+
+$barClients  = array_slice($clients, 0, 3);
+$moreClients = array_slice($clients, 3);
+$barServices = array_slice($serviceOrder, 0, 2);
+$moreServices = array_slice($serviceOrder, 2);
+
+$clientImage  = fn ($client) => $client['page']->caseStudyImages()->toFile();
+$serviceImage = fn ($key) => page('services/' . substr($key, 8))?->content()->get('image')->toFile();
+$thumb = fn ($image) => $image ? '<img class="bar-chip__thumb" src="' . $image->crop(64, 64)->url() . '" alt="" width="32" height="32">' : '';
+$hasMore = $moreClients || $moreServices || $tagKeys;
 ?>
 <div class="filter-bar" id="filter-bar" role="region" aria-label="Filters and menu" inert>
   <div class="filter-bar__inner">
-    <button type="button" class="filter-bar__menu-btn" data-menu aria-label="Menu" aria-expanded="false" aria-controls="filter-bar-menu">
-      <span class="filter-bar__menu-icon" aria-hidden="true"></span>
-    </button>
+    <?php if ($page->isHomePage()): ?>
+      <button type="button" class="filter-bar__menu-btn" data-top aria-label="Back to top"><svg class="filter-bar__home-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 9 10 3.5 16.5 9v7.5h-4.25V12h-4.5v4.5H3.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+    <?php else: ?>
+      <a class="filter-bar__menu-btn" href="<?= url() ?>" aria-label="Home"><svg class="filter-bar__home-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 9 10 3.5 16.5 9v7.5h-4.25V12h-4.5v4.5H3.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></a>
+    <?php endif ?>
     <div class="filter-bar__track">
-      <button type="button" class="filter-bar__arrow filter-bar__arrow--prev" data-bar-step="-1" aria-label="Scroll filters left" tabindex="-1">&larr;</button>
-      <div class="filter-bar__scroll">
-        <div class="filter-bar__group" role="group" aria-label="Clients">
-          <button type="button" class="bar-chip bar-chip--client bar-chip--all" data-filter="*" aria-pressed="true">All work <span class="bar-chip__count"><?= $totalCount ?></span></button>
-          <?php foreach ($clients as $client):
-            $image = $client['page']->caseStudyImages()->toFile();
-          ?>
-            <button type="button" class="bar-chip bar-chip--client<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
-              <?php if ($image): ?><img class="bar-chip__thumb" src="<?= $image->crop(64, 64)->url() ?>" alt="" width="32" height="32"><?php endif ?>
-              <?= html($client['name']) ?> <span class="bar-chip__count"><?= $client['count'] ?></span>
-            </button>
-          <?php endforeach ?>
-        </div>
-        <span class="filter-bar__divider" aria-hidden="true"></span>
-        <div class="filter-bar__group" role="group" aria-label="Topics">
-          <?php foreach ($topics as $key => $label):
-            [$type, $slug] = explode(':', $key, 2);
-            $image = $type === 'service' ? page('services/' . $slug)?->content()->get('image')->toFile() : null;
-          ?>
-            <button type="button" class="bar-chip<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="<?= html($key) ?>" aria-pressed="false">
-              <?php if ($image): ?><img class="bar-chip__thumb" src="<?= $image->crop(64, 64)->url() ?>" alt="" width="32" height="32"><?php endif ?>
-              <?= html($label) ?>
-            </button>
-          <?php endforeach ?>
-        </div>
+      <div class="filter-bar__chips" role="group" aria-label="Filters">
+        <button type="button" class="bar-chip bar-chip--all" data-filter="*" aria-pressed="true">All work <span class="bar-chip__count"><?= $totalCount ?></span></button>
+        <?php foreach ($barClients as $client): $image = $clientImage($client) ?>
+          <button type="button" class="bar-chip<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
+            <?= $thumb($image) ?><?= html($client['name']) ?> <span class="bar-chip__count"><?= $client['count'] ?></span>
+          </button>
+        <?php endforeach ?>
+        <?php if ($barServices): ?><span class="filter-bar__divider" aria-hidden="true"></span><?php endif ?>
+        <?php foreach ($barServices as $key): $image = $serviceImage($key) ?>
+          <button type="button" class="bar-chip<?= $image ? ' bar-chip--thumb' : '' ?>" data-filter="<?= html($key) ?>" aria-pressed="false">
+            <?= $thumb($image) ?><?= html($topics[$key]) ?>
+          </button>
+        <?php endforeach ?>
       </div>
-      <button type="button" class="filter-bar__arrow filter-bar__arrow--next" data-bar-step="1" aria-label="Scroll filters right" tabindex="-1">&rarr;</button>
+      <?php if ($hasMore): ?>
+        <button type="button" class="bar-chip bar-chip--more" data-more aria-expanded="false" aria-controls="filter-bar-more">
+          <span data-more-label>More</span> <span class="bar-chip__caret" aria-hidden="true"></span>
+        </button>
+      <?php endif ?>
     </div>
-    <span class="filter-bar__count" data-count></span>
   </div>
-  <?php snippet('brand/menu') ?>
+  <?php if ($hasMore): ?>
+    <div class="filter-more" id="filter-bar-more" hidden>
+      <div class="filter-more__inner">
+        <?php if ($moreClients): ?>
+          <div class="filter-more__group" role="group" aria-labelledby="filter-more-clients">
+            <p class="filter-more__label" id="filter-more-clients">Clients</p>
+            <?php foreach ($moreClients as $client): $image = $clientImage($client) ?>
+              <button type="button" class="filter-more__item" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
+                <?= $thumb($image) ?><span><?= html($client['name']) ?></span> <span class="bar-chip__count"><?= $client['count'] ?></span>
+              </button>
+            <?php endforeach ?>
+          </div>
+        <?php endif ?>
+        <?php if ($moreServices): ?>
+          <div class="filter-more__group" role="group" aria-labelledby="filter-more-services">
+            <p class="filter-more__label" id="filter-more-services">Services</p>
+            <?php foreach ($moreServices as $key): $image = $serviceImage($key) ?>
+              <button type="button" class="filter-more__item" data-filter="<?= html($key) ?>" aria-pressed="false">
+                <?= $thumb($image) ?><span><?= html($topics[$key]) ?></span>
+              </button>
+            <?php endforeach ?>
+          </div>
+        <?php endif ?>
+        <?php if ($tagKeys): ?>
+          <div class="filter-more__group" role="group" aria-labelledby="filter-more-tags">
+            <p class="filter-more__label" id="filter-more-tags">Topics</p>
+            <?php foreach ($tagKeys as $key): ?>
+              <button type="button" class="filter-more__item" data-filter="<?= html($key) ?>" aria-pressed="false"><span><?= html($topics[$key]) ?></span></button>
+            <?php endforeach ?>
+          </div>
+        <?php endif ?>
+      </div>
+    </div>
+  <?php endif ?>
 </div>

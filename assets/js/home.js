@@ -32,7 +32,6 @@
   var limit = pageSize || (grid.hasAttribute('data-limit') ? parseInt(grid.getAttribute('data-limit'), 10) || 12 : Infinity);
   var workUrl = grid.getAttribute('data-url');
   var countEl = document.getElementById('feed-count');
-  var barCount = bar.querySelector('[data-count]');
   var empty = document.getElementById('feed-empty');
   var moreCount = document.getElementById('feed-more-count');
   var moreLink = document.getElementById('feed-more-link');
@@ -87,7 +86,6 @@
     var shown = Math.min(matched, limit);
 
     if (countEl) countEl.textContent = entryWord(matched);
-    if (barCount) barCount.textContent = entryWord(matched);
     if (empty) empty.hidden = matched > 0;
     if (moreCount) {
       moreCount.hidden = matched <= shown;
@@ -102,7 +100,7 @@
 
     layout();
     revealInCarousel();
-    revealInBar();
+    syncMore();
   }
 
   function escapeHTML(s) {
@@ -246,36 +244,37 @@
 
   /* ---------- Pinned bar ---------- */
 
-  var scroller = bar.querySelector('.filter-bar__scroll');
-  var barTrack = bar.querySelector('.filter-bar__track');
   var menu = bar.querySelector('.filter-bar__menu');
   var menuBtn = bar.querySelector('[data-menu]');
+  var more = bar.querySelector('.filter-more');
+  var moreBtn = bar.querySelector('[data-more]');
+  var moreLabel = bar.querySelector('[data-more-label]');
   var pills = filters.querySelector('.topic-pills');
-  var barShown = false, menuOpen = false;
+  var barShown = false, menuOpen = false, moreOpen = false;
 
-  function syncBarEdges() {
-    barTrack.classList.toggle('has-left', scroller.scrollLeft > 2);
-    barTrack.classList.toggle('has-right', scroller.scrollLeft < scroller.scrollWidth - scroller.clientWidth - 2);
-  }
-  scroller.addEventListener('scroll', syncBarEdges, { passive: true });
-  window.addEventListener('resize', syncBarEdges);
-
-  // Keep the active chip clear of the faded edges.
-  function revealInBar() {
-    var chip = bar.querySelector('.bar-chip[aria-pressed="true"]:not([data-filter="*"])');
-    if (!chip) return;
-    var pad = 96;
-    var l = chip.offsetLeft - scroller.offsetLeft, r = l + chip.offsetWidth;
-    if (l < scroller.scrollLeft + pad || r > scroller.scrollLeft + scroller.clientWidth - pad) {
-      scroller.scrollLeft = l - (scroller.clientWidth - chip.offsetWidth) / 2;
-    }
-    syncBarEdges();
+  // When the active filter is one of the More panel's, the More button
+  // carries its name and the pressed look (choosing it again in the panel
+  // clears it, as with the chips).
+  function syncMore() {
+    if (!moreBtn) return;
+    var item = more.querySelector('[data-filter="' + active + '"]');
+    moreLabel.textContent = item ? item.querySelector('span').textContent : 'More';
+    moreBtn.classList.toggle('is-active', !!item);
   }
 
   function toggleMenu(open) {
+    if (!menu) return;
     menuOpen = open;
     menu.hidden = !open;
     menuBtn.setAttribute('aria-expanded', String(open));
+    if (open) toggleMore(false);
+  }
+  function toggleMore(open) {
+    if (!moreBtn) return;
+    moreOpen = open;
+    more.hidden = !open;
+    moreBtn.setAttribute('aria-expanded', String(open));
+    if (open && menuOpen) toggleMenu(false);
   }
 
   // Scroll direction, with thresholds so small movements don't flicker the bar.
@@ -288,19 +287,18 @@
     if ((dy < 0) !== (travel < 0)) travel = 0;
     travel += dy;
     if (travel < -40) scrollingUp = true;
-    if (travel > 12) { scrollingUp = false; if (menuOpen) toggleMenu(false); }
+    if (travel > 12) { scrollingUp = false; if (menuOpen) toggleMenu(false); if (moreOpen) toggleMore(false); }
 
     var chipsH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
     var inFeed = pills.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
     var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
-    var show = inFeed || (scrollingUp && pastHero) || menuOpen;
+    var show = inFeed || (scrollingUp && pastHero) || menuOpen || moreOpen;
 
     bar.classList.toggle('show-chips', inFeed);
     if (show !== barShown) {
       barShown = show;
       bar.classList.toggle('is-visible', show);
       bar.inert = !show;
-      syncBarEdges();
     }
   }
 
@@ -320,19 +318,17 @@
     }
     if (ev.target.closest('[data-menu]')) { toggleMenu(!menuOpen); return; }
     if (ev.target.closest('.filter-bar__menu a')) { toggleMenu(false); return; }
-    var arrow = ev.target.closest('[data-bar-step]');
-    if (arrow) {
-      scroller.scrollBy({ left: +arrow.getAttribute('data-bar-step') * scroller.clientWidth * 0.6, behavior: behaviour() });
-      return;
-    }
+    if (ev.target.closest('[data-more]')) { toggleMore(!moreOpen); return; }
+    if (ev.target.closest('.filter-more [data-filter]')) toggleMore(false);
     onFilterClick(ev);
   });
 
   document.addEventListener('click', function (ev) {
-    if (menuOpen && !bar.contains(ev.target)) { toggleMenu(false); updateBar(); }
+    if ((menuOpen || moreOpen) && !bar.contains(ev.target)) { toggleMenu(false); toggleMore(false); updateBar(); }
   });
   document.addEventListener('keydown', function (ev) {
     if (ev.key === 'Escape' && menuOpen) { toggleMenu(false); menuBtn.focus(); }
+    if (ev.key === 'Escape' && moreOpen) { toggleMore(false); moreBtn.focus(); }
   });
 
   /* ---------- Start ---------- */
@@ -376,4 +372,39 @@
   }, { passive: true });
   window.addEventListener('resize', update);
   update();
+})();
+
+/* Homepage: a gentle snap between the hero, the intro and Our work. When
+ * you stop scrolling with one of their top edges within a fifth of the
+ * screen of the top, the page eases it into place. It acts only after
+ * your own scrolling (not the page's jumps to results), never inside the
+ * feed, and not with reduced motion. CSS scroll-snap was tried first: its
+ * "proximity" mode pulled back even deliberate scrolls of 300px. */
+(function () {
+  var hero = document.querySelector('.hx--home');
+  if (!hero) return;
+  var stops = [hero, document.querySelector('.hx-intro'), document.getElementById('feed')].filter(Boolean);
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var lastInput = 0, timer = null, snapping = false;
+
+  ['wheel', 'touchmove', 'keydown'].forEach(function (type) {
+    window.addEventListener(type, function () { lastInput = Date.now(); snapping = false; }, { passive: true });
+  });
+
+  function settle() {
+    if (still.matches || snapping || Date.now() - lastInput > 1200) return;
+    var range = window.innerHeight * 0.2, best = null;
+    stops.forEach(function (el) {
+      var top = el.getBoundingClientRect().top;
+      if (Math.abs(top) > 2 && Math.abs(top) < range && (!best || Math.abs(top) < Math.abs(best))) best = top;
+    });
+    if (best === null) return;
+    snapping = true;
+    window.scrollTo({ top: window.scrollY + best, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', function () {
+    clearTimeout(timer);
+    timer = setTimeout(settle, 160);
+  }, { passive: true });
 })();

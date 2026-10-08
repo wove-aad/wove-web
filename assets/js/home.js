@@ -332,3 +332,35 @@
   // its panel and results.
   if (active !== '*') window.addEventListener('load', function () { scrollToResults(true); });
 })();
+
+/* Blue hero options (?hero=a|b|c): as the hero scrolls away its blue fades
+ * into the feed's grey (--p), and in option b the squiggle draws with the
+ * scroll (--draw). */
+(function () {
+  var hero = document.querySelector('.hx--blue');
+  if (!hero) return;
+  var drawn = hero.getAttribute('data-hero') === 'b';
+  var ticking = false;
+  // On phones the squiggle fills its space and crops at the sides, so it
+  // stays a good size.
+  var svg = hero.querySelector('.hx-squiggle svg');
+  var narrow = window.matchMedia('(max-width: 600px)');
+  function fit() {
+    svg.setAttribute('preserveAspectRatio', narrow.matches ? svg.getAttribute('data-narrow') : 'xMidYMid meet');
+  }
+  fit();
+  if (narrow.addEventListener) narrow.addEventListener('change', fit);
+  function update() {
+    ticking = false;
+    var h = hero.offsetHeight || 1;
+    var y = window.scrollY;
+    // Fade from 35% to 90% of the hero scrolled, when the text is mostly gone.
+    hero.style.setProperty('--p', Math.min(1, Math.max(0, (y / h - 0.35) / 0.55)).toFixed(3));
+    if (drawn) hero.style.setProperty('--draw', Math.min(1, 0.55 + y / (h * 0.6)).toFixed(3));
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();

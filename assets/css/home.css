@@ -578,6 +578,78 @@
 .hx-voice__statement { font-weight: var(--weight-h1); color: var(--color-hero-statement); }
 .hx-voice__links { display: flex; flex-wrap: wrap; gap: var(--space-16) var(--space-48); margin-top: var(--space-48); }
 
+/* ------------------------------------------------------------
+   Blue hero options (?hero=a|b|c, see snippets/home/hero.php)
+   Full height in the brand blue, white squiggle below the text. --p
+   (0 to 1, set from the scroll position by home.js) mixes the band
+   towards the feed's grey once the text has mostly scrolled away; the
+   bottom edge always fades into the grey, so there is no hard border.
+   ------------------------------------------------------------ */
+.hx--blue {
+  --hx-blue: #2a50f3;
+  --hx-end: #f5f4f0;   /* = --feed-bg (light) */
+  --p: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: color-mix(in srgb, var(--hx-end) calc(var(--p) * 100%), var(--hx-blue));
+  color: var(--color-white);
+}
+.hx--blue::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 12svh;
+  background: linear-gradient(to bottom, transparent, var(--hx-end));
+  pointer-events: none;
+}
+.hx--blue .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0; }
+.hx--blue .hero-bar__logo,
+.hx--blue .hx-nav a,
+.hx--blue .hx-link { color: inherit; }
+.hx--blue .hx-voice__statement { color: var(--color-aqua); }
+.hx--blue .hero-bar__cta { background: var(--color-white); color: var(--color-black); }
+.hx--blue .hx-thumb, .hx--blue .hx-avatar { border-color: transparent; }
+.hx--blue .hx-link:focus-visible { outline-color: currentColor; }
+
+/* The squiggle fills the space left under the text, so it never sits on it */
+.hx-squiggle {
+  position: relative;
+  flex: 1;
+  min-height: 22svh;
+  margin-top: var(--space-24);
+}
+.hx-squiggle svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.hx-squiggle path {
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 44;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+/* a: draws once */
+.hx--blue-a .hx-squiggle path { animation: hx-draw 2.6s cubic-bezier(.6, 0, .2, 1) .3s both; }
+/* b: drawn with the scroll (--draw from home.js) */
+.hx--blue-b .hx-squiggle path { stroke-dashoffset: calc(1 - var(--draw, .55)); }
+/* c: draws in, holds, then the tail follows it out */
+.hx--blue-c .hx-squiggle path { animation: hx-loop 9s cubic-bezier(.6, 0, .3, 1) .3s infinite both; }
+@keyframes hx-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes hx-loop {
+  0%   { stroke-dashoffset: 1; }
+  40%  { stroke-dashoffset: 0; }
+  60%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+@media (max-width: 600px) {
+  .hx-squiggle { margin-inline: calc(-1 * var(--gutter-x)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx-squiggle path { animation: none !important; stroke-dashoffset: 0 !important; }
+}
+
 @media (max-width: 960px) {
   .hx__inner { padding-block: var(--space-32) var(--space-64); }
   .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: center; }

@@ -4,14 +4,23 @@
  * description as one paragraph, with preview links to Our work and Our people.
  * Usage: <?php snippet('home/hero', ['clients' => $clients, 'people' => $people]) ?>
  * Statement and description come from the Wove Mind page's hero fields.
+ *
+ * Blue hero options, for review: ?hero=a, b or c gives a full-height band
+ * in the brand blue with the white squiggle in the space below the text,
+ * fading into the feed's grey as you scroll (assets/js/home.js).
+ *   a: the squiggle draws once on load
+ *   b: the squiggle draws as you scroll
+ *   c: the squiggle draws in and out on a slow loop
+ * Without ?hero= the blush hero shows as before.
  */
 
 $statement   = $page->headline()->or('Shaping a better Ireland through strategic design and technology')->value();
 $description = $page->intro()->or('We help the people running Ireland’s public services, cultural institutions and mission-led organisations move from strategy to delivery.')->value();
 $thumbs      = array_filter(array_map(fn ($c) => $c['page']->caseStudyImages()->toFile(), array_slice($clients, 0, 3)));
 $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
+$variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null;
 ?>
-<header class="hx">
+<header class="hx<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
   <div class="hx__inner">
     <?php snippet('brand/header-row') ?>
     <div class="hx-body">
@@ -43,5 +52,12 @@ $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
         </a>
       </div>
     </div>
+    <?php if ($variant): ?>
+      <div class="hx-squiggle" aria-hidden="true">
+        <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet" data-narrow="xMidYMid slice" focusable="false">
+          <path pathLength="1" d="M -700 360 C -300 420, 200 400, 470 250 C 640 150, 700 30, 610 20 C 500 10, 470 200, 600 290 C 760 400, 1050 330, 1250 170 C 1450 10, 1700 60, 1950 140"/>
+        </svg>
+      </div>
+    <?php endif ?>
   </div>
 </header>

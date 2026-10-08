@@ -17,7 +17,7 @@ $mark    = fn ($id) => $current === $id ? ' aria-current="page"' : '';
   <a href="<?= url() ?>" class="hero-bar__logo"><?= $site->title()->html() ?>.</a>
   <?php if ($showNav): ?>
   <nav class="hx-nav<?= in_array($current, ['work', 'people'], true) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
-    <a href="<?= url('our-work') ?>"<?= $mark('work') ?>>Our work</a>
+    <a href="<?= wove_work_url() ?>"<?= $mark('work') ?>>Our work</a>
     <a href="<?= url('our-people') ?>"<?= $mark('people') ?>>Our people</a>
   </nav>
   <?php endif ?>

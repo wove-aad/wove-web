@@ -37,7 +37,7 @@ $company = $site->companyName()->or($site->title())->value();
       <nav class="ft__col" aria-label="Footer">
         <p class="ft__label">Explore</p>
         <ul role="list">
-          <li><a href="<?= url('our-work') ?>">Our work</a></li>
+          <li><a href="<?= wove_work_url() ?>">Our work</a></li>
           <li><a href="<?= url('our-people') ?>">Our people</a></li>
           <li><a href="<?= url('contact') ?>">Get in touch</a></li>
           <?php if ($latest): ?><li><a href="<?= $latest->url() ?>">Latest from Wove Mind</a></li><?php endif ?>

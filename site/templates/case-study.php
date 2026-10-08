@@ -23,7 +23,7 @@ $team     = $page->team()->toStructure();
 $services = wove_service_labels();
 $sectors  = wove_sector_labels();
 $siteTags = $site->tags()->toStructure();
-$workUrl  = url('our-work');
+$workUrl  = wove_work_url();
 $filter   = fn ($key) => $workUrl . '?filter=' . urlencode($key);
 
 // Services, then editorial tags

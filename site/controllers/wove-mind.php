@@ -9,7 +9,11 @@
  * - $clients:     case studies for the carousel, each with its post count;
  * - $topics:      services, then editorial tags, in the site-wide tag order,
  *                 limited to those used by at least one entry;
- * - $entryFilters: per entry, the filter keys it matches (cs:, service:, tag:).
+ * - $entryFilters: per entry, the filter keys it matches (cs:, service:, tag:,
+ *                 author:);
+ * - $sectors:     sectors used by at least one entry (key => label);
+ * - $authors:     credited authors (slug => user), by name, for the Team
+ *                 filter and its person panels.
  * Filtering happens in the browser (assets/js/home.js) over this markup.
  */
 
@@ -36,6 +40,9 @@ return function ($page, $site, $kirby) {
     $usedServices = [];
     $usedTags     = [];
     $clientCounts = [];
+    $authors      = [];
+    $sectorLabels = wove_sector_labels();
+    $usedSectors  = [];
 
     foreach ($entries as $entry) {
         $keys = [];
@@ -54,6 +61,17 @@ return function ($page, $site, $kirby) {
             if ($slug === '') continue;
             $keys[] = 'tag:' . $slug;
             $usedTags[$slug] = true;
+        }
+        foreach ($entry->sectors()->split(',') as $s) {
+            if (isset($sectorLabels[$s])) {
+                $keys[] = 'sector:' . $s;
+                $usedSectors[$s] = true;
+            }
+        }
+        if (function_exists('wove_entry_author') && ($author = wove_entry_author($entry))) {
+            $slug = wove_author_slug($author);
+            $keys[] = 'author:' . $slug;
+            $authors[$slug] = $author;
         }
         $entryFilters[$entry->id()] = array_values(array_unique($keys));
     }
@@ -82,9 +100,13 @@ return function ($page, $site, $kirby) {
     $people = function_exists('wove_team_members') ? wove_team_members() : [];
     usort($people, fn ($a, $b) => ($b->avatar() ? 1 : 0) <=> ($a->avatar() ? 1 : 0));
 
+    uasort($authors, fn ($a, $b) => strcasecmp((string) $a->name(), (string) $b->name()));
+
     return [
         'entries'      => $entries,
         'entryFilters' => $entryFilters,
+        'authors'      => $authors,
+        'sectors'      => array_intersect_key($sectorLabels, $usedSectors),
         'clients'      => $clients,
         'topics'       => $topics,
         'people'       => array_slice($people, 0, 4),

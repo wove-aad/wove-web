@@ -149,6 +149,20 @@ function wove_feed(): array
 }
 
 /**
+ * The address of the work feed, which is the homepage since 2026-10-08
+ * (Our work, service, tag and sector pages redirect to it). With a filter
+ * key it opens filtered (?filter=service:strategy) and home.js scrolls to
+ * the results; without one it goes to the top of the feed (#feed).
+ */
+function wove_work_url(?string $filter = null): string
+{
+	if ($filter !== null && $filter !== '' && $filter !== '*') {
+		return url() . '/?filter=' . rawurlencode($filter);
+	}
+	return url() . '/#feed';
+}
+
+/**
  * Whether a filter key (service:x, tag:y, sector:z, cs:slug, author:slug)
  * matches anything in the feed. Used to check a filter from a URL.
  */

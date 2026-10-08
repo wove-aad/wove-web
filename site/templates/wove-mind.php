@@ -17,9 +17,13 @@
  */
 
 $totalCount = $entries->count();
+// Shareable filtered views: /?filter=service:strategy (Our work, service,
+// tag and sector pages redirect here). Unknown keys fall back to all work
+// in home.js.
+$initial = get('filter') ?: '*';
 ?>
 
-<?php snippet('header', ['css' => ['/assets/css/home.css'], 'nav' => false]) ?>
+<?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
 <div class="home" data-theme="light">
 
@@ -28,7 +32,7 @@ $totalCount = $entries->count();
 
   <div class="feed-wrap">
 
-    <?php snippet('home/filter-bar', ['clients' => $clients, 'topics' => $topics, 'totalCount' => $totalCount]) ?>
+    <?php snippet('home/filter-bar', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>
 
     <main class="feed feed--home" id="main">
 
@@ -36,9 +40,9 @@ $totalCount = $entries->count();
         <h2 class="feed__title">Our work</h2>
       </div>
 
-      <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'totalCount' => $totalCount]) ?>
+      <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>
 
-      <div class="feed-cards pc-grid" id="feed-grid" data-limit="<?= $feedLimit ?>">
+      <div class="feed-cards pc-grid" id="feed-grid" tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url() ?>/" data-page="<?= $feedLimit ?>">
         <?php $i = 0; foreach ($entries as $entry): ?>
           <?php snippet('home/post-card', [
             'post'    => $entry,
@@ -49,9 +53,9 @@ $totalCount = $entries->count();
         <p class="feed-empty" id="feed-empty" hidden>No entries match this filter yet.</p>
       </div>
 
-      <div class="feed-more" id="feed-more">
-        <span class="feed-more__count" id="feed-more-count"<?= $totalCount > $feedLimit ? '' : ' hidden' ?>>Showing <?= min($feedLimit, $totalCount) ?> of <?= $totalCount ?></span>
-        <a href="<?= url('our-work') ?>" class="feed-more__btn" id="feed-more-link">See all work <span aria-hidden="true">&rarr;</span></a>
+      <div class="feed-more" id="feed-more"<?= $totalCount > $feedLimit ? '' : ' hidden' ?>>
+        <span class="feed-more__count" id="feed-more-count">Showing <?= min($feedLimit, $totalCount) ?> of <?= $totalCount ?></span>
+        <button type="button" class="feed-more__btn" id="feed-load-more">Load more</button>
       </div>
 
     </main>

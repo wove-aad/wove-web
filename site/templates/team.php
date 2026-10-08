@@ -93,7 +93,7 @@ $tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
                   <?php if ($entries->count() || $linkedin->isNotEmpty()): ?>
                     <div class="person-detail__foot">
                       <?php if ($entries->count()): ?>
-                        <a class="pg-btn" href="<?= url('our-work') ?>?filter=author:<?= html($slug) ?>">See all <?= html($first) ?>’s posts (<?= $entries->count() ?>) <span aria-hidden="true">&rarr;</span></a>
+                        <a class="pg-btn" href="<?= wove_work_url('author:' . $slug) ?>">See all <?= html($first) ?>’s posts (<?= $entries->count() ?>) <span aria-hidden="true">&rarr;</span></a>
                       <?php endif ?>
                       <?php if ($linkedin->isNotEmpty()): ?>
                         <a class="pg-btn pg-btn--ghost" href="<?= $linkedin->html() ?>" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">&nearr;</span></a>

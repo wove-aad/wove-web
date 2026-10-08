@@ -17,7 +17,7 @@
  */
 
 $navItems = [
-  'work'       => ['href' => '/our-work',   'label' => 'Our Work'],
+  'work'       => ['href' => '/#feed',      'label' => 'Our Work'],
   'our-people' => ['href' => '/our-people', 'label' => 'Our People'],
 ];
 $ctaId     = 'contact';

@@ -74,7 +74,7 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
       <div class="pc__row">
         <?php $title() ?>
         <?php if ($image): ?>
-          <?php snippet('picture', ['file' => $image, 'widths' => [120, 240], 'sizes' => '7rem', 'class' => 'pc__thumb', 'attrs' => ['style' => 'aspect-ratio: ' . $ratio]]) ?>
+          <?php snippet('picture', ['file' => $image, 'widths' => [160, 320], 'sizes' => '9rem', 'class' => 'pc__thumb', 'attrs' => ['style' => 'aspect-ratio: ' . $ratio]]) ?>
         <?php endif ?>
       </div>
       <?php $meta() ?>

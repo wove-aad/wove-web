@@ -18,7 +18,7 @@ $services = ['labs', 'strategy', 'brand', 'digital'];
     <ul class="hx-services" role="list">
       <?php foreach ($services as $slug): ?>
         <li>
-          <a class="hx-service" href="<?= url('our-work') ?>?filter=service:<?= $slug ?>" data-jump-filter="service:<?= $slug ?>">
+          <a class="hx-service" href="<?= wove_work_url('service:' . $slug) ?>" data-jump-filter="service:<?= $slug ?>">
             <span class="hx-service__name"><?= html($labels[$slug]) ?> <span aria-hidden="true">&darr;</span></span>
             <span class="hx-service__line"><?= html(wove_service_intro($slug)) ?></span>
           </a>

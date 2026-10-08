@@ -33,7 +33,6 @@ $stats = $cs->stats()->toStructure()->limit(3);
     </span>
   </div>
   <div class="case-panel__body">
-    <p class="case-panel__eyebrow">Case study · <?= html($name) ?></p>
     <h3 class="case-panel__title"><?= html($title) ?></h3>
     <?php if ($text): ?>
       <p class="case-panel__text"><?= html($text) ?></p>

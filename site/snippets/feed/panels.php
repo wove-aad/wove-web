@@ -37,7 +37,6 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
       </div>
     <?php endif ?>
     <div class="topic-panel__body">
-      <p class="topic-panel__eyebrow"><?= $eyebrow ?></p>
       <h3 class="topic-panel__title"><?= html($label) ?></h3>
       <?php if ($text): ?><p class="topic-panel__text"><?= html($text) ?></p><?php endif ?>
       <?php if ($type === 'service'): ?>
@@ -53,7 +52,6 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
 ?>
   <section class="topic-panel" data-panel="sector:<?= html($slug) ?>" data-label="<?= html($label) ?>" aria-label="Sector: <?= html($label) ?>" hidden>
     <div class="topic-panel__body">
-      <p class="topic-panel__eyebrow">Sector</p>
       <h3 class="topic-panel__title"><?= html($label) ?></h3>
       <?php if ($text): ?><p class="topic-panel__text"><?= html($text) ?></p><?php endif ?>
       <button type="button" class="pg-btn pg-btn--ghost" data-clear>Clear <span aria-hidden="true">&times;</span></button>
@@ -71,7 +69,6 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
       <?php if ($avatar): ?><img src="<?= $avatar->crop(160, 160)->url() ?>" alt=""><?php else: ?><?= html(wove_initials($name)) ?><?php endif ?>
     </span>
     <div class="person-panel__body">
-      <p class="person-panel__eyebrow">Posts by</p>
       <h3 class="person-panel__name"><?= html($name) ?></h3>
       <?php if ($role): ?><p class="person-panel__role"><?= html($role) ?></p><?php endif ?>
     </div>

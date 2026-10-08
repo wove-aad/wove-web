@@ -52,7 +52,7 @@ $i     = 0;
 <div class="card-tags">
   <?php foreach ($cardTags as $filter => $label): ?>
     <?php $isExtra = $i++ >= $maxVisible ?>
-    <a class="card-tags__tag<?= $isExtra ? ' card-tags__tag--extra' : '' ?>" href="<?= url('our-work') . '?filter=' . rawurlencode($filter) ?>"<?= $isExtra ? ' hidden' : '' ?>><?= html($label) ?></a>
+    <a class="card-tags__tag<?= $isExtra ? ' card-tags__tag--extra' : '' ?>" href="<?= wove_work_url($filter) ?>"<?= $isExtra ? ' hidden' : '' ?>><?= html($label) ?></a>
   <?php endforeach ?>
   <?php if ($extra > 0): ?>
     <button class="card-tags__more" type="button" aria-expanded="false" data-more="+<?= $extra ?>" aria-label="Show <?= $extra ?> more tags">+<?= $extra ?></button>

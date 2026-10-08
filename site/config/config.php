@@ -175,7 +175,8 @@ return [
         [
             'pattern' => 'our-work',
             'action'  => function () {
-                return page('work');
+                // The homepage feed is the work feed (2026-10-08)
+                return go(wove_work_url(get('filter')), 302);
             }
         ],
         [

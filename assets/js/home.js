@@ -247,7 +247,7 @@
 
   var menu = bar.querySelector('.filter-bar__menu');
   var menuBtn = bar.querySelector('[data-menu]');
-  var more = bar.querySelector('.filter-more');
+  var morePanel = bar.querySelector('.filter-more');
   var moreBtn = bar.querySelector('[data-more]');
   var moreLabel = bar.querySelector('[data-more-label]');
   var pills = filters.querySelector('.topic-pills');
@@ -257,9 +257,16 @@
   // carries its name and the pressed look (choosing it again in the panel
   // clears it, as with the chips).
   function syncMore() {
+    // Narrow screens: keep the active chip in view in the swipe row
+    var row = bar.querySelector('.filter-bar__chips');
+    var chip = row && row.querySelector('[aria-pressed="true"]:not([data-filter="*"])');
+    if (chip && chip.offsetParent && row.scrollWidth > row.clientWidth) {
+      var l = chip.offsetLeft - row.offsetLeft;
+      if (l < row.scrollLeft || l + chip.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = l - 16;
+    }
     if (!moreBtn) return;
-    var item = more.querySelector('[data-filter="' + active + '"]');
-    moreLabel.textContent = item ? item.querySelector('span').textContent : 'More';
+    var item = morePanel.querySelector('[data-filter="' + active + '"]');
+    moreLabel.textContent = item ? item.querySelector('.filter-more__name').textContent : 'More';
     moreBtn.classList.toggle('is-active', !!item);
   }
 
@@ -273,7 +280,7 @@
   function toggleMore(open) {
     if (!moreBtn) return;
     moreOpen = open;
-    more.hidden = !open;
+    morePanel.hidden = !open;
     moreBtn.setAttribute('aria-expanded', String(open));
     if (open && menuOpen) toggleMenu(false);
   }

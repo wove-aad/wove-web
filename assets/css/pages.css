@@ -570,14 +570,20 @@ html:not(.js) .person-detail__close { display: none; }
 
 /* ============================================================
    CONTACT
-   Three routes side by side, each a white card with its form, then
-   the studio's details.
+   Two routes side by side, each a white card with its form, then the
+   studio's details. The cards keep the narrow width they had as three
+   across: on wide screens they start in line with the page title (the
+   header's 3fr / 7fr / 8.5rem columns, 32px gaps).
    ============================================================ */
 .contact-routes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-left: calc((100% - 8.5rem - 2 * var(--space-32)) * 0.3 + var(--space-32));
   gap: var(--space-24);
   align-items: start;
+}
+@media (max-width: 960px) {
+  .contact-routes { padding-left: 0; }
 }
 .contact-route {
   display: flex;
@@ -614,7 +620,7 @@ html:not(.js) .person-detail__close { display: none; }
 .contact-route .contact-form__select:focus-visible,
 .contact-route .contact-form__textarea:focus-visible { outline: 2px solid var(--color-black); outline-offset: 1px; background: var(--color-white); }
 .contact-route .contact-form__submit { align-self: flex-start; margin-top: var(--space-8, 0.5rem); }
-.contact-route .contact-form__ack,
+.contact-route .contact-form__ack { font-size: 0.875rem; color: var(--color-text-muted); }
 
 .contact-direct {
   display: grid;

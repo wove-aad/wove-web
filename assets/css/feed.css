@@ -341,7 +341,7 @@
   display: flex; flex-wrap: wrap; align-items: center;
   gap: var(--feed-space-4) var(--feed-space-8);
   padding-top: var(--feed-space-4);
-  font-size: var(--feed-fs-tag);
+  font-size: var(--feed-fs-meta);
   line-height: var(--feed-lh-tight);
 }
 .feed-wrap .card-tags__tag {

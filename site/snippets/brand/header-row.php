@@ -14,7 +14,7 @@ $showNav = $nav ?? true;
 $mark    = fn ($id) => $current === $id ? ' aria-current="page"' : '';
 ?>
 <div class="hx-row<?= $showNav ? '' : ' hx-row--no-nav' ?>">
-  <a href="<?= url() ?>" class="hero-bar__logo"><?= $site->title()->html() ?>.</a>
+  <a href="<?= url() ?>" class="hero-bar__logo"><?php snippet('brand/logo') ?></a>
   <?php if ($showNav): ?>
   <nav class="hx-nav<?= in_array($current, ['work', 'people'], true) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
     <a href="<?= wove_work_url() ?>"<?= $mark('work') ?>>Our work</a>

@@ -10,7 +10,7 @@
     <button type="button" class="filter-bar__menu-btn" data-menu aria-label="Menu" aria-expanded="false" aria-controls="filter-bar-menu">
       <span class="filter-bar__menu-icon" aria-hidden="true"></span>
     </button>
-    <a class="filter-bar__logo" href="<?= url() ?>"><?= $site->title()->html() ?>.</a>
+    <a class="filter-bar__logo" href="<?= url() ?>"><?php snippet('brand/logo') ?></a>
   </div>
   <?php snippet('brand/menu') ?>
 </div>

@@ -9,8 +9,8 @@
  *
  * In the bar: All work, the three newest clients (case studies, newest
  * first) and the two services used most recently (by the newest post that
- * has them). Everything else is in the More panel, grouped as clients,
- * services, then tags. Client and service chips show a round thumbnail of
+ * has them). The More panel lists every client (so the full list is in
+ * one place), then the remaining services and the tags. Client and service chips show a round thumbnail of
  * the featured image where one is set: the case study's hero image, the
  * service page's featured image. Tags have no image. After the topics
  * come sectors, then Team: the people credited on posts (authors only),
@@ -45,7 +45,7 @@ $serviceImage = fn ($key) => page('services/' . substr($key, 8))?->content()->ge
 $thumb = fn ($image) => $image ? '<img class="bar-chip__thumb" src="' . $image->crop(64, 64)->url() . '" alt="" width="32" height="32">' : '';
 $authors = $authors ?? [];
 $sectors = $sectors ?? [];
-$hasMore = $moreClients || $moreServices || $tagKeys || $sectors || $authors;
+$hasMore = $clients || $moreServices || $tagKeys || $sectors || $authors;
 ?>
 <div class="filter-bar" id="filter-bar" role="region" aria-label="Filters and menu" inert>
   <div class="filter-bar__inner">
@@ -93,10 +93,10 @@ $hasMore = $moreClients || $moreServices || $tagKeys || $sectors || $authors;
   <?php if ($hasMore): ?>
     <div class="filter-more" id="filter-bar-more" hidden>
       <div class="filter-more__inner">
-        <?php if ($moreClients): ?>
+        <?php if ($clients): ?>
           <div class="filter-more__group" role="group" aria-labelledby="filter-more-clients">
             <p class="filter-more__label" id="filter-more-clients">Clients</p>
-            <?php foreach ($moreClients as $client): $image = $clientImage($client) ?>
+            <?php foreach ($clients as $client): $image = $clientImage($client) ?>
               <button type="button" class="filter-more__item" data-filter="cs:<?= html($client['slug']) ?>" aria-pressed="false">
                 <?= $thumb($image) ?><span class="filter-more__name"><?= html($client['name']) ?></span> <span class="bar-chip__count"><?= $client['count'] ?></span>
               </button>

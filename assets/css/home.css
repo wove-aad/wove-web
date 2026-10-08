@@ -46,6 +46,10 @@
    HERO: logo and button (shared with the hero row below)
    ============================================================ */
 .hero-bar__logo {
+  /* Centred on the Get in touch button beside it */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.625rem;
   white-space: nowrap;
   font-size: 2rem;
   font-weight: var(--weight-h4);

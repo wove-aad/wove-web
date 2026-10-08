@@ -1646,3 +1646,6 @@ button { font-family: inherit; cursor: pointer; }
   .work-pill { white-space: nowrap; }
   .js .our-work-grid .work-grid-card { transition-delay: 0ms; }
 }
+
+/* Wove wordmark (snippets/brand/logo.php): sized by the link's font-size */
+.wove-logo { display: block; height: 0.72em; width: auto; }

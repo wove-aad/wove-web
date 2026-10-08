@@ -301,6 +301,9 @@
     }
     if (!moreBtn) return;
     var item = morePanel.querySelector('[data-filter="' + active + '"]');
+    // Clients shown in the bar are also listed in More: the chip shows it
+    var chipInBar = bar.querySelector('.filter-bar__chips [data-filter="' + active + '"]');
+    if (chipInBar && chipInBar.offsetParent) item = null;
     moreLabel.textContent = item ? item.querySelector('.filter-more__name').textContent : 'More';
     moreBtn.classList.toggle('is-active', !!item);
   }

@@ -80,7 +80,7 @@ $company = $site->companyName()->or($site->title())->value();
     </div>
 
     <div class="ft__bar">
-      <a href="<?= url() ?>" class="ft__logo"><?= $site->title()->html() ?>.</a>
+      <a href="<?= url() ?>" class="ft__logo"><?php snippet('brand/logo') ?></a>
       <span>&copy; <?= date('Y') ?> <?= html($company) ?>. Strategic Design &amp; Technology</span>
       <span class="ft__bar-links">
         <?php foreach ($site->social()->toStructure() as $social): ?>

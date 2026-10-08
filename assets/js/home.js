@@ -86,7 +86,7 @@
     });
     var shown = Math.min(matched, limit);
 
-    countEl.textContent = entryWord(matched);
+    if (countEl) countEl.textContent = entryWord(matched);
     if (barCount) barCount.textContent = entryWord(matched);
     if (empty) empty.hidden = matched > 0;
     if (moreCount) {
@@ -160,8 +160,11 @@
   var arrows = [].slice.call(filters.querySelectorAll('.client-carousel__arrow'));
 
   function maxScroll() { return track.scrollWidth - track.clientWidth; }
+  var carouselControls = filters.querySelector('.client-carousel__controls');
   function syncCarousel() {
     var max = maxScroll();
+    // Nothing to scroll: hide the slider and arrows.
+    carouselControls.hidden = max <= 2;
     slider.value = max > 0 ? Math.round(track.scrollLeft / max * 1000) : 0;
     // The dark segment marks the part of the client list in view.
     var total = track.scrollWidth || 1;

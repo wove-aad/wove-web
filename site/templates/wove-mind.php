@@ -33,7 +33,6 @@ $totalCount = $entries->count();
 
       <div class="feed__header" id="feed">
         <h2 class="feed__title">Recent work</h2>
-        <span class="feed__showing label" id="feed-count" role="status" aria-live="polite"><?= $totalCount ?> entr<?= $totalCount === 1 ? 'y' : 'ies' ?></span>
       </div>
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'totalCount' => $totalCount]) ?>

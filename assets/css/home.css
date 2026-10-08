@@ -160,7 +160,7 @@
 
 /* Selected */
 .client-card__btn[aria-pressed="true"] {
-  box-shadow: 0 0 0 3px var(--feed-bg), 0 0 0 6px var(--color-black);
+  box-shadow: 0 0 0 2px var(--feed-bg), 0 0 0 3px var(--color-500);
 }
 .client-card__btn[aria-pressed="true"]:not([data-filter="*"])::after {
   content: "×";
@@ -194,18 +194,19 @@
   gap: var(--space-32);
   margin-top: var(--space-24);
 }
+.client-carousel__controls[hidden] { display: none; }
 .client-carousel__slider {
   --from: 0%;
   --to: 30%;
   flex: 1;
-  height: 4px;
+  height: 2px;
   appearance: none;
   -webkit-appearance: none;
   border-radius: var(--radius-pill);
   /* Dark segment marks the clients in view; no thumb */
   background: linear-gradient(to right,
-    var(--color-300) var(--from), var(--color-black) var(--from),
-    var(--color-black) var(--to), var(--color-300) var(--to));
+    var(--color-200) var(--from), var(--color-500) var(--from),
+    var(--color-500) var(--to), var(--color-200) var(--to));
   cursor: pointer;
 }
 .client-carousel__slider::-webkit-slider-thumb { -webkit-appearance: none; width: 0; height: 0; }

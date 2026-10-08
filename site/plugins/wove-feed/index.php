@@ -173,3 +173,14 @@ function wove_feed_has_key(string $key): bool
 	}
 	return false;
 }
+
+/**
+ * A /assets/… path with ?v= set to the file's last change, so browsers
+ * fetch a stylesheet or script again after a deploy instead of using a
+ * cached copy (2026-10-08: a cached site.css left the new logo unsized).
+ */
+function wove_asset(string $path): string
+{
+	$file = kirby()->root('index') . $path;
+	return is_file($file) ? $path . '?v=' . filemtime($file) : $path;
+}

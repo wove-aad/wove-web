@@ -120,5 +120,5 @@ $tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
   </div>
 </div>
 
-<script src="/assets/js/pages.js" defer></script>
+<script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <?php snippet('footer') ?>

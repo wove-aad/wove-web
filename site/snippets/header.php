@@ -74,12 +74,12 @@ $ogType = $page->ogtype()->or('website')->value();
 <link rel="preload" href="/assets/fonts/Ballinger-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/Ballinger-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/Ballinger-X-Bold.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css">
-<link rel="stylesheet" href="/assets/css/feed.css">
-<link rel="stylesheet" href="/assets/css/footer.css">
+<link rel="stylesheet" href="<?= wove_asset('/assets/css/site.css') ?>">
+<link rel="stylesheet" href="<?= wove_asset('/assets/css/feed.css') ?>">
+<link rel="stylesheet" href="<?= wove_asset('/assets/css/footer.css') ?>">
 <?php if (isset($css)): foreach ((array) $css as $href): ?>
   <?php if ($href !== '/assets/css/feed.css'): ?>
-    <link rel="stylesheet" href="<?= $href ?>">
+    <link rel="stylesheet" href="<?= wove_asset($href) ?>">
   <?php endif ?>
 <?php endforeach; endif ?>
 </head>

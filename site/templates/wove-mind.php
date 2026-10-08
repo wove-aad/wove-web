@@ -64,7 +64,7 @@ $initial = get('filter') ?: '*';
   </div>
 </div>
 
-<script src="/assets/js/home.js" defer></script>
+<script src="<?= wove_asset('/assets/js/home.js') ?>" defer></script>
 
 <script>
 // Footer follows the site's time-of-day palette; the homepage itself is light.

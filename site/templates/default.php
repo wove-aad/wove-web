@@ -55,5 +55,5 @@ $children = $page->children()->listed();
   </div>
 </div>
 
-<script src="/assets/js/pages.js" defer></script>
+<script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <?php snippet('footer') ?>

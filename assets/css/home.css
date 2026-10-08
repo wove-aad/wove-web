@@ -953,7 +953,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .pc--thread { padding: var(--space-8, 0.5rem); }
 
 /* ============================================================
-   SITE MENU IN THE PINNED BAR
+   BACK-TO-TOP BUTTON IN THE PINNED BAR
    ============================================================ */
 /* Outside the feed only the menu button shows. */
 .filter-bar:not(.show-chips) .filter-bar__track,
@@ -980,55 +980,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .filter-bar__menu-btn[aria-expanded="true"] { background: var(--feed-border); }
 .filter-bar__menu-btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 .filter-bar__home-icon { width: 1.125rem; height: 1.125rem; }
-.filter-bar__menu-icon,
-.filter-bar__menu-icon::before {
-  display: block;
-  width: 0.875rem;
-  height: 1.5px;
-  border-radius: 2px;
-  background: currentColor;
-  transition: transform var(--transition);
-}
-.filter-bar__menu-icon { position: relative; transform: translateY(-2.5px); }
-.filter-bar__menu-icon::before { content: ""; position: absolute; top: 5px; }
-[aria-expanded="true"] > .filter-bar__menu-icon { transform: translateY(0) rotate(45deg); }
-[aria-expanded="true"] > .filter-bar__menu-icon::before { top: 0; transform: rotate(-90deg); }
-
-.filter-bar__menu {
-  position: absolute;
-  top: calc(100% + var(--space-8, 0.5rem));
-  left: max(var(--gutter-x), calc((100% - var(--width-header)) / 2 + var(--gutter-x)));
-  width: min(14rem, calc(100% - 2 * var(--gutter-x)));
-  padding: 0.375rem;
-  border: var(--feed-border-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-white);
-  box-shadow: var(--shadow-md);
-  animation: panel-in 150ms ease;
-}
-.filter-bar__menu[hidden] { display: none; }
-@media (prefers-reduced-motion: reduce) { .filter-bar__menu { animation: none; } }
-.filter-bar__menu a,
-.filter-bar__menu button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0.625rem 0.75rem;
-  border: 0;
-  border-radius: 0.625rem;
-  background: none;
-  color: var(--color-black);
-  font: inherit;
-  font-size: 0.9375rem;
-  text-align: left;
-}
-.filter-bar__menu a span,
-.filter-bar__menu button span { color: var(--color-500); }
-.filter-bar__menu a:hover,
-.filter-bar__menu button:hover { background: var(--color-100); }
-.filter-bar__menu li:first-child { border-bottom: 1px solid var(--color-200); margin-bottom: 0.375rem; padding-bottom: 0.375rem; }
-.filter-bar__menu a:focus-visible, .filter-bar__menu button:focus-visible { outline: 2px solid var(--color-black); outline-offset: -2px; }
 
 @media (max-width: 600px) {
   .filter-bar__menu-btn { width: 2.25rem; height: 2.25rem; }

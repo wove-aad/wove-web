@@ -266,5 +266,5 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
   </div>
 </div>
 
-<script src="/assets/js/pages.js" defer></script>
+<script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <?php snippet('footer') ?>

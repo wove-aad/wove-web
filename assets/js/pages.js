@@ -1,9 +1,9 @@
 /* Inner pages without feed filters (case studies, posts, Our people,
  * contact).
  *
- * - Menu bar (snippets/brand/menu-bar.php): pins to the top on scroll-up
- *   once the page header has scrolled away, with Back to top and the site
- *   links in its menu.
+ * - Bar (snippets/brand/menu-bar.php): pins to the top on scroll-up
+ *   once the page header has scrolled away, with a back-to-top button and
+ *   the logo.
  * - Card grids (.pc-grid): cards stay in date order in the DOM and pack
  *   with grid row spans, as on the homepage.
  * - Our people (#people-grid): choosing a person opens a panel under
@@ -18,16 +18,9 @@
   var bar = document.querySelector('[data-menu-bar]');
   var header = document.querySelector('.hx');
   if (bar && header) {
-    var menu = bar.querySelector('.filter-bar__menu');
-    var menuBtn = bar.querySelector('[data-menu]');
-    var shown = false, open = false;
+    var shown = false;
     var lastY = window.scrollY, travel = 0, up = false;
 
-    var toggle = function (o) {
-      open = o;
-      menu.hidden = !o;
-      menuBtn.setAttribute('aria-expanded', String(o));
-    };
     // Scroll direction, with thresholds so small movements don't flicker the bar.
     var update = function () {
       var y = window.scrollY, dy = y - lastY;
@@ -35,8 +28,8 @@
       if ((dy < 0) !== (travel < 0)) travel = 0;
       travel += dy;
       if (travel < -40) up = true;
-      if (travel > 12) { up = false; if (open) toggle(false); }
-      var show = (up && header.getBoundingClientRect().bottom < 0) || open;
+      if (travel > 12) up = false;
+      var show = up && header.getBoundingClientRect().bottom < 0;
       if (show !== shown) {
         shown = show;
         bar.classList.toggle('is-visible', show);
@@ -50,15 +43,7 @@
       requestAnimationFrame(function () { ticking = false; update(); });
     }, { passive: true });
     bar.addEventListener('click', function (ev) {
-      if (ev.target.closest('[data-top]')) { toggle(false); up = false; window.scrollTo({ top: 0, behavior: behaviour() }); return; }
-      if (ev.target.closest('[data-menu]')) { toggle(!open); return; }
-      if (ev.target.closest('.filter-bar__menu a')) toggle(false);
-    });
-    document.addEventListener('click', function (ev) {
-      if (open && !bar.contains(ev.target)) { toggle(false); update(); }
-    });
-    document.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape' && open) { toggle(false); menuBtn.focus(); }
+      if (ev.target.closest('[data-top]')) { up = false; window.scrollTo({ top: 0, behavior: behaviour() }); }
     });
   }
 

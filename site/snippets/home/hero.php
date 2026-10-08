@@ -72,4 +72,4 @@ $shape       = get('hero') === '3d';
     <?php endif ?>
   </div>
 </header>
-<?php if ($shape): ?><script src="/assets/js/squiggle3d.js" defer></script><?php endif ?>
+<?php if ($shape): ?><script src="<?= wove_asset('/assets/js/squiggle3d.js') ?>" defer></script><?php endif ?>

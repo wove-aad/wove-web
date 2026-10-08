@@ -24,7 +24,7 @@ $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
 $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null;
 $shape       = get('hero') === '3d';
 ?>
-<header class="hx<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
+<header class="hx hx--home<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
   <div class="hx__inner">
     <?php snippet('brand/header-row', ['nav' => false]) ?>
     <div class="hx-body">

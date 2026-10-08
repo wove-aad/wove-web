@@ -1,7 +1,8 @@
 <?php
 /**
- * Homepage hero: logo, nav, contact button, then the statement and
- * description as one paragraph, with preview links to Our work and Our people.
+ * Homepage hero: logo and contact button, then the statement as the page
+ * title and the description under it, with preview links to Our work and
+ * Our people.
  * Usage: <?php snippet('home/hero', ['clients' => $clients, 'people' => $people]) ?>
  * Statement and description come from the Wove Mind page's hero fields.
  *
@@ -14,7 +15,7 @@
  * Without ?hero= the blush hero shows as before.
  */
 
-$statement   = $page->headline()->or('Shaping a better Ireland through strategic design and technology')->value();
+$statement   = $page->headline()->or('Human Centred Transformation')->value();
 $description = $page->intro()->or('We help the people running Ireland’s public services, cultural institutions and mission-led organisations move from strategy to delivery.')->value();
 $thumbs      = array_filter(array_map(fn ($c) => $c['page']->caseStudyImages()->toFile(), array_slice($clients, 0, 3)));
 $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
@@ -22,9 +23,10 @@ $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null
 ?>
 <header class="hx<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
   <div class="hx__inner">
-    <?php snippet('brand/header-row') ?>
+    <?php snippet('brand/header-row', ['nav' => false]) ?>
     <div class="hx-body">
-      <h1 class="hx-voice__text"><span class="hx-voice__statement"><?= html(rtrim($statement, '.')) ?>.</span> <?= html($description) ?></h1>
+      <h1 class="hx-voice__title"><?= html($statement) ?></h1>
+      <p class="hx-voice__text"><?= html($description) ?></p>
       <div class="hx-voice__links">
         <a class="hx-link" href="<?= url('our-work') ?>">
           <?php if ($thumbs): ?>

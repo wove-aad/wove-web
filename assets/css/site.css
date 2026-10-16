@@ -1,15 +1,15 @@
 /* ============================================================
-   DESIGN TOKENS v0.3
-   Migrated from the Labs page's page-scoped subset to the full set in
-   assets/design-tokens.json (the canonical source going forward). Keep
-   this :root in sync by hand with that file — any new page's tokens
-   should be checked/added there first, then mirrored in here.
+   DESIGN TOKENS
+   This :root is the source of truth for the site-wide tokens. Pages
+   inside .home (the homepage and redesigned pages) get the overrides in
+   home.css; feed components use the --feed-* tokens in feed.css.
+   assets/design-tokens.json is generated from these files: after
+   changing a token, run python3 scripts/build-tokens.py.
 
-   Two conflicts between the JSON spec and what's live below were
-   resolved 2026-07-09 (confirmed by Grace): --size-h1's clamp growing
-   past the figma value on large screens is intentional, and --rhythm-*
-   keeps the values already shipped on the service page — the JSON was
-   updated to match rather than the reverse. See inline notes.
+   Two conflicts with the original Figma export were resolved
+   2026-07-09 (confirmed by Grace): --size-h1's clamp growing past the
+   figma value on large screens is intentional, and --rhythm-* keeps the
+   values already shipped on the service page. See inline notes.
    ============================================================ */
 :root {
 
@@ -18,7 +18,7 @@
   --color-white:        #ffffff;
   --color-off-white:    #f9f9f9;
   --color-coral:        #ed8c7c;
-  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal. Not in design-tokens.json. */
+  --color-coral-bright: #ff8c7f;   /* quote banner — brighter than nav coral, confirm w/ Fergal. */
   --color-aqua:         #d5faff;
   --color-text-primary: #111111;
   --color-text-muted:   #555555;
@@ -99,8 +99,7 @@
   --space-96:  6rem;
   --space-128: 8rem;
 
-  /* Vertical rhythm — matches the service-page HTML as sent; design-tokens.json's
-     rhythm scale was reconciled to these values (2026-07-09) rather than vice versa. */
+  /* Vertical rhythm — matches the service-page HTML as sent (reconciled 2026-07-09). */
   --rhythm-xs: 1.5rem;
   --rhythm-sm: 3rem;
   --rhythm-md: 6rem;
@@ -133,8 +132,7 @@
   /* Transition */
   --transition: 200ms ease;
 
-  /* Card hover — shared system, tune to taste. Not in design-tokens.json;
-     implementation-specific to this component, kept as-is. */
+  /* Card hover — shared system, tune to taste. */
   --card-lift:         -4px;
   --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.08);
   --card-transition:   250ms ease;
@@ -148,22 +146,20 @@
   --feature-btn-font:   var(--size-cta);
   --feature-btn-pad:    var(--space-24) var(--space-32);
 
-  /* Stat block (case study) — responsive component token, not in
-     design-tokens.json yet. 96px @1440 per Figma, scales down like h1. */
+  /* Stat block (case study) — responsive component token.
+     96px @1440 per Figma, scales down like h1. */
   --size-stat: clamp(2.5rem, 6vw, 6rem);
 
   /* Home hero tagline — Figma-measured (48px/regular/lh 64px). Distinct from
-     the h3-light token (56px/300) design-tokens.json reserves for the same
-     "hero subtitle" use-case; kept separate rather than overloading a value
-     that doesn't match what's actually in the Home frame. Not yet in
-     design-tokens.json. */
+     the h3-light token (56px/300) for the same "hero subtitle" use-case;
+     kept separate as it matches what's in the Home frame. */
   --size-hero-tagline: 3rem;
   --lh-hero-tagline: 1.333;
 
-  /* Testimonial banner background — not in design-tokens.json, confirm w/ Fergal. */
+  /* Testimonial banner background — confirm w/ Fergal. */
   --color-lavender: #e0bdff;
 
-  /* Long Read card background (no image) — not in design-tokens.json. */
+  /* Long Read card background (no image). */
   --color-cream: #f3eeeb;
 }
 

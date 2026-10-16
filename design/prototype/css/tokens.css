@@ -1,5 +1,7 @@
-/* Prototype tokens. Duplicated from assets/css/site.css (v0.3) on 2026-10-02.
-   Edit freely: nothing on the live site reads this file. */
+/* Prototype tokens: site.css :root with the home.css .home overrides
+   folded in, copied 2026-10-02. Nothing on the live site reads this file.
+   The site CSS is the source of truth (see assets/design-tokens.json);
+   if a token here disagrees with it, the site CSS wins. */
 :root {
 
   /* Colour */

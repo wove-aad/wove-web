@@ -7,7 +7,8 @@
    Tokens new to this design are scoped to .home, so other pages keep
    the current values: bold headings, larger radii, the blush hero
    ground and the post format colours. Promote them to site.css :root
-   (and design-tokens.json) once the direction is settled.
+   once the direction is settled. After changing a token, run
+   python3 scripts/build-tokens.py to update assets/design-tokens.json.
    ================================================================ */
 
 .home {

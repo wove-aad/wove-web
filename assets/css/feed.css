@@ -29,7 +29,6 @@
   --feed-fw-regular:  400;
   --feed-fw-medium:   500;
   --feed-fw-semibold: 600;
-  --feed-fw-bold:     700;
 
   --feed-fs-format:     0.6875rem;
   --feed-fs-label:      0.75rem;
@@ -39,11 +38,8 @@
   --feed-fs-meta:       0.8125rem;
   --feed-fs-excerpt:    0.875rem;
   --feed-fs-body:       0.9375rem;
-  --feed-fs-nav:        1rem;
   --feed-fs-card-title: 1.125rem;
-  --feed-fs-rail-item:  1.125rem;
   --feed-fs-h2:         1.375rem;
-  --feed-fs-rail-brand: 1.375rem;
   --feed-fs-h1:         2.25rem;
   --feed-fs-hero:       2.75rem;
 
@@ -58,14 +54,12 @@
   --feed-space-16: 1rem;
   --feed-space-24: 1.5rem;
   --feed-space-32: 2rem;
-  --feed-space-40: 3rem;
   --feed-space-48: 3.5rem;
   --feed-space-64: 5rem;
   --feed-space-80: 6rem;
 
   --feed-page-px:  1rem;
   --feed-page-py:  2rem;
-  --feed-rail-w:   260px;
   --feed-max-w:    85rem;
 
   --feed-radius-sm:   0.5rem;
@@ -73,14 +67,10 @@
   --feed-radius-pill: 999px;
 
   --feed-border-line:   1px solid var(--feed-border);
-  --feed-border-subtle-line: 1px solid var(--feed-border-subtle);
   --feed-rule-line:     1px solid var(--feed-rule);
 
-  --feed-shadow-sm:  0 1px 4px rgba(0,0,0,0.2);
   --feed-shadow-lift: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); /* raised, focused element */
   --feed-transition: 200ms ease;
-  --feed-transition-slow: 300ms ease;
-  --feed-panel-w:    47.5rem; /* team details panel */
 }
 
 /* Light palette — applied during daytime hours via JS */

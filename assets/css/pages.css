@@ -202,7 +202,7 @@
 .pg-section__title { font-size: var(--size-h5); font-weight: var(--weight-h5); line-height: var(--lh-h5); }
 .pg-section__link { font-size: var(--size-nav); font-weight: var(--weight-bold); }
 .pg-section__link:hover { text-decoration: underline; text-underline-offset: 4px; }
-/* .pg-btn is in home.css (the context panels use it on the homepage too) */
+/* Buttons are .btn in site.css */
 
 @media (max-width: 600px) {
   .pg { padding-top: var(--space-48); padding-bottom: var(--space-80); }

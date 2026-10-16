@@ -55,7 +55,7 @@ $initial = get('filter') ?: '*';
 
       <div class="feed-more" id="feed-more"<?= $totalCount > $feedLimit ? '' : ' hidden' ?>>
         <span class="feed-more__count" id="feed-more-count">Showing <?= min($feedLimit, $totalCount) ?> of <?= $totalCount ?></span>
-        <button type="button" class="feed-more__btn" id="feed-load-more">Load more</button>
+        <button type="button" class="btn btn--ghost" id="feed-load-more">Load more</button>
       </div>
 
     </main>

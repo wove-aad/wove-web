@@ -43,18 +43,10 @@ SCOPES = [
 # actually uses. (key, file, selectors, description)
 COMPONENTS = [
     ('button', 'assets/css/site.css',
-     ['.btn', '.btn--sm', '.btn--md', '.btn--primary', '.btn--primary:hover',
-      '.btn--ghost', '.btn--ghost:hover'],
-     'Base button. The header "Get in touch" uses .btn .btn--sm .btn--primary.'),
-    ('pillButton', 'assets/css/home.css',
-     ['.pg-btn', '.pg-btn:hover', '.pg-btn--ghost', '.pg-btn--ghost:hover'],
-     'Pill buttons on redesigned pages, black and outlined.'),
-    ('loadMore', 'assets/css/home.css',
-     ['.feed-more__btn', '.feed-more__btn:hover'],
-     'Feed "See all" / "Load more" button.'),
-    ('footerButton', 'assets/css/footer.css',
-     ['.ft__btn', '.ft__btn:hover'],
-     'Footer "Get in touch", white on the dark footer.'),
+     ['.btn', '.btn--sm', '.btn.btn--primary', '.btn.btn--primary:hover',
+      '.btn.btn--ghost', '.btn.btn--ghost:hover', '.btn.btn--inverse', '.btn.btn--inverse:hover'],
+     'The one button. .btn plus a colourway: --primary (black), --ghost (outlined) or '
+     '--inverse (white, on dark grounds). Add .btn--sm for the header "Get in touch".'),
     ('filterPill', 'assets/css/feed.css',
      ['.tag-pill', '.tag-pill:hover', '.tag-pill.is-active'],
      'Topic filter pill. home.css sets 16px text and 12px 24px padding inside .topic-pills.'),

@@ -40,15 +40,6 @@
   text-wrap: balance;
 }
 .ft__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-16) var(--space-32); justify-self: end; }
-.ft__btn {
-  display: inline-flex; align-items: center; gap: var(--space-12);
-  padding: var(--space-16) var(--space-24);
-  border-radius: var(--radius-pill);
-  background: var(--color-white);
-  color: var(--color-black) !important;
-  font-weight: var(--weight-bold);
-}
-.ft__btn:hover { text-decoration: none !important; opacity: 0.9; }
 .ft__email { font-size: var(--size-subtitle); font-weight: var(--weight-bold); }
 
 /* Columns */

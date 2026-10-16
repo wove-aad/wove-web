@@ -141,7 +141,7 @@ Unused tokens were removed on 2026-10-16 (13 from `site.css`, 10 from `feed.css`
 
 Other copies, none read by the site: `design/prototype/css/tokens.css` (the static prototype; site CSS wins if they disagree), `site/plugins/wove-mind/assets/tokens.css` (the Panel editor's own `--wm-*` set) and `design/mockups/wove-mind-cards/` (temporary mockups).
 
-Buttons are not yet one system: `.btn--sm .btn--primary` (header, 18px regular), `.pg-btn` / `.pg-btn--ghost`, `.feed-more__btn` and `.ft__btn` (16px bold) differ in size, weight and hover.
+**Buttons** (one system since 2026-10-16, in `site.css`): `.btn` plus a colourway, `.btn--primary` (black), `.btn--ghost` (outlined) or `.btn--inverse` (white, for dark grounds such as the footer). 16px bold, fully rounded, 58px tall; every colourway has a 1px border (transparent on the filled ones) so all are the same height. Filled buttons fade to 85% on hover; the outlined one fills black. `.btn--sm` (44px) is for the header "Get in touch" only. Colour rules are written `.btn.btn--*` so they beat `.feed-wrap a` and `.ft a`. `.pg-btn`, `.feed-more__btn`, `.ft__btn` and `.case-panel__cta` were folded into it. Filter pills (`.tag-pill`, `.bar-chip`) and tags are a separate component.
 
 ## Known gaps / open items
 

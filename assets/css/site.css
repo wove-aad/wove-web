@@ -228,31 +228,42 @@ button { font-family: inherit; cursor: pointer; }
 /* ============================================================
    BUTTON
    ============================================================ */
+/* One button, three colourways (agreed 2026-10-16). 16px bold, fully
+   rounded, 58px tall. Every colourway has a 1px border (transparent on
+   the filled ones) so filled and outlined buttons are the same height.
+   Filled buttons fade on hover; the outlined one fills black.
+   .btn--sm is the compact size for the header "Get in touch".
+   Colour rules use .btn.btn--* so they beat link rules such as
+   .feed-wrap a and .ft a, which set color: inherit. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-12);
+  padding: var(--space-16) var(--space-24);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   font-family: var(--font);
-  font-weight: var(--weight-regular);
-  line-height: 1;
-  border: none;
-  cursor: pointer;
-  transition: background-color var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+  font-size: var(--size-nav);
+  font-weight: var(--weight-bold);
+  line-height: 1.5;
   white-space: nowrap;
   text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
 }
-.btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+.btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
-.btn--sm { font-size: var(--size-btn-sm); padding: var(--space-12) var(--space-16); border-radius: 3.125rem; }
-.btn--md { font-size: var(--size-cta); padding: var(--space-24) var(--space-32); border-radius: 3.125rem; }
+.btn--sm { padding: 0.5rem 1.25rem; min-height: 2.75rem; }
 
-.btn--primary { background: var(--color-black); color: var(--color-white); }
-.btn--primary:hover { opacity: 0.85; }
+.btn.btn--primary { background: var(--color-black); color: var(--color-white); }
+.btn.btn--primary:hover { opacity: 0.85; text-decoration: none; }
 
-.btn--ghost { background: transparent; color: var(--color-black); }
-.btn--ghost:hover { background: var(--color-off-white); }
-.btn--ghost:active { background: var(--color-200); }
+.btn.btn--ghost { background: transparent; color: var(--color-black); border-color: var(--color-black); }
+.btn.btn--ghost:hover { background: var(--color-black); color: var(--color-white); text-decoration: none; }
+
+.btn.btn--inverse { background: var(--color-white); color: var(--color-black); }
+.btn.btn--inverse:hover { opacity: 0.85; text-decoration: none; }
 
 
 /* ============================================================
@@ -1492,10 +1503,6 @@ button { font-family: inherit; cursor: pointer; }
   .wovemind-highlight-card__media { aspect-ratio: 2 / 1; }          /* shorter, modest — not a feature lead image */
   .quote__role { font-size: 1.375rem; } /* 22px, was 24 */
   .contact__avatar { width: 120px; height: 120px; }
-  /* Step medium buttons down to small on mobile (mirrors home's lg → md),
-     with padding bumped one increment all round for comfortable tap targets */
-  .btn--sm { padding: var(--space-16) var(--space-24); }
-  .btn--md { font-size: var(--size-btn-sm); padding: var(--space-16) var(--space-24); }
   .case-study-blocks figure li { flex-basis: 85vw; aspect-ratio: 3 / 4; }
 
   .wovemind-post__title { font-size: clamp(2.5rem, 12vw, 4rem); }

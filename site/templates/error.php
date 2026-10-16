@@ -20,10 +20,10 @@ $topics = wove_feed()['topics'];
         <h1 class="ph__title">We can’t find that page</h1>
         <p class="ph__intro">It may have moved, or the link may be out of date. These will get you back on track.</p>
         <div class="error-links">
-          <a class="pg-btn" href="<?= url() ?>">Go to the homepage <span aria-hidden="true">&rarr;</span></a>
-          <a class="pg-btn pg-btn--ghost" href="<?= wove_work_url() ?>">Our work</a>
-          <a class="pg-btn pg-btn--ghost" href="<?= url('our-people') ?>">Our people</a>
-          <a class="pg-btn pg-btn--ghost" href="<?= url('contact') ?>">Get in touch</a>
+          <a class="btn btn--primary" href="<?= url() ?>">Go to the homepage <span aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--ghost" href="<?= wove_work_url() ?>">Our work</a>
+          <a class="btn btn--ghost" href="<?= url('our-people') ?>">Our people</a>
+          <a class="btn btn--ghost" href="<?= url('contact') ?>">Get in touch</a>
         </div>
       </div>
     </div>

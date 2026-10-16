@@ -44,6 +44,6 @@ $stats = $cs->stats()->toStructure()->limit(3);
         <?php endforeach ?>
       </dl>
     <?php endif ?>
-    <a href="<?= $cs->url() ?>" class="case-panel__cta">See case study <span aria-hidden="true">&rarr;</span></a>
+    <a href="<?= $cs->url() ?>" class="btn btn--primary">See case study <span aria-hidden="true">&rarr;</span></a>
   </div>
 </section>

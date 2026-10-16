@@ -474,20 +474,8 @@
 }
 .contact-form__textarea { min-height: 5rem; resize: vertical; }
 .contact-form__select { appearance: none; cursor: pointer; }
-.contact-form__submit {
-  margin-top: auto;
-  padding: var(--feed-space-12) var(--feed-space-24);
-  background: var(--feed-text);
-  color: var(--feed-bg);
-  border: none;
-  border-radius: var(--feed-radius-pill);
-  font-family: var(--feed-ff);
-  font-size: var(--feed-fs-body);
-  font-weight: var(--feed-fw-medium);
-  cursor: pointer;
-  transition: opacity var(--feed-transition);
-}
-.contact-form__submit:hover { opacity: 0.85; }
+/* Submit uses .btn .btn--primary (site.css) */
+.contact-form__submit { margin-top: auto; }
 .contact-form__ack {
   font-size: var(--feed-fs-meta);
   color: var(--feed-text-dim);

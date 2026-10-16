@@ -40,7 +40,7 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
       <h3 class="topic-panel__title"><?= html($label) ?></h3>
       <?php if ($text): ?><p class="topic-panel__text"><?= html($text) ?></p><?php endif ?>
       <?php if ($type === 'service'): ?>
-        <a class="pg-btn" href="<?= url('contact') ?>">Talk to us about <?= html($label) ?> <span aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn--primary" href="<?= url('contact') ?>">Talk to us about <?= html($label) ?> <span aria-hidden="true">&rarr;</span></a>
       <?php endif ?>
     </div>
   </section>
@@ -54,7 +54,7 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
     <div class="topic-panel__body">
       <h3 class="topic-panel__title"><?= html($label) ?></h3>
       <?php if ($text): ?><p class="topic-panel__text"><?= html($text) ?></p><?php endif ?>
-      <button type="button" class="pg-btn pg-btn--ghost" data-clear>Clear <span aria-hidden="true">&times;</span></button>
+      <button type="button" class="btn btn--ghost" data-clear>Clear <span aria-hidden="true">&times;</span></button>
     </div>
   </section>
 <?php endforeach ?>

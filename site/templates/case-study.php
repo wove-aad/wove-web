@@ -188,7 +188,7 @@ $next = $page->nextListed() ?? $page->siblings()->listed()->not($page)->first();
             <div class="cs-next__body">
               <p class="cs-next__eyebrow">Next case study · <?= html($nextName) ?></p>
               <h2 class="cs-next__title"><?= html($next->heroTitle()->isNotEmpty() ? strip_tags($next->heroTitle()->value()) : $next->title()->value()) ?></h2>
-              <a class="pg-btn cs-next__link" href="<?= $next->url() ?>">See case study <span aria-hidden="true">&rarr;</span></a>
+              <a class="btn btn--primary cs-next__link" href="<?= $next->url() ?>">See case study <span aria-hidden="true">&rarr;</span></a>
             </div>
           </article>
         </section>

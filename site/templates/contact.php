@@ -85,7 +85,7 @@ $address = array_filter([
                 <?php $field('enquiry', 'organisation', 'Organisation') ?>
                 <?php $field('enquiry', 'scope', 'Scope note', 'textarea') ?>
                 <?php $field('enquiry', 'timeline', 'Timeline', 'text', false, 'e.g. Q1 2027') ?>
-                <button class="pg-btn contact-form__submit" type="submit">Send enquiry</button>
+                <button class="btn btn--primary contact-form__submit" type="submit">Send enquiry</button>
               </form>
             <?php endif ?>
           </div>
@@ -112,7 +112,7 @@ $address = array_filter([
                 <?php $field('tender', 'closing_date', 'Closing date', 'date') ?>
                 <?php $field('tender', 'framework', 'Framework') ?>
                 <?php $field('tender', 'note', 'Note', 'textarea') ?>
-                <button class="pg-btn contact-form__submit" type="submit">Submit tender invite</button>
+                <button class="btn btn--primary contact-form__submit" type="submit">Submit tender invite</button>
                 <p class="contact-form__ack"><?= $page->tender_ack()->or('We\'ll confirm receipt within one working day.')->html() ?></p>
               </form>
             <?php endif ?>

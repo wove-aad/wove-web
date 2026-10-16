@@ -28,7 +28,7 @@ $company = $site->companyName()->or($site->title())->value();
     <div class="ft__lead">
       <p class="ft__statement">Over 20 years partnering with clients across the civic, cultural and independent business sectors.</p>
       <div class="ft__cta">
-        <a class="ft__btn" href="<?= url('contact') ?>">Get in touch <span aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn--inverse" href="<?= url('contact') ?>">Get in touch <span aria-hidden="true">&rarr;</span></a>
         <a class="ft__email" href="mailto:<?= html($email) ?>"><?= html($email) ?></a>
       </div>
     </div>

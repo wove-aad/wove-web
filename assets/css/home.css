@@ -306,13 +306,13 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx--home { display: flex; flex-direction: column; }
 
 /* Homepage hero colour (2026-10-29): one flat colour at a time, holding
-   for about 9s and then easing into the next over about 2s, through the
-   light blue, green and lilac tints (33s cycle). Off for reduced motion,
+   for about 5.5s and then easing into the next over about 1.2s, through
+   the light blue, green and lilac tints (20s cycle). Off for reduced motion,
    which shows the blue. The blue ?hero= options keep their own
    background. */
 .hx--home:not(.hx--blue) {
   background: var(--color-aqua);
-  animation: hx-scape 33s ease-in-out infinite;
+  animation: hx-scape 20s ease-in-out infinite;
 }
 @keyframes hx-scape {
   0%, 27%    { background-color: var(--color-aqua); }

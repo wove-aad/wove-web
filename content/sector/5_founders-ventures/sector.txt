@@ -1,0 +1,17 @@
+Title: Founders and Ventures
+
+----
+
+Headline: Founders and Ventures
+
+----
+
+Intro: Helping early-stage and scaling founders move from idea to traction — through strategy, brand, and product design.
+
+----
+
+Sectorkey: founders-ventures
+
+----
+
+Uuid: sector-founders-001

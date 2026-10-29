@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A · Homepage: even grid</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="data.js"></script>
+<script>
+
+const app = document.getElementById("app");
+let svc = "All", short = "condense", radius = 12;
+function render() {
+  const condense = short === "condense";
+  const match = (e) => svc === "All" || e.svc.includes(svc);
+  const all = condense ? HOME_MAIN.concat(HOME_SHORT) : HOME_MAIN;
+  const chips = ["All", "Strategy", "Labs", "Digital", "Brand"].map((s) => `<button class="chip" data-s="${s}" aria-pressed="${svc === s}">${s}<span class="n">${all.filter((e) => s === "All" || e.svc.includes(s)).length}</span></button>`).join("");
+  const r = `border-radius:${radius}px`;
+  const cells = HOME_MAIN.filter(match).map((e) => {
+    if (e.k === "case") return `<a href="#" class="card"><div class="media" style="${r};background:#22221B"><div class="ph mi" style="background:#22221B;color:#D8D4C6">[Case study image]</div><span class="pill">Case study</span><span class="reveal" style="background:#fff;color:#111">See the work ${ARROW(14)}</span></div>
+<span class="eyebrow" style="letter-spacing:.08em">${e.who}</span><h3 class="ctitle">${e.title}</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${e.svc.map((s) => `<span class="svc">${s}</span>`).join("")}</div></a>`;
+    const f = F[e.k];
+    return `<a href="#" class="card"><div class="media" style="${r};background:${f.tint}"><div class="ph mi" style="background:${f.tint};color:${f.ink}">[Cover image]</div><span class="pill"><span class="dot" style="background:${f.dot}"></span>${f.name}</span><span class="reveal">Read ${ARROW(14)}</span></div>
+<span class="eyebrow" style="letter-spacing:.08em">Wove Mind · ${e.svc.join(", ")}</span><h3 class="ctitle">${e.title}</h3>
+<div class="meta"><span class="av" style="background:${f.tint};color:${f.ink}">${e.ini}</span><span style="color:#3D3D3B;font-weight:500">${e.who}</span><span>·</span><span>${e.meta}</span></div></a>`;
+  });
+  const minis = HOME_SHORT.filter(match);
+  if (condense && minis.length) cells.splice(Math.min(4, cells.length), 0, `<section class="stack" aria-label="Short thoughts" style="${r}"><div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px"><span class="eyebrow" style="letter-spacing:.08em">Short thoughts</span><a href="#" style="font-size:13px;font-weight:600;min-height:44px;display:inline-flex;align-items:center">All</a></div>
+${minis.map((m) => `<a href="#" class="mini"><span class="rm" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#6B6B67"><span class="dot" style="background:${F[m.k].dot}"></span>${F[m.k].name} · ${m.who}</span><span class="mt">${m.title}</span></a>`).join("")}</section>`);
+  app.innerHTML = bar("A · Homepage: even grid with service filter", shortFormsControl(short) + `<label>Corner radius <input type="range" min="0" max="32" step="2" value="${radius}" data-r></label>`) +
+    `<main class="page">${homeHead()}<nav class="chips" aria-label="Filter by service">${chips}</nav><div class="grid3">${cells.join("")}</div></main>`;
+}
+app.addEventListener("click", (ev) => { const b = ev.target.closest("[data-s]"); if (b) { svc = b.dataset.s; render(); } if (ev.target.closest("a[href=\"#\"]")) ev.preventDefault(); });
+app.addEventListener("change", (ev) => { if (ev.target.matches("[data-short]")) { short = ev.target.value; render(); } if (ev.target.matches("[data-r]")) { radius = +ev.target.value; render(); } });
+render();
+</script>
+</body>
+</html>

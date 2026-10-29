@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A · Wove Mind: even grid</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="data.js"></script>
+<script>
+
+const app = document.getElementById("app");
+let filter = "all", radius = 12;
+function render() {
+  const keys = ["all", "spark", "thread", "whatif", "longread"];
+  const chips = keys.map((k) => `<button class="chip" data-f="${k}" aria-pressed="${filter === k}"><span class="dot" style="background:${k === "all" ? (filter === k ? "#fff" : "#111") : F[k].dot}"></span>${k === "all" ? "All" : F[k].name}<span class="n">${k === "all" ? ENTRIES.length : ENTRIES.filter((e) => e.k === k).length}</span></button>`).join("");
+  const cards = ENTRIES.filter((e) => filter === "all" || e.k === filter).map((e) => {
+    const f = F[e.k];
+    const media = e.cover
+      ? `<div class="ph mi" style="background:${f.tint};color:${f.ink}">[${e.photo ? "Photo" : "Cover image"}]</div>`
+      : `<div class="quote mi" style="color:${f.ink}">${e.title}</div>`;
+    const cta = e.k === "longread" ? "Read" : e.k === "spark" ? "View" : "Open";
+    return `<a href="#" class="card"><div class="media" style="border-radius:${radius}px;background:${f.tint}">${media}<span class="pill"><span class="dot" style="background:${f.dot}"></span>${f.name}</span><span class="reveal">${cta} ${ARROW(14)}</span></div>
+${e.cover ? `<h3 class="ctitle">${e.title}</h3>` : ""}
+<div class="meta"><span class="av" style="background:${f.tint};color:${f.ink}">${e.ini}</span><span style="color:#3D3D3B;font-weight:500">${e.author}</span><span>·</span><span>${e.meta}</span><span style="margin-left:auto">${e.tags.join("  ")}</span></div></a>`;
+  }).join("");
+  app.innerHTML = bar("A · Wove Mind: even grid with format filter", `<label>Corner radius <input type="range" min="0" max="32" step="2" value="${radius}" data-r></label>`) +
+    `<main class="page">${mindHead()}<p style="margin:-26px 0 0;font-size:17px;color:#6B6B67">[Intro line for Wove Mind]</p><nav class="chips" aria-label="Filter by format">${chips}</nav><div class="grid3">${cards}</div></main>`;
+}
+app.addEventListener("click", (ev) => { const b = ev.target.closest("[data-f]"); if (b) { filter = b.dataset.f; render(); } if (ev.target.closest("a[href=\"#\"]")) ev.preventDefault(); });
+app.addEventListener("change", (ev) => { if (ev.target.matches("[data-r]")) { radius = +ev.target.value; render(); } });
+render();
+</script>
+</body>
+</html>

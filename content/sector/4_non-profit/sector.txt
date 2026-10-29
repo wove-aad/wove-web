@@ -1,0 +1,17 @@
+Title: Non-profit and Mission-led
+
+----
+
+Headline: Non-profit and Mission-led
+
+----
+
+Intro: Strategic design for organisations driven by purpose — charities, social enterprises, and advocacy bodies working to create change.
+
+----
+
+Sectorkey: non-profit
+
+----
+
+Uuid: sector-nonprofit-001

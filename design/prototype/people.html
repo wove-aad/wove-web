@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wove Our People</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/prototype.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="tpl-people">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<div class="feed-wrap">
+  <div class="filter-bar" id="filter-bar" aria-label="Site menu" role="region" inert></div>
+
+  <header class="hx hx--page">
+    <div class="hx__inner">
+      <div class="hx-row">
+        <a href="index.html" class="hero-bar__logo">Wove Group.</a>
+        <nav class="hx-nav" aria-label="Main" data-current="people.html">
+          <a href="work.html">Our work</a>
+          <a href="people.html">Our people</a>
+        </nav>
+        <a href="#contact" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
+      </div>
+      <div class="hx-body">
+        <h1 class="ph__title">Our people</h1>
+        <p class="ph__intro">Strategists, designers, researchers and developers, working as one team. Choose a person to read about them and what they have written.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="pg" id="main">
+    <section class="pg-section" aria-label="Team">
+      <ul class="people-grid" id="people-grid" role="list"></ul>
+    </section>
+
+    <section class="pg-section" aria-label="Work with us">
+      <div class="people-join">
+        <div>
+          <h2>Want to work with us?</h2>
+          <p>We are always glad to hear from people who care about public services, culture and climate.</p>
+        </div>
+        <a class="pg-btn" href="#contact">Get in touch <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/people.js"></script>
+
+</body>
+</html>

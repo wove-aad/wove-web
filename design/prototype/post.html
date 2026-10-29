@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wove Post</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/prototype.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="tpl-post">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<div class="feed-wrap">
+  <div class="filter-bar" id="filter-bar" aria-label="Site menu" role="region" inert></div>
+
+  <!-- PAGE HEADER: crumbs, format, title, lead and byline (js/post.js).
+       What Ifs use their pale blue in place of blush, like their cards. -->
+  <header class="hx hx--page" id="post-hx">
+    <div class="hx__inner">
+      <div class="hx-row">
+        <a href="index.html" class="hero-bar__logo">Wove Group.</a>
+        <nav class="hx-nav" aria-label="Main">
+          <a href="work.html">Our work</a>
+          <a href="people.html">Our people</a>
+        </nav>
+        <a href="#contact" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
+      </div>
+      <div class="hx-body" id="post-header"></div>
+    </div>
+  </header>
+
+  <!-- LEAD IMAGE: landscape images only; others sit in the text column -->
+  <div class="pg-lead-image" id="post-image" hidden></div>
+
+  <main class="pg" id="main">
+    <article class="pg-section post-body">
+      <div class="prose" id="post-body"></div>
+      <nav class="post-tags" aria-label="Tags" id="post-tags"></nav>
+      <div id="post-author"></div>
+    </article>
+
+    <!-- THE PROJECT THIS POST BELONGS TO -->
+    <section class="pg-section" aria-labelledby="post-case-title" id="post-case" hidden>
+      <div class="pg-section__head"><h2 class="pg-section__title" id="post-case-title">From the project</h2></div>
+    </section>
+
+    <!-- MORE POSTS -->
+    <section class="pg-section" aria-labelledby="post-more-title">
+      <div class="pg-section__head">
+        <h2 class="pg-section__title" id="post-more-title">More from Wove</h2>
+        <a class="pg-section__link" href="work.html">See all work <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="feed-cards pc-grid" id="post-more"></div>
+    </section>
+  </main>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/post.js"></script>
+
+</body>
+</html>

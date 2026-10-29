@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feed IA — 1a Facet Rail Home</title>
+
+<!-- Ballinger (project fonts) -->
+<style>
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+</style>
+
+<style>
+/* ================================================================
+   TOKENS  (from design-tokens-feed.json — staging dark-mode values)
+   ================================================================ */
+:root {
+  /* Dark palette */
+  --color-bg:          #131310;
+  --color-surface:     #1b1b17;
+  --color-raised:      #22221d;
+  --color-border:      #2a2a22;
+  --color-border-subtle: rgba(255,255,255,0.06);
+  --color-rule:        rgba(255,255,255,0.08);
+  --color-text:        #f1efe8;
+  --color-text-body:   #fdfcf7;
+  --color-text-muted:  #9a968a;
+  --color-text-dim:    #6e6a5f;
+  --color-text-inverse:#131310;
+  --color-coral:       #ed8c7c;
+  --color-gold:        #e8c888;
+  --color-green:       #9cd3b7;
+  --color-blue:        #c7d0fa;
+  --color-purple:      #c7b4ee;
+
+  /* Type */
+  --ff:             'Ballinger', sans-serif;
+  --fw-regular:     400;
+  --fw-medium:      500;
+  --fw-semibold:    600;
+  --fw-bold:        700;
+
+  --fs-format:      0.625rem;   /* 10px */
+  --fs-label:       0.6875rem;  /* 11px */
+  --fs-chip:        0.75rem;    /* 12px */
+  --fs-meta:        0.75rem;    /* 12px */
+  --fs-excerpt:     0.8125rem;  /* 13px */
+  --fs-body:        0.875rem;   /* 14px */
+  --fs-nav:         0.9375rem;  /* 15px */
+  --fs-card-title:  1.0625rem;  /* 17px */
+  --fs-rail-item:   1.0625rem;  /* 17px */
+  --fs-feed-h2:     1.25rem;    /* 20px */
+  --fs-rail-brand:  1.25rem;    /* 20px */
+  --fs-feed-h1:     2rem;       /* 32px */
+
+  --lh-body:        1.5;
+  --lh-tight:       1.25;
+  --lh-heading:     1.15;
+  --ls-label:       0.08em;
+
+  /* Spacing */
+  --space-4:   0.25rem;
+  --space-8:   0.5rem;
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+
+  --page-px:   2rem;
+  --page-py:   2rem;
+  --rail-w:    260px;
+  --max-w:     80rem;
+
+  /* Radius */
+  --radius-sm:   0.5rem;    /* 8px — card */
+  --radius-md:   0.75rem;   /* 12px */
+  --radius-pill: 999px;
+
+  /* Borders (light, subtle) */
+  --border:      1px solid var(--color-border);
+  --border-subtle: 1px solid var(--color-border-subtle);
+  --rule:        1px solid var(--color-rule);
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.2);
+  --transition: 200ms ease;
+}
+
+/* Light palette — applied during daytime hours via JS */
+[data-theme="light"] {
+  --color-bg:          #f5f4f0;
+  --color-surface:     #ffffff;
+  --color-raised:      #eeeee9;
+  --color-border:      #ddddd5;
+  --color-border-subtle: rgba(0,0,0,0.06);
+  --color-rule:        rgba(0,0,0,0.08);
+  --color-text:        #1b1b17;
+  --color-text-body:   #131310;
+  --color-text-muted:  #6e6a5f;
+  --color-text-dim:    #9a968a;
+  --color-text-inverse:#f1efe8;
+  --color-coral:       #c9543f;
+  --color-gold:        #b08a30;
+  --color-green:       #3a8e64;
+  --color-blue:        #4a5ab8;
+  --color-purple:      #7b5db8;
+}
+
+@media (min-width: 960px) {
+  :root { --page-px: 3rem; --page-py: 2.5rem; }
+}
+@media (min-width: 1280px) {
+  :root { --page-px: 5rem; }
+}
+
+/* ================================================================
+   RESET
+   ================================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+ul { list-style: none; }
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ================================================================
+   HERO — full-width feature block above the feed
+   Kirby data: site()->title(), site()->description()
+   ================================================================ */
+.hero {
+  padding: var(--space-64) var(--page-px) var(--space-48);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.hero__title {
+  font-size: clamp(2rem, 1rem + 3vw, 3.5rem);
+  font-weight: var(--fw-regular);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 36rem;
+  margin-bottom: var(--space-24);
+}
+.hero__desc {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text-muted);
+  max-width: 32rem;
+}
+
+/* ================================================================
+   NAV
+   ================================================================ */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-32);
+  padding: var(--space-16) var(--page-px);
+  border-bottom: var(--border);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.nav__logo {
+  font-size: var(--fs-rail-brand);
+  font-weight: var(--fw-regular);
+  letter-spacing: -0.01em;
+}
+.nav__links {
+  display: flex;
+  gap: var(--space-24);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-medium);
+}
+.nav__links a { transition: opacity var(--transition); }
+.nav__links a:hover { opacity: 0.6; }
+.nav__cta {
+  margin-left: auto;
+  font-size: var(--fs-chip);
+  font-weight: var(--fw-medium);
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  transition: all var(--transition);
+}
+.nav__cta:hover { background: rgba(255,255,255,0.06); }
+
+/* ================================================================
+   PAGE SHELL
+   ================================================================ */
+.shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-40);
+  padding: var(--page-py) var(--page-px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+@media (min-width: 960px) {
+  .shell {
+    grid-template-columns: var(--rail-w) 1fr;
+    gap: var(--space-64);
+  }
+}
+
+/* ================================================================
+   FACET RAIL
+   Kirby fields:
+     Brand/tagline → site title + site description (site.yml)
+     Service areas → case-study.yml → services multiselect
+                     (Strategy, Labs, Digital, Brand)
+     Topics/tags  → site.yml → tabs/taxonomies.yml → tags structure
+   ================================================================ */
+.rail { position: sticky; top: var(--space-32); align-self: start; }
+
+.rail__group { margin-bottom: var(--space-32); }
+.rail__group-label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: var(--space-12);
+}
+
+.rail__list { display: flex; flex-direction: column; }
+.rail__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-12) 0;
+  border-top: var(--border-subtle);
+  font-size: var(--fs-rail-item);
+  font-weight: var(--fw-regular);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.rail__item:last-child { border-bottom: var(--border-subtle); }
+.rail__item:hover { color: var(--color-text-body); }
+.rail__item--active { color: var(--color-coral); }
+.rail__count {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-dim);
+}
+
+.rail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+}
+.rail__tag {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-border);
+  cursor: pointer;
+  transition: text-decoration-color var(--transition);
+}
+.rail__tag:hover { text-decoration-color: var(--color-text-muted); }
+.rail__tag-more {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+
+/* Explainer block — used in rail for contextual framing */
+.explainer { margin-bottom: var(--space-32); }
+.explainer__title {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-8);
+}
+.explainer__body {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  line-height: var(--lh-body);
+  margin-bottom: var(--space-16);
+}
+.explainer__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+.explainer__chip {
+  font-size: var(--fs-chip);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  padding: var(--space-4) var(--space-12);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+}
+
+/* ================================================================
+   FEED
+   ================================================================ */
+.feed__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-24);
+}
+.feed__title {
+  font-size: var(--fs-feed-h1);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+}
+.feed__showing {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+/* ================================================================
+   CARDS
+   Kirby fields (wove-mind-entry.yml):
+     format        → select (spark, thread, whatif, longread)
+     title         → text
+     image         → files (max 1)
+     body/excerpt  → writer / textarea
+     author        → users (max 1), show_author toggle
+     date          → date
+     services      → multiselect (strategy, labs, digital, brand)
+     tags          → tags (from site taxonomy)
+     case_study    → pages (link to case study)
+   ================================================================ */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-16);
+}
+@media (min-width: 600px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+.card {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.card:hover { border-color: rgba(255,255,255,0.12); }
+
+.card__media {
+  aspect-ratio: 16 / 10;
+  background: var(--color-raised);
+  position: relative;
+}
+.card__media img { width: 100%; height: 100%; object-fit: cover; }
+.card__media-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+
+.card__body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.card__format {
+  font-size: var(--fs-format);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+.card__format--whatif         { color: var(--color-blue); }
+.card__format--longread       { color: var(--color-purple); }
+
+.card__title {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--color-text-body);
+}
+.card__excerpt {
+  font-size: var(--fs-excerpt);
+  color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+.card__meta {
+  display: flex; align-items: center; gap: var(--space-8);
+  margin-top: auto; padding-top: var(--space-4);
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+.card__avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--color-raised);
+  flex-shrink: 0;
+}
+.card__author { color: var(--color-text-muted); }
+.card__dot { color: var(--color-text-dim); }
+
+/* Editorial tags — from tags taxonomy field */
+.card__tags {
+  display: flex; flex-wrap: wrap; gap: var(--space-4);
+}
+.card__tag {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+.card__tag + .card__tag::before {
+  content: '\00b7';
+  margin-right: var(--space-4);
+}
+
+/* Quote text — used in sparks (with or without image) */
+.card__quote {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--color-text-body);
+}
+
+/* Spark — text-only quote card, no image */
+.card--spark {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.card--spark:hover { border-color: rgba(255,255,255,0.12); }
+
+/* Compact — no image, thread/whatif */
+.card--compact {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.card--compact:hover { border-color: rgba(255,255,255,0.12); }
+
+/* ================================================================
+   FEED FOOTER
+   ================================================================ */
+.feed__footer {
+  margin-top: var(--space-32);
+  padding-top: var(--space-24);
+  border-top: var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.feed__more {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-muted);
+  transition: color var(--transition);
+}
+.feed__more:hover { color: var(--color-text); }
+.feed__count {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+/* ================================================================
+   PROCESS — two-column: explainer left, diagram right
+   ================================================================ */
+.process {
+  margin: var(--space-64) 0;
+  padding: var(--space-48) var(--page-px);
+  max-width: var(--max-w);
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-40);
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .process {
+    grid-template-columns: var(--rail-w) 1fr;
+    gap: var(--space-64);
+  }
+}
+.process__intro {}
+.process__title {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-8);
+}
+.process__desc {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+.process__diagram {}
+.process__ph {
+  padding: var(--space-48);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-dim);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ================================================================
+   FOOTER — expanded with contact pathway links
+   ================================================================ */
+.footer {
+  border-top: var(--rule);
+  padding: var(--space-40) var(--page-px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+.footer__inner {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: var(--space-24);
+}
+.footer__brand {
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  font-size: var(--fs-label);
+}
+.footer__links { display: flex; gap: var(--space-24); }
+.footer__link {
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+  transition: color var(--transition);
+}
+.footer__link:hover { color: var(--color-text-muted); }
+
+/* ================================================================
+   MOBILE: rail collapses
+   ================================================================ */
+@media (max-width: 959px) {
+  .rail { position: static; }
+  .rail__list { flex-direction: row; flex-wrap: wrap; gap: var(--space-8); }
+  .rail__item {
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    padding: var(--space-8) var(--space-16);
+    font-size: var(--fs-meta);
+  }
+  .rail__item:last-child { border-bottom: var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="nav">
+  <a href="/" class="nav__logo">wove</a>
+  <ul class="nav__links">
+    <li><a href="/our-work">Our Work</a></li>
+    <li><a href="/our-people">Our People</a></li>
+  </ul>
+  <a href="/contact" class="nav__cta">Get in touch</a>
+</nav>
+
+<!-- ============================================================
+     HERO — full-width brand intro above the feed
+     Kirby data: site()->title(), site()->description()
+     ============================================================ -->
+<section class="hero">
+  <h1 class="hero__title">Shaping a better Ireland through strategic design and technology</h1>
+  <p class="hero__desc">We help the people running Ireland's public services, cultural institutions, and mission-led organisations move from strategy to delivery.</p>
+</section>
+
+<div class="shell">
+
+  <!-- ============================================================
+       FACET RAIL
+
+       Kirby data sources:
+         Services   → case-study.yml services multiselect:
+                      strategy, labs, digital, brand
+                      Count = $pages->filterBy('services', 'strategy', ',')->count()
+         Tags       → site()->tags()->toStructure()->filterBy('active', 'true')
+       ============================================================ -->
+  <aside class="rail" aria-label="Filter">
+
+    <!-- EXPLAINER — contextual framing for the feed -->
+    <div class="explainer">
+      <h3 class="explainer__title">Strategic design</h3>
+      <p class="explainer__body">Maybe this subtitle explains what is strategic design and the feed forms like a visual prop while disclosing our work</p>
+    </div>
+
+    <!-- SECTORS
+         source: new `sectors` multiselect on wove-mind-entry.yml + case-study.yml
+         route:  /sector/{slug}
+         count:  $site->index()->filterBy('sectors', '{slug}', ',')->count() -->
+    <div class="rail__group">
+      <div class="rail__group-label">Sectors</div>
+      <ul class="rail__list">
+        <li class="rail__item">
+          <a href="/sector/arts-and-culture"><span>Arts and Culture</span></a>
+          <span class="rail__count">18</span>
+        </li>
+        <li class="rail__item rail__item--active">
+          <a href="/sector/public-service"><span>Public Service</span></a>
+          <span class="rail__count">27</span>
+        </li>
+        <li class="rail__item">
+          <a href="/sector/higher-education"><span>Higher Education</span></a>
+          <span class="rail__count">14</span>
+        </li>
+        <li class="rail__item">
+          <a href="/sector/non-profit"><span>Non-profit and Mission-led</span></a>
+          <span class="rail__count">11</span>
+        </li>
+        <li class="rail__item">
+          <a href="/sector/founders-ventures"><span>Founders and Ventures</span></a>
+          <span class="rail__count">9</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- TOPICS
+         source: site()->tags()->toStructure()->filterBy('active', 'true') -->
+    <div class="rail__group">
+      <div class="rail__group-label">Topics</div>
+      <div class="rail__tags">
+        <a href="/tag/education" class="rail__tag">Education</a>
+        <a href="/tag/futures" class="rail__tag">Futures</a>
+        <a href="/tag/ecommerce" class="rail__tag">Ecommerce</a>
+        <a href="/tag/circular-economy" class="rail__tag">Circular economy</a>
+        <a href="/tag/public-sector" class="rail__tag">Public sector</a>
+        <a href="/tag/culture" class="rail__tag">Culture</a>
+        <a href="/tag/procurement" class="rail__tag">Procurement</a>
+        <a href="/tag/ai" class="rail__tag">AI</a>
+      </div>
+      <div class="rail__tag-more">
+        <a href="/topics">All 42 topics &rarr;</a>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ============================================================
+       FEED
+
+       Kirby query:
+         $entries = $site->index()
+           ->filterBy('intendedTemplate', 'wove-mind-entry')
+           ->listed()
+           ->sortBy('date', 'desc');
+       ============================================================ -->
+  <main class="feed">
+
+    <div class="feed__header">
+      <h1 class="feed__title">Latest from the studio</h1>
+      <span class="feed__showing label">85 entries</span>
+    </div>
+
+    <!-- CARD GRID — single flat feed, all formats mixed
+         Kirby: $entries sorted by date desc, no grouping
+         Sparks can have images (use .card with .card__media) or be text-only (.card--spark) -->
+    <div class="cards">
+
+      <!-- SPARK — with image -->
+      <article class="card">
+        <div class="card__media">
+          <div class="card__media-ph">image</div>
+        </div>
+        <div class="card__body">
+          <p class="card__quote">"Design doesn't start at the screen. It starts with the questions you haven't asked yet."</p>
+          <div class="card__meta">
+            <span class="card__avatar"></span>
+            <span class="card__author">Karl Twomey</span>
+            <span class="card__dot">&middot;</span>
+            <span>Sep 12</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- THREAD — with image -->
+      <article class="card">
+        <div class="card__media">
+          <div class="card__media-ph">image</div>
+        </div>
+        <div class="card__body">
+          <div class="card__tags">
+            <span class="card__tag">Education</span>
+            <span class="card__tag">Futures</span>
+          </div>
+          <h3 class="card__title">What Irish design students told us about the future of education</h3>
+          <p class="card__excerpt">May be somewhat familiar with us either through a pre TDR referral or framework.</p>
+          <div class="card__meta">
+            <span class="card__avatar"></span>
+            <span class="card__author">Karl Twomey</span>
+            <span class="card__dot">&middot;</span>
+            <span>Sep 3</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- SPARK — text only (no image) -->
+      <article class="card--spark">
+        <p class="card__quote">"The most impactful public services are the ones you don't notice working."</p>
+        <div class="card__meta">
+          <span class="card__avatar"></span>
+          <span class="card__author">Grace Mc Ginn</span>
+          <span class="card__dot">&middot;</span>
+          <span>Sep 8</span>
+        </div>
+      </article>
+
+      <!-- THREAD — with image -->
+      <article class="card">
+        <div class="card__media">
+          <div class="card__media-ph">image</div>
+        </div>
+        <div class="card__body">
+          <div class="card__tags">
+            <span class="card__tag">Ecommerce</span>
+            <span class="card__tag">Strategy</span>
+          </div>
+          <h3 class="card__title">An insight into the digital transformation of Feirm Supplies</h3>
+          <p class="card__excerpt">We've been working on a big ecommerce project with an ambitious scope.</p>
+          <div class="card__meta">
+            <span class="card__avatar"></span>
+            <span class="card__author">Grace Mc Ginn</span>
+            <span class="card__dot">&middot;</span>
+            <span>Aug 28</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- SPARK — text only -->
+      <article class="card--spark">
+        <p class="card__quote">"Circular economy isn't a buzzword — it's a business model hiding in plain sight."</p>
+        <div class="card__meta">
+          <span class="card__avatar"></span>
+          <span class="card__author">Scott Burnett</span>
+          <span class="card__dot">&middot;</span>
+          <span>Sep 5</span>
+        </div>
+      </article>
+
+      <!-- THREAD — compact, no image -->
+      <article class="card--compact">
+        <div class="card__tags">
+          <span class="card__tag">Public sector</span>
+          <span class="card__tag">Procurement</span>
+        </div>
+        <h3 class="card__title">A ten-year behaviour change programme needs a ten-year story</h3>
+        <p class="card__excerpt">The challenge of long-term public sector engagement is sustaining narrative across political cycles.</p>
+        <div class="card__meta">
+          <span class="card__avatar"></span>
+          <span class="card__author">Scott Burnett</span>
+          <span class="card__dot">&middot;</span>
+          <span>Aug 22</span>
+        </div>
+      </article>
+
+      <!-- WHAT IF — compact, no image, format label SHOWN -->
+      <article class="card--compact">
+        <span class="card__format card__format--whatif">What If</span>
+        <div class="card__tags">
+          <span class="card__tag">Co-design</span>
+          <span class="card__tag">Culture</span>
+        </div>
+        <h3 class="card__title">What if a cultural institution ran its own research panel?</h3>
+        <p class="card__excerpt">Exploring co-design models that give communities a seat at the strategy table.</p>
+        <div class="card__meta">
+          <span class="card__avatar"></span>
+          <span class="card__author">Karl Twomey</span>
+          <span class="card__dot">&middot;</span>
+          <span>Aug 15</span>
+        </div>
+      </article>
+
+      <!-- LONG READ — with image, format label SHOWN -->
+      <article class="card">
+        <div class="card__media">
+          <div class="card__media-ph">image</div>
+        </div>
+        <div class="card__body">
+          <span class="card__format card__format--longread">Long Read</span>
+          <div class="card__tags">
+            <span class="card__tag">Public sector</span>
+            <span class="card__tag">Strategy</span>
+          </div>
+          <h3 class="card__title">Why Ireland's public sector needs a design maturity model</h3>
+          <p class="card__excerpt">An extended essay on how strategic design could reshape how government departments commission and deliver services.</p>
+          <div class="card__meta">
+            <span class="card__avatar"></span>
+            <span class="card__author">Scott Burnett</span>
+            <span class="card__dot">&middot;</span>
+            <span>Aug 8</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- SPARK — with image -->
+      <article class="card">
+        <div class="card__media">
+          <div class="card__media-ph">image</div>
+        </div>
+        <div class="card__body">
+          <p class="card__quote">"Every procurement framework starts as a relationship."</p>
+          <div class="card__meta">
+            <span class="card__avatar"></span>
+            <span class="card__author">Karl Twomey</span>
+            <span class="card__dot">&middot;</span>
+            <span>Aug 30</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- THREAD — compact -->
+      <article class="card--compact">
+        <div class="card__tags">
+          <span class="card__tag">Procurement</span>
+        </div>
+        <h3 class="card__title">Procurement reform won't come from procurement teams alone</h3>
+        <div class="card__meta">
+          <span class="card__avatar"></span>
+          <span class="card__author">Grace Mc Ginn</span>
+          <span class="card__dot">&middot;</span>
+          <span>Aug 1</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="feed__footer">
+      <a href="/our-work?page=2" class="feed__more">Load more &rarr;</a>
+      <span class="feed__count label">75 more entries</span>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- PROCESS BLOCK — explainer left, diagram right -->
+<section class="process">
+  <div class="process__intro">
+    <h2 class="process__title">Transforming process</h2>
+    <p class="process__desc">This could be supported to a scrollytelling of the double diamond below. Do we reference the better by design material</p>
+  </div>
+  <div class="process__diagram">
+    <div class="process__ph">Double Diamond / Process Diagram Placeholder</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__brand">Wove &mdash; Strategic Design &amp; Technology</span>
+    <div class="footer__links">
+      <a href="/contact#enquiries" class="footer__link">Enquiries</a>
+      <a href="/contact#tenders" class="footer__link">Tenders</a>
+      <a href="/contact#strategy" class="footer__link">Strategy</a>
+    </div>
+    <span>&copy; 2026</span>
+  </div>
+</footer>
+
+<script>
+// Time-of-day theme: light 7am–7pm, dark otherwise
+(function() {
+  var h = new Date().getHours();
+  if (h >= 7 && h < 19) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+</body>
+</html>

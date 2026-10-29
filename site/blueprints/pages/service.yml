@@ -1,0 +1,41 @@
+title: Service
+icon: layers
+
+tabs:
+  content:
+    label: Content
+    icon: text
+    columns:
+
+      # main
+      left:
+        width: 2/3
+        sections:
+          content:
+            extends: sections/main-content
+
+      # sidebar
+      right:
+        width: 1/3
+        sections:
+
+          featured:
+            type: fields
+            fields:
+              image:
+                label: Featured image
+                type: files
+                max: 1
+                query: page.images
+                info: Shown on the homepage feed card when this service's filter is selected.
+
+          files:
+            type: files
+            headline: Files
+            layout: table
+            size: small
+            image:
+              cover: true
+
+  # SEO tab
+  seo: tabs/seo

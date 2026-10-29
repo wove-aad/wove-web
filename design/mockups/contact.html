@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feed IA — Contact</title>
+
+<!-- Ballinger (project fonts) -->
+<style>
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Regular.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Italic.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Italic.woff') format('woff'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Ballinger'; src: url('../../assets/fonts/Ballinger-X-Bold.woff2') format('woff2'), url('../../assets/fonts/Ballinger-X-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+</style>
+
+<style>
+/* ================================================================
+   TOKENS  (shared across all feed mockups)
+   ================================================================ */
+:root {
+  --color-bg:          #131310;
+  --color-surface:     #1b1b17;
+  --color-raised:      #22221d;
+  --color-border:      #2a2a22;
+  --color-border-subtle: rgba(255,255,255,0.06);
+  --color-rule:        rgba(255,255,255,0.08);
+  --color-text:        #f1efe8;
+  --color-text-body:   #fdfcf7;
+  --color-text-muted:  #9a968a;
+  --color-text-dim:    #6e6a5f;
+  --color-text-inverse:#131310;
+  --color-coral:       #ed8c7c;
+  --color-gold:        #e8c888;
+  --color-green:       #9cd3b7;
+  --color-blue:        #c7d0fa;
+  --color-purple:      #c7b4ee;
+
+  --ff:             'Ballinger', sans-serif;
+  --fw-regular:     400;
+  --fw-medium:      500;
+  --fw-semibold:    600;
+  --fw-bold:        700;
+
+  --fs-format:      0.625rem;
+  --fs-label:       0.6875rem;
+  --fs-chip:        0.75rem;
+  --fs-meta:        0.75rem;
+  --fs-excerpt:     0.8125rem;
+  --fs-body:        0.875rem;
+  --fs-nav:         0.9375rem;
+  --fs-card-title:  1.0625rem;
+  --fs-rail-item:   1.0625rem;
+  --fs-feed-h2:     1.25rem;
+  --fs-rail-brand:  1.25rem;
+  --fs-feed-h1:     2rem;
+  --fs-hero:        2.5rem;
+
+  --lh-body:        1.5;
+  --lh-tight:       1.25;
+  --lh-heading:     1.15;
+  --ls-label:       0.08em;
+
+  --space-4:   0.25rem;
+  --space-8:   0.5rem;
+  --space-12:  0.75rem;
+  --space-16:  1rem;
+  --space-24:  1.5rem;
+  --space-32:  2rem;
+  --space-40:  2.5rem;
+  --space-48:  3rem;
+  --space-64:  4rem;
+
+  --page-px:   2rem;
+  --page-py:   2rem;
+  --max-w:     80rem;
+
+  --radius-sm:   0.5rem;
+  --radius-md:   0.75rem;
+  --radius-pill: 999px;
+
+  --border:      1px solid var(--color-border);
+  --border-subtle: 1px solid var(--color-border-subtle);
+  --rule:        1px solid var(--color-rule);
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.2);
+  --transition: 200ms ease;
+}
+
+/* Light palette — applied during daytime hours via JS */
+[data-theme="light"] {
+  --color-bg:          #f5f4f0;
+  --color-surface:     #ffffff;
+  --color-raised:      #eeeee9;
+  --color-border:      #ddddd5;
+  --color-border-subtle: rgba(0,0,0,0.06);
+  --color-rule:        rgba(0,0,0,0.08);
+  --color-text:        #1b1b17;
+  --color-text-body:   #131310;
+  --color-text-muted:  #6e6a5f;
+  --color-text-dim:    #9a968a;
+  --color-text-inverse:#f1efe8;
+  --color-coral:       #c9543f;
+  --color-gold:        #b08a30;
+  --color-green:       #3a8e64;
+  --color-blue:        #4a5ab8;
+  --color-purple:      #7b5db8;
+}
+
+@media (min-width: 960px)  { :root { --page-px: 3rem; --page-py: 2.5rem; } }
+@media (min-width: 1280px) { :root { --page-px: 5rem; } }
+
+/* RESET */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+ul { list-style: none; }
+
+/* NAV */
+.nav {
+  display: flex; align-items: center; gap: var(--space-32);
+  padding: var(--space-16) var(--page-px);
+  border-bottom: var(--border);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.nav__logo { font-size: var(--fs-rail-brand); font-weight: var(--fw-regular); letter-spacing: -0.01em; }
+.nav__links { display: flex; gap: var(--space-24); font-size: var(--fs-nav); font-weight: var(--fw-medium); }
+.nav__links a { transition: opacity var(--transition); }
+.nav__links a:hover { opacity: 0.6; }
+.nav__cta {
+  margin-left: auto; font-size: var(--fs-chip); font-weight: var(--fw-medium);
+  padding: 0.5rem 1.125rem; border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill); transition: all var(--transition);
+}
+.nav__cta:hover { background: rgba(255,255,255,0.06); }
+
+/* ================================================================
+   CONTACT HERO
+   ================================================================ */
+.contact-hero {
+  padding: var(--space-64) var(--page-px) var(--space-48);
+  max-width: var(--max-w); margin: 0 auto;
+}
+.contact-hero__title {
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+  max-width: 28rem;
+  margin-bottom: var(--space-16);
+}
+.contact-hero__desc {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text-muted);
+  max-width: 32rem;
+}
+
+/* ================================================================
+   CONTACT CARDS — three equal pathways
+   ================================================================ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
+  padding: 0 var(--page-px) var(--space-64);
+  max-width: var(--max-w); margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .contact-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.contact-card {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-32);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.contact-card__eyebrow {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-coral);
+}
+
+.contact-card__title {
+  font-size: var(--fs-feed-h2);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--color-text-body);
+}
+
+.contact-card__desc {
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+  line-height: var(--lh-body);
+}
+
+/* Form elements (mockup only — placeholders) */
+.form-group {
+  display: flex; flex-direction: column;
+  gap: var(--space-4);
+}
+.form-label {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+}
+.form-input,
+.form-textarea,
+.form-select {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-12);
+  transition: border-color var(--transition);
+}
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-text-dim);
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+
+.form-submit {
+  font-family: var(--ff);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-inverse);
+  background: var(--color-text);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-8) var(--space-24);
+  cursor: pointer;
+  transition: opacity var(--transition);
+  align-self: flex-start;
+  margin-top: var(--space-8);
+}
+.form-submit:hover { opacity: 0.85; }
+
+.form-ack {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+
+/* Partner card variant */
+.contact-card__partner {
+  display: flex; align-items: center; gap: var(--space-12);
+  margin-top: var(--space-8);
+}
+.contact-card__avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-raised);
+  flex-shrink: 0;
+}
+.contact-card__partner-info {}
+.contact-card__partner-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-body);
+}
+.contact-card__partner-role {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+}
+
+/* ================================================================
+   FOOTER — expanded with three contact links
+   ================================================================ */
+.footer {
+  border-top: var(--rule);
+  padding: var(--space-40) var(--page-px);
+  max-width: var(--max-w); margin: 0 auto;
+  font-size: var(--fs-meta); color: var(--color-text-dim);
+}
+.footer__inner {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: var(--space-24);
+}
+.footer__brand {
+  font-weight: var(--fw-semibold); letter-spacing: var(--ls-label);
+  text-transform: uppercase; font-size: var(--fs-label);
+}
+.footer__links {
+  display: flex; gap: var(--space-24);
+}
+.footer__link {
+  font-size: var(--fs-meta);
+  color: var(--color-text-dim);
+  transition: color var(--transition);
+}
+.footer__link:hover { color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav__logo">wove</a>
+  <ul class="nav__links">
+    <li><a href="/our-work">Our Work</a></li>
+    <li><a href="/our-people">Our People</a></li>
+  </ul>
+  <a href="/contact" class="nav__cta">Get in touch</a>
+</nav>
+
+<!-- ============================================================
+     CONTACT HERO
+     ============================================================ -->
+<section class="contact-hero">
+  <h1 class="contact-hero__title">Get in touch</h1>
+  <p class="contact-hero__desc">Whether you're exploring a project, responding to a tender, or looking for strategic advice — start here.</p>
+</section>
+
+<!-- ============================================================
+     THREE PATHWAYS
+     Each card routes to a different inbox/contact.
+     Kirby: contact.yml with three panels or a structure field
+     ============================================================ -->
+<div class="contact-grid">
+
+  <!-- CARD 1: Discuss a project → studio inbox -->
+  <div class="contact-card">
+    <div class="contact-card__eyebrow">01</div>
+    <h2 class="contact-card__title">Discuss a project</h2>
+    <p class="contact-card__desc">Tell us about what you're working on and we'll get back to you.</p>
+
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Organisation</label>
+      <input type="text" class="form-input" placeholder="Organisation">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Scope note</label>
+      <textarea class="form-textarea" placeholder="Brief description of the project or challenge"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Timeline</label>
+      <input type="text" class="form-input" placeholder="e.g. Q1 2027, flexible, urgent">
+    </div>
+
+    <button class="form-submit">Send enquiry</button>
+  </div>
+
+  <!-- CARD 2: Invite us to tender → bid response inbox -->
+  <div class="contact-card">
+    <div class="contact-card__eyebrow">02</div>
+    <h2 class="contact-card__title">Invite us to tender</h2>
+    <p class="contact-card__desc">Share the details of your RFT and we'll confirm receipt within one working day.</p>
+
+    <div class="form-group">
+      <label class="form-label">RFT reference</label>
+      <input type="text" class="form-input" placeholder="Reference number">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Portal</label>
+      <select class="form-select">
+        <option value="">Select portal</option>
+        <option>eTenders</option>
+        <option>SupplyGov</option>
+        <option>OJEU</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Closing date</label>
+      <input type="date" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Framework or panel (optional)</label>
+      <input type="text" class="form-input" placeholder="e.g. OGP Multi-supplier">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note</label>
+      <textarea class="form-textarea" placeholder="Any additional context"></textarea>
+    </div>
+
+    <button class="form-submit">Submit tender invite</button>
+    <p class="form-ack">We'll confirm receipt within one working day.</p>
+  </div>
+
+  <!-- CARD 3: Book a strategy conversation → Karl directly -->
+  <div class="contact-card">
+    <div class="contact-card__eyebrow">03</div>
+    <h2 class="contact-card__title">Book a strategy conversation</h2>
+    <p class="contact-card__desc">A 30-minute conversation with our strategy lead to explore how we might help.</p>
+
+    <div class="contact-card__partner">
+      <div class="contact-card__avatar"></div>
+      <div class="contact-card__partner-info">
+        <div class="contact-card__partner-name">Karl Twomey</div>
+        <div class="contact-card__partner-role">Strategy Lead</div>
+      </div>
+    </div>
+
+    <p class="contact-card__desc">Karl works across public sector, cultural institutions, and mission-led organisations. He'll help you figure out whether Wove is the right fit — and if not, point you to someone who is.</p>
+
+    <button class="form-submit">Request a conversation</button>
+    <p class="form-ack">We'll be in touch within 48 hours.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER — with three contact pathway links -->
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__brand">Wove &mdash; Strategic Design &amp; Technology</span>
+    <div class="footer__links">
+      <a href="/contact#enquiries" class="footer__link">Enquiries</a>
+      <a href="/contact#tenders" class="footer__link">Tenders</a>
+      <a href="/contact#strategy" class="footer__link">Strategy</a>
+    </div>
+    <span>&copy; 2026</span>
+  </div>
+</footer>
+
+<script>
+// Time-of-day theme: light 7am–7pm, dark otherwise
+(function() {
+  var h = new Date().getHours();
+  if (h >= 7 && h < 19) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+</body>
+</html>

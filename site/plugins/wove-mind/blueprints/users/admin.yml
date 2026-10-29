@@ -6,3 +6,7 @@ description: Full access to everything.
 home: /panel
 
 permissions: true
+
+sections:
+  profile:
+    extends: sections/team-profile

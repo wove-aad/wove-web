@@ -1,0 +1,37 @@
+title: Work
+icon: wand
+
+tabs: 
+  content:
+    label: Case Studies
+    icon: page
+    columns:
+      left:
+        width: 2/3
+        sections:
+
+          listed:
+            extends: sections/case-studies
+            label: Published
+            status: listed
+
+      right:
+        width: 1/3
+        sections:
+
+          drafts:
+            extends: sections/case-studies
+            label: Drafts
+            status: draft
+
+          unlisted:
+            extends: sections/case-studies
+            label: In Review
+            status: unlisted
+
+      #     categories:
+      #       extends: sections/categories
+      #       label: Blog Categories
+
+  # SEO tab
+  seo: tabs/seo

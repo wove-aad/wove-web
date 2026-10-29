@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wove Our Work</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/feed.css">
+<link rel="stylesheet" href="css/prototype.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="tpl-work" data-case-cards data-url-state>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- PAGE HEADER: the homepage hero row, then title and intro -->
+<header class="hx hx--page">
+  <div class="hx__inner">
+    <div class="hx-row">
+      <a href="index.html" class="hero-bar__logo">Wove Group.</a>
+      <nav class="hx-nav" aria-label="Main" data-current="work.html">
+        <a href="work.html">Our work</a>
+        <a href="people.html">Our people</a>
+      </nav>
+      <a href="#contact" class="btn btn--sm btn--primary hero-bar__cta">Get in touch</a>
+    </div>
+    <div class="hx-body">
+      <h1 class="ph__title">Our work</h1>
+      <p class="ph__intro">Case studies, and the thinking behind them. Choose a client to see the project and everything we have written about it, or a topic to see work across clients.</p>
+    </div>
+  </div>
+</header>
+
+<div class="feed-wrap">
+
+  <div class="filter-bar" id="filter-bar" aria-label="Filters" role="region" inert></div>
+
+  <main class="feed feed--home" id="main">
+
+    <div class="feed__header" id="feed">
+      <h2 class="feed__title">All work</h2>
+      <span class="feed__showing label" id="feed-count" role="status" aria-live="polite"></span>
+    </div>
+
+    <div class="filters" id="filters"></div>
+
+    <div class="feed-cards feed-cards--home pc-grid" id="feed-grid"></div>
+    <div class="feed-more" id="feed-more" hidden></div>
+
+  </main>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/feed.js"></script>
+
+</body>
+</html>

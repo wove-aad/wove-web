@@ -1,0 +1,16 @@
+title: Sectors
+icon: grid-top-left
+
+options:
+  changeTemplate: false
+
+columns:
+  - width: 1/1
+    sections:
+      sectors:
+        type: pages
+        template: sector
+        status: listed
+        sortable: true
+        headline: Sector Collections
+        help: Each sector page collects case studies and feed entries tagged with that sector.

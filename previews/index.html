@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Wove Previews</title>
+<style>
+:root { color-scheme: light; --ink: #111111; --muted: #555555; --rule: #dddddd; --blush: #fdf5f3; --coral: #ed8c7c; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #ffffff; color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+header { background: var(--blush); }
+.wrap { max-width: 56rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header .wrap { padding-block: 3rem 2.5rem; }
+h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.02em; }
+header p { margin: 0.75rem 0 0; max-width: 36em; color: #333333; font-size: 1.125rem; }
+main .wrap { padding-block: 2rem 4rem; }
+ul { list-style: none; margin: 0; padding: 0; }
+li { border-top: 1px solid var(--rule); }
+li:last-child { border-bottom: 1px solid var(--rule); }
+a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1.5rem; padding-block: 1.25rem; color: inherit; text-decoration: none; }
+a strong { font-size: 1.25rem; letter-spacing: -0.01em; }
+a span { grid-column: 1; color: var(--muted); }
+a::after { content: "\2192"; grid-column: 2; grid-row: 1 / span 2; align-self: center; color: var(--coral); font-size: 1.25rem; transition: transform 200ms ease; }
+a:hover strong { text-decoration: underline; text-underline-offset: 4px; }
+a:hover::after { transform: translateX(4px); }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+.note { margin-top: 2rem; font-size: 0.875rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { a::after { transition: none; } }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Wove previews</h1>
+  <p>Static design previews for the homepage and client page. Placeholder content throughout. Nothing here is part of the live site.</p>
+</div></header>
+<main><div class="wrap">
+  <ul>
+    <li><a href="homepage.html"><strong>Homepage</strong><span>Shorter hero, cards with flush text, team band, one button system</span></a></li>
+    <li><a href="client-page.html"><strong>Client page</strong><span>Circular.ie: 5 things to know, projects by date or discipline, three news placements to compare</span></a></li>
+    <li><a href="hero-routes.html"><strong>Hero routes</strong><span>The hero and four variations</span></a></li>
+    <li><a href="card-routes.html"><strong>Card routes</strong><span>Four card treatments in the full block. Route 1 chosen, Route 2 kept for reference</span></a></li>
+    <li><a href="card-review.html"><strong>Card review</strong><span>The card types now and with one set of spacing rules</span></a></li>
+    <li><a href="card-hovers.html"><strong>Card hovers</strong><span>Six hover options. Option B chosen</span></a></li>
+    <li><a href="button-system.html"><strong>Button system</strong><span>One button in three colourways, compared with the five styles before</span></a></li>
+  </ul>
+  <p class="note">Saved 16 October 2026. See previews/README.md in the repo for decisions and open questions.</p>
+</div></main>
+</body>
+</html>

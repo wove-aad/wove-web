@@ -82,6 +82,20 @@ function wove_first_sentence(string $html): string
 }
 
 /**
+ * A card excerpt (2026-10-29): the first sentence, cut at a word boundary
+ * with an ellipsis when it runs past $limit characters, so it fills about
+ * one to one and a half lines in the two-column feed.
+ */
+function wove_card_excerpt(string $html, int $limit = 90): string
+{
+	$text = wove_first_sentence($html);
+	if (mb_strlen($text) <= $limit) return $text;
+	$cut = mb_substr($text, 0, $limit + 1);
+	$space = mb_strrpos($cut, ' ');
+	return rtrim(mb_substr($cut, 0, $space ?: $limit), " ,;:—–-") . '…';
+}
+
+/**
  * The pill on a feed card's image: the first service and the post type,
  * "Labs · Thinking". Posts without a service read "Studio".
  */

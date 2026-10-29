@@ -71,7 +71,7 @@ $imageOf = fn ($p) => $p->intendedTemplate()->name() === 'case-study'
 $titleOf = fn ($p) => $p->intendedTemplate()->name() === 'case-study'
   ? ($p->heroTitle()->isNotEmpty() ? strip_tags($p->heroTitle()->value()) : $p->title()->value())
   : $p->title()->value();
-$lineOf = fn ($p) => wove_first_sentence($p->intendedTemplate()->name() === 'case-study'
+$lineOf = fn ($p) => wove_card_excerpt($p->intendedTemplate()->name() === 'case-study'
   ? (string) $p->summary()->or($p->subStatement())->value()
   : (string) $p->body()->value());
 
@@ -79,6 +79,8 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
   $type  = wove_post_type($p);
   $image = $imageOf($p);
   $line  = $lineOf($p);
+  $client = $p->intendedTemplate()->name() === 'case-study' ? $p : $p->case_study()->toPages()->first();
+  $client = $client ? $client->eyebrow()->or($client->title())->value() : '';
   ?>
   <li class="cp-post" data-type="<?= $type ?>">
     <a class="cp-post__link" href="<?= $p->url() ?>">
@@ -94,6 +96,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
         <span class="pc__pill"><?= $pinned ? 'Pinned · ' : '' ?><?= $typeLabels[$type] ?></span>
       </span>
       <span class="cp-post__title"><?= html($titleOf($p)) ?></span>
+      <?php if ($client): ?><span class="cp-post__client"><?= html($client) ?></span><?php endif ?>
       <?php if ($line): ?><span class="cp-post__line"><?= html($line) ?></span><?php endif ?>
     </a>
   </li>

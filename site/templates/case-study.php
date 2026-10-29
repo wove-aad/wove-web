@@ -123,7 +123,7 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
             <?php foreach ($posts as $i => $post):
               $type  = wove_post_type($post);
               $postImage = $post->content()->get('image')->toFile();
-              $line  = $post->body()->isNotEmpty() ? wove_first_sentence($post->body()->value()) : '';
+              $line  = $post->body()->isNotEmpty() ? wove_card_excerpt($post->body()->value()) : '';
             ?>
               <li class="cp-post" data-type="<?= $type ?>">
                 <a class="cp-post__link" href="<?= $post->url() ?>">

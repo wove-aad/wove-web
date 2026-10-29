@@ -8,9 +8,10 @@
  * - A pill over the image names the service and the post type, "Labs ·
  *   Thinking" (wove_post_pill()); without an image it sits above the title.
  *   The format names (Thread, Long Read…) aren't shown.
- * - Posts from a project lead with the client name in bold, with the title
- *   under it and no excerpt; other posts show the title and the first
- *   sentence of the lead (wove_first_sentence()), never cut mid-sentence.
+ * - The title leads in bold (2026-10-29); a post from a project has its
+ *   client name under it as quieter secondary text. Then a short excerpt:
+ *   the lead's first sentence, at most about 90 characters
+ *   (wove_card_excerpt()).
  *   What Ifs sit on a pale blue card with "Explore the idea". Sparks show
  *   their text in place of a title.
  * - The credited author (photo or initials, filtering the feed to their
@@ -27,12 +28,9 @@ $client = $client ? $client->eyebrow()->or($client->title())->value() : '';
 $pill   = '<span class="pc__pill">' . html(wove_post_pill($post)) . '</span>';
 $linked = $format !== 'spark';
 
-$excerpt = !$client && $post->body()->isNotEmpty() ? html(wove_first_sentence($post->body()->value())) : '';
+$excerpt = $post->body()->isNotEmpty() ? html(wove_card_excerpt($post->body()->value())) : '';
 $ratio   = $image && $image->height() ? $image->width() . ' / ' . $image->height() : null;
 
-$titleText = $client
-  ? '<span class="pc__client">' . html($client) . '</span> <span class="pc__subtitle">' . $post->title()->html() . '</span>'
-  : $post->title()->html();
 // For the feed layout options (templates/wove-mind.php): the post type
 // sets the image height in the set-heights option, the first service the
 // tint in the tinted option.
@@ -58,7 +56,8 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
     <?php if ($format === 'spark'): ?>
       <p class="<?= $image ? 'pc__caption' : 'pc__quote' ?>"><?= $post->body()->isNotEmpty() ? $post->body()->excerpt(200) : $post->title()->html() ?></p>
     <?php else: ?>
-      <h3 class="pc__title<?= $client ? ' pc__title--client' : '' ?>"><a class="pc__link" href="<?= $post->url() ?>"><?= $titleText ?></a></h3>
+      <h3 class="pc__title"><a class="pc__link" href="<?= $post->url() ?>"><?= $post->title()->html() ?></a></h3>
+      <?php if ($client): ?><p class="pc__client"><?= html($client) ?></p><?php endif ?>
       <?php if ($excerpt): ?><p class="pc__excerpt"><?= $excerpt ?></p><?php endif ?>
       <?php if ($format === 'whatif'): ?><span class="pc__cta" aria-hidden="true">Explore the idea &rarr;</span><?php endif ?>
     <?php endif ?>

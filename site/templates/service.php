@@ -132,6 +132,7 @@ $pill = function ($p) use ($site) {
               $client = $isCase ? $p : $p->case_study()->toPages()->first();
               $client = $client ? $client->eyebrow()->or($client->title())->value() : '';
               $label  = $pill($p);
+              $line   = wove_card_excerpt($isCase ? (string) $p->summary()->or($p->subStatement())->value() : (string) $p->body()->value());
             ?>
               <li class="sv-project"<?= $n >= $perPage ? ' data-later' : '' ?>>
                 <a class="sv-project__link" href="<?= $p->url() ?>">
@@ -148,6 +149,7 @@ $pill = function ($p) use ($site) {
                   </span>
                   <span class="sv-project__title"><?= html($title) ?></span>
                   <?php if ($client): ?><span class="sv-project__client"><?= html($client) ?></span><?php endif ?>
+                  <?php if ($line): ?><span class="sv-project__line"><?= html($line) ?></span><?php endif ?>
                 </a>
               </li>
             <?php endforeach ?>

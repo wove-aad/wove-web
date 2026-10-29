@@ -2,7 +2,7 @@
 /**
  * Case study card for Our work: one column like the post cards, a generous
  * image with the client logo and the "Service · Project" pill, then the
- * client name in bold with the title under it as a one-line subtitle.
+ * title in bold with the client name under it as secondary text.
  * Usage: <?php snippet('home/case-card', ['cs' => $page, 'filters' => [...]]) ?>
  */
 
@@ -27,6 +27,7 @@ $title = $cs->heroTitle()->isNotEmpty() ? strip_tags($cs->heroTitle()->value()) 
     <span class="pc__pill"><?= html(wove_post_pill($cs)) ?></span>
   </div>
   <div class="pc__body">
-    <h3 class="pc__title pc__title--client"><a class="pc__link" href="<?= $cs->url() ?>"><span class="pc__client"><?= html($name) ?></span> <span class="pc__subtitle"><?= html($title) ?></span></a></h3>
+    <h3 class="pc__title"><a class="pc__link" href="<?= $cs->url() ?>"><?= html($title) ?></a></h3>
+    <p class="pc__client"><?= html($name) ?></p>
   </div>
 </article>

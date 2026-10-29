@@ -11,8 +11,9 @@
  *   "Currently interested in" card (the tag's own field).
  * - Browse work: the area's posts and case studies, the newest large
  *   beside the next two (client page styles), with type filters.
- * - A collection: the newest case study in the area, its question and
- *   summary, and its posts in a row that scrolls sideways.
+ * - A collection: the newest case study in the area, its question and the
+ *   first sentence of its summary, and its posts in a row that scrolls
+ *   sideways.
  * - More work (the collection's case study isn't repeated), then
  *   "Explore more {area} work" (the filtered feed).
  * The Figma's newsletter and closing call to action are left to the site
@@ -175,7 +176,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
       <section class="ia-collection" aria-labelledby="ia-collection">
         <div class="ia-collection__inner">
           <h2 class="ia-collection__title" id="ia-collection"><?= html($titleOf($case)) ?></h2>
-          <?php if ($statement = $case->summary()->or($case->subStatement())->value()): ?>
+          <?php if ($statement = wove_first_sentence((string) $case->summary()->or($case->subStatement())->value())): ?>
             <p class="ia-collection__text"><?= html($statement) ?></p>
           <?php endif ?>
         </div>

@@ -1136,22 +1136,22 @@ html:not(.js) .person-detail__close { display: none; }
 
 /* Collection: a featured client in the area, its posts in a row that
    scrolls sideways */
-.ia-collection { padding: var(--space-128) 0; background: var(--color-mint); }
+.ia-collection { padding: var(--space-96) 0; background: var(--color-mint); }
 .ia-collection__inner { max-width: var(--width-header); margin: 0 auto; padding: 0 var(--gutter-x); }
 .ia-collection__title {
-  max-width: 8.5em;
-  font-size: clamp(3rem, 8.33vw, 7.5rem);
-  font-weight: var(--weight-bold);
-  line-height: 0.92;
-  letter-spacing: -0.05em;
+  max-width: 16.4em;
+  font-size: clamp(2.25rem, 4.45vw, 4rem);
+  font-weight: var(--weight-xbold);
+  line-height: 1;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
-.ia-collection__text { max-width: 21.7em; margin-top: var(--space-16); font-size: 1.5rem; font-weight: var(--weight-medium); line-height: 1.33; }
+.ia-collection__text { max-width: 30em; margin-top: var(--space-16); font-size: 1.25rem; font-weight: var(--weight-medium); line-height: 1.4; }
 .ia-pieces {
   --edge: max(var(--gutter-x), calc((100vw - var(--width-header)) / 2 + var(--gutter-x)));
   display: flex;
   gap: var(--space-24);
-  margin: var(--space-48) 0;
+  margin: var(--space-40) 0;
   padding: 0 var(--edge) var(--space-8, 0.5rem);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -1178,7 +1178,7 @@ html:not(.js) .person-detail__close { display: none; }
   .ia-head .hx__inner { padding-bottom: var(--space-64); }
   .ia-areas { margin-top: var(--space-40); }
   .ia-head__title { margin-top: var(--space-48); }
-  .ia-collection { padding: var(--space-80) 0; }
+  .ia-collection { padding: var(--space-64) 0; }
   .ia-more { padding-top: var(--space-64); }
 }
 @media (max-width: 600px) {

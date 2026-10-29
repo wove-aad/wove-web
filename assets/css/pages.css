@@ -849,13 +849,14 @@ html:not(.js) .person-detail__close { display: none; }
   gap: var(--space-24);
   margin-top: var(--space-128);
   padding: var(--space-96) var(--space-48);
+  border-radius: var(--radius-md);
   background: var(--sv-tint);
   text-align: center;
 }
 .sv-whatif__question {
   max-width: 14em;
   font-size: var(--size-h2);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-xbold);
   line-height: 1.08;
   letter-spacing: -0.03em;
   text-wrap: balance;

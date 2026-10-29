@@ -78,6 +78,8 @@ function wove_post_type_labels(): array
 function wove_first_sentence(string $html): string
 {
 	$text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags(preg_replace('/<(br|\/p|\/li|\/h[1-6]|\/blockquote)[^>]*>/i', ' ', $html)), ENT_QUOTES | ENT_HTML5)));
+	// Leave out placeholders left in the text, such as [image]
+	$text = trim(preg_replace('/\s+/u', ' ', preg_replace('/\[(image|img|video|gallery)[^\]]*\]/i', '', $text)));
 	return preg_match('/^.+?[.!?…](?=["”’)]*(\s|$))["”’)]*/u', $text, $m) ? $m[0] : $text;
 }
 

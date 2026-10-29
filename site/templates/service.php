@@ -166,7 +166,7 @@ $pill = function ($p) use ($site) {
       <?php if ($whatif): ?>
         <section class="sv-whatif" aria-label="What If">
           <h2 class="sv-whatif__question"><?= $whatif->title()->html() ?></h2>
-          <?php if ($whatif->body()->isNotEmpty()): ?><p class="sv-whatif__line"><?= $whatif->body()->excerpt(160) ?></p><?php endif ?>
+          <?php if ($whatif->body()->isNotEmpty()): ?><p class="sv-whatif__line"><?= html(wove_first_sentence($whatif->body()->value())) ?></p><?php endif ?>
           <a class="sv-btn" href="<?= $whatif->url() ?>">Read the experiment <span aria-hidden="true">&rarr;</span></a>
         </section>
       <?php endif ?>

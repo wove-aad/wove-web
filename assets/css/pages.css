@@ -777,10 +777,26 @@ html:not(.js) .person-detail__close { display: none; }
 
 /* Intro: a square bullet, the text and "Read more" (the page's blocks) */
 .sv-main { padding-top: var(--space-96); }
-.sv-intro { display: flex; gap: 1.25rem; max-width: 39.75rem; margin: 0 auto; }
-.sv-intro__square { flex-shrink: 0; width: 0.5625rem; height: 0.5625rem; margin-top: 0.78rem; background: var(--color-black); }
-.sv-intro__body { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
-.sv-intro__text { font-size: 1.5rem; line-height: 1.42; }
+/* Set like the client page lead (.cp-head__lead): the page grid's main
+   column, then "Read more" on a ruled line like the client meta row */
+.sv-intro { display: grid; grid-template-columns: var(--grid-page); column-gap: var(--space-32); }
+.sv-intro__body { grid-column: 2; min-width: 0; }
+.sv-intro__text {
+  max-width: 20em;
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.sv-intro__more {
+  max-width: 35rem;
+  margin-top: var(--space-24);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-black);
+  font-size: 0.9375rem;
+  line-height: 1.47;
+}
+.sv-intro__more[open] { max-width: 40rem; }
 .sv-intro__more summary {
   display: inline-flex;
   align-items: center;
@@ -931,6 +947,8 @@ html:not(.js) .person-detail__close { display: none; }
   .sv-interest { flex-basis: auto; width: 100%; max-width: 26rem; }
   .sv-main { padding-top: var(--space-64); }
   .sv-section, .sv-whatif, .sv-intro + .sv-section { margin-top: var(--space-80); }
+  .sv-intro { grid-template-columns: minmax(0, 1fr); }
+  .sv-intro__body { grid-column: 1; }
   .sv-projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sv-project,
   .sv-project:nth-child(n) { grid-column: span 1; grid-row: auto; margin-top: 0; }
@@ -940,7 +958,7 @@ html:not(.js) .person-detail__close { display: none; }
   .sv-talk { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 600px) {
-  .sv-intro__text, .sv-whatif__line { font-size: 1.25rem; }
+  .sv-whatif__line { font-size: 1.25rem; }
   .sv-projects, .sv-offers { grid-template-columns: minmax(0, 1fr); }
   .sv-whatif { padding: var(--space-64) var(--space-24); }
   .sv-talk { padding: var(--space-24); }

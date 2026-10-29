@@ -124,7 +124,6 @@ $pill = function ($p) use ($site) {
 
       <?php if ($lead): ?>
         <section class="sv-intro" aria-label="About <?= html($name) ?>">
-          <span class="sv-intro__square" aria-hidden="true"></span>
           <div class="sv-intro__body">
             <p class="sv-intro__text"><?= html($lead) ?></p>
             <?php if ($more->isNotEmpty()): ?>

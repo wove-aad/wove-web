@@ -4,9 +4,10 @@
  * "Team · Labs · v5" frame (1260:19288). One template for all four; the
  * services/(:any) route in config.php renders it with $serviceSlug.
  *
- * Header in the service's colour: the name, a statement and a "Currently
- * interested in" card (a topic, linking to its work). Then the intro with
- * the page's blocks under "Read more", the service's projects (curated or
+ * Header in the service's colour (Figma service openings, 1240:8359 and
+ * beside it): the name in grey over a statement in black, then the intro
+ * with the page's blocks under "Read more", and a "Currently interested
+ * in" card (a topic, linking to its work). Then the service's projects (curated or
  * everything tagged with the service, ten at a time), a What If, "How
  * {service} can help" cards, a contact strip and the previous and next
  * services.
@@ -39,10 +40,8 @@ $interest = null;
 $topicSlug = $page->interestTopic()->or($defaults['interestTopic'])->value();
 if ($topicSlug && ($tag = $site->tags()->toStructure()->findBy('slug', $topicSlug)) && $tag->active()->toBool() !== false) {
   $interest = [
-    'name'  => $tag->name()->value(),
-    'text'  => $page->interestText()->or($defaults['interestText'])->or($tag->intro())->value(),
-    'image' => $page->interestImage()->toFile(),
-    'url'   => url('tag/' . $topicSlug),
+    'name' => $tag->name()->value(),
+    'url'  => url('tag/' . $topicSlug),
   ];
 }
 
@@ -93,24 +92,24 @@ $pill = function ($p) use ($site) {
   <header class="hx hx--page sv-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'service:' . $slug]) ?>
-      <div class="sv-head__body">
-        <div class="sv-head__text">
-          <h1 class="sv-head__title"><?= html($name) ?></h1>
-          <?php if ($statement): ?><p class="sv-head__statement"><?= html($statement) ?></p><?php endif ?>
+      <h1 class="sv-head__title">
+        <span class="sv-head__name"><?= html($name) ?></span>
+        <?php if ($statement): ?><span class="sv-head__statement"><?= html($statement) ?></span><?php endif ?>
+      </h1>
+      <div class="sv-head__lower">
+        <div class="sv-head__lead">
+          <?php if ($lead): ?><p class="sv-head__text"><?= html($lead) ?></p><?php endif ?>
+          <?php if ($more->isNotEmpty()): ?>
+            <details class="sv-intro__more">
+              <summary>Read more <span class="sv-intro__plus" aria-hidden="true"></span></summary>
+              <div class="sv-intro__blocks"><?= $more ?></div>
+            </details>
+          <?php endif ?>
         </div>
         <?php if ($interest): ?>
           <a class="sv-interest" href="<?= $interest['url'] ?>">
             <span class="sv-interest__kicker">Currently interested in</span>
-            <span class="sv-interest__body">
-              <?php if ($interest['image']): ?>
-                <?php snippet('picture', ['file' => $interest['image'], 'widths' => [112, 224, 336], 'ratio' => 1, 'sizes' => '7rem', 'class' => 'sv-interest__image']) ?>
-              <?php endif ?>
-              <span class="sv-interest__text">
-                <span class="sv-interest__name"><?= html($interest['name']) ?></span>
-                <?php if ($interest['text']): ?><span class="sv-interest__line"><?= html($interest['text']) ?></span><?php endif ?>
-                <span class="sv-interest__link">See the work <span aria-hidden="true">&rarr;</span></span>
-              </span>
-            </span>
+            <span class="sv-interest__name"><?= html($interest['name']) ?></span>
           </a>
         <?php endif ?>
       </div>
@@ -121,20 +120,6 @@ $pill = function ($p) use ($site) {
     <?php snippet('brand/menu-bar') ?>
 
     <main class="pg sv-main" id="main">
-
-      <?php if ($lead): ?>
-        <section class="sv-intro" aria-label="About <?= html($name) ?>">
-          <div class="sv-intro__body">
-            <p class="sv-intro__text"><?= html($lead) ?></p>
-            <?php if ($more->isNotEmpty()): ?>
-              <details class="sv-intro__more">
-                <summary>Read more <span class="sv-intro__plus" aria-hidden="true"></span></summary>
-                <div class="sv-intro__blocks"><?= $more ?></div>
-              </details>
-            <?php endif ?>
-          </div>
-        </section>
-      <?php endif ?>
 
       <?php if ($projects): ?>
         <section class="sv-section" aria-labelledby="sv-projects">

@@ -99,30 +99,34 @@ function wove_post_pill(Page $p): string
 
 /**
  * Default text for a service page (site/templates/service.php), used when
- * the page's own field is empty. Labs has the copy from the Figma page;
- * the others start with their one-line intro and fill in from the Panel.
+ * the page's own field is empty. The statements and supporting lines are
+ * from the Figma service page openings (1240:8359, 1240:8451, 1240:9680,
+ * 1240:9806); Labs also has the help cards and contact prompt from the
+ * Labs page (1260:19288).
  */
 function wove_service_defaults(string $slug): array
 {
 	$labels = wove_service_labels();
-	$base   = [
-		'statement'     => wove_service_intro($slug),
-		'lead'          => '',
+	$copy   = [
+		'labs'     => ['Exploring a more human future', 'We work with academia, industry, culture makers and communities to explore and imagine more innovative ways of doing things.'],
+		'strategy' => ['Plotting bold moves forward', 'Helping organisations plan, prioritise and change in lasting ways.'],
+		'brand'    => ['Plotting bold moves forward', 'Helping organisations plan, prioritise and change in lasting ways.'],
+		'digital'  => ['Better platforms & technology', 'Helping organisations plan, prioritise and change in lasting ways.'],
+	][$slug] ?? [wove_service_intro($slug), ''];
+
+	$base = [
+		'statement'     => $copy[0],
+		'lead'          => $copy[1],
 		'offers'        => [],
 		'talkPrompt'    => 'Want to talk about ' . ($labels[$slug] ?? 'this') . '?',
-		'interestTopic' => '',
-		'interestText'  => '',
+		'interestTopic' => 'data-and-privacy',
 	];
 
 	if ($slug !== 'labs') return $base;
 
 	return array_merge($base, [
-		'statement'     => 'Exploring a more human future.',
-		'lead'          => 'We work with academia, industry, culture makers and communities to explore and imagine more innovative ways of doing things.',
-		'talkPrompt'    => 'Want to try an idea out before you commit?',
-		'interestTopic' => 'data-and-privacy',
-		'interestText'  => 'How our everyday data is tracked and sold.',
-		'offers'        => [
+		'talkPrompt' => 'Want to try an idea out before you commit?',
+		'offers'     => [
 			['title' => 'Research with the public', 'text' => 'Interviews, diaries and workshops that show how people really live with a service or an idea.'],
 			['title' => 'Co-design workshops', 'text' => 'Sessions where staff and the public shape the work together, in person or online.'],
 			['title' => 'Provotypes', 'text' => 'Quick, rough versions of an idea, made to start a conversation rather than to be finished.'],

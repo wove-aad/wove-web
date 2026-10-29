@@ -98,15 +98,7 @@ tabs:
                   query: site.tags.toStructure.filterBy("active", "!=", "false")
                   text: "{{ item.name }}"
                   value: "{{ item.slug }}"
-                help: Links to the work on this topic.
-              interestText:
-                label: Line
-                type: text
-              interestImage:
-                label: Image
-                type: files
-                max: 1
-                query: page.images
+                help: Shown in the page header, linking to the work on this topic. Leave empty for Data and privacy.
 
           files:
             type: files

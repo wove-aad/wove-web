@@ -113,7 +113,10 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
       <?php snippet('brand/header-row', ['current' => $key]) ?>
 
       <?php if (count($areas) > 1): ?>
-        <nav class="ia-areas" aria-label="Impact areas">
+        <?php /* Options for review (2026-10-29): ?strip=a, b or c; without it, the current pills */
+        $strip = in_array(get('strip'), ['a', 'b', 'c'], true) ? get('strip') : null ?>
+        <nav class="ia-areas<?= $strip ? ' ia-areas--' . $strip : '' ?>" aria-label="Impact areas">
+          <?php if ($strip === 'c'): ?><span class="ia-areas__label">Impact areas</span><?php endif ?>
           <ul class="ia-areas__list" role="list">
             <?php foreach ($areas as $i => $area): ?>
               <li>

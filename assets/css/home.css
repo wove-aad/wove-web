@@ -364,7 +364,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 
 .hx-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12) var(--space-32); }
-.hx-nav a { font-size: var(--size-subtitle); font-weight: var(--weight-regular); color: var(--color-black); }
+.hx-nav a { font-size: var(--size-p4); font-weight: var(--weight-regular); color: var(--color-black); }
 .hx-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* Services and Impact areas: a list under the toggle (site/snippets/brand/header-row.php) */
@@ -373,7 +373,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   display: inline-flex;
   align-items: center;
   gap: var(--space-8, 0.5rem);
-  font-size: var(--size-subtitle);
+  font-size: var(--size-p4);
   font-weight: var(--weight-regular);
   color: var(--color-black);
   list-style: none;
@@ -696,7 +696,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   .hx-nav { position: relative; }
   .hx-menu { position: static; }
   .hx-menu__list { left: 0; right: 0; min-width: 0; top: calc(100% + 0.5rem); }
-  .hx-nav > a, .hx-menu__toggle { font-size: 1.125rem; }
 }
 
 /* ============================================================

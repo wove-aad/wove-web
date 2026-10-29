@@ -9,8 +9,11 @@
  * - $clients:     case studies for the carousel, each with its post count;
  * - $topics:      services, then editorial tags, in the site-wide tag order,
  *                 limited to those used by at least one entry;
- * - $entryFilters: per entry, the filter keys it matches (cs:, service:, tag:,
- *                 author:);
+ * - $entryFilters: per entry, the filter keys it matches (type:, cs:,
+ *                 service:, tag:, author:);
+ * - $types:       Projects, Thinking and News with their entry counts, for
+ *                 the filters beside the feed heading (types with none are
+ *                 left out);
  * - $sectors:     sectors used by at least one entry (key => label);
  * - $authors:     credited authors (slug => user), by name, for the Team
  *                 filter and its person panels.
@@ -37,6 +40,7 @@ return function ($page, $site, $kirby) {
     $caseStudies = $kirby->collection('case-studies');
 
     $entryFilters = [];
+    $typeCounts   = [];
     $usedServices = [];
     $usedTags     = [];
     $clientCounts = [];
@@ -73,7 +77,15 @@ return function ($page, $site, $kirby) {
             $keys[] = 'author:' . $slug;
             $authors[$slug] = $author;
         }
+        $type = wove_post_type($entry);
+        $keys[] = 'type:' . $type;
+        $typeCounts[$type] = ($typeCounts[$type] ?? 0) + 1;
         $entryFilters[$entry->id()] = array_values(array_unique($keys));
+    }
+
+    $types = [];
+    foreach (wove_post_type_labels() as $type => $label) {
+        if (!empty($typeCounts[$type])) $types['type:' . $type] = ['label' => $label, 'count' => $typeCounts[$type]];
     }
 
     // Topics in tag order: services, then editorial tags (site order).
@@ -105,6 +117,7 @@ return function ($page, $site, $kirby) {
     return [
         'entries'      => $entries,
         'entryFilters' => $entryFilters,
+        'types'        => $types,
         'authors'      => $authors,
         'sectors'      => array_intersect_key($sectorLabels, $usedSectors),
         'clients'      => $clients,

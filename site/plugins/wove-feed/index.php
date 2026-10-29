@@ -52,10 +52,27 @@ function wove_service_intro(string $slug): string
 }
 
 /**
+ * A post's type, for the feed's Projects / Thinking / News filters and the
+ * card pill: its Post type field, or project when it is (or relates to) a
+ * case study, otherwise thinking.
+ */
+function wove_post_type(Page $p): string
+{
+	$type = (string) $p->content()->get('postType')->value();
+	if (in_array($type, ['project', 'thinking', 'news'], true)) return $type;
+
+	$isProject = $p->intendedTemplate()->name() === 'case-study' || $p->case_study()->toPages()->isNotEmpty();
+	return $isProject ? 'project' : 'thinking';
+}
+
+function wove_post_type_labels(): array
+{
+	return ['project' => 'Projects', 'thinking' => 'Thinking', 'news' => 'News'];
+}
+
+/**
  * The pill on a feed card's image: the first service and the post type,
- * "Labs · Thinking". Posts without a service read "Studio". The type is a
- * post's Post type field, or Project when it (or its page) is a case
- * study, otherwise Thinking.
+ * "Labs · Thinking". Posts without a service read "Studio".
  */
 function wove_post_pill(Page $p): string
 {
@@ -66,13 +83,7 @@ function wove_post_pill(Page $p): string
 	}
 
 	$types = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
-	$type  = $types[(string) $p->content()->get('postType')->value()] ?? null;
-	if ($type === null) {
-		$isProject = $p->intendedTemplate()->name() === 'case-study' || $p->case_study()->toPages()->isNotEmpty();
-		$type = $isProject ? 'Project' : 'Thinking';
-	}
-
-	return $service . ' · ' . $type;
+	return $service . ' · ' . $types[wove_post_type($p)];
 }
 
 /**

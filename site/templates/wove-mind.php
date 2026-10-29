@@ -8,11 +8,11 @@
  * links to Our work and Our people. The page's own nav is in the hero, so
  * the global header nav is left out.
  *
- * Our work: a client carousel (one card per case study) and topic pills
- * filter the feed in place, one filter at a time. Selecting a client opens
- * its case study panel. The feed shows 12 cards; "See all" goes to Our Work
- * with the active filter. A pinned bar repeats the filters and holds the
- * site menu once the full controls have scrolled away.
+ * Wove latest: Projects, Thinking and News beside the heading filter the
+ * feed in place, one filter at a time (choosing the active one again shows
+ * everything). ?filter= links (Impact areas, authors) still filter, with
+ * their context panel. The feed shows 12 cards with "Load more". A pinned
+ * bar repeats the type filters once the heading has scrolled away.
  * Behaviour: assets/js/home.js. Styles: assets/css/home.css.
  */
 
@@ -32,12 +32,19 @@ $initial = get('filter') ?: '*';
 
   <div class="feed-wrap">
 
-    <?php snippet('home/filter-bar', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>
+    <?php snippet('home/filter-bar', ['types' => $types, 'totalCount' => $totalCount]) ?>
 
     <main class="feed feed--home" id="main">
 
       <div class="feed__header" id="feed">
         <h2 class="feed__title">Wove latest</h2>
+        <?php if ($types): ?>
+          <div class="feed-types" id="feed-types" role="group" aria-label="Filter by type">
+            <?php foreach ($types as $key => $type): ?>
+              <button type="button" class="feed-type" data-filter="<?= html($key) ?>" aria-pressed="false"><?= html($type['label']) ?> <span class="feed-type__count"><?= $type['count'] ?></span></button>
+            <?php endforeach ?>
+          </div>
+        <?php endif ?>
       </div>
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>

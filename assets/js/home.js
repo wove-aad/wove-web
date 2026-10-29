@@ -1,9 +1,10 @@
 /* Feed behaviour: the homepage (site/templates/wove-mind.php) and Our work
  * (snippets/feed/work-view.php, also used by the service and tag pages).
  *
- * Filters: the client carousel, topic pills, the pinned bar chips and the
- * tags on cards all set one active filter ("cs:slug", "service:x",
- * "tag:y", or "*" for all). Choosing the active one again clears it. Cards
+ * Filters: Projects / Thinking / News beside the feed heading (#feed-types)
+ * and the pinned bar chips set one active filter ("type:project", or "*"
+ * for all); ?filter= links and author links on cards can also set
+ * "cs:slug", "service:x", "tag:y", "sector:z" or "author:slug". Choosing the active one again clears it. Cards
  * carry data-filters; the first N matches show (N = data-limit on the grid,
  * all of them when it has none). With data-page (Our work) N starts at that
  * many and "Load more" adds the same again; choosing a filter resets it. Selecting a filter shows its context
@@ -17,12 +18,14 @@
  * Layout: a plain CSS grid in date order, rows aligned at the top
  * (home.css), so reading and tab order match what you see.
  *
- * Pinned bar: shows once the full filter controls have scrolled away while
- * the feed is on screen, and (menu button only) on scroll-up elsewhere past
- * the hero. The menu holds Back to top and the site links.
+ * Pinned bar: shows once the feed heading has scrolled away while the feed
+ * is on screen, and (back-to-top button only) on scroll-up elsewhere past
+ * the hero.
  */
 (function () {
   var filters = document.getElementById('filters');
+  var types = document.getElementById('feed-types');
+  var heading = document.getElementById('feed');
   var grid = document.getElementById('feed-grid');
   var bar = document.getElementById('filter-bar');
   if (!filters || !grid || !bar) return;
@@ -47,7 +50,7 @@
 
   // Every control that sets a filter
   function controls() {
-    return [].slice.call(document.querySelectorAll('#filters [data-filter], #filter-bar [data-filter]'));
+    return [].slice.call(document.querySelectorAll('#feed-types [data-filter], #filter-bar [data-filter]'));
   }
 
   function labelFor(key) {
@@ -98,8 +101,7 @@
       moreLink.innerHTML = 'See all ' + (name ? escapeHTML(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span>';
     }
 
-    revealInCarousel();
-    syncMore();
+    syncBar();
   }
 
   function escapeHTML(s) {
@@ -133,83 +135,6 @@
     });
   }
 
-  /* ---------- Client carousel ---------- */
-
-  var track = filters.querySelector('.client-carousel__track');
-  var slider = filters.querySelector('.client-carousel__slider');
-  var arrows = [].slice.call(filters.querySelectorAll('.client-carousel__arrow'));
-
-  function maxScroll() { return track.scrollWidth - track.clientWidth; }
-  var carouselControls = filters.querySelector('.client-carousel__controls');
-  function syncCarousel() {
-    var max = maxScroll();
-    // Nothing to scroll: hide the slider and arrows.
-    carouselControls.hidden = max <= 2;
-    slider.value = max > 0 ? Math.round(track.scrollLeft / max * 1000) : 0;
-    // The dark segment marks the part of the client list in view.
-    var total = track.scrollWidth || 1;
-    slider.style.setProperty('--from', (track.scrollLeft / total * 100) + '%');
-    slider.style.setProperty('--to', ((track.scrollLeft + track.clientWidth) / total * 100) + '%');
-    arrows.forEach(function (b) {
-      var dir = +b.getAttribute('data-step');
-      b.disabled = dir < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2;
-    });
-  }
-  function revealInCarousel() {
-    var btn = track.querySelector('[aria-pressed="true"]');
-    var li = btn && btn.parentElement;
-    if (li && (li.offsetLeft < track.scrollLeft || li.offsetLeft + li.offsetWidth > track.scrollLeft + track.clientWidth)) {
-      // The page also scrolls; two smooth scrolls at once can cancel (Safari), so this one jumps.
-      track.scrollTo({ left: li.offsetLeft - track.offsetLeft, behavior: 'auto' });
-    }
-  }
-  track.addEventListener('scroll', syncCarousel, { passive: true });
-  window.addEventListener('resize', syncCarousel);
-  slider.addEventListener('input', function () { track.scrollLeft = slider.value / 1000 * maxScroll(); });
-  arrows.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var card = track.querySelector('.client-card');
-      var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      track.scrollBy({ left: +b.getAttribute('data-step') * (card.offsetWidth + gap), behavior: behaviour() });
-    });
-  });
-  syncCarousel();
-
-  // Click and drag with a mouse (touch screens swipe natively). A drag of
-  // more than a few pixels doesn't count as a click on the card under it.
-  var drag = null, dragged = false;
-  track.addEventListener('pointerdown', function (ev) {
-    if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
-    drag = { x: ev.clientX, left: track.scrollLeft, id: ev.pointerId };
-    dragged = false;
-  });
-  track.addEventListener('pointermove', function (ev) {
-    if (!drag || ev.pointerId !== drag.id) return;
-    var dx = ev.clientX - drag.x;
-    if (!dragged && Math.abs(dx) > 5) {
-      dragged = true;
-      track.setPointerCapture(drag.id);
-      track.classList.add('is-dragging');
-    }
-    if (dragged) track.scrollLeft = drag.left - dx;
-  });
-  function endDrag() {
-    if (!drag) return;
-    drag = null;
-    if (!dragged) return;
-    track.classList.remove('is-dragging');
-    // Settle on the nearest card, as the snap would
-    var card = track.querySelector('.client-card');
-    var step = card.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
-    track.scrollTo({ left: Math.round(track.scrollLeft / step) * step, behavior: behaviour() });
-  }
-  track.addEventListener('pointerup', endDrag);
-  track.addEventListener('pointercancel', endDrag);
-  track.addEventListener('click', function (ev) {
-    if (dragged) { ev.preventDefault(); ev.stopPropagation(); dragged = false; }
-  }, true);
-  track.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
-
   /* ---------- Filter clicks ---------- */
 
   function onFilterClick(ev) {
@@ -220,6 +145,7 @@
     scrollToResults();
   }
   filters.addEventListener('click', onFilterClick);
+  if (types) types.addEventListener('click', onFilterClick);
 
   // Our work: show the next page of matches, and move focus to the first
   // new card so keyboard users carry on from there.
@@ -262,47 +188,16 @@
 
   /* ---------- Pinned bar ---------- */
 
-  var menu = bar.querySelector('.filter-bar__menu');
-  var menuBtn = bar.querySelector('[data-menu]');
-  var morePanel = bar.querySelector('.filter-more');
-  var moreBtn = bar.querySelector('[data-more]');
-  var moreLabel = bar.querySelector('[data-more-label]');
-  var pills = filters.querySelector('.topic-pills');
-  var barShown = false, menuOpen = false, moreOpen = false;
+  var barShown = false;
 
-  // When the active filter is one of the More panel's, the More button
-  // carries its name and the pressed look (choosing it again in the panel
-  // clears it, as with the chips).
-  function syncMore() {
-    // Narrow screens: keep the active chip in view in the swipe row
+  // Narrow screens: keep the active chip in view in the swipe row
+  function syncBar() {
     var row = bar.querySelector('.filter-bar__chips');
     var chip = row && row.querySelector('[aria-pressed="true"]:not([data-filter="*"])');
     if (chip && chip.offsetParent && row.scrollWidth > row.clientWidth) {
       var l = chip.offsetLeft - row.offsetLeft;
       if (l < row.scrollLeft || l + chip.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = l - 16;
     }
-    if (!moreBtn) return;
-    var item = morePanel.querySelector('[data-filter="' + active + '"]');
-    // Clients shown in the bar are also listed in More: the chip shows it
-    var chipInBar = bar.querySelector('.filter-bar__chips [data-filter="' + active + '"]');
-    if (chipInBar && chipInBar.offsetParent) item = null;
-    moreLabel.textContent = item ? item.querySelector('.filter-more__name').textContent : 'More';
-    moreBtn.classList.toggle('is-active', !!item);
-  }
-
-  function toggleMenu(open) {
-    if (!menu) return;
-    menuOpen = open;
-    menu.hidden = !open;
-    menuBtn.setAttribute('aria-expanded', String(open));
-    if (open) toggleMore(false);
-  }
-  function toggleMore(open) {
-    if (!moreBtn) return;
-    moreOpen = open;
-    morePanel.hidden = !open;
-    moreBtn.setAttribute('aria-expanded', String(open));
-    if (open && menuOpen) toggleMenu(false);
   }
 
   // Scroll direction, with thresholds so small movements don't flicker the bar.
@@ -315,12 +210,12 @@
     if ((dy < 0) !== (travel < 0)) travel = 0;
     travel += dy;
     if (travel < -40) scrollingUp = true;
-    if (travel > 12) { scrollingUp = false; if (menuOpen) toggleMenu(false); if (moreOpen) toggleMore(false); }
+    if (travel > 12) scrollingUp = false;
 
     var chipsH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
-    var inFeed = pills.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
+    var inFeed = heading.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
     var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
-    var show = inFeed || (scrollingUp && pastHero) || menuOpen || moreOpen;
+    var show = inFeed || (scrollingUp && pastHero);
 
     bar.classList.toggle('show-chips', inFeed);
     if (show !== barShown) {
@@ -339,24 +234,11 @@
 
   bar.addEventListener('click', function (ev) {
     if (ev.target.closest('[data-top]')) {
-      toggleMenu(false);
       scrollingUp = false;
       window.scrollTo({ top: 0, behavior: behaviour() });
       return;
     }
-    if (ev.target.closest('[data-menu]')) { toggleMenu(!menuOpen); return; }
-    if (ev.target.closest('.filter-bar__menu a')) { toggleMenu(false); return; }
-    if (ev.target.closest('[data-more]')) { toggleMore(!moreOpen); return; }
-    if (ev.target.closest('.filter-more [data-filter]')) toggleMore(false);
     onFilterClick(ev);
-  });
-
-  document.addEventListener('click', function (ev) {
-    if ((menuOpen || moreOpen) && !bar.contains(ev.target)) { toggleMenu(false); toggleMore(false); updateBar(); }
-  });
-  document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape' && menuOpen) { toggleMenu(false); menuBtn.focus(); }
-    if (ev.key === 'Escape' && moreOpen) { toggleMore(false); moreBtn.focus(); }
   });
 
   /* ---------- Start ---------- */

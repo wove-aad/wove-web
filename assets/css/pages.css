@@ -1094,3 +1094,101 @@ html:not(.js) .person-detail__close { display: none; }
   .cp-post__title { font-size: 1.1875rem; }
   .cp-post__line { font-size: 1.0625rem; }
 }
+
+/* ============================================================
+   IMPACT AREA PAGE (templates/tag.php)
+   From the Figma "Impact Area" frame (1240:9091). The opening shares
+   the service page header styles (.sv-head__*) on a mint band; Browse
+   work and More use the client page activity grid (.cp-*).
+   ============================================================ */
+.ia-head { background: var(--color-mint); }
+.ia-head .hx__inner { padding-bottom: var(--space-128); }
+
+/* The strip of impact areas: outlined pills with a colour dot, the
+   current one filled in. Wraps on wide screens; swipes on phones. */
+.ia-areas { margin-top: var(--space-64); }
+.ia-areas__list { display: flex; flex-wrap: wrap; gap: var(--space-12); margin: 0; padding: 0; list-style: none; }
+.ia-area {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 2.875rem;
+  padding: 0 1.25rem 0 0.875rem;
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-black);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+}
+.ia-area:hover { background: var(--color-stone-100); }
+.ia-area:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+.ia-area[aria-current="page"] { background: var(--color-black); color: var(--color-white); }
+.ia-area__dot { flex-shrink: 0; width: 1rem; height: 1rem; border: 1px solid rgb(17 17 17 / 0.2); border-radius: 50%; background: var(--dot); }
+.ia-area[aria-current="page"] .ia-area__dot { border-color: transparent; }
+
+.ia-head__title { max-width: 10.7em; margin-top: var(--space-64); }
+.ia-head .sv-head__lead { font-size: clamp(1.375rem, 2.2vw, 2rem); }
+.ia-head__text { line-height: 1.3; letter-spacing: -0.01em; }
+.ia-main { padding-top: var(--space-80); padding-bottom: var(--space-96); }
+
+/* Collection: a featured client in the area, its posts in a row that
+   scrolls sideways */
+.ia-collection { padding: var(--space-128) 0; background: var(--color-mint); }
+.ia-collection__inner { max-width: var(--width-header); margin: 0 auto; padding: 0 var(--gutter-x); }
+.ia-collection__title {
+  max-width: 8.5em;
+  font-size: clamp(3rem, 8.33vw, 7.5rem);
+  font-weight: var(--weight-bold);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+.ia-collection__text { max-width: 21.7em; margin-top: var(--space-16); font-size: 1.5rem; font-weight: var(--weight-medium); line-height: 1.33; }
+.ia-pieces {
+  --edge: max(var(--gutter-x), calc((100vw - var(--width-header)) / 2 + var(--gutter-x)));
+  display: flex;
+  gap: var(--space-24);
+  margin: var(--space-48) 0;
+  padding: 0 var(--edge) var(--space-8, 0.5rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--edge);
+  scrollbar-width: thin;
+  list-style: none;
+}
+.ia-piece { flex: 0 0 min(23.75rem, 80vw); scroll-snap-align: start; }
+.ia-piece__link { display: flex; flex-direction: column; gap: 0.75rem; color: var(--color-black); text-decoration: none; }
+.ia-piece__media { display: block; aspect-ratio: 38 / 25; overflow: hidden; border-radius: var(--radius-sm); background: var(--color-stone-900); }
+.feed-wrap .ia-piece__image { width: 100%; height: 100%; object-fit: cover; }
+.ia-piece__label { font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.ia-piece__title { font-size: 1.25rem; font-weight: var(--weight-bold); line-height: 1.3; letter-spacing: -0.01em; }
+.ia-piece__link:hover .ia-piece__title { text-decoration: underline; text-underline-offset: 3px; }
+.ia-piece__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
+.ia-piece__meta { font-size: 0.875rem; color: var(--color-text-muted); }
+.feed-wrap .ia-collection__link { display: inline-flex; gap: 0.625rem; font-size: 1.125rem; font-weight: var(--weight-bold); }
+.feed-wrap .ia-collection__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ia-more { padding-top: var(--space-96); }
+.ia-more .cp-explore { margin-top: var(--space-48); }
+.ia-more .cp-posts + .cp-explore { margin-top: var(--space-48); }
+
+@media (max-width: 960px) {
+  .ia-head .hx__inner { padding-bottom: var(--space-64); }
+  .ia-areas { margin-top: var(--space-40); }
+  .ia-head__title { margin-top: var(--space-48); }
+  .ia-collection { padding: var(--space-80) 0; }
+  .ia-more { padding-top: var(--space-64); }
+}
+@media (max-width: 600px) {
+  .ia-areas { margin-inline: calc(-1 * var(--gutter-x)); }
+  .ia-areas__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 var(--gutter-x);
+    scrollbar-width: none;
+  }
+  .ia-areas__list::-webkit-scrollbar { display: none; }
+  .ia-area { min-height: 2.5rem; font-size: 0.9375rem; }
+}

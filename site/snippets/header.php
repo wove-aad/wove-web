@@ -40,6 +40,11 @@ if ($seoDescription->isEmpty() && $page->intendedTemplate()->name() === 'wove-mi
     $seoDescription = new Kirby\Content\Field($page, 'seoDescription',
         $source->isNotEmpty() ? $source->excerpt(160) : $page->blocks()->toBlocks()->excerpt(160));
 }
+// Pages rendered for something else through a route (the impact area
+// pages render page('tag')) pass their own title, description and address.
+if (isset($metaTitle) && $metaTitle !== '') $seoTitle = $metaTitle;
+if (isset($metaDescription) && $metaDescription !== '') $seoDescription = new Kirby\Content\Field($page, 'seoDescription', $metaDescription);
+$pageUrl = $metaUrl ?? $page->url();
 $robotsFlags    = $page->robots()->split(',');
 $robotsContent  = implode(', ', array_filter([
   in_array('noindex', $robotsFlags) ? 'noindex' : 'index',
@@ -60,14 +65,14 @@ $ogType = $page->ogtype()->or('website')->value();
   <meta name="description" content="<?= $seoDescription->html() ?>">
 <?php endif ?>
 <meta name="robots" content="<?= html($robotsContent) ?>">
-<link rel="canonical" href="<?= $page->url() ?>">
+<link rel="canonical" href="<?= $pageUrl ?>">
 
 <meta property="og:title" content="<?= html($seoTitle) ?>">
 <?php if ($seoDescription->isNotEmpty()): ?>
   <meta property="og:description" content="<?= $seoDescription->html() ?>">
 <?php endif ?>
 <meta property="og:type" content="<?= html($ogType) ?>">
-<meta property="og:url" content="<?= $page->url() ?>">
+<meta property="og:url" content="<?= $pageUrl ?>">
 <meta property="og:site_name" content="<?= $site->title()->html() ?>">
 <meta name="twitter:card" content="summary_large_image">
 

@@ -36,9 +36,11 @@
 
   /* ---------- Client page: activity filters ---------- */
 
-  var activity = document.querySelector('[data-activity]');
+  // Impact area pages have two grids; the second (data-flat) never has a
+  // large first card.
+  var activity = [].slice.call(document.querySelectorAll('[data-activity]'));
   var activityFilters = document.querySelector('[data-activity-filters]');
-  if (activity && activityFilters) {
+  if (activity.length && activityFilters) {
     activityFilters.addEventListener('click', function (ev) {
       var btn = ev.target.closest('[data-type]');
       if (!btn) return;
@@ -46,10 +48,12 @@
       [].forEach.call(activityFilters.querySelectorAll('[data-type]'), function (b) {
         b.setAttribute('aria-pressed', String(b === btn));
       });
-      [].forEach.call(activity.children, function (li) {
-        li.hidden = type !== '*' && li.getAttribute('data-type') !== type;
+      activity.forEach(function (grid) {
+        [].forEach.call(grid.children, function (li) {
+          li.hidden = type !== '*' && li.getAttribute('data-type') !== type;
+        });
+        if (!grid.hasAttribute('data-flat')) grid.classList.toggle('is-filtered', type !== '*');
       });
-      activity.classList.toggle('is-filtered', type !== '*');
     });
   }
 

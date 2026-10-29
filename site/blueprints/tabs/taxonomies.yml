@@ -18,6 +18,11 @@ fields:
       intro:
         label: Tag Intro
         type: text
+        help: Also the line under the name on the impact area page.
+      interest:
+        label: Currently interested in
+        type: text
+        help: Optional. Shown in a small card on the impact area page.
       subtitle:
         label: Subtitle
         type: text

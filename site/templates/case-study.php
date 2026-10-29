@@ -1,76 +1,76 @@
 <?php
 /**
- * Case study page
+ * Client page (a case study)
  * File: site/templates/case-study.php
  * Blueprint: site/blueprints/pages/case-study.yml
  *
- * Header: "All work" back link and "Case study · client", the title,
- * summary, then services and editorial tags (site-wide tag order; the
- * sector is in the facts). The featured image is pulled up into the blush
- * band. Then three figures, the story (blocks) beside a sticky facts column
- * (client, sector, services, year, project team), the testimonial, posts
- * from this project and the next case study.
+ * From the Figma "Client page" frame (1267:13489), 2026-10-29:
+ * - Intro on a mint band: the hero title in grey with the client name in
+ *   black under it, then the summary and a meta row (date, client,
+ *   services, impact areas).
+ * - The hero image, then "The headlines" (Impact Stats, up to four).
+ * - Activity: the client's posts (related to this case study), the pinned
+ *   one large beside the next two, then rows of three. All / Projects /
+ *   Thinking / News filter them in place (pages.js); the type filters
+ *   only show the types this client has.
+ * - "Explore more {service} work" goes to the first service's page.
+ * The story blocks, facts, team, testimonial and next case study from the
+ * previous layout aren't in this design; their fields stay in the Panel.
+ * Styles: the CLIENT PAGE section of assets/css/pages.css.
  */
 
 $name     = $page->eyebrow()->or($page->title())->value();
-$title    = $page->heroTitle()->isNotEmpty() ? strip_tags($page->heroTitle()->value()) : $page->title()->value();
+$headline = $page->heroTitle()->isNotEmpty() ? trim(strip_tags($page->heroTitle()->value())) : '';
+$headline = $headline === $name ? '' : $headline;
 $summary  = $page->summary()->or($page->subStatement())->value();
 $image    = $page->caseStudyImages()->toFile();
-$stats    = $page->stats()->toStructure()->limit(3);
-$quote    = $page->testimonial()->toStructure()->first();
-$blocks   = $page->blocks()->toBlocks();
-$team     = $page->team()->toStructure();
+$stats    = $page->stats()->toStructure()->limit(4);
 $services = wove_service_labels();
-$sectors  = wove_sector_labels();
 $siteTags = $site->tags()->toStructure();
-$workUrl  = wove_work_url();
-$filter   = fn ($key) => $workUrl . '?filter=' . urlencode($key);
 
-// Services, then editorial tags
-$pills = [];
+// Meta row: date, client, services, impact areas
+$meta = [];
+if ($page->date()->isNotEmpty()) $meta[] = html($page->date()->toDate('j M Y'));
+$meta[] = html($name);
+$firstService = null;
 foreach ($page->services()->split(',') as $s) {
-  if (isset($services[$s])) $pills[] = ['label' => $services[$s], 'url' => $filter('service:' . $s)];
+  if (!isset($services[$s])) continue;
+  $firstService ??= $s;
+  $meta[] = '<a href="' . url('services/' . $s) . '">' . html($services[$s]) . '</a>';
 }
 foreach ($page->impactAreas()->split(',') as $t) {
   $tag = $siteTags->findBy('slug', $t) ?? $siteTags->findBy('name', $t);
-  if ($tag && $tag->active()->toBool() !== false) $pills[] = ['label' => $tag->name()->value(), 'url' => $filter('tag:' . $tag->slug())];
+  if ($tag && $tag->active()->toBool() !== false) $meta[] = '<a href="' . url('tag/' . $tag->slug()) . '">' . $tag->name()->html() . '</a>';
 }
 
-// Team members who have a profile link to it
-$members = [];
-foreach (wove_team_members() as $m) $members[(string) $m->name()->value()] = $m;
-$tones = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
-
+// Activity: this client's posts, the pinned one first
 $posts = ($wm = $site->find('wove-mind'))
   ? $wm->children()->listed()
-      ->filter(fn ($p) => $p->case_study()->toPages()->has($page))
+      ->filter(fn ($p) => $p->case_study()->toPages()->has($page) && $p->format()->value() !== 'spark')
       ->sortBy('date', 'desc')
   : new \Kirby\Cms\Pages();
-$feedKeys = wove_feed()['keys'];
+$pinned = $page->pinnedPost()->toPage();
+$pinned = $pinned && $posts->has($pinned) ? $pinned : $posts->first();
+$posts  = $pinned ? array_merge([$pinned], $posts->not($pinned)->values()) : [];
 
-$next = $page->nextListed() ?? $page->siblings()->listed()->not($page)->first();
+$typeLabels = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
+$typeCounts = [];
+foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
 ?>
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
-<div class="home" data-theme="light">
+<div class="home cp" data-theme="light">
 
-  <header class="hx hx--page<?= $image ? ' hx--lead' : '' ?>">
+  <header class="hx hx--page cp-head">
     <div class="hx__inner">
-      <?php snippet('brand/header-row', ['current' => 'work']) ?>
-      <div class="hx-body">
-        <div class="ph__top">
-          <a class="ph__back" href="<?= $workUrl ?>"><span aria-hidden="true">&larr;</span> All work</a>
-          <p class="ph__kicker">Case study · <?= html($name) ?></p>
-        </div>
-        <h1 class="ph__title"><?= html($title) ?></h1>
-        <?php if ($summary): ?><p class="ph__intro"><?= html($summary) ?></p><?php endif ?>
-        <?php if ($pills): ?>
-          <div class="ph__pills">
-            <?php foreach ($pills as $pill): ?>
-              <a class="ph__pill" href="<?= $pill['url'] ?>"><?= html($pill['label']) ?></a>
-            <?php endforeach ?>
-          </div>
-        <?php endif ?>
+      <?php snippet('brand/header-row') ?>
+      <h1 class="cp-head__title">
+        <?php if ($headline): ?><span class="cp-head__question"><?= html($headline) ?></span><?php endif ?>
+        <span class="cp-head__name"><?= html($name) ?></span>
+      </h1>
+      <div class="cp-head__lead">
+        <?php if ($summary): ?><p class="cp-head__summary"><?= html($summary) ?></p><?php endif ?>
+        <p class="cp-head__meta"><?= implode(' ', array_map(fn ($m) => '<span>' . $m . '</span>', $meta)) ?></p>
       </div>
     </div>
   </header>
@@ -78,119 +78,73 @@ $next = $page->nextListed() ?? $page->siblings()->listed()->not($page)->first();
   <div class="feed-wrap">
     <?php snippet('brand/menu-bar') ?>
 
-    <?php if ($image): ?>
-      <div class="pg-lead-image">
-        <?php snippet('picture', [
-          'file'          => $image,
-          'widths'        => [640, 960, 1280, 1600, 2000, 2560],
-          'ratio'         => 21 / 9,
-          'sizes'         => '(min-width: 85rem) 79rem, calc(100vw - 2rem)',
-          'alt'           => $image->alt()->or($name)->value(),
-          'loading'       => 'eager',
-          'fetchpriority' => 'high',
-        ]) ?>
-      </div>
-    <?php endif ?>
+    <main class="pg cp-main" id="main">
 
-    <main class="pg" id="main">
+      <?php if ($image): ?>
+        <div class="cp-hero">
+          <?php snippet('picture', [
+            'file'          => $image,
+            'widths'        => [640, 960, 1280, 1600, 2000, 2560],
+            'ratio'         => 11 / 5,
+            'sizes'         => '(min-width: 85rem) 79rem, calc(100vw - 2rem)',
+            'alt'           => $image->alt()->or($name)->value(),
+            'loading'       => 'eager',
+            'fetchpriority' => 'high',
+            'class'         => 'cp-hero__image',
+          ]) ?>
+        </div>
+      <?php endif ?>
 
       <?php if ($stats->count()): ?>
-        <section class="pg-section" aria-label="Key figures">
-          <dl class="csp-stats">
+        <section class="cp-section" aria-labelledby="cp-headlines">
+          <h2 class="cp-heading" id="cp-headlines">The headlines</h2>
+          <dl class="cp-stats">
             <?php foreach ($stats as $stat): ?>
-              <div class="csp-stat"><dt><?= $stat->label()->html() ?></dt><dd><?= $stat->value()->html() ?></dd></div>
+              <div class="cp-stat"><dt><?= $stat->value()->html() ?></dt><dd><?= $stat->label()->html() ?></dd></div>
             <?php endforeach ?>
           </dl>
         </section>
       <?php endif ?>
 
-      <section class="pg-section cs-main" aria-label="Case study">
-        <aside class="cs-aside">
-          <dl class="cs-facts">
-            <div><dt>Client</dt><dd><?= html($name) ?></dd></div>
-            <?php if ($sec = array_filter(array_map(fn ($s) => isset($sectors[$s]) ? '<a href="' . $filter('sector:' . $s) . '">' . html($sectors[$s]) . '</a>' : null, $page->sectors()->split(',')))): ?>
-              <div><dt>Sector</dt><dd><?= implode(', ', $sec) ?></dd></div>
-            <?php endif ?>
-            <?php if ($srv = array_filter(array_map(fn ($s) => isset($services[$s]) ? '<a href="' . $filter('service:' . $s) . '">' . $services[$s] . '</a>' : null, $page->services()->split(',')))): ?>
-              <div><dt>Services</dt><dd><?= implode(', ', $srv) ?></dd></div>
-            <?php endif ?>
-            <?php if ($page->date()->isNotEmpty()): ?>
-              <div><dt>Year</dt><dd><?= $page->date()->toDate('Y') ?></dd></div>
-            <?php endif ?>
-            <?php if ($team->count()): ?>
-              <div><dt>Project team</dt>
-                <dd class="csp-team">
-                  <?php foreach ($team as $i => $member):
-                    $memberName = $member->name()->value();
-                    $user   = $members[$memberName] ?? null;
-                    $avatar = $member->avatar()->toFile() ?? $user?->avatar();
-                    $face   = '<span class="avatar" style="--tone: ' . $tones[$i % count($tones)] . '" aria-hidden="true">'
-                      . ($avatar ? '<img src="' . $avatar->crop(80, 80)->url() . '" alt="">' : html(wove_initials($memberName))) . '</span>';
-                  ?>
-                    <?php if ($user): ?>
-                      <a href="<?= url('our-people') ?>#<?= html(wove_author_slug($user)) ?>"><?= $face ?><span><?= html($memberName) ?></span></a>
-                    <?php else: ?>
-                      <span class="csp-team__person"><?= $face ?><span><?= html($memberName) ?></span></span>
-                    <?php endif ?>
-                  <?php endforeach ?>
-                </dd>
+      <?php if ($posts): ?>
+        <section class="cp-section cp-activity" aria-labelledby="cp-activity">
+          <div class="cp-activity__head">
+            <h2 class="cp-activity__title" id="cp-activity">Activity</h2>
+            <?php if (count($typeCounts) > 1): ?>
+              <div class="feed-types" role="group" aria-label="Filter by type" data-activity-filters>
+                <button type="button" class="feed-type" data-type="*" aria-pressed="true">All</button>
+                <?php foreach ($typeLabels as $type => $label): if (empty($typeCounts[$type])) continue ?>
+                  <button type="button" class="feed-type" data-type="<?= $type ?>" aria-pressed="false"><?= wove_post_type_labels()[$type] ?></button>
+                <?php endforeach ?>
               </div>
             <?php endif ?>
-          </dl>
-        </aside>
-        <div class="prose">
-          <?php foreach ($blocks as $block): ?>
-            <?= $block ?>
-          <?php endforeach ?>
-        </div>
-      </section>
-
-      <?php if ($quote && $quote->quote()->isNotEmpty()): ?>
-        <section class="pg-section" aria-label="Testimonial">
-          <figure class="cs-quote">
-            <blockquote><?= $quote->quote()->html() ?></blockquote>
-            <figcaption>
-              <strong><?= $quote->name()->html() ?></strong>
-              <?= html(implode(', ', array_filter([$quote->role()->value(), $quote->organisation()->value()]))) ?>
-              <?php if ($quote->reference_available()->toBool()): ?><br>Available as a reference on request<?php endif ?>
-            </figcaption>
-          </figure>
-        </section>
-      <?php endif ?>
-
-      <?php if ($posts->count()): ?>
-        <section class="pg-section" aria-labelledby="cs-posts-title">
-          <div class="pg-section__head">
-            <h2 class="pg-section__title" id="cs-posts-title">In this collection</h2>
-            <a class="pg-section__link" href="<?= $filter('cs:' . $page->slug()) ?>">See all <span aria-hidden="true">&rarr;</span></a>
           </div>
-          <div class="feed-cards pc-grid">
-            <?php foreach ($posts as $post): ?>
-              <?php snippet('home/post-card', ['post' => $post, 'filters' => $feedKeys[$post->id()] ?? [], 'hidden' => false]) ?>
+          <ul class="cp-posts" role="list" data-activity>
+            <?php foreach ($posts as $i => $post):
+              $type  = wove_post_type($post);
+              $postImage = $post->content()->get('image')->toFile();
+              $line  = $post->body()->isNotEmpty() ? wove_first_sentence($post->body()->value()) : '';
+            ?>
+              <li class="cp-post" data-type="<?= $type ?>">
+                <a class="cp-post__link" href="<?= $post->url() ?>">
+                  <span class="cp-post__media">
+                    <?php if ($postImage): ?>
+                      <?php snippet('picture', [
+                        'file'   => $postImage,
+                        'widths' => [480, 720, 960, 1440],
+                        'sizes'  => $i === 0 ? '(min-width: 960px) 60vw, 100vw' : '(min-width: 960px) 30vw, 100vw',
+                        'class'  => 'cp-post__image',
+                      ]) ?>
+                    <?php endif ?>
+                    <span class="pc__pill"><?= $i === 0 ? 'Pinned · ' : '' ?><?= $typeLabels[$type] ?></span>
+                  </span>
+                  <span class="cp-post__title"><?= $post->title()->html() ?></span>
+                  <?php if ($line): ?><span class="cp-post__line"><?= html($line) ?></span><?php endif ?>
+                </a>
+              </li>
             <?php endforeach ?>
-          </div>
-        </section>
-      <?php endif ?>
-
-      <?php if ($next):
-        $nextName  = $next->eyebrow()->or($next->title())->value();
-        $nextImage = $next->caseStudyImages()->toFile();
-        $nextLogo  = $next->logo()->toFile();
-      ?>
-        <section class="pg-section" aria-label="Next case study">
-          <article class="cs-next">
-            <div class="cs-next__media">
-              <?php if ($nextImage): ?>
-                <?php snippet('picture', ['file' => $nextImage, 'widths' => [480, 640, 900], 'ratio' => 5 / 4, 'sizes' => '(min-width: 961px) 40vw, 100vw']) ?>
-              <?php endif ?>
-              <span class="pc__logo"><?php if ($nextLogo): ?><img src="<?= $nextLogo->url() ?>" alt=""><?php else: ?><?= html($nextName) ?><?php endif ?></span>
-            </div>
-            <div class="cs-next__body">
-              <p class="cs-next__eyebrow">Next case study · <?= html($nextName) ?></p>
-              <h2 class="cs-next__title"><?= html($next->heroTitle()->isNotEmpty() ? strip_tags($next->heroTitle()->value()) : $next->title()->value()) ?></h2>
-              <a class="pg-btn cs-next__link" href="<?= $next->url() ?>">See case study <span aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
+          </ul>
+          <a class="cp-explore" href="<?= $firstService ? url('services/' . $firstService) : wove_work_url() ?>">Explore more <?= $firstService ? html($services[$firstService]) . ' ' : '' ?>work <span aria-hidden="true">&rarr;</span></a>
         </section>
       <?php endif ?>
 

@@ -835,7 +835,7 @@ html:not(.js) .person-detail__close { display: none; }
 .sv-project:nth-child(5n + 1) .sv-project__media { flex: 1; aspect-ratio: auto; min-height: 20rem; }
 .sv-project:nth-child(5n + 2) .sv-project__media,
 .sv-project:nth-child(5n + 3) .sv-project__media { aspect-ratio: 16 / 9; }
-.sv-project__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
+.feed-wrap .sv-project__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
 .sv-project__link:hover .sv-project__image { transform: scale(1.02); }
 .sv-project__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
 .sv-project__pill {
@@ -946,4 +946,141 @@ html:not(.js) .person-detail__close { display: none; }
   .sv-talk { padding: var(--space-24); }
   .sv-talk__prompt { font-size: 1.375rem; }
   .sv-talk__face { width: 3.5rem; height: 3.5rem; }
+}
+
+/* ============================================================
+   CLIENT PAGE (templates/case-study.php)
+   From the Figma "Client page" frame (1267:13489): a mint intro band
+   with the question and client name, the hero image, the headlines and
+   the client's activity.
+   ============================================================ */
+.cp-head { background: var(--color-mint); }
+.cp-head .hx__inner { padding-bottom: var(--space-64); }
+.cp-head__title {
+  display: flex;
+  flex-direction: column;
+  max-width: 12.6em;
+  margin-top: var(--space-96);
+  font-size: clamp(2.75rem, 6.67vw, 6rem);
+  font-weight: var(--weight-xbold);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.cp-head__question { color: var(--color-stone-600); }
+.cp-head__lead {
+  display: grid;
+  grid-template-columns: var(--grid-page);
+  column-gap: var(--space-32);
+  margin-top: var(--space-80);
+}
+.cp-head__lead > * { grid-column: 2; min-width: 0; }
+.cp-head__summary {
+  max-width: 20em;
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.cp-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8, 0.5rem) var(--space-16);
+  max-width: 35rem;
+  margin-top: var(--space-24);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-black);
+  font-size: 0.9375rem;
+  line-height: 1.47;
+}
+.cp-head__meta a { color: inherit; text-decoration: none; }
+.cp-head__meta a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.cp-main { padding-top: var(--space-96); }
+.cp-hero { overflow: hidden; border-radius: var(--radius-lg); }
+.cp-hero__image { display: block; width: 100%; height: auto; }
+.cp-section { margin-top: var(--space-96); }
+.cp-hero + .cp-section { margin-top: var(--space-96); }
+.cp-heading { font-size: 1.5rem; font-weight: var(--weight-xbold); letter-spacing: -0.02em; }
+
+/* The headlines: up to four figures */
+.cp-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-40);
+  margin-top: var(--space-32);
+}
+.cp-stat dt { font-size: clamp(2.5rem, 3.9vw, 3.5rem); font-weight: var(--weight-xbold); line-height: 1; letter-spacing: -0.03em; }
+.cp-stat dd { margin: 0.625rem 0 0; font-size: 1.0625rem; line-height: 1.4; color: var(--color-text-muted); }
+
+/* Activity: the pinned post large beside the next two, then rows of
+   three. Filtering by type drops the large first card (pages.js). */
+.cp-activity__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-16) var(--space-32);
+  margin-bottom: var(--space-48);
+}
+.cp-activity__title { font-size: clamp(2.25rem, 4.45vw, 4rem); font-weight: var(--weight-xbold); line-height: 1; letter-spacing: -0.025em; }
+.cp-posts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-48) var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cp-posts:not(.is-filtered) .cp-post:first-child { grid-column: span 2; grid-row: span 2; }
+.cp-post[hidden] { display: none; }
+.cp-post__link { display: flex; flex-direction: column; height: 100%; color: var(--color-black); text-decoration: none; }
+.cp-post__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  margin-bottom: var(--space-16);
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-stone-300);
+}
+.cp-posts:not(.is-filtered) .cp-post:first-child .cp-post__media { flex: 1; aspect-ratio: auto; min-height: 20rem; }
+.feed-wrap .cp-post__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
+.cp-post__link:hover .cp-post__image { transform: scale(1.02); }
+.cp-post__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
+.cp-post__media .pc__pill { position: absolute; top: var(--space-16); left: var(--space-16); }
+.cp-post__title { font-size: 1.3125rem; font-weight: var(--weight-bold); line-height: 1.28; text-wrap: pretty; }
+.cp-post__link:hover .cp-post__title { text-decoration: underline; text-underline-offset: 3px; }
+.cp-post__line { margin-top: 0.125rem; font-size: 1.1875rem; line-height: 1.32; color: var(--color-text-muted); }
+.feed-wrap .cp-explore {
+  display: inline-flex;
+  gap: 0.375rem;
+  margin-top: var(--space-48);
+  padding: 0.9375rem 1.75rem 1.0625rem;
+  border: 1.5px solid var(--color-black);
+  border-radius: var(--radius-pill);
+  font-size: 1.1875rem;
+  font-weight: var(--weight-bold);
+  transition: background var(--transition), color var(--transition);
+}
+.feed-wrap .cp-explore:hover { background: var(--color-black); color: var(--color-white); }
+.cp-explore:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+
+@media (max-width: 960px) {
+  .cp-head__title { margin-top: var(--space-48); }
+  .cp-head__lead { grid-template-columns: minmax(0, 1fr); margin-top: var(--space-40); }
+  .cp-head__lead > * { grid-column: 1; }
+  .cp-main { padding-top: var(--space-48); }
+  .cp-hero { border-radius: var(--radius-md); }
+  .cp-section, .cp-hero + .cp-section { margin-top: var(--space-64); }
+  .cp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32) var(--space-24); }
+  .cp-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cp-posts:not(.is-filtered) .cp-post:first-child { grid-row: auto; }
+  .cp-posts:not(.is-filtered) .cp-post:first-child .cp-post__media { flex: none; aspect-ratio: 3 / 2; min-height: 0; }
+}
+@media (max-width: 600px) {
+  .cp-posts { grid-template-columns: minmax(0, 1fr); }
+  .cp-posts:not(.is-filtered) .cp-post:first-child { grid-column: auto; }
+  .cp-post__title { font-size: 1.1875rem; }
+  .cp-post__line { font-size: 1.0625rem; }
 }

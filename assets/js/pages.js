@@ -8,6 +8,8 @@
  *   their row; see the section below.
  * - Service page projects ([data-projects]): "Show more" shows the next
  *   ten (the rest are marked data-later and hidden by CSS once JS runs).
+ * - Client page activity ([data-activity]): All / Projects / Thinking /
+ *   News show that type only; filtering drops the large pinned layout.
  */
 (function () {
   function reduceMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
@@ -29,6 +31,25 @@
       var left = projects.querySelectorAll('[data-later]').length;
       count.textContent = 'Showing ' + (total - left) + ' of ' + total;
       if (!left) this.hidden = true;
+    });
+  }
+
+  /* ---------- Client page: activity filters ---------- */
+
+  var activity = document.querySelector('[data-activity]');
+  var activityFilters = document.querySelector('[data-activity-filters]');
+  if (activity && activityFilters) {
+    activityFilters.addEventListener('click', function (ev) {
+      var btn = ev.target.closest('[data-type]');
+      if (!btn) return;
+      var type = btn.getAttribute('data-type');
+      [].forEach.call(activityFilters.querySelectorAll('[data-type]'), function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      [].forEach.call(activity.children, function (li) {
+        li.hidden = type !== '*' && li.getAttribute('data-type') !== type;
+      });
+      activity.classList.toggle('is-filtered', type !== '*');
     });
   }
 

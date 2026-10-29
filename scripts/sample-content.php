@@ -80,6 +80,12 @@ foreach ($cases as $i => [$slug, $name, $title, $summary, $services, $impact, $s
     $fields = ['Title' => $name, 'Eyebrow' => $name, 'HeroTitle' => $title, 'Summary' => $summary, 'SubStatement' => $summary, 'Date' => $date, 'Services' => $services, 'ImpactAreas' => $impact, 'Sectors' => $sector];
     @mkdir($dir, 0777, true);
     if (placeholder($dir . '/hero.jpg', 1600, 1000, $c1, $c2)) $fields['CaseStudyImages'] = '- hero.jpg';
+    if ($slug === 'circular') {
+        // The Figma client page copy
+        $fields['HeroTitle'] = 'How do you launch a national campaign for something people have never heard of?';
+        $fields['Summary']   = 'Ireland’s shift to a circular economy has plenty of policy activity, but little to help ordinary people take part. With the Rediscovery Centre, we started with the foundations: four award-winning strategic frameworks that turn national ambition into everyday action. Everything since, from the brand and platform to the national campaign, is built on them.';
+        $fields['Stats']     = "\n-\n  value: 10 years\n  label: A national behaviour change programme, designed from the citizen up.\n-\n  value: 4 models\n  label: Award-winning strategic frameworks that everything else is built on.\n-\n  value: 12,000\n  label: Visits to Circular.ie in its first year.\n-\n  value: 40\n  label: Community groups engaged through the 2026 campaign.";
+    }
     write_page($dir . '/case-study.txt', $fields);
 }
 
@@ -87,6 +93,7 @@ foreach ($cases as $i => [$slug, $name, $title, $summary, $services, $impact, $s
 $posts = [
     ['longread', 'How do you launch a national campaign for something people have never heard of?', 'circular', 'brand', 'circular-economy, community-engagement', '2026-10-24', [1600, 1100, '#f3eeeb', '#ed8c7c']],
     ['thread', 'Building a future proofed platform for multiple audiences', 'circular', 'digital', 'circular-economy', '2026-10-21', [1200, 800, '#e1f5ee', '#256446']],
+    ['thread', 'Circular.ie shortlisted for the Irish Design Awards', 'circular', 'brand', 'circular-economy', '2026-10-20', [1200, 800, '#ed8c7c', '#f3eeeb'], 'news'],
     ['whatif', 'What if libraries were also radio stations?', '', 'labs', 'community-engagement, arts-and-culture', '2026-10-18', null],
     ['longread', 'How citizen workshops helped us understand what circularity really means for people', 'circular', 'labs, strategy', 'circular-economy', '2026-10-15', [1200, 1500, '#d5faff', '#3a3935']],
     ['thread', 'Welcome Phoebe, our new project manager', '', 'strategy', 'education-and-learning', '2026-10-10', [1000, 1000, '#e0bdff', '#85827d']],
@@ -110,7 +117,8 @@ write_page($root . '/wove-mind/wove-mind.txt', [
     'Subtitle' => 'Strategy, design and technology. Woven together to shape a better Ireland.',
     'Featured' => '- wove-mind/post-1',
 ]);
-foreach ($posts as $i => [$format, $title, $case, $services, $postTags, $date, $img]) {
+foreach ($posts as $i => $row) {
+    [$format, $title, $case, $services, $postTags, $date, $img] = $row;
     $n      = $i + 1;
     $dir    = $root . '/wove-mind/' . $n . '_post-' . $n;
     $fields = [
@@ -122,6 +130,7 @@ foreach ($posts as $i => [$format, $title, $case, $services, $postTags, $date, $
         'Tags'     => $postTags,
     ];
     if ($case) $fields['Case_study'] = '- work/' . $case;
+    if (isset($row[7])) $fields['PostType'] = $row[7];
     @mkdir($dir, 0777, true);
     if ($img && placeholder($dir . '/image.jpg', ...$img)) $fields['Image'] = '- image.jpg';
     write_page($dir . '/wove-mind-entry.txt', $fields);

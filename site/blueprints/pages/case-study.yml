@@ -92,6 +92,14 @@ tabs:
                 default: Given the scale and complexity of this work, the articles below explore specific aspects—from building strategic frameworks right through to launching a national campaign. Each demonstrates how strategic design helps organisations navigate complexity, align diverse stakeholders and change how things work for the better.
                 help: Optional intro text shown above the related Wove Mind entries.
 
+              pinnedPost:
+                label: Pinned post
+                type: pages
+                max: 1
+                multiple: false
+                query: site.find("wove-mind").children.listed
+                help: One of this client's posts (related to this case study), shown large first under Activity on the client page. Leave empty to pin the newest.
+
           # Prev / Next case studies are handled automatically via
           # $page->prev() / $page->next() from siblings — no field needed.
 

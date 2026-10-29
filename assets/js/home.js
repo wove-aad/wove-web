@@ -158,10 +158,10 @@
     if (link) link.focus({ preventScroll: true });
   });
 
-  // Card tags link to Our Work; filter in place when this page has that
-  // filter (a control on the homepage; any matching card on Our work).
+  // Author links on cards go to the feed filtered by that person; filter in
+  // place when this page has that filter.
   grid.addEventListener('click', function (ev) {
-    var a = ev.target.closest('a.card-tags__tag, a.pc__author');
+    var a = ev.target.closest('a.pc__author');
     if (!a) return;
     var key = new URL(a.href, location.href).searchParams.get('filter');
     var control = key && filters.querySelector('[data-filter="' + key + '"]');

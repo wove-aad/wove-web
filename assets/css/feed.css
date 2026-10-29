@@ -334,32 +334,6 @@
   margin-right: var(--feed-space-4);
 }
 
-/* Card tags — services, sectors and editorial tags, linked to filtered Our Work */
-.card-tags {
-  position: relative;
-  z-index: 2; /* above the stretched card link */
-  display: flex; flex-wrap: wrap; align-items: center;
-  gap: var(--feed-space-4) var(--feed-space-8);
-  padding-top: var(--feed-space-4);
-  font-size: var(--feed-fs-meta);
-  line-height: var(--feed-lh-tight);
-}
-.feed-wrap .card-tags__tag {
-  color: var(--feed-blue);
-  text-decoration: none;
-}
-.feed-wrap .card-tags__tag:hover { text-decoration: underline; text-underline-offset: 2px; }
-.card-tags__tag[hidden] { display: none; }
-.card-tags__more {
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: var(--feed-text-dim);
-  cursor: pointer;
-}
-.feed-wrap .card-tags__more:hover { color: var(--feed-blue); }
-
 /* Quote text — sparks */
 .feed-card__quote {
   font-size: var(--feed-fs-card-title);
@@ -540,72 +514,4 @@
   margin-top: auto;
 }
 
-/* --- Tag cloud (flat pills) ----------------------------------- */
-.tag-cloud {
-  padding: var(--feed-space-16) var(--feed-page-px) var(--feed-space-24);
-  max-width: var(--feed-max-w);
-  margin-inline: auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--feed-space-8);
-}
-.tag-pill {
-  font-family: var(--feed-ff);
-  font-size: var(--feed-fs-chip);
-  font-weight: var(--feed-fw-regular);
-  color: var(--feed-text-muted);
-  background: var(--feed-raised);
-  border: none;
-  border-radius: var(--feed-radius-pill);
-  padding: var(--feed-space-8) var(--feed-space-16);
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color var(--feed-transition), color var(--feed-transition);
-}
-.tag-pill:hover { background: var(--feed-border); color: var(--feed-text); }
-.tag-pill:focus-visible { outline: 2px solid var(--feed-text); outline-offset: 2px; }
-.tag-pill.is-active {
-  background: var(--feed-text);
-  color: var(--feed-bg);
-}
-.tag-pill.is-active:hover { opacity: 0.85; }
-
-/* Team dropdown — a native select styled as a pill */
-.tag-pill--select {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  padding: 0;
-}
-.tag-pill--select select {
-  appearance: none;
-  -webkit-appearance: none;
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  border-radius: inherit;
-  padding: var(--feed-space-8) calc(var(--feed-space-16) + 14px) var(--feed-space-8) var(--feed-space-16);
-  field-sizing: content; /* size to the selected option, not the longest name */
-  cursor: pointer;
-}
-.tag-pill--select select:focus-visible { outline: 2px solid var(--feed-text); outline-offset: 2px; }
-.tag-pill--select::after {
-  content: "";
-  position: absolute;
-  right: var(--feed-space-16);
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: translateY(-70%) rotate(45deg);
-  pointer-events: none;
-}
-.tag-pill--select option { color: var(--feed-text); background: var(--feed-surface); }
-@media (max-width: 599px) {
-  .tag-cloud { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  .tag-cloud::-webkit-scrollbar { display: none; }
-  .tag-pill { white-space: nowrap; }
-}
 

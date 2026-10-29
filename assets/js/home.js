@@ -14,8 +14,8 @@
  * Our work: the grid's data-initial is the filter to start with, and
  * data-url is the Our work address, kept in step with ?filter=.
  *
- * Layout: cards stay in date order in the DOM and pack with grid row spans,
- * so reading and tab order match what you see.
+ * Layout: a plain CSS grid in date order, rows aligned at the top
+ * (home.css), so reading and tab order match what you see.
  *
  * Pinned bar: shows once the full filter controls have scrolled away while
  * the feed is on screen, and (menu button only) on scroll-up elsewhere past
@@ -98,7 +98,6 @@
       moreLink.innerHTML = 'See all ' + (name ? escapeHTML(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span>';
     }
 
-    layout();
     revealInCarousel();
     syncMore();
   }
@@ -121,23 +120,6 @@
     if (filters.querySelector('[data-panel="' + key + '"]')) return true;
     return cards.some(function (c) { return (' ' + c.getAttribute('data-filters') + ' ').indexOf(' ' + key + ' ') !== -1; });
   }
-
-  /* ---------- Card layout (grid row spans) ---------- */
-
-  var ROW = 4, GAP = 24;
-  function layout() {
-    cards.forEach(function (el) {
-      if (!el.hidden) el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + GAP) / ROW);
-    });
-  }
-  // Watch each card as well as the grid, so a card that grows (its tags
-  // expanding, an image loading) takes more rows.
-  if (window.ResizeObserver) {
-    var ro = new ResizeObserver(layout);
-    ro.observe(grid);
-    cards.forEach(function (el) { ro.observe(el); });
-  }
-  window.addEventListener('load', layout);
 
   /* ---------- Scroll to results ---------- */
 

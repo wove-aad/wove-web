@@ -1,8 +1,9 @@
 <?php
 /**
  * Homepage hero: logo, main menu and contact button, then the statement as the page
- * title, with preview links to Our work and Our people. The description
- * is in home/intro, under the hero.
+ * title, a subtitle (Hero subtitle field) and preview links to Our work and
+ * Our people, then the featured item (home/featured). The description is in
+ * home/intro, under the hero.
  * Usage: <?php snippet('home/hero', ['clients' => $clients, 'people' => $people]) ?>
  * Statement and description come from the Wove Mind page's hero fields.
  *
@@ -19,6 +20,7 @@
  */
 
 $statement   = $page->headline()->or('Human Centred Transformation')->value();
+$subtitle    = $page->subtitle()->or('Strategy, design and technology. Woven together to shape a better Ireland.')->value();
 $thumbs      = array_filter(array_map(fn ($c) => $c['page']->caseStudyImages()->toFile(), array_slice($clients, 0, 3)));
 $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
 $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null;
@@ -36,6 +38,7 @@ $shape       = get('hero') === '3d';
       <?php else: ?>
         <h1 class="hx-voice__title"><?= html($statement) ?></h1>
       <?php endif ?>
+      <p class="hx-voice__subtitle"><?= html($subtitle) ?></p>
       <div class="hx-voice__links">
         <a class="hx-link" href="<?= wove_work_url() ?>" data-jump-filter="*">
           <?php if ($thumbs): ?>
@@ -63,6 +66,7 @@ $shape       = get('hero') === '3d';
         </a>
       </div>
     </div>
+    <?php snippet('home/featured') ?>
     <?php if ($variant): ?>
       <div class="hx-squiggle" aria-hidden="true">
         <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet" data-narrow="xMidYMid slice" focusable="false">

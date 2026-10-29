@@ -1,7 +1,8 @@
 <?php
 /**
  * Case study card for Our work: one column like the post cards, a generous
- * image with the client logo, then the title, summary and tags.
+ * image with the client logo, then the client name in bold with the title
+ * under it as a one-line subtitle, the summary (one line) and tags.
  * Usage: <?php snippet('home/case-card', ['cs' => $page, 'filters' => [...]]) ?>
  */
 
@@ -26,8 +27,8 @@ $text  = $cs->summary()->or($cs->subStatement())->value();
     </span>
   </div>
   <div class="pc__body">
-    <p class="pc__label">Case study · <?= html($name) ?></p>
-    <h3 class="pc__title"><a class="pc__link" href="<?= $cs->url() ?>"><?= html($title) ?></a></h3>
+    <p class="pc__label">Case study</p>
+    <h3 class="pc__title pc__title--client"><a class="pc__link" href="<?= $cs->url() ?>"><span class="pc__client"><?= html($name) ?></span> <span class="pc__subtitle"><?= html($title) ?></span></a></h3>
     <?php if ($text): ?><p class="pc__excerpt"><?= html($text) ?></p><?php endif ?>
     <?php snippet('card-tags', ['post' => $cs]) ?>
   </div>

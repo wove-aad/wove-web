@@ -18,6 +18,18 @@ tabs:
                 type: text
                 placeholder: Shaping a better Ireland through strategic design and technology
                 help: The opening line of the homepage hero, set in bold grey. Leave empty to use the placeholder text.
+              subtitle:
+                label: Hero subtitle
+                type: text
+                placeholder: Strategy, design and technology. Woven together to shape a better Ireland.
+                help: Shown under the statement. Leave empty to use the placeholder text.
+              featured:
+                label: Featured
+                type: pages
+                max: 1
+                multiple: false
+                query: site.index.listed.filterBy("intendedTemplate", "in", ["wove-mind-entry", "case-study"])
+                help: A post or case study shown large under the hero. Leave empty to show the newest post or case study with an image.
               intro:
                 label: Hero description
                 type: textarea

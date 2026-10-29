@@ -9,6 +9,9 @@
  * - Long reads: image-led, with a reading time.
  * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
  * - Threads: compact title and meta with a small thumbnail.
+ * - Posts from a project lead with the client name in bold, with the title
+ *   under it as the subtitle; posts without one lead with the title. The
+ *   subtitle and excerpt are one line each.
  * The footer has one row with the author (photo or initials, a link that
  * filters the feed to their posts) and the date on the right, then the
  * tags underneath, small and quiet. Tags are links to the work feed; on the homepage assets/js/home.js filters in
@@ -19,6 +22,8 @@
 $format = $post->format()->value() ?: 'thread';
 $image  = $post->content()->get('image')->toFile();
 $author = function_exists('wove_entry_author') ? wove_entry_author($post) : null;
+$client = $post->case_study()->toPages()->first();
+$client = $client ? $client->eyebrow()->or($client->title())->value() : '';
 
 $postMidnight = strtotime('midnight', $post->date()->toTimestamp() ?: $post->modified());
 $daysAgo      = (int) round((strtotime('today') - $postMidnight) / 86400);
@@ -35,7 +40,7 @@ $ratio   = $image && $image->height() ? $image->width() . ' / ' . $image->height
 // Reading time for long reads, from the body and blocks text.
 $minutes = null;
 if ($format === 'longread' && function_exists('wove_mind_blocks_text')) {
-  $words   = str_word_count(wove_mind_plain_text($post->body()->value()) . ' ' . wove_mind_blocks_text($post->blocks()->value()));
+  $words   = str_word_count(wove_mind_plain_text($post->body()->value()) . ' ' . wove_mind_blocks_text((string) $post->blocks()->value()));
   $minutes = max(1, (int) ceil($words / 200));
 }
 
@@ -74,8 +79,12 @@ $end = function () use ($post, $author, $date) {
     <?php snippet('card-tags', ['post' => $post]) ?>
   </div>
 <?php };
-$title = function () use ($post, $linked) { ?>
-  <h3 class="pc__title"><?php if ($linked): ?><a class="pc__link" href="<?= $post->url() ?>"><?= $post->title()->html() ?></a><?php else: ?><?= $post->title()->html() ?><?php endif ?></h3>
+$title = function () use ($post, $linked, $client) {
+  $text = $client
+    ? '<span class="pc__client">' . html($client) . '</span> <span class="pc__subtitle">' . $post->title()->html() . '</span>'
+    : $post->title()->html();
+  ?>
+  <h3 class="pc__title<?= $client ? ' pc__title--client' : '' ?>"><?php if ($linked): ?><a class="pc__link" href="<?= $post->url() ?>"><?= $text ?></a><?php else: ?><?= $text ?><?php endif ?></h3>
 <?php };
 $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-image' : ' pc--spark-text') : '') . ($image ? ' has-image' : '');
 ?>

@@ -4,8 +4,6 @@
  * - Bar (snippets/brand/menu-bar.php): pins to the top on scroll-up
  *   once the page header has scrolled away, with a back-to-top button and
  *   the logo.
- * - Card grids (.pc-grid): cards stay in date order in the DOM and pack
- *   with grid row spans, as on the homepage.
  * - Our people (#people-grid): choosing a person opens a panel under
  *   their row; see the section below.
  */
@@ -47,25 +45,6 @@
     });
   }
 
-  /* ---------- Card grids ---------- */
-
-  var ROW = 4, GAP = 24;
-  [].forEach.call(document.querySelectorAll('.pc-grid'), function (grid) {
-    var layout = function () {
-      [].forEach.call(grid.querySelectorAll('.pc'), function (el) {
-        el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + GAP) / ROW);
-      });
-    };
-    layout();
-    // Watch each card as well as the grid, so a card that grows (its tags
-    // expanding, an image loading) takes more rows.
-    if (window.ResizeObserver) {
-      var ro = new ResizeObserver(layout);
-      ro.observe(grid);
-      [].forEach.call(grid.querySelectorAll('.pc'), function (el) { ro.observe(el); });
-    }
-    window.addEventListener('load', layout);
-  });
 })();
 
 /* ---------- Our people ----------

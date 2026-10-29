@@ -142,8 +142,16 @@ return [
                 $services = ['digital', 'labs', 'strategy', 'brand'];
                 if (!in_array($slug, $services)) return false;
 
-                $page = page('services/' . $slug);
-                if (!$page) return false;
+                // A service page in the content when there is one; otherwise a
+                // stand-in so the page still shows with its default copy
+                // (wove_service_defaults()). Staging had no services content
+                // on 2026-10-29, so every service page was a 404.
+                $page = page('services/' . $slug) ?? \Kirby\Cms\Page::factory([
+                    'slug'     => $slug,
+                    'template' => 'service',
+                    'url'      => url('services/' . $slug),
+                    'content'  => ['title' => wove_service_labels()[$slug]],
+                ]);
 
                 // Render with a per-service template if one exists, otherwise the
                 // shared service.php. The content files are named after each

@@ -38,7 +38,7 @@ foreach ($page->impactAreas()->split(',') as $t) {
 
 // Team members who have a profile link to it
 $members = [];
-foreach (wove_team_members() as $m) $members[$m->name()->value()] = $m;
+foreach (wove_team_members() as $m) $members[(string) $m->name()->value()] = $m;
 $tones = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
 
 $posts = ($wm = $site->find('wove-mind'))

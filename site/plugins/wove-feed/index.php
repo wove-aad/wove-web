@@ -66,7 +66,7 @@ function wove_post_pill(Page $p): string
 	}
 
 	$types = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
-	$type  = $types[$p->content()->get('postType')->value()] ?? null;
+	$type  = $types[(string) $p->content()->get('postType')->value()] ?? null;
 	if ($type === null) {
 		$isProject = $p->intendedTemplate()->name() === 'case-study' || $p->case_study()->toPages()->isNotEmpty();
 		$type = $isProject ? 'Project' : 'Thinking';

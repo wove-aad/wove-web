@@ -21,7 +21,7 @@ tabs:
               subtitle:
                 label: Hero subtitle
                 type: text
-                placeholder: Strategy, design and technology. Woven together to shape a better Ireland.
+                placeholder: Strategy, design and technology for a better Ireland.
                 help: Shown under the statement. Leave empty to use the placeholder text.
               featured:
                 label: Featured

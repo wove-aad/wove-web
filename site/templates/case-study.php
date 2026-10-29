@@ -119,7 +119,7 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
               </div>
             <?php endif ?>
           </div>
-          <ul class="cp-posts" role="list" data-activity>
+          <ul class="cp-posts feed-masonry" role="list" data-activity data-masonry>
             <?php foreach ($posts as $i => $post):
               $type  = wove_post_type($post);
               $postImage = $post->content()->get('image')->toFile();
@@ -127,7 +127,7 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
             ?>
               <li class="cp-post" data-type="<?= $type ?>">
                 <a class="cp-post__link" href="<?= $post->url() ?>">
-                  <span class="cp-post__media">
+                  <span class="cp-post__media"<?= $postImage && $postImage->height() ? ' style="--ratio: ' . $postImage->width() . ' / ' . $postImage->height() . '"' : '' ?>>
                     <?php if ($postImage): ?>
                       <?php snippet('picture', [
                         'file'   => $postImage,

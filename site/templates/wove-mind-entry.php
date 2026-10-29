@@ -255,7 +255,7 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
             <h2 class="pg-section__title" id="post-more-title">More from Wove</h2>
             <a class="pg-section__link" href="<?= $workUrl ?>">See all work <span aria-hidden="true">&rarr;</span></a>
           </div>
-          <div class="feed-cards pc-grid">
+          <div class="feed-cards pc-grid pc-grid--cols-2 pc-grid--masonry pc-grid--heights-own pc-grid--card-open" data-masonry>
             <?php foreach ($more as $post): ?>
               <?php snippet('home/post-card', ['post' => $post, 'filters' => $feedKeys[$post->id()] ?? [], 'hidden' => false]) ?>
             <?php endforeach ?>

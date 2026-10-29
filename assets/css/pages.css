@@ -806,36 +806,20 @@ html:not(.js) .person-detail__close { display: none; }
 .sv-section { margin-top: var(--space-128); }
 .sv-heading { margin-bottom: var(--space-32); font-size: 1.5rem; font-weight: var(--weight-bold); line-height: 1.25; letter-spacing: -0.01em; }
 
-/* Projects: a repeating set of five. One large beside two stacked, then
-   two halves. Ten show at first; "Show more" adds ten (pages.js). */
-.sv-projects {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-auto-flow: row dense;
-  gap: var(--space-32) var(--space-24);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sv-project { grid-column: span 6; min-width: 0; }
-.sv-project:nth-child(5n + 1) { grid-column: span 8; grid-row: span 2; }
-.sv-project:nth-child(5n + 2),
-.sv-project:nth-child(5n + 3) { grid-column: span 4; }
-.sv-project:nth-child(5n + 4) { margin-top: var(--space-16); }
-.sv-project:nth-child(5n + 5) { margin-top: var(--space-16); }
+/* Projects: the shared feed layout (2 columns, masonry, images at their
+   own shape; .feed-masonry below). Ten show at first; "Show more" adds
+   ten (pages.js). */
+.sv-project { min-width: 0; }
 .js .sv-project[data-later] { display: none; }
 .sv-project__link { display: flex; flex-direction: column; height: 100%; color: var(--color-black); text-decoration: none; }
 .sv-project__media {
   position: relative;
   display: block;
-  aspect-ratio: 8 / 5;
+  aspect-ratio: var(--ratio, 3 / 2);
   overflow: hidden;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   background: var(--color-stone-300);
 }
-.sv-project:nth-child(5n + 1) .sv-project__media { flex: 1; aspect-ratio: auto; min-height: 20rem; }
-.sv-project:nth-child(5n + 2) .sv-project__media,
-.sv-project:nth-child(5n + 3) .sv-project__media { aspect-ratio: 16 / 9; }
 .feed-wrap .sv-project__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
 .sv-project__link:hover .sv-project__image { transform: scale(1.02); }
 .sv-project__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
@@ -934,17 +918,12 @@ html:not(.js) .person-detail__close { display: none; }
   .sv-interest { flex-basis: auto; width: 100%; max-width: 18.75rem; }
   .sv-main { padding-top: var(--space-64); }
   .sv-section, .sv-whatif { margin-top: var(--space-80); }
-  .sv-projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sv-project,
-  .sv-project:nth-child(n) { grid-column: span 1; grid-row: auto; margin-top: 0; }
-  .sv-project:nth-child(5n + 1) { grid-column: 1 / -1; }
-  .sv-project:nth-child(5n + 1) .sv-project__media { flex: none; aspect-ratio: 8 / 5; min-height: 0; }
   .sv-offers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sv-talk { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 600px) {
   .sv-whatif__line { font-size: 1.25rem; }
-  .sv-projects, .sv-offers { grid-template-columns: minmax(0, 1fr); }
+  .sv-offers { grid-template-columns: minmax(0, 1fr); }
   .sv-whatif { padding: var(--space-64) var(--space-24); }
   .sv-talk { padding: var(--space-24); }
   .sv-talk__prompt { font-size: 1.375rem; }
@@ -1027,27 +1006,17 @@ html:not(.js) .person-detail__close { display: none; }
   margin-bottom: var(--space-48);
 }
 .cp-activity__title { font-size: clamp(2.25rem, 4.45vw, 4rem); font-weight: var(--weight-xbold); line-height: 1; letter-spacing: -0.025em; }
-.cp-posts {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-48) var(--space-24);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.cp-posts:not(.is-filtered) .cp-post:first-child { grid-column: span 2; grid-row: span 2; }
 .cp-post[hidden] { display: none; }
 .cp-post__link { display: flex; flex-direction: column; height: 100%; color: var(--color-black); text-decoration: none; }
 .cp-post__media {
   position: relative;
   display: block;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: var(--ratio, 3 / 2);
   margin-bottom: var(--space-16);
   overflow: hidden;
   border-radius: var(--radius-sm);
   background: var(--color-stone-300);
 }
-.cp-posts:not(.is-filtered) .cp-post:first-child .cp-post__media { flex: 1; aspect-ratio: auto; min-height: 20rem; }
 .feed-wrap .cp-post__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
 .cp-post__link:hover .cp-post__image { transform: scale(1.02); }
 .cp-post__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
@@ -1077,13 +1046,8 @@ html:not(.js) .person-detail__close { display: none; }
   .cp-hero { border-radius: var(--radius-md); }
   .cp-section, .cp-hero + .cp-section { margin-top: var(--space-64); }
   .cp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32) var(--space-24); }
-  .cp-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .cp-posts:not(.is-filtered) .cp-post:first-child { grid-row: auto; }
-  .cp-posts:not(.is-filtered) .cp-post:first-child .cp-post__media { flex: none; aspect-ratio: 3 / 2; min-height: 0; }
 }
 @media (max-width: 600px) {
-  .cp-posts { grid-template-columns: minmax(0, 1fr); }
-  .cp-posts:not(.is-filtered) .cp-post:first-child { grid-column: auto; }
   .cp-post__title { font-size: 1.1875rem; }
   .cp-post__line { font-size: 1.0625rem; }
 }
@@ -1184,3 +1148,24 @@ html:not(.js) .person-detail__close { display: none; }
   }
   .ia-areas__list::-webkit-scrollbar { display: none; }
 }
+
+/* ============================================================
+   SHARED FEED LAYOUT (2026-10-29, chosen from the homepage options):
+   2 columns, masonry, images at their own shape, open cards. Used by
+   the client page activity, service projects and impact area work
+   (.cp-posts, .sv-projects); the homepage and post pages use the same
+   options on .pc-grid (home.css). assets/js/masonry.js sets each item's
+   row span on [data-masonry] grids.
+   ============================================================ */
+.feed-masonry {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 4px;
+  column-gap: var(--space-40);
+  row-gap: 0;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 599px) { .feed-masonry { grid-template-columns: minmax(0, 1fr); } }

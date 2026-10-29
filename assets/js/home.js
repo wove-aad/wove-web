@@ -14,8 +14,8 @@
  * Our work: the grid's data-initial is the filter to start with, and
  * data-url is the Our work address, kept in step with ?filter=.
  *
- * Layout: a plain CSS grid in date order, rows aligned at the top
- * (home.css), so reading and tab order match what you see.
+ * Layout: masonry by default (assets/js/masonry.js on [data-masonry]),
+ * cards in date order in the DOM, so reading and tab order follow it.
  *
  * Pinned header: the site header (#sticky-head, brand/menu-bar) slides
  * down on scroll-up past the hero. The pinned filter bar was removed on
@@ -99,7 +99,6 @@
       moreLink.innerHTML = 'See all ' + (name ? escapeHTML(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span>';
     }
 
-    layout();
   }
 
   function escapeHTML(s) {
@@ -119,24 +118,6 @@
     if (key === '*') return true;
     if (filters.querySelector('[data-panel="' + key + '"]')) return true;
     return cards.some(function (c) { return (' ' + c.getAttribute('data-filters') + ' ').indexOf(' ' + key + ' ') !== -1; });
-  }
-
-  /* ---------- Masonry option (pc-grid--masonry, for review) ---------- */
-
-  // Each card spans as many 4px rows as its height needs, plus the gap.
-  function layout() {
-    if (!grid.classList.contains('pc-grid--masonry')) return;
-    cards.forEach(function (el) {
-      if (!el.hidden) el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + 48) / 4);
-    });
-  }
-  if (grid.classList.contains('pc-grid--masonry')) {
-    if (window.ResizeObserver) {
-      var ro = new ResizeObserver(layout);
-      ro.observe(grid);
-      cards.forEach(function (el) { ro.observe(el); });
-    }
-    window.addEventListener('load', layout);
   }
 
   /* ---------- Scroll to results ---------- */

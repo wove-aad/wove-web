@@ -81,7 +81,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
   ?>
   <li class="cp-post" data-type="<?= $type ?>">
     <a class="cp-post__link" href="<?= $p->url() ?>">
-      <span class="cp-post__media">
+      <span class="cp-post__media"<?= $image && $image->height() ? ' style="--ratio: ' . $image->width() . ' / ' . $image->height() . '"' : '' ?>>
         <?php if ($image): ?>
           <?php snippet('picture', [
             'file'   => $image,
@@ -160,7 +160,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
               </div>
             <?php endif ?>
           </div>
-          <ul class="cp-posts" role="list" data-activity>
+          <ul class="cp-posts feed-masonry" role="list" data-activity data-masonry>
             <?php foreach ($browse as $i => $p) $card($p, $i === 0) ?>
           </ul>
         </section>
@@ -208,7 +208,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
     <?php if ($browse): ?>
       <div class="pg ia-more">
         <?php if ($more): ?>
-          <ul class="cp-posts is-filtered" role="list" data-activity data-flat>
+          <ul class="cp-posts feed-masonry" role="list" data-activity data-flat data-masonry>
             <?php foreach ($more as $p) $card($p) ?>
           </ul>
         <?php endif ?>

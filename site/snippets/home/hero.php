@@ -20,7 +20,7 @@
  */
 
 $statement   = $page->headline()->or('Human Centred Transformation')->value();
-$subtitle    = $page->subtitle()->or('Strategy, design and technology. Woven together to shape a better Ireland.')->value();
+$subtitle    = $page->subtitle()->or('Strategy, design and technology for a better Ireland.')->value();
 $thumbs      = array_filter(array_map(fn ($c) => $c['page']->caseStudyImages()->toFile(), array_slice($clients, 0, 3)));
 $tones       = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3'];
 $variant     = in_array(get('hero'), ['a', 'b', 'c'], true) ? get('hero') : null;

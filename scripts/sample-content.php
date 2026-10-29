@@ -121,7 +121,7 @@ $posts = [
 $body = 'A short lead that sets out what the piece is about, written long enough to run past a single line on a card.';
 write_page($root . '/wove-mind/wove-mind.txt', [
     'Title'    => 'Wove Mind',
-    'Subtitle' => 'Strategy, design and technology. Woven together to shape a better Ireland.',
+    'Subtitle' => 'Strategy, design and technology for a better Ireland.',
     'Featured' => '- wove-mind/post-1',
 ]);
 foreach ($posts as $i => $row) {

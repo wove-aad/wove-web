@@ -124,7 +124,7 @@ $pill = function ($p) use ($site) {
       <?php if ($projects): ?>
         <section class="sv-section" aria-labelledby="sv-projects">
           <h2 class="sv-heading" id="sv-projects"><?= html($name) ?> projects</h2>
-          <ul class="sv-projects" role="list" data-projects data-page="<?= $perPage ?>">
+          <ul class="sv-projects feed-masonry" role="list" data-projects data-masonry data-page="<?= $perPage ?>">
             <?php foreach ($projects as $n => $p):
               $isCase = $p->intendedTemplate()->name() === 'case-study';
               $image  = $imageOf($p);
@@ -135,7 +135,7 @@ $pill = function ($p) use ($site) {
             ?>
               <li class="sv-project"<?= $n >= $perPage ? ' data-later' : '' ?>>
                 <a class="sv-project__link" href="<?= $p->url() ?>">
-                  <span class="sv-project__media">
+                  <span class="sv-project__media"<?= $image && $image->height() ? ' style="--ratio: ' . $image->width() . ' / ' . $image->height() . '"' : '' ?>>
                     <?php if ($image): ?>
                       <?php snippet('picture', [
                         'file'   => $image,

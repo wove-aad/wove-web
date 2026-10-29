@@ -24,9 +24,11 @@ $tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
   <header class="hx hx--page">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'people']) ?>
-      <div class="hx-body">
-        <h1 class="ph__title"><?= $page->title()->or('Our people')->html() ?></h1>
-        <p class="ph__intro"><?= html($intro) ?></p>
+      <?php /* Set like the client and impact area pages (2026-10-29): the
+         title from the left edge, the intro like their lead */ ?>
+      <h1 class="cp-head__title"><?= $page->title()->or('Our people')->html() ?></h1>
+      <div class="cp-head__lead">
+        <p class="cp-head__summary"><?= html($intro) ?></p>
       </div>
     </div>
   </header>

@@ -3,13 +3,15 @@
  * Logo, main menu and contact button: the top row of the homepage hero and
  * of every inner page header.
  * Usage: <?php snippet('brand/header-row', ['current' => 'people']) ?>
- * `current` marks a menu item as the current page ('people', 'contact',
- * 'service:{slug}' or 'tag:{slug}'); the other links are then muted.
+ * `current` marks a menu item as the current page ('people', 'wove-mind',
+ * 'contact', 'service:{slug}' or 'tag:{slug}'); the other links are then
+ * muted.
  *
  * Menu (2026-10-29): Services lists the four service pages
  * (templates/service.php); Impact areas lists the editorial tags (site
  * order) that have work, each going to its impact area page
- * (templates/tag.php). Then People and Get in touch. The lists are
+ * (templates/tag.php). Then People, Wove Mind (every post,
+ * templates/wove-mind-feed.php) and Get in touch. The lists are
  * <details> so they open without JS; assets/js/nav.js closes them on an
  * outside click or Escape.
  */
@@ -36,7 +38,7 @@ $menus = array_filter([
 ?>
 <div class="hx-row">
   <a href="<?= url() ?>" class="hero-bar__logo"><?php snippet('brand/logo') ?></a>
-  <nav class="hx-nav<?= $current === 'people' || preg_match('/^(service|tag):/', (string) $current) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
+  <nav class="hx-nav<?= in_array($current, ['people', 'wove-mind'], true) || preg_match('/^(service|tag):/', (string) $current) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
     <?php foreach ($menus as $id => $menu): $hasCurrent = in_array(true, array_column($menu['items'], 'current'), true) ?>
       <details class="hx-menu<?= $hasCurrent ? ' hx-menu--current' : '' ?>" data-nav-menu>
         <summary class="hx-menu__toggle"><?= $menu['label'] ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>
@@ -48,6 +50,7 @@ $menus = array_filter([
       </details>
     <?php endforeach ?>
     <a href="<?= url('our-people') ?>"<?= $mark('people') ?>>People</a>
+    <a href="<?= url('wove-mind') ?>"<?= $mark('wove-mind') ?>>Wove Mind</a>
   </nav>
   <a href="<?= url('contact') ?>" class="btn btn--sm btn--primary hero-bar__cta"<?= $mark('contact') ?>>Get in touch</a>
 </div>

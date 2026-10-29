@@ -307,7 +307,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx--home.hx--blue { min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
 .hx--home .hx-body { margin-block: auto 0; padding-block: var(--space-64) 0; }
-.hx--home .hx-voice__title { color: var(--color-black); }
+.hx--home .hx-voice__title { color: var(--color-black); font-weight: var(--weight-xbold); }
 .hx--home .hx-voice__links { margin-top: var(--space-32); }
 .hx--home .hx-voice__subtitle { margin-top: var(--space-24); }
 .hx--home .hx-voice__title,
@@ -443,7 +443,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-featured {
   position: relative;
   display: block;
-  margin-top: var(--space-80);
+  margin-top: var(--space-96);
   aspect-ratio: 81 / 40;
   border-radius: var(--radius-md);
   overflow: hidden;

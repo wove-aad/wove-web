@@ -150,7 +150,7 @@ return [
                     'slug'     => $slug,
                     'template' => 'service',
                     'url'      => url('services/' . $slug),
-                    'content'  => ['title' => wove_service_labels()[$slug]],
+                    'content'  => ['title' => ['digital' => 'Digital', 'labs' => 'Labs', 'strategy' => 'Strategy', 'brand' => 'Brand'][$slug]],
                 ]);
 
                 // Render with a per-service template if one exists, otherwise the
@@ -172,6 +172,28 @@ return [
                 ];
                 $html = $template->render($kirby->data);
                 return new \Kirby\Cms\Response($html, 'text/html');
+            }
+        ],
+        [
+            // The Wove Mind page (2026-10-29): every post in one feed. The
+            // homepage is the Wove Mind page in the Panel, so this renders
+            // its controller data through templates/wove-mind-feed.php.
+            'pattern' => 'wove-mind',
+            'action'  => function () {
+                $kirby = kirby();
+                $page  = page('wove-mind');
+                if (!$page) return false;
+
+                $kirby->site()->visit($page);
+                $data = [
+                    'kirby' => $kirby,
+                    'site'  => $kirby->site(),
+                    'pages' => $kirby->site()->children(),
+                    'page'  => $page,
+                ];
+                $data = array_merge($data, $kirby->controller('wove-mind', $data));
+                $kirby->data = $data;
+                return new \Kirby\Cms\Response($kirby->template('wove-mind-feed')->render($data), 'text/html');
             }
         ],
         [

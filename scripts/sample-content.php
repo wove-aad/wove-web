@@ -60,7 +60,7 @@ remove_dir($root . '/wove-mind');
 remove_dir($root . '/work');
 
 // Site: editorial tags (impact areas)
-$tags = ['Circular economy', 'Community engagement', 'Climate and nature', 'Health and wellbeing', 'Arts and culture', 'Education and learning'];
+$tags = ['Circular economy', 'Community engagement', 'Climate and nature', 'Health and wellbeing', 'Arts and culture', 'Education and learning', 'Data and privacy'];
 $yaml = '';
 foreach ($tags as $name) {
     $slug  = strtolower(str_replace(' ', '-', $name));
@@ -94,6 +94,15 @@ $posts = [
     ['longread', 'Reshaping how an arts organisation plans for the next five years', 'iaf', 'strategy', 'arts-and-culture', '2026-10-02', [1600, 1000, '#eae8e3', '#2a50f3']],
     ['thread', 'Designing with families for the hardest moments', 'solace', 'digital, labs', 'health-and-wellbeing', '2026-09-27', [1200, 900, '#f3eeeb', '#3d3b37']],
     ['whatif', 'What if every town had a repair café?', '', 'labs', 'circular-economy, climate-and-nature', '2026-09-22', null],
+    ['longread', 'Evolving the model for an art and science network', 'iaf', 'labs', 'arts-and-culture', '2026-09-18', [1600, 1100, '#3a3935', '#d3cae0']],
+    ['thread', 'An innovation starter kit for 1,100 staff', '', 'labs', 'education-and-learning', '2026-09-14', [1200, 800, '#f3eeeb', '#d2cec7']],
+    ['longread', 'Who Do They Think You Are?', '', 'labs', 'data-and-privacy', '2026-09-10', [1200, 900, '#e0bdff', '#111111']],
+    ['thread', 'Models to support co-design in the community', 'solace', 'labs', 'community-engagement', '2026-09-06', [1400, 900, '#eae8e3', '#85827d']],
+    ['thread', 'Testing a library radio pilot with three branches', '', 'labs', 'arts-and-culture', '2026-09-02', [1200, 800, '#d5faff', '#256446']],
+    ['longread', 'What a decade of futures work taught us', '', 'labs', 'climate-and-nature', '2026-08-28', [1600, 1000, '#cddccb', '#3a3935']],
+    ['thread', 'Diaries as a research method', '', 'labs', 'health-and-wellbeing', '2026-08-24', [1200, 800, '#ed8c7c', '#f3eeeb']],
+    ['thread', 'Mapping who a service leaves out', '', 'labs', 'community-engagement', '2026-08-20', [1200, 800, '#e1f5ee', '#3d3b37']],
+    ['longread', 'Provotypes: small, rough and on purpose', '', 'labs', 'data-and-privacy', '2026-08-16', [1400, 1000, '#d3cae0', '#3a3935']],
 ];
 $body = 'A short lead that sets out what the piece is about, written long enough to run past a single line on a card.';
 write_page($root . '/wove-mind/wove-mind.txt', [

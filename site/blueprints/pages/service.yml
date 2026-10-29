@@ -14,6 +14,61 @@ tabs:
           content:
             extends: sections/main-content
 
+          servicePage:
+            type: fields
+            fields:
+              servicePageHeadline:
+                type: headline
+                label: Service page
+                help: Every field below is optional. Empty fields use the default text, or leave their section out.
+              statement:
+                label: Statement
+                type: text
+                help: The large line under the service name in the page header.
+              lead:
+                label: Intro
+                type: textarea
+                size: small
+                buttons: false
+                help: The paragraph under the header. The main content blocks above open under it with "Read more".
+              projects:
+                label: Projects
+                type: pages
+                multiple: true
+                query: site.index.listed.filterBy("intendedTemplate", "in", ["wove-mind-entry", "case-study"])
+                help: Posts and case studies to show, in this order. Leave empty to show everything tagged with this service, newest first.
+              whatif:
+                label: What If
+                type: pages
+                max: 1
+                multiple: false
+                query: site.find("wove-mind").children.listed.filterBy("format", "whatif")
+                help: Shown large after the projects. Leave empty to use the newest What If tagged with this service.
+              offers:
+                label: How we can help
+                type: structure
+                fields:
+                  title:
+                    label: Title
+                    type: text
+                    required: true
+                  text:
+                    label: Description
+                    type: textarea
+                    size: small
+                    buttons: false
+              contactPerson:
+                label: Contact person
+                type: users
+                max: 1
+                multiple: false
+                width: 1/2
+              talkPrompt:
+                label: Contact prompt
+                type: text
+                width: 1/2
+                placeholder: Want to talk about this?
+
       # sidebar
       right:
         width: 1/3
@@ -28,6 +83,30 @@ tabs:
                 max: 1
                 query: page.images
                 info: Shown on the homepage feed card when this service's filter is selected.
+
+          interest:
+            type: fields
+            fields:
+              interestHeadline:
+                type: headline
+                label: Currently interested in
+              interestTopic:
+                label: Topic
+                type: select
+                options:
+                  type: query
+                  query: site.tags.toStructure.filterBy("active", "!=", "false")
+                  text: "{{ item.name }}"
+                  value: "{{ item.slug }}"
+                help: Links to the work on this topic.
+              interestText:
+                label: Line
+                type: text
+              interestImage:
+                label: Image
+                type: files
+                max: 1
+                query: page.images
 
           files:
             type: files

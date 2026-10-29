@@ -19,7 +19,10 @@
 .hx-nav a, .hx-menu__toggle { transition: color var(--transition); }
 .hx-nav--has-current > a,
 .hx-nav--has-current .hx-menu__toggle { color: var(--color-600); }
-.hx-nav--has-current a[aria-current="page"] { color: var(--color-black); }
+.hx-nav--has-current a[aria-current="page"],
+.hx-nav--has-current .hx-menu--current .hx-menu__toggle { color: var(--color-black); }
+.hx-menu--current .hx-menu__toggle { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.hx-nav .hx-menu__list a[aria-current="page"] { text-decoration: none; background: var(--color-100); }
 .hx-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
 
 /* Back link and what the page is (case study and client, or post format),
@@ -689,3 +692,259 @@ html:not(.js) .person-detail__close { display: none; }
 .link-card__more { position: absolute; left: var(--space-32); bottom: var(--space-24); font-size: 1.25rem; }
 @media (max-width: 960px) { .link-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .link-cards { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   SERVICE PAGE (templates/service.php)
+   From the Figma "Team · Labs · v5" frame (1260:19288). Each service
+   sets --sv-tint (its colour token) for the header band, the What If
+   block, the last help card and the contact strip.
+   ============================================================ */
+.sv--labs     { --sv-tint: var(--color-service-labs); }
+.sv--strategy { --sv-tint: var(--color-service-strategy); }
+.sv--brand    { --sv-tint: var(--color-service-brand); }
+.sv--digital  { --sv-tint: var(--color-service-digital); }
+
+/* Header: name and statement, "Currently interested in" on the right */
+.sv-head { background: var(--sv-tint); }
+.sv-head__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-24);
+  margin-top: var(--space-80);
+}
+.sv-head__text { display: flex; flex-direction: column; gap: var(--space-32); min-width: 0; }
+.sv-head__title {
+  font-size: clamp(3.5rem, 8vw, 7.1875rem);
+  font-weight: var(--weight-bold);
+  line-height: 0.81;
+  letter-spacing: -0.03em;
+}
+.sv-head__statement {
+  max-width: 17em;
+  font-size: clamp(1.75rem, 3.5vw, 3.125rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+.sv-interest {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  flex: 0 0 26rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.6);
+  color: var(--color-black);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.sv-interest:hover { background: rgb(255 255 255 / 0.85); }
+.sv-interest:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+.sv-interest__kicker { font-size: 0.9375rem; font-weight: var(--weight-medium); }
+.sv-interest__body { display: flex; gap: 1.25rem; align-items: flex-start; }
+.sv-interest__image { width: 7rem; height: 7rem; border-radius: 0.5rem; object-fit: cover; flex-shrink: 0; }
+.sv-interest__text { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
+.sv-interest__name { font-size: 1.5rem; font-weight: var(--weight-medium); line-height: 1.25; }
+.sv-interest__line { font-size: 1.0625rem; line-height: 1.47; color: var(--color-text-muted); }
+.sv-interest__link { padding-top: 0.25rem; font-size: 0.9375rem; font-weight: var(--weight-medium); }
+.sv-interest:hover .sv-interest__link { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Buttons: light (stone), white and dark pills with an arrow */
+.sv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.875rem;
+  padding: 0.6875rem 1.3125rem;
+  border: 1px solid var(--color-stone-300);
+  border-radius: var(--radius-pill);
+  background: var(--color-stone-100);
+  color: var(--color-black);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.feed-wrap .sv-btn:hover { background: var(--color-black); border-color: var(--color-black); color: var(--color-white); }
+.sv-btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+.sv-btn--white { background: var(--color-white); }
+/* .feed-wrap a sets color: inherit, so the dark button needs the extra class */
+.feed-wrap .sv-btn--dark { background: var(--color-black); border-color: var(--color-black); color: var(--color-off-white); }
+.feed-wrap .sv-btn--dark:hover { background: var(--color-800); border-color: var(--color-800); color: var(--color-off-white); }
+
+/* Intro: a square bullet, the text and "Read more" (the page's blocks) */
+.sv-main { padding-top: var(--space-96); }
+.sv-intro { display: flex; gap: 1.25rem; max-width: 39.75rem; margin: 0 auto; }
+.sv-intro__square { flex-shrink: 0; width: 0.5625rem; height: 0.5625rem; margin-top: 0.78rem; background: var(--color-black); }
+.sv-intro__body { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+.sv-intro__text { font-size: 1.5rem; line-height: 1.42; }
+.sv-intro__more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--weight-medium);
+  list-style: none;
+  cursor: pointer;
+}
+.sv-intro__more summary::-webkit-details-marker { display: none; }
+.sv-intro__more summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.sv-intro__more summary:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+.sv-intro__plus { position: relative; width: 0.75rem; height: 0.75rem; }
+.sv-intro__plus::before,
+.sv-intro__plus::after { content: ""; position: absolute; inset: 50% 0 auto; height: 1.5px; margin-top: -0.75px; background: currentColor; transition: transform var(--transition); }
+.sv-intro__plus::after { transform: rotate(90deg); }
+.sv-intro__more[open] .sv-intro__plus::after { transform: rotate(0deg); }
+.sv-intro__more[open] summary { margin-bottom: var(--space-24); }
+.sv-intro__blocks { display: flex; flex-direction: column; gap: var(--space-16); font-size: 1.125rem; line-height: 1.6; }
+
+/* Sections */
+.sv-section { margin-top: var(--space-128); }
+.sv-intro + .sv-section { margin-top: var(--space-128); }
+.sv-heading { margin-bottom: var(--space-32); font-size: 1.5rem; font-weight: var(--weight-bold); line-height: 1.25; letter-spacing: -0.01em; }
+
+/* Projects: a repeating set of five. One large beside two stacked, then
+   two halves. Ten show at first; "Show more" adds ten (pages.js). */
+.sv-projects {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: row dense;
+  gap: var(--space-32) var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sv-project { grid-column: span 6; min-width: 0; }
+.sv-project:nth-child(5n + 1) { grid-column: span 8; grid-row: span 2; }
+.sv-project:nth-child(5n + 2),
+.sv-project:nth-child(5n + 3) { grid-column: span 4; }
+.sv-project:nth-child(5n + 4) { margin-top: var(--space-16); }
+.sv-project:nth-child(5n + 5) { margin-top: var(--space-16); }
+.js .sv-project[data-later] { display: none; }
+.sv-project__link { display: flex; flex-direction: column; height: 100%; color: var(--color-black); text-decoration: none; }
+.sv-project__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--color-stone-300);
+}
+.sv-project:nth-child(5n + 1) .sv-project__media { flex: 1; aspect-ratio: auto; min-height: 20rem; }
+.sv-project:nth-child(5n + 2) .sv-project__media,
+.sv-project:nth-child(5n + 3) .sv-project__media { aspect-ratio: 16 / 9; }
+.sv-project__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--feed-transition-slow, 300ms ease); }
+.sv-project__link:hover .sv-project__image { transform: scale(1.02); }
+.sv-project__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; }
+.sv-project__pill {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-off-white);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.38;
+}
+.sv-project__title { margin-top: 0.625rem; font-size: 1.375rem; font-weight: var(--weight-medium); line-height: 1.27; text-wrap: pretty; }
+.sv-project__link:hover .sv-project__title { text-decoration: underline; text-underline-offset: 3px; }
+.sv-project__client { margin-top: 0.375rem; font-size: 0.9375rem; line-height: 1.47; color: var(--color-text-muted); }
+.sv-more { display: flex; align-items: center; gap: 1.25rem; margin-top: var(--space-48); }
+.sv-more__count { font-size: 0.9375rem; color: var(--color-text-muted); }
+
+/* What If: the question large and centred on the service colour */
+.sv-whatif {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+  margin-top: var(--space-128);
+  padding: var(--space-96) var(--space-48);
+  background: var(--sv-tint);
+  text-align: center;
+}
+.sv-whatif__question {
+  max-width: 14em;
+  font-size: clamp(2.25rem, 5.3vw, 4.75rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.sv-whatif__line { max-width: 30em; font-size: 1.5rem; line-height: 1.42; }
+.sv-whatif .sv-btn { margin-top: var(--space-24); }
+
+/* How {service} can help */
+.sv-offers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sv-offer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: var(--space-24);
+  border: 1px solid var(--color-stone-300);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+}
+.sv-offer__title { font-size: 1.375rem; font-weight: var(--weight-bold); line-height: 1.27; }
+.sv-offer__text { font-size: 1.0625rem; line-height: 1.47; color: var(--color-text-muted); }
+.sv-offer--start { border-color: transparent; background: var(--sv-tint); }
+.sv-offer--start .sv-btn { margin-top: 0.625rem; }
+
+/* Contact strip, then the previous and next services */
+.sv-talk {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-24);
+  padding: var(--space-32) var(--space-40);
+  border-radius: var(--radius-sm);
+  background: var(--sv-tint);
+}
+.sv-talk__person { display: flex; align-items: center; gap: 1.25rem; min-width: 0; }
+.sv-talk__face { flex-shrink: 0; width: 4.5rem; height: 4.5rem; border-radius: 50%; object-fit: cover; }
+.sv-talk__face--initials { display: grid; place-items: center; background: var(--color-white); font-weight: var(--weight-bold); }
+.sv-talk__prompt { font-size: 1.75rem; font-weight: var(--weight-medium); line-height: 1.21; }
+.sv-talk__who { margin-top: 0.25rem; font-size: 1.0625rem; line-height: 1.41; color: var(--color-text-muted); }
+.sv-talk .sv-btn { flex-shrink: 0; }
+.sv-pager { display: flex; justify-content: space-between; gap: var(--space-24); margin-top: var(--space-48); }
+.sv-pager__link { display: flex; align-items: center; gap: 0.875rem; color: var(--color-black); text-decoration: none; }
+.sv-pager__link--next { text-align: right; }
+.sv-pager__swatch { width: 3rem; height: 3rem; border-radius: var(--radius-sm); background: var(--sv-tint); flex-shrink: 0; }
+.sv-pager__label { display: block; font-size: 0.9375rem; line-height: 1.47; color: var(--color-text-muted); }
+.sv-pager__name { display: block; font-size: 1.125rem; font-weight: var(--weight-medium); line-height: 1.56; }
+.sv-pager__link:hover .sv-pager__name { text-decoration: underline; text-underline-offset: 3px; }
+.sv-pager__link:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: var(--radius-sm); }
+
+@media (max-width: 960px) {
+  .sv-head__body { flex-direction: column; align-items: flex-start; margin-top: var(--space-48); }
+  .sv-interest { flex-basis: auto; width: 100%; max-width: 26rem; }
+  .sv-main { padding-top: var(--space-64); }
+  .sv-section, .sv-whatif, .sv-intro + .sv-section { margin-top: var(--space-80); }
+  .sv-projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sv-project,
+  .sv-project:nth-child(n) { grid-column: span 1; grid-row: auto; margin-top: 0; }
+  .sv-project:nth-child(5n + 1) { grid-column: 1 / -1; }
+  .sv-project:nth-child(5n + 1) .sv-project__media { flex: none; aspect-ratio: 8 / 5; min-height: 0; }
+  .sv-offers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sv-talk { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .sv-intro__text, .sv-whatif__line { font-size: 1.25rem; }
+  .sv-projects, .sv-offers { grid-template-columns: minmax(0, 1fr); }
+  .sv-whatif { padding: var(--space-64) var(--space-24); }
+  .sv-talk { padding: var(--space-24); }
+  .sv-talk__prompt { font-size: 1.375rem; }
+  .sv-talk__face { width: 3.5rem; height: 3.5rem; }
+}

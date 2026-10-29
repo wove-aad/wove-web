@@ -51,6 +51,41 @@ function wove_service_intro(string $slug): string
 	][$slug] ?? '';
 }
 
+/**
+ * Default text for a service page (site/templates/service.php), used when
+ * the page's own field is empty. Labs has the copy from the Figma page;
+ * the others start with their one-line intro and fill in from the Panel.
+ */
+function wove_service_defaults(string $slug): array
+{
+	$labels = wove_service_labels();
+	$base   = [
+		'statement'     => wove_service_intro($slug),
+		'lead'          => '',
+		'offers'        => [],
+		'talkPrompt'    => 'Want to talk about ' . ($labels[$slug] ?? 'this') . '?',
+		'interestTopic' => '',
+		'interestText'  => '',
+	];
+
+	if ($slug !== 'labs') return $base;
+
+	return array_merge($base, [
+		'statement'     => 'Exploring a more human future.',
+		'lead'          => 'We work with academia, industry, culture makers and communities to explore and imagine more innovative ways of doing things.',
+		'talkPrompt'    => 'Want to try an idea out before you commit?',
+		'interestTopic' => 'data-and-privacy',
+		'interestText'  => 'How our everyday data is tracked and sold.',
+		'offers'        => [
+			['title' => 'Research with the public', 'text' => 'Interviews, diaries and workshops that show how people really live with a service or an idea.'],
+			['title' => 'Co-design workshops', 'text' => 'Sessions where staff and the public shape the work together, in person or online.'],
+			['title' => 'Provotypes', 'text' => 'Quick, rough versions of an idea, made to start a conversation rather than to be finished.'],
+			['title' => 'Testing small', 'text' => 'Trying an idea with a few people before anyone commits money or time to it.'],
+			['title' => 'Futures', 'text' => 'Looking ten years ahead to test today’s plans, in our What if…? series and with clients.'],
+		],
+	]);
+}
+
 function wove_feed(): array
 {
 	static $feed = null;

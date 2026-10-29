@@ -6,10 +6,31 @@
  *   the logo.
  * - Our people (#people-grid): choosing a person opens a panel under
  *   their row; see the section below.
+ * - Service page projects ([data-projects]): "Show more" shows the next
+ *   ten (the rest are marked data-later and hidden by CSS once JS runs).
  */
 (function () {
   function reduceMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function behaviour() { return reduceMotion() ? 'auto' : 'smooth'; }
+
+  /* ---------- Service page: show more projects ---------- */
+
+  var projects = document.querySelector('[data-projects]');
+  var moreWrap = document.querySelector('[data-more-wrap]');
+  if (projects && moreWrap) {
+    var step = parseInt(projects.getAttribute('data-page'), 10) || 10;
+    var total = projects.children.length;
+    var count = moreWrap.querySelector('[data-count]');
+    moreWrap.hidden = false;
+    moreWrap.querySelector('[data-show-more]').addEventListener('click', function () {
+      var later = [].slice.call(projects.querySelectorAll('[data-later]'), 0, step);
+      later.forEach(function (el) { el.removeAttribute('data-later'); });
+      if (later[0]) later[0].querySelector('a').focus({ preventScroll: true });
+      var left = projects.querySelectorAll('[data-later]').length;
+      count.textContent = 'Showing ' + (total - left) + ' of ' + total;
+      if (!left) this.hidden = true;
+    });
+  }
 
   /* ---------- Menu bar ---------- */
 

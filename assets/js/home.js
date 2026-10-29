@@ -227,6 +227,27 @@
   if (active !== '*') window.addEventListener('load', function () { scrollToResults(true); });
 })();
 
+/* Homepage hero colour: fades to white as you scroll down, done once the
+ * featured item's top is a quarter of the way down the screen (--hx-fade
+ * on the hero, home.css). */
+(function () {
+  var hero = document.querySelector('.hx--home:not(.hx--blue)');
+  var featured = hero && hero.querySelector('.hx-featured');
+  if (!featured) return;
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var end = featured.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.25;
+    var p = end > 0 ? Math.min(1, Math.max(0, window.scrollY / end)) : 1;
+    hero.style.setProperty('--hx-fade', p.toFixed(3));
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
 /* Blue hero options (?hero=a|b|c): as the hero scrolls away its blue fades
  * into the feed's grey (--p), and in option b the squiggle draws with the
  * scroll (--draw). */

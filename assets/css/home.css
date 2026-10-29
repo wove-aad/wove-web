@@ -321,6 +321,19 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   100%       { background-color: var(--color-aqua); }
 }
 @media (prefers-reduced-motion: reduce) { .hx--home:not(.hx--blue) { animation: none; } }
+/* The colour fades to white as you scroll towards the featured item
+   (--hx-fade, 0 to 1, set by assets/js/home.js): a white layer behind
+   the content, matching the intro below */
+.hx--home:not(.hx--blue) { position: relative; isolation: isolate; }
+.hx--home:not(.hx--blue)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-white);
+  opacity: var(--hx-fade, 0);
+  pointer-events: none;
+}
 .hx--home.hx--blue { min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
 /* More room around the oversize title (2026-10-29) */

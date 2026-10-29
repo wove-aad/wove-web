@@ -3,12 +3,11 @@
  * Homepage post card (the "Framed" treatment).
  * Usage: <?php snippet('home/post-card', ['post' => $entry, 'filters' => [...], 'hidden' => false]) ?>
  *
- * - Images keep their own shape (aspect-ratio from the file), no cropping.
- * - Sparks with an image read as a captioned image with small quiet text;
- *   sparks without one are a plain quote card.
- * - Long reads: image-led, with a reading time.
- * - What Ifs: the question leads, on a pale blue card, "Explore the idea".
- * - Threads: compact title and meta with a small thumbnail.
+ * - One layout for every format (2026-10-29): the image full width at the
+ *   top, keeping its own shape, then the format label, title, excerpt and
+ *   footer stacked underneath. Formats differ only in colour: long reads
+ *   add a reading time, What Ifs sit on a pale blue card with "Explore the
+ *   idea". Sparks show their text in place of a title.
  * - Posts from a project lead with the client name in bold, with the title
  *   under it as the subtitle; posts without one lead with the title. The
  *   subtitle and excerpt are one line each.
@@ -90,45 +89,17 @@ $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-im
 ?>
 <article class="<?= $classes ?>" data-filters="<?= html(implode(' ', $filters)) ?>"<?= $hidden ? ' hidden' : '' ?>>
 
-  <?php if ($format === 'spark'): ?>
-    <?= $media ?>
-    <div class="pc__body">
+  <?= $media ?>
+  <div class="pc__body">
+    <?php if ($format === 'spark'): ?>
       <p class="<?= $image ? 'pc__caption' : 'pc__quote' ?>"><?= $post->body()->isNotEmpty() ? $post->body()->excerpt(200) : $post->title()->html() ?></p>
-      <?php $end() ?>
-    </div>
-
-  <?php elseif ($format === 'thread'): ?>
-    <div class="pc__body">
-      <?php $top($labels['thread']) ?>
-      <div class="pc__row">
-        <?php $title() ?>
-        <?php if ($image): ?>
-          <?php snippet('picture', ['file' => $image, 'widths' => [160, 320], 'sizes' => '9rem', 'class' => 'pc__thumb', 'attrs' => ['style' => 'aspect-ratio: ' . $ratio]]) ?>
-        <?php endif ?>
-      </div>
-      <?php $end() ?>
-    </div>
-
-  <?php elseif ($format === 'whatif'): ?>
-    <div class="pc__body">
-      <?php $top($labels['whatif']) ?>
+    <?php else: ?>
+      <?php $top($labels[$format] . ($minutes ? ' <span class="pc__time">' . $minutes . ' min read</span>' : '')) ?>
       <?php $title() ?>
       <?php if ($excerpt): ?><p class="pc__excerpt"><?= $excerpt ?></p><?php endif ?>
-    </div>
-    <?= $media ?>
-    <div class="pc__foot">
-      <span class="pc__cta" aria-hidden="true">Explore the idea &rarr;</span>
-      <?php $end() ?>
-    </div>
-
-  <?php else: ?>
-    <?= $media ?>
-    <div class="pc__body">
-      <?php $top($labels['longread'] . ($minutes ? ' <span class="pc__time">' . $minutes . ' min read</span>' : '')) ?>
-      <?php $title() ?>
-      <?php if ($excerpt): ?><p class="pc__excerpt"><?= $excerpt ?></p><?php endif ?>
-      <?php $end() ?>
-    </div>
-  <?php endif ?>
+      <?php if ($format === 'whatif'): ?><span class="pc__cta" aria-hidden="true">Explore the idea &rarr;</span><?php endif ?>
+    <?php endif ?>
+    <?php $end() ?>
+  </div>
 
 </article>

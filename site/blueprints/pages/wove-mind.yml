@@ -31,12 +31,12 @@ tabs:
                 query: site.index.listed.filterBy("intendedTemplate", "in", ["wove-mind-entry", "case-study"])
                 help: A post or case study shown large under the hero. Leave empty to show the newest post or case study with an image.
               intro:
-                label: Hero description
+                label: Services statement
                 type: textarea
                 size: small
                 buttons: false
-                placeholder: We help the people running Ireland’s public services, cultural institutions and mission-led organisations move from strategy to delivery.
-                help: Follows the statement in the same paragraph. Leave empty to use the placeholder text.
+                placeholder: We help clients create lasting change through four connected services.
+                help: The large line above the four service cards, under the featured item. Leave empty to use the placeholder text.
 
           listed:
             extends: sections/wove-mind-entries

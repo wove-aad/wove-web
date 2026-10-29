@@ -21,6 +21,19 @@ $totalCount = $entries->count();
 // tag and sector pages redirect here). Unknown keys fall back to all work
 // in home.js.
 $initial = get('filter') ?: '*';
+
+// Feed layout options, for review (2026-10-29): ?cols=2|3, ?layout=grid|
+// masonry, ?heights=own|set, ?card=framed|open|tinted. The options panel
+// (snippets/home/feed-options.php) shows when any of them is set, or with
+// ?options. Without them the feed is unchanged.
+$opt = [
+  'cols'    => in_array(get('cols'), ['2', '3'], true) ? get('cols') : '3',
+  'layout'  => get('layout') === 'masonry' ? 'masonry' : 'grid',
+  'heights' => get('heights') === 'set' ? 'set' : 'own',
+  'card'    => in_array(get('card'), ['open', 'tinted'], true) ? get('card') : 'framed',
+];
+$showOptions = get('options') !== null || get('cols') || get('layout') || get('heights') || get('card');
+$gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . ' pc-grid--heights-' . $opt['heights'] . ' pc-grid--card-' . $opt['card'];
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
@@ -49,7 +62,7 @@ $initial = get('filter') ?: '*';
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>
 
-      <div class="feed-cards pc-grid" id="feed-grid" tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url() ?>/" data-page="<?= $feedLimit ?>">
+      <div class="feed-cards pc-grid <?= $gridClass ?>" id="feed-grid" tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url() ?>/" data-page="<?= $feedLimit ?>">
         <?php $i = 0; foreach ($entries as $entry): ?>
           <?php snippet('home/post-card', [
             'post'    => $entry,
@@ -64,6 +77,8 @@ $initial = get('filter') ?: '*';
         <span class="feed-more__count" id="feed-more-count">Showing <?= min($feedLimit, $totalCount) ?> of <?= $totalCount ?></span>
         <button type="button" class="feed-more__btn" id="feed-load-more">Load more</button>
       </div>
+
+      <?php if ($showOptions) snippet('home/feed-options', ['opt' => $opt]) ?>
 
     </main>
 

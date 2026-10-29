@@ -102,6 +102,7 @@
     }
 
     syncBar();
+    layout();
   }
 
   function escapeHTML(s) {
@@ -121,6 +122,24 @@
     if (key === '*') return true;
     if (filters.querySelector('[data-panel="' + key + '"]')) return true;
     return cards.some(function (c) { return (' ' + c.getAttribute('data-filters') + ' ').indexOf(' ' + key + ' ') !== -1; });
+  }
+
+  /* ---------- Masonry option (pc-grid--masonry, for review) ---------- */
+
+  // Each card spans as many 4px rows as its height needs, plus the gap.
+  function layout() {
+    if (!grid.classList.contains('pc-grid--masonry')) return;
+    cards.forEach(function (el) {
+      if (!el.hidden) el.style.gridRowEnd = 'span ' + Math.ceil((el.offsetHeight + 48) / 4);
+    });
+  }
+  if (grid.classList.contains('pc-grid--masonry')) {
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(layout);
+      ro.observe(grid);
+      cards.forEach(function (el) { ro.observe(el); });
+    }
+    window.addEventListener('load', layout);
   }
 
   /* ---------- Scroll to results ---------- */

@@ -33,9 +33,14 @@ $ratio   = $image && $image->height() ? $image->width() . ' / ' . $image->height
 $titleText = $client
   ? '<span class="pc__client">' . html($client) . '</span> <span class="pc__subtitle">' . $post->title()->html() . '</span>'
   : $post->title()->html();
+// For the feed layout options (templates/wove-mind.php): the post type
+// sets the image height in the set-heights option, the first service the
+// tint in the tinted option.
+$size    = ['project' => 'tall', 'news' => 'medium', 'thinking' => 'short'][wove_post_type($post)];
+$service = $post->services()->split(',')[0] ?? '';
 $classes = 'pc pc--' . $format . ($format === 'spark' ? ($image ? ' pc--spark-image' : ' pc--spark-text') : '') . ($image ? ' has-image' : '');
 ?>
-<article class="<?= $classes ?>" data-filters="<?= html(implode(' ', $filters)) ?>"<?= $hidden ? ' hidden' : '' ?>>
+<article class="<?= $classes ?>" data-filters="<?= html(implode(' ', $filters)) ?>" data-size="<?= $size ?>" data-service="<?= html($service) ?>"<?= $hidden ? ' hidden' : '' ?>>
 
   <?php if ($image): ?>
     <div class="pc__media" style="aspect-ratio: <?= $ratio ?>">

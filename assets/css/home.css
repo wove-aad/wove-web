@@ -962,3 +962,66 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .feed-wrap .pg-btn--ghost { color: var(--color-black); }
 .pg-btn--ghost:hover { background: var(--color-black); color: var(--color-white); opacity: 1; }
 .feed-wrap .pg-btn--ghost:hover { color: var(--color-white); }
+
+/* ============================================================
+   FEED LAYOUT OPTIONS (for review, templates/wove-mind.php)
+   Classes on #feed-grid: pc-grid--cols-2|3, --grid|--masonry,
+   --heights-own|set, --card-framed|open|tinted.
+   ============================================================ */
+/* Columns */
+@media (min-width: 600px) { .feed-cards.pc-grid--cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Masonry: short rows, each card spans as many as its height needs
+   (assets/js/home.js), so cards pack up under each other in date order */
+.feed-cards.pc-grid--masonry { grid-auto-rows: 4px; row-gap: 0; }
+
+/* Three set image heights, by post type: Projects tall, News medium,
+   Thinking short. Images are cropped to fit. */
+.pc-grid--heights-set .pc[data-size="tall"] .pc__media { aspect-ratio: 4 / 5 !important; }
+.pc-grid--heights-set .pc[data-size="medium"] .pc__media { aspect-ratio: 1 / 1 !important; }
+.pc-grid--heights-set .pc[data-size="short"] .pc__media { aspect-ratio: 3 / 2 !important; }
+
+/* Open: no card frame, the image and a caption (Figma 1287:5157) */
+.feed-cards.pc-grid--card-open { column-gap: var(--space-40); }
+.pc-grid--card-open .pc { padding: 0; border-radius: 0; background: none; }
+.pc-grid--card-open .pc:hover { transform: none; box-shadow: none; }
+.pc-grid--card-open .pc:hover .pc__media img { transform: scale(1.02); }
+.pc-grid--card-open .pc__media img { transition: transform var(--feed-transition-slow, 300ms ease); }
+.pc-grid--card-open .pc__body { gap: 0.125rem; padding: var(--space-16) 0 0; }
+.pc-grid--card-open .pc__title { font-size: 1.3125rem; line-height: 1.28; }
+.pc-grid--card-open .pc__subtitle { font-size: 0.9em; line-height: 1.32; }
+.pc-grid--card-open .pc__excerpt { color: var(--color-text-muted); }
+.pc-grid--card-open .pc:not(.has-image) { padding: var(--space-16); border-radius: var(--radius-sm); background: var(--color-stone-200); }
+.pc-grid--card-open .pc--whatif:not(.has-image) { background: var(--format-whatif-tint); }
+.pc-grid--card-open .pc:not(.has-image) .pc__body { padding: 0; gap: var(--space-8, 0.5rem); }
+
+/* Tinted: the card in its first service's colour */
+.pc-grid--card-tinted .pc { background: var(--color-stone-200); }
+.pc-grid--card-tinted .pc[data-service="labs"] { background: var(--color-service-labs); }
+.pc-grid--card-tinted .pc[data-service="strategy"] { background: var(--color-service-strategy); }
+.pc-grid--card-tinted .pc[data-service="brand"] { background: var(--color-service-brand); }
+.pc-grid--card-tinted .pc[data-service="digital"] { background: var(--color-service-digital); }
+.pc-grid--card-tinted .pc__subtitle,
+.pc-grid--card-tinted .pc__excerpt { color: var(--color-800); }
+
+/* The options panel */
+.feed-options {
+  position: fixed;
+  right: var(--space-16);
+  bottom: var(--space-16);
+  z-index: 50;
+  display: grid;
+  gap: 0.5rem;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-sm);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 0.8125rem;
+  box-shadow: var(--shadow-lg);
+}
+.feed-options__title { font-weight: var(--weight-bold); }
+.feed-options__group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
+.feed-options__label { width: 4rem; color: var(--color-500); }
+.feed-wrap .feed-options a { color: var(--color-400); }
+.feed-wrap .feed-options a:hover { color: var(--color-white); }
+.feed-wrap .feed-options a[aria-current] { color: var(--color-white); text-decoration: underline; text-underline-offset: 3px; }

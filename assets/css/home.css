@@ -306,10 +306,11 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx--home { display: flex; flex-direction: column; }
 .hx--home.hx--blue { min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
-.hx--home .hx-body { margin-block: auto 0; padding-block: var(--space-64) 0; }
+/* More room around the oversize title (2026-10-29) */
+.hx--home .hx-body { margin-block: auto 0; padding-block: var(--space-96) 0; }
 .hx--home .hx-voice__title { color: var(--color-black); font-weight: var(--weight-xbold); }
-.hx--home .hx-voice__links { margin-top: var(--space-32); }
-.hx--home .hx-voice__subtitle { margin-top: var(--space-24); }
+.hx--home .hx-voice__links { margin-top: var(--space-64); }
+.hx--home .hx-voice__subtitle { margin-top: var(--space-40); }
 .hx--home .hx-voice__title,
 .hx--home .hx-title-row { margin-top: 0; }
 .hx__inner {
@@ -443,7 +444,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-featured {
   position: relative;
   display: block;
-  margin-top: var(--space-96);
+  margin-top: var(--space-128);
   aspect-ratio: 81 / 40;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -665,7 +666,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 @media (max-width: 960px) {
   .hx-intro__inner { padding-block: var(--space-64); }
-  .hx--home .hx-body { padding-block: var(--space-32) 0; }
+  .hx--home .hx-body { padding-block: var(--space-48) 0; }
+  .hx--home .hx-voice__subtitle { margin-top: var(--space-24); }
+  .hx--home .hx-voice__links { margin-top: var(--space-40); }
   .feed--home { padding-top: var(--space-48); }
   .feed--home .feed__header { margin-bottom: var(--space-24); }
   .hx-services { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-40); }
@@ -933,3 +936,22 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* .feed-wrap a sets color: inherit; keep the button's own colours */
 .feed-wrap .sticky-head .btn--primary,
 .feed-wrap .sticky-head .btn--primary:hover { color: var(--color-white); }
+
+/* Compact cards (option, 2026-10-29), on top of the open cards: the
+   client as a small line above the title, a smaller title and a two-line
+   excerpt, tight inside each card and a clear gap between rows, so each
+   post reads as one unit and the feed scans quickly */
+.feed-cards.pc-grid--card-compact:not(.pc-grid--masonry) { row-gap: var(--space-64); column-gap: var(--space-24); }
+.pc-grid--card-compact .pc__body { gap: var(--space-4, 0.25rem); padding-top: var(--space-12); }
+.pc-grid--card-compact .pc__body > .pc__pill { order: -2; margin-bottom: var(--space-8, 0.5rem); }
+.pc-grid--card-compact .pc__client { order: -1; font-size: var(--size-label); letter-spacing: 0.01em; }
+.pc-grid--card-compact .pc__title { font-size: var(--size-subtitle); line-height: 1.3; }
+.pc-grid--card-compact .pc__excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: var(--size-p5);
+  line-height: 1.45;
+}
+.pc-grid--card-compact .pc__by { margin-top: var(--space-4, 0.25rem); }

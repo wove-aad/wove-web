@@ -23,7 +23,7 @@ $totalCount = $entries->count();
 $initial = get('filter') ?: '*';
 
 // Feed layout options, for review (2026-10-29): ?cols=2|3, ?layout=grid|
-// masonry, ?heights=own|set, ?card=framed|open|tinted. The options panel
+// masonry, ?heights=own|set, ?card=framed|open|tinted|compact. The options panel
 // (snippets/home/feed-options.php) shows when any of them is set, or with
 // ?options.
 // Defaults (2026-10-29, used on every feed): 2 columns, masonry, own image
@@ -32,10 +32,11 @@ $opt = [
   'cols'    => get('cols') === '3' ? '3' : '2',
   'layout'  => get('layout') === 'grid' ? 'grid' : 'masonry',
   'heights' => get('heights') === 'set' ? 'set' : 'own',
-  'card'    => in_array(get('card'), ['framed', 'tinted'], true) ? get('card') : 'open',
+  'card'    => in_array(get('card'), ['framed', 'tinted', 'compact'], true) ? get('card') : 'open',
 ];
 $showOptions = get('options') !== null || get('cols') || get('layout') || get('heights') || get('card');
-$gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . ' pc-grid--heights-' . $opt['heights'] . ' pc-grid--card-' . $opt['card'];
+// Compact builds on the open cards
+$gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . ' pc-grid--heights-' . $opt['heights'] . ' pc-grid--card-' . $opt['card'] . ($opt['card'] === 'compact' ? ' pc-grid--card-open' : '');
 ?>
 
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>

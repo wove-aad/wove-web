@@ -77,6 +77,9 @@ function wove_post_type_labels(): array
  */
 function wove_first_sentence(string $html): string
 {
+	// Skip a leading heading ("The Challenge", "The big picture"): a heading
+	// element, or a short paragraph that is all bold
+	$html = preg_replace('/^(\s*(<h[1-6][^>]*>.*?<\/h[1-6]>|<p>\s*<(strong|b)>[^<]{1,60}<\/\3>\s*<\/p>))+/is', '', $html);
 	$text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags(preg_replace('/<(br|\/p|\/li|\/h[1-6]|\/blockquote)[^>]*>/i', ' ', $html)), ENT_QUOTES | ENT_HTML5)));
 	// Leave out placeholders left in the text, such as [image]
 	$text = trim(preg_replace('/\s+/u', ' ', preg_replace('/\[(image|img|video|gallery)[^\]]*\]/i', '', $text)));

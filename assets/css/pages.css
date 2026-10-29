@@ -21,9 +21,9 @@
 .hx-nav--has-current .hx-menu__toggle { color: var(--color-600); }
 .hx-nav--has-current a[aria-current="page"],
 .hx-nav--has-current .hx-menu--current .hx-menu__toggle { color: var(--color-black); }
-.hx-menu--current .hx-menu__toggle { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.hx-menu--current .hx-menu__toggle { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
 .hx-nav .hx-menu__list a[aria-current="page"] { text-decoration: none; background: var(--color-100); }
-.hx-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.hx-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
 
 /* Back link and what the page is (case study and client, or post format),
    on one row over the title. The nav already names Our work, so the link

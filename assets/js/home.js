@@ -2,15 +2,14 @@
  * (snippets/feed/work-view.php, also used by the service and tag pages).
  *
  * Filters: Projects / Thinking / News beside the feed heading (#feed-types)
- * and the pinned bar chips set one active filter ("type:project", or "*"
- * for all); ?filter= links and author links on cards can also set
- * "cs:slug", "service:x", "tag:y", "sector:z" or "author:slug". Choosing the active one again clears it. Cards
+ * set one active filter ("type:project", or "*" for all); ?filter= links
+ * and author links on cards can also set "cs:slug", "service:x", "tag:y",
+ * "sector:z" or "author:slug". Choosing the active one again clears it. Cards
  * carry data-filters; the first N matches show (N = data-limit on the grid,
  * all of them when it has none). With data-page (Our work) N starts at that
  * many and "Load more" adds the same again; choosing a filter resets it. Selecting a filter shows its context
  * panel (data-panel): the case study for a client, or the service, tag,
- * sector or person. After a change the page scrolls to the results, under
- * the pinned bar.
+ * sector or person. After a change the page scrolls to the results.
  *
  * Our work: the grid's data-initial is the filter to start with, and
  * data-url is the Our work address, kept in step with ?filter=.
@@ -18,18 +17,16 @@
  * Layout: a plain CSS grid in date order, rows aligned at the top
  * (home.css), so reading and tab order match what you see.
  *
- * Pinned bar: the type filters show once the feed heading has scrolled
- * away while the feed is on screen. The site header (#sticky-head,
- * brand/menu-bar) slides down on scroll-up past the hero; the filters sit
- * under it when both show.
+ * Pinned header: the site header (#sticky-head, brand/menu-bar) slides
+ * down on scroll-up past the hero. The pinned filter bar was removed on
+ * 2026-10-29.
  */
 (function () {
   var filters = document.getElementById('filters');
   var types = document.getElementById('feed-types');
   var heading = document.getElementById('feed');
   var grid = document.getElementById('feed-grid');
-  var bar = document.getElementById('filter-bar');
-  if (!filters || !grid || !bar) return;
+  if (!filters || !grid) return;
 
   var cards = [].slice.call(grid.querySelectorAll('.pc'));
   var pageSize = grid.hasAttribute('data-page') ? parseInt(grid.getAttribute('data-page'), 10) || 12 : 0;
@@ -51,17 +48,17 @@
 
   // Every control that sets a filter
   function controls() {
-    return [].slice.call(document.querySelectorAll('#feed-types [data-filter], #filter-bar [data-filter]'));
+    return [].slice.call(document.querySelectorAll('#feed-types [data-filter]'));
   }
 
   function labelFor(key) {
-    var el = document.querySelector('#filter-bar [data-filter="' + key + '"]');
+    var el = document.querySelector('#feed-types [data-filter="' + key + '"]');
     if (!el) {
       var panel = filters.querySelector('[data-panel="' + key + '"]');
       return panel ? panel.getAttribute('data-label') || '' : '';
     }
     var clone = el.cloneNode(true);
-    var count = clone.querySelector('.bar-chip__count');
+    var count = clone.querySelector('.feed-type__count');
     if (count) count.remove();
     return clone.textContent.trim();
   }
@@ -102,7 +99,6 @@
       moreLink.innerHTML = 'See all ' + (name ? escapeHTML(name) + ' ' : '') + 'work <span aria-hidden="true">&rarr;</span>';
     }
 
-    syncBar();
     layout();
   }
 
@@ -149,8 +145,7 @@
     requestAnimationFrame(function () {
       var panel = filters.querySelector('[data-panel]:not([hidden])');
       var target = panel || grid;
-      var barH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
-      var y = target.getBoundingClientRect().top + window.scrollY - barH - 24;
+      var y = target.getBoundingClientRect().top + window.scrollY - 24;
       window.scrollTo({ top: Math.max(0, y), behavior: instant ? 'auto' : behaviour() });
     });
   }
@@ -193,8 +188,8 @@
   });
 
   // Homepage intro services and the hero's "See our work" (data-jump-filter
-  // "*"): filter the feed in place and jump to the cards, under the pinned
-  // bar, when the feed has that filter; otherwise the link goes to Our work.
+  // "*"): filter the feed in place and jump to the cards when the feed has
+  // that filter; otherwise the link goes to Our work.
   document.addEventListener('click', function (ev) {
     var a = ev.target.closest('a[data-jump-filter]');
     if (!a) return;
@@ -206,22 +201,12 @@
     scrollToResults();
   });
 
-  /* ---------- Pinned bar ---------- */
+  /* ---------- Pinned site header ---------- */
 
-  var barShown = false, headShown = false;
+  // The site header (#sticky-head, brand/menu-bar) slides down on scroll-up
+  // past the hero. Thresholds stop small movements flickering it.
   var head = document.getElementById('sticky-head');
-
-  // Narrow screens: keep the active chip in view in the swipe row
-  function syncBar() {
-    var row = bar.querySelector('.filter-bar__chips');
-    var chip = row && row.querySelector('[aria-pressed="true"]:not([data-filter="*"])');
-    if (chip && chip.offsetParent && row.scrollWidth > row.clientWidth) {
-      var l = chip.offsetLeft - row.offsetLeft;
-      if (l < row.scrollLeft || l + chip.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = l - 16;
-    }
-  }
-
-  // Scroll direction, with thresholds so small movements don't flicker the bar.
+  var headShown = false;
   var lastY = window.scrollY, travel = 0, scrollingUp = false;
 
   function updateBar() {
@@ -234,25 +219,11 @@
     if (travel > 12) scrollingUp = false;
 
     var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
-    // The site header comes back on scroll-up past the hero
     var showHead = !!head && scrollingUp && pastHero;
     if (head && showHead !== headShown) {
       headShown = showHead;
       head.classList.toggle('is-visible', showHead);
       head.inert = !showHead;
-    }
-    var headH = showHead ? head.offsetHeight : 0;
-
-    // The type filters pin while the feed is on screen, under the header
-    // when it shows
-    var chipsH = (bar.querySelector('.filter-bar__inner').offsetHeight || 56) + headH;
-    var inFeed = heading.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
-    bar.style.top = headH + 'px';
-    bar.classList.toggle('show-chips', inFeed);
-    if (inFeed !== barShown) {
-      barShown = inFeed;
-      bar.classList.toggle('is-visible', inFeed);
-      bar.inert = !inFeed;
     }
   }
 
@@ -262,15 +233,6 @@
     ticking = true;
     requestAnimationFrame(function () { ticking = false; updateBar(); });
   }, { passive: true });
-
-  bar.addEventListener('click', function (ev) {
-    if (ev.target.closest('[data-top]')) {
-      scrollingUp = false;
-      window.scrollTo({ top: 0, behavior: behaviour() });
-      return;
-    }
-    onFilterClick(ev);
-  });
 
   /* ---------- Start ---------- */
 

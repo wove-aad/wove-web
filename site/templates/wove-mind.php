@@ -10,9 +10,9 @@
  *
  * Wove latest: Projects, Thinking and News beside the heading filter the
  * feed in place, one filter at a time (choosing the active one again shows
- * everything). ?filter= links (Impact areas, authors) still filter, with
- * their context panel. The feed shows 12 cards with "Load more". A pinned
- * bar repeats the type filters once the heading has scrolled away.
+ * everything). ?filter= links (authors, old addresses) still filter, with
+ * their context panel. The feed shows 12 cards with "Load more". The site
+ * header pins on scroll-up (brand/menu-bar).
  * Behaviour: assets/js/home.js. Styles: assets/css/home.css.
  */
 
@@ -46,7 +46,6 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
   <div class="feed-wrap">
 
     <?php snippet('brand/menu-bar') ?>
-    <?php snippet('home/filter-bar', ['types' => $types, 'totalCount' => $totalCount]) ?>
 
     <main class="feed feed--home" id="main">
 

@@ -255,9 +255,10 @@
 
 
 /* ============================================================
-   CONDENSED FILTER BAR
-   All work, Projects, Thinking and News in one row, pinned while the
-   feed is on screen and its heading has scrolled away.
+   PINNED BAR
+   The base for the pinned site header (.sticky-head, brand/menu-bar):
+   fixed to the top, sliding down when shown. The pinned filter bar that
+   also used it was removed on 2026-10-29.
    ============================================================ */
 .filter-bar {
   position: fixed;
@@ -278,64 +279,6 @@
   transition: transform 250ms ease;
 }
 @media (prefers-reduced-motion: reduce) { .filter-bar, .filter-bar.is-visible { transition: none; } }
-@media (max-width: 600px) {
-  .filter-bar__inner { padding-block: var(--space-8, 0.5rem); }
-  .bar-chip { height: 2.25rem; font-size: 0.875rem; }
-}
-
-.filter-bar__inner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-24);
-  max-width: var(--width-header);
-  margin: 0 auto;
-  padding: var(--space-12) var(--gutter-x);
-}
-/* On narrow screens the chips swipe */
-.filter-bar__track {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8, 0.5rem);
-  flex: 1;
-  min-width: 0;
-}
-.filter-bar__chips {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8, 0.5rem);
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.filter-bar__chips::-webkit-scrollbar { display: none; }
-@media (max-width: 760px) {
-  .filter-bar__chips {
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
-            mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
-  }
-}
-.filter-bar__chips > * { flex-shrink: 0; }
-.bar-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 2.5rem;
-  padding: 0 var(--space-16);
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--feed-raised);
-  color: var(--feed-text);
-  font: inherit;
-  font-size: 0.9375rem;
-  white-space: nowrap;
-  transition: background var(--transition), color var(--transition);
-}
-.bar-chip:hover { background: var(--feed-border); }
-.bar-chip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.bar-chip[aria-pressed="true"] { background: var(--color-black); color: var(--color-white); }
-.bar-chip__count { font-size: 0.8em; color: var(--feed-text-muted); font-variant-numeric: tabular-nums; }
-.bar-chip[aria-pressed="true"] .bar-chip__count { color: inherit; opacity: 0.75; }
-
 
 /* ============================================================
    HERO ("One voice")
@@ -372,7 +315,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx__inner {
   max-width: var(--width-header);
   margin: 0 auto;
-  padding: var(--space-48) var(--gutter-x) var(--space-96);
+  padding: var(--space-24) var(--gutter-x) var(--space-96);
 }
 .hx-row,
 .hx-body {
@@ -381,7 +324,10 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   column-gap: var(--space-32);
   align-items: start;
 }
-.hx-row { align-items: center; }
+/* Header row (2026-10-29): the logo on the left, the menu right beside
+   Get in touch on the right, all on one centre line */
+.hx-row { display: flex; align-items: center; gap: var(--space-32); }
+.hx-row .hx-nav { margin-left: auto; }
 .hx-row .hero-bar__cta { justify-self: end; }
 .hx-body > * { grid-column: 2 / -1; min-width: 0; }
 
@@ -418,7 +364,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 
 .hx-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12) var(--space-32); }
-.hx-nav a { font-size: var(--size-subtitle); font-weight: var(--weight-bold); color: var(--color-black); }
+.hx-nav a { font-size: var(--size-subtitle); font-weight: var(--weight-regular); color: var(--color-black); }
 .hx-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* Services and Impact areas: a list under the toggle (site/snippets/brand/header-row.php) */
@@ -428,7 +374,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   align-items: center;
   gap: var(--space-8, 0.5rem);
   font-size: var(--size-subtitle);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-regular);
   color: var(--color-black);
   list-style: none;
   cursor: pointer;
@@ -734,8 +680,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 
 @media (max-width: 960px) {
-  .hx__inner { padding-block: var(--space-32) var(--space-64); }
-  .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: center; }
+  .hx__inner { padding-block: var(--space-16) var(--space-64); }
+  .hx-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-24); align-items: center; }
+  .hx-row .hx-nav { margin-left: 0; }
   .hx-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
   .hx-body { grid-template-columns: minmax(0, 1fr); }
   .hx-body > * { grid-column: 1; }
@@ -827,54 +774,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .pc--whatif { background: var(--format-whatif-tint); }
 /* Without an image, the body needs a little more room at the top */
 .pc:not(.has-image) .pc__body { padding-top: var(--space-16); }
-
-/* ============================================================
-   BACK-TO-TOP BUTTON IN THE PINNED BAR
-   ============================================================ */
-/* Outside the feed only the menu button shows. */
-.filter-bar:not(.show-chips) .filter-bar__track { display: none; }
-
-/* Menu button at the left of the bar. Kept quiet: it matches the chips,
-   and the panel is a light list. */
-.filter-bar__menu-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--feed-raised);
-  color: var(--feed-text);
-  font: inherit;
-  transition: background var(--transition);
-}
-.filter-bar__menu-btn:hover,
-.filter-bar__menu-btn[aria-expanded="true"] { background: var(--feed-border); }
-.filter-bar__menu-btn:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-.filter-bar__home-icon { width: 1.125rem; height: 1.125rem; }
-
-@media (max-width: 600px) {
-  .filter-bar__menu-btn { width: 2.25rem; height: 2.25rem; }
-  .filter-bar__inner { gap: var(--space-12); }
-}
-
-
-/* ============================================================
-   ACTIVE FILTERS SHOW ×
-   Selecting the active filter again clears it; the × says so. Not on
-   the "All" filters, which have nothing to clear.
-   ============================================================ */
-.home .bar-chip[aria-pressed="true"]:not([data-filter="*"])::after {
-  content: "×";
-  margin-left: 0.4rem;
-  font-size: 1.1em;
-  line-height: 1;
-}
-.home .bar-chip[aria-pressed="true"]:not([data-filter="*"]) .bar-chip__count { display: none; }
-
 
 /* ============================================================
    LOGOS, LINKS AND OTHER KIRBY-ONLY DETAILS
@@ -1029,7 +928,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* Pinned site header (brand/menu-bar): the header row in a bar that
    slides down on scroll-up, over the type filter bar */
 .sticky-head { z-index: 45; }
-.sticky-head__inner { max-width: var(--width-header); margin: 0 auto; padding: var(--space-12) var(--gutter-x); }
+.sticky-head__inner { max-width: var(--width-header); margin: 0 auto; padding: var(--space-8, 0.5rem) var(--gutter-x); }
 .sticky-head .hero-bar__logo { font-size: 1.75rem; }
 @media (max-width: 960px) { .sticky-head .hx-row { row-gap: var(--space-8, 0.5rem); } }
 .filter-bar { transition: transform 250ms ease, visibility 0s linear 250ms, top 250ms ease; }

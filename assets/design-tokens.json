@@ -1,12 +1,13 @@
 {
   "_meta": {
     "project": "Wove.group",
-    "version": "0.3",
+    "version": "0.4",
     "status": "Sprint 2 — Figma design system tokens (complete type scale)",
     "exported": "2026-07-02",
     "figmaFile": "Wove-Website-Sprint-2026",
     "figmaCanvasWidth": 1440,
     "notes": "Tokens derived from Figma variable definitions across all template frames (Home 147:190, Case Study 147:402, Service 147:426, Approach 147:607, About 147:484, Wove Mind 165:568). Canvas is 1440px; px values map directly to Figma. Breakpoints still placeholder pending mobile/tablet design.",
+    "_v04": "2026-10-29: added from the Figma 'Design system' section (node 1253:12465): lilac, mint, the warm stone scale, radius xs and the component type styles marked 'source: 1253:12465'. Additions only; no existing value changed. The Figma frames are set in Schibsted Grotesk and DM Mono; the site stays in Ballinger, so only sizes, weights, line heights and tracking were taken.",
     "_repoNote": "Canonical copy as of 2026-07-09 — lives here (assets/design-tokens.json) rather than only on Desktop. assets/css/site.css's :root is manually kept in sync with this file; any new page's tokens should be checked/added here first, then mirrored into site.css. fontFiles below confirmed with Fergal (locked in) — see _status."
   },
 
@@ -23,6 +24,19 @@
     "green": "#1D9E75",
     "greenBg": "#E1F5EE",
     "greenText": "#085041",
+    "lilac": "#e0bdff",
+    "mint": "#e1f5ee",
+    "stone": {
+      "100": "#f3eeeb",
+      "200": "#eae8e3",
+      "300": "#d2cec7",
+      "400": "#b5b0a8",
+      "500": "#9a968f",
+      "600": "#85827d",
+      "800": "#3d3b37",
+      "900": "#3a3935"
+    },
+    "swatches": ["coral", "aqua", "lilac", "mint", "white"],
     "scale": {
       "100": "#f5f5f5",
       "200": "#eeeeee",
@@ -38,7 +52,11 @@
       "textMuted": "Uses #555555 (color-700). Passes WCAG AA on white (7.46:1). Former #a0a0a0 and #777777 (color-600) both fail AA.",
       "offWhite": "#f9f9f9 used for section backgrounds and card fills",
       "coral": "#ed8c7c used for the Get in touch nav CTA. Black text on coral passes AA (5.28:1).",
-      "aqua": "#d5faff used as illustration/service card background accent. Decorative only."
+      "aqua": "#d5faff used as illustration/service card background accent. Decorative only.",
+      "lilac": "#e0bdff: topic swatch and portrait background. Black text on lilac passes AA (11.59:1).",
+      "mint": "#e1f5ee: collection and case study hero band. Same value as greenBg. Muted text (#555555) on mint passes AA (6.57:1).",
+      "stone": "Warm greys. 100: topic band and portrait backgrounds. 200: service cards. 300 and 900: image placeholders. 400: '/' dividers between topics (decorative, 1.87:1 on stone-100). 500: card meta in Figma (fails AA: 2.59:1 on mint, 2.94:1 on white; use textMuted for text). 600: the 'Wove' prefix in service names (3.13:1 on stone-200, AA for large text only). 800: mono labels (11.18:1 on white).",
+      "swatches": "The square colour keys beside topics in Explore by topic, used in this order."
     }
   },
 
@@ -224,6 +242,137 @@
         "weight": 400,
         "lineHeight": 1.333,
         "letterSpacing": "0"
+      },
+      "displayHero": {
+        "use": "Collection or case study name in its hero (Circular.ie)",
+        "source": "1253:12465",
+        "figmaPx": 160,
+        "rem": "10rem",
+        "weight": 700,
+        "lineHeight": 0.9,
+        "letterSpacing": "-0.07em"
+      },
+      "displayCollection": {
+        "use": "Collection name at the top of a collection band",
+        "source": "1253:12465",
+        "figmaPx": 120,
+        "rem": "7.5rem",
+        "weight": 700,
+        "lineHeight": 0.917,
+        "letterSpacing": "-0.06em"
+      },
+      "statement": {
+        "use": "Section statement (We help clients create lasting change...)",
+        "source": "1253:12465",
+        "figmaPx": 64,
+        "rem": "4rem",
+        "weight": 800,
+        "lineHeight": 1.0,
+        "letterSpacing": "-0.025em",
+        "_note": "Same size as h2, with tighter leading and tracking."
+      },
+      "sectionTitle": {
+        "use": "Section headings beside a link or button (Selected work, The people behind the work), overview titles",
+        "source": "1253:12465",
+        "figmaPx": 40,
+        "rem": "2.5rem",
+        "weight": 700,
+        "lineHeight": 1.15,
+        "letterSpacing": "-0.02em"
+      },
+      "serviceName": {
+        "use": "Service card name; 'Wove' in stone-600, the service in black",
+        "source": "1253:12465",
+        "figmaPx": 40,
+        "rem": "2.5rem",
+        "weight": 800,
+        "lineHeight": 1.2,
+        "letterSpacing": "-0.02em"
+      },
+      "topic": {
+        "use": "Topics in Explore by topic",
+        "source": "1253:12465",
+        "figmaPx": 40,
+        "rem": "2.5rem",
+        "weight": 500,
+        "lineHeight": 1.2,
+        "letterSpacing": "-0.02em"
+      },
+      "lead": {
+        "use": "Hero subtitle under a display name",
+        "source": "1253:12465",
+        "figmaPx": 32,
+        "rem": "2rem",
+        "weight": 500,
+        "lineHeight": 1.3125,
+        "letterSpacing": "-0.01em",
+        "_note": "24px / 32px in the collection band."
+      },
+      "intro": {
+        "use": "Section intro under a section title, in textMuted",
+        "source": "1253:12465",
+        "figmaPx": 22,
+        "rem": "1.375rem",
+        "weight": 400,
+        "lineHeight": 1.455,
+        "letterSpacing": "0",
+        "_note": "Matches p3."
+      },
+      "cardTitle": {
+        "use": "Post and case study card titles, person names",
+        "source": "1253:12465",
+        "figmaPx": 20,
+        "rem": "1.25rem",
+        "weight": 700,
+        "lineHeight": 1.3,
+        "letterSpacing": "-0.01em"
+      },
+      "cardBody": {
+        "use": "Service card descriptions",
+        "source": "1253:12465",
+        "figmaPx": 20,
+        "rem": "1.25rem",
+        "weight": 400,
+        "lineHeight": 1.32,
+        "letterSpacing": "0"
+      },
+      "link": {
+        "use": "Text links with an arrow (See all work, Read)",
+        "source": "1253:12465",
+        "figmaPx": 18,
+        "rem": "1.125rem",
+        "weight": 700,
+        "lineHeight": 1.333,
+        "letterSpacing": "0"
+      },
+      "pill": {
+        "use": "Tag pills in a hero (7 pieces, Labs, Circular economy)",
+        "source": "1253:12465",
+        "figmaPx": 15,
+        "rem": "0.9375rem",
+        "weight": 500,
+        "lineHeight": 1.333,
+        "letterSpacing": "0"
+      },
+      "meta": {
+        "use": "Card meta (Brand · 4 min) and person roles (16px)",
+        "source": "1253:12465",
+        "figmaPx": 14,
+        "rem": "0.875rem",
+        "weight": 400,
+        "lineHeight": 1.429,
+        "letterSpacing": "0"
+      },
+      "label": {
+        "use": "Uppercase format labels over card titles (Project, News, Start here · Project)",
+        "source": "1253:12465",
+        "figmaPx": 11,
+        "rem": "0.6875rem",
+        "weight": 400,
+        "lineHeight": 1.455,
+        "letterSpacing": "0.06em",
+        "textTransform": "uppercase",
+        "_note": "DM Mono in Figma. No monospace face is loaded on the site."
       }
     }
   },
@@ -267,6 +416,7 @@
   },
 
   "radius": {
+    "xs":     { "rem": "0.375rem", "px": 6, "_note": "Topic swatches (source: 1253:12465). Figma also uses 12px for card images (sm) and 16px for cards and portraits, which is the .home-scoped sm in home.css." },
     "sm":     { "rem": "0.75rem",  "px": 12, "figmaVar": "--radius-small" },
     "md":     { "rem": "1.25rem",  "px": 20, "figmaVar": "--radius-medium" },
     "lg":     { "rem": "2.8125rem","px": 45, "figmaVar": "--radius-large" },

@@ -1,5 +1,5 @@
 /* ============================================================
-   DESIGN TOKENS v0.3
+   DESIGN TOKENS v0.4
    Migrated from the Labs page's page-scoped subset to the full set in
    assets/design-tokens.json (the canonical source going forward). Keep
    this :root in sync by hand with that file — any new page's tokens
@@ -27,6 +27,17 @@
   --color-green:        #1D9E75;  /* accent — named "green" in the token export */
   --color-green-bg:     #E1F5EE;
   --color-green-text:   #085041;
+  --color-lilac:        #e0bdff;  /* topic swatch, portrait background */
+  --color-mint:         #e1f5ee;  /* collection and case study hero band; same as green-bg */
+  /* Stone: warm greys from the Figma design system section (2026-10-29) */
+  --color-stone-100:    #f3eeeb;  /* topic band, portrait background */
+  --color-stone-200:    #eae8e3;  /* service cards */
+  --color-stone-300:    #d2cec7;  /* image placeholder */
+  --color-stone-400:    #b5b0a8;  /* dividers, decorative only */
+  --color-stone-500:    #9a968f;  /* fails AA for text; use --color-text-muted */
+  --color-stone-600:    #85827d;  /* "Wove" in service names; large text only */
+  --color-stone-800:    #3d3b37;  /* uppercase labels */
+  --color-stone-900:    #3a3935;  /* dark image placeholder */
   --color-100:          #f5f5f5;
   --color-200:          #eeeeee;
   --color-300:          #dddddd;
@@ -120,6 +131,7 @@
   --border-card: 1px solid var(--color-border-card);
 
   /* Radius */
+  --radius-xs:   0.375rem;  /* 6px, topic swatches */
   --radius-sm:   0.75rem;   /* 12px */
   --radius-md:   1.25rem;   /* 20px */
   --radius-lg:   2.8125rem; /* 45px */

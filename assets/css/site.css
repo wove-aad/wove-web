@@ -66,7 +66,7 @@
   --size-h1:            clamp(3rem, 6vw, 7rem);     /* 88px @1440, grows to 112px on larger screens — intentional growth past the figma spec's fixed 5.5rem, confirmed by Grace 2026-07-09. */
   --size-h1-xbold:      10.75rem; /* 172px, weight 900, lh 0.51 — homepage hero display only */
   --size-eyebrow-bold:  5.5rem;   /* 88px, weight 800, lh 1.0 — case study client/project eyebrow */
-  --size-h2:            clamp(2.5rem, 6vw, 4rem);
+  --size-h2:            clamp(2.25rem, 3.75vw, 3.375rem); /* 54px @1440 (was 64px, 2026-10-29), 36px floor — section headings and statements */
   --size-h3:            clamp(2.5rem, 5vw, 3.5rem); /* 56px, weight 800, lh 64px */
   --size-h3-light:      3.5rem;   /* 56px, weight 300, lh 1.143 — hero subtitle */
   --size-h4:            2.5rem;   /* 40px, weight 400, lh 1.5 — card titles, smaller section heads */
@@ -87,6 +87,16 @@
   --size-nav:           1rem;       /* 16px */
   --size-banner:        clamp(1.75rem, 3vw, 2.5rem); /* 40px contact banner text */
   --size-attr-name:     2rem;       /* 32px quote attribution */
+  /* Added 2026-10-29 so every font size on the redesigned pages is a token */
+  --size-display:       clamp(2.75rem, 9vw, 9rem); /* 130px @1440 — homepage hero title */
+  --size-lead:          clamp(1.375rem, 2.2vw, 2rem); /* 32px @1440 — intro paragraphs under page titles */
+  --size-p5:            0.9375rem;  /* 15px — small body text, meta, buttons */
+  --size-p6:            0.875rem;   /* 14px — captions, client names under titles */
+  --size-label:         0.8125rem;  /* 13px — pills, chips, small labels */
+  --size-label-sm:      0.75rem;    /* 12px — uppercase labels, counts */
+  --size-micro:         0.6875rem;  /* 11px — tiny labels, avatar initials */
+  --size-logo:          2rem;       /* 32px — wordmark in the header */
+  --size-logo-sm:       1.5rem;     /* 24px — wordmark on phones and in the pinned header */
 
   /* Line height */
   --lh-h1:        1.0;

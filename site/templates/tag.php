@@ -7,8 +7,9 @@
  *
  * - A strip of every published impact area with work, to move between
  *   them: soft chips, the current one lifted in white.
- * - Opening on a mint band: the name, the tag's intro and an optional
- *   "Currently interested in" card (the tag's own field).
+ * - Opening on a mint band: the name, then the tag's intro set and placed
+ *   like the client page lead, and an optional "Currently interested in"
+ *   card (the tag's own field) under it.
  * - Browse work: the area's posts and case studies, the newest large
  *   beside the next two (client page styles), with type filters.
  * - A collection: the newest case study in the area, its question and the
@@ -128,17 +129,17 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
       <?php endif ?>
 
       <h1 class="sv-head__title ia-head__title"><?= html($name) ?></h1>
-      <div class="sv-head__lower">
-        <div class="sv-head__lead">
-          <?php if ($intro): ?><p class="sv-head__text ia-head__text"><?= html($intro) ?></p><?php endif ?>
+      <?php if ($intro || $interest): ?>
+        <div class="cp-head__lead ia-head__lead">
+          <?php if ($intro): ?><p class="cp-head__summary"><?= html($intro) ?></p><?php endif ?>
+          <?php if ($interest): ?>
+            <div class="sv-interest ia-head__interest">
+              <span class="sv-interest__kicker">Currently interested in</span>
+              <span class="sv-interest__name"><?= html($interest) ?></span>
+            </div>
+          <?php endif ?>
         </div>
-        <?php if ($interest): ?>
-          <div class="sv-interest">
-            <span class="sv-interest__kicker">Currently interested in</span>
-            <span class="sv-interest__name"><?= html($interest) ?></span>
-          </div>
-        <?php endif ?>
-      </div>
+      <?php endif ?>
     </div>
   </header>
 

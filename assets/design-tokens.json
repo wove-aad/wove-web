@@ -115,9 +115,11 @@
         "_note": "Same size as H1 but used semantically as eyebrow (not a heading tag)"
       },
       "h2": {
-        "use": "Section headings",
-        "figmaPx": 64,
-        "rem": "4rem",
+        "use": "Section headings and statements (Wove latest, Browse work, Activity, the services statement)",
+        "figmaPx": 54,
+        "rem": "3.375rem",
+        "css": "--size-h2: clamp(2.25rem, 3.75vw, 3.375rem)",
+        "_note": "Reduced from 64px on 2026-10-29; responsive down to 36px.",
         "weight": 800,
         "lineHeight": 1.125,
         "letterSpacing": "0"
@@ -249,6 +251,18 @@
         "weight": 400,
         "lineHeight": 1.333,
         "letterSpacing": "0"
+      },
+      "sizeTokens": {
+        "_note": "CSS size tokens added on 2026-10-29 so every font size on the redesigned pages is a token (assets/css/site.css :root). Odd in-between sizes were snapped to the nearest token.",
+        "display": { "css": "--size-display", "value": "clamp(2.75rem, 9vw, 9rem)", "use": "Homepage hero title" },
+        "lead": { "css": "--size-lead", "value": "clamp(1.375rem, 2.2vw, 2rem)", "use": "Intro paragraphs under page titles" },
+        "p5": { "css": "--size-p5", "value": "0.9375rem", "px": 15 },
+        "p6": { "css": "--size-p6", "value": "0.875rem", "px": 14 },
+        "label": { "css": "--size-label", "value": "0.8125rem", "px": 13 },
+        "labelSm": { "css": "--size-label-sm", "value": "0.75rem", "px": 12 },
+        "micro": { "css": "--size-micro", "value": "0.6875rem", "px": 11 },
+        "logo": { "css": "--size-logo", "value": "2rem", "px": 32 },
+        "logoSm": { "css": "--size-logo-sm", "value": "1.5rem", "px": 24 }
       },
       "displayHero": {
         "use": "Collection or case study name in its hero (Circular.ie)",

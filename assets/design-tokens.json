@@ -1,0 +1,325 @@
+{
+  "_meta": {
+    "project": "Wove.group",
+    "version": "0.3",
+    "status": "Sprint 2 — Figma design system tokens (complete type scale)",
+    "exported": "2026-07-02",
+    "figmaFile": "Wove-Website-Sprint-2026",
+    "figmaCanvasWidth": 1440,
+    "notes": "Tokens derived from Figma variable definitions across all template frames (Home 147:190, Case Study 147:402, Service 147:426, Approach 147:607, About 147:484, Wove Mind 165:568). Canvas is 1440px; px values map directly to Figma. Breakpoints still placeholder pending mobile/tablet design.",
+    "_repoNote": "Canonical copy as of 2026-07-09 — lives here (assets/design-tokens.json) rather than only on Desktop. assets/css/site.css's :root is manually kept in sync with this file; any new page's tokens should be checked/added here first, then mirrored into site.css. fontFiles below confirmed with Fergal (locked in) — see _status."
+  },
+
+  "color": {
+    "black": "#111111",
+    "white": "#ffffff",
+    "offWhite": "#f9f9f9",
+    "coral": "#ed8c7c",
+    "aqua": "#d5faff",
+    "textPrimary": "#111111",
+    "textMuted": "#555555",
+    "placeholder": "#d9d9d9",
+    "borderCard": "#aaaaaa",
+    "green": "#1D9E75",
+    "greenBg": "#E1F5EE",
+    "greenText": "#085041",
+    "scale": {
+      "100": "#f5f5f5",
+      "200": "#eeeeee",
+      "300": "#dddddd",
+      "400": "#bbbbbb",
+      "500": "#999999",
+      "600": "#777777",
+      "700": "#555555",
+      "800": "#333333",
+      "900": "#222222"
+    },
+    "_a11yNotes": {
+      "textMuted": "Uses #555555 (color-700). Passes WCAG AA on white (7.46:1). Former #a0a0a0 and #777777 (color-600) both fail AA.",
+      "offWhite": "#f9f9f9 used for section backgrounds and card fills",
+      "coral": "#ed8c7c used for the Get in touch nav CTA. Black text on coral passes AA (5.28:1).",
+      "aqua": "#d5faff used as illustration/service card background accent. Decorative only."
+    }
+  },
+
+  "typography": {
+    "fontFamily": "Ballinger",
+    "fallback": "sans-serif",
+    "fontWeight": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "bold": 700,
+      "xBold": 800,
+      "black": 900
+    },
+    "fontFiles": {
+      "_status": "Confirmed with Fergal — locked in for build (2026-07-09).",
+      "light":   "ballinger-light.otf",
+      "regular": "ballinger-regular.otf",
+      "medium":  "ballinger-medium.otf",
+      "bold":    "ballinger-bold.otf",
+      "xBold":   "ballinger-xbold.otf",
+      "black":   "ballinger-black.otf"
+    },
+    "styles": {
+      "h1XBold": {
+        "use": "Homepage hero display only",
+        "figmaPx": 172,
+        "rem": "10.75rem",
+        "weight": 900,
+        "lineHeight": 0.51,
+        "letterSpacing": "0"
+      },
+      "h1": {
+        "use": "Page titles (case study, service, about, approach)",
+        "figmaPx": 88,
+        "rem": "5.5rem",
+        "weight": 800,
+        "lineHeight": 1.0,
+        "letterSpacing": "0",
+        "_note": "Live implementation uses clamp(3rem, 6vw, 7rem), intentionally growing past this figma value on larger screens. Confirmed intentional by Grace, 2026-07-09 — not a drift."
+      },
+      "eyebrowBold": {
+        "use": "Client/project name eyebrow on case studies",
+        "figmaPx": 88,
+        "rem": "5.5rem",
+        "weight": 800,
+        "lineHeight": 1.0,
+        "letterSpacing": "0",
+        "_note": "Same size as H1 but used semantically as eyebrow (not a heading tag)"
+      },
+      "h2": {
+        "use": "Section headings",
+        "figmaPx": 64,
+        "rem": "4rem",
+        "weight": 800,
+        "lineHeight": 1.125,
+        "letterSpacing": "0"
+      },
+      "h3": {
+        "use": "Sub-section headings, approach principles",
+        "figmaPx": 56,
+        "rem": "3.5rem",
+        "weight": 800,
+        "lineHeight": 1.143,
+        "letterSpacing": "0"
+      },
+      "h3Light": {
+        "use": "Hero subtitle, light-weight display text",
+        "figmaPx": 56,
+        "rem": "3.5rem",
+        "weight": 300,
+        "lineHeight": 1.143,
+        "letterSpacing": "0"
+      },
+      "h4": {
+        "use": "Card titles, smaller section heads",
+        "figmaPx": 40,
+        "rem": "2.5rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "0"
+      },
+      "h5": {
+        "use": "Section labels (e.g. 'What we do', 'Recent work'), small headings",
+        "figmaPx": 28,
+        "rem": "1.75rem",
+        "weight": 800,
+        "lineHeight": 1.286,
+        "letterSpacing": "0"
+      },
+      "p1": {
+        "use": "Lead body text, intro paragraphs",
+        "figmaPx": 30,
+        "rem": "1.875rem",
+        "weight": 400,
+        "lineHeight": 1.667,
+        "letterSpacing": "0"
+      },
+      "p1Bold": {
+        "use": "Emphasised lead text (approach commitments headings)",
+        "figmaPx": 32,
+        "rem": "2rem",
+        "weight": 800,
+        "lineHeight": 1.5,
+        "letterSpacing": "0"
+      },
+      "p2": {
+        "use": "Standard body text, descriptions",
+        "figmaPx": 24,
+        "rem": "1.5rem",
+        "weight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": "0"
+      },
+      "p2Bold": {
+        "use": "Emphasised standard body text",
+        "figmaPx": 26,
+        "rem": "1.625rem",
+        "weight": 800,
+        "lineHeight": 1.462,
+        "letterSpacing": "0"
+      },
+      "p3": {
+        "use": "Smaller body text, captions, attribution text",
+        "figmaPx": 22,
+        "rem": "1.375rem",
+        "weight": 400,
+        "lineHeight": 1.455,
+        "letterSpacing": "0"
+      },
+      "p4": {
+        "use": "Smallest body text",
+        "figmaPx": 18,
+        "rem": "1.125rem",
+        "weight": 400,
+        "lineHeight": 1.778,
+        "letterSpacing": "0"
+      },
+      "p4Bold": {
+        "use": "Emphasised smallest body text",
+        "figmaPx": 18,
+        "rem": "1.125rem",
+        "weight": 800,
+        "lineHeight": 1.778,
+        "letterSpacing": "0"
+      },
+      "h6": {
+        "use": "Smallest heading, inline card labels",
+        "figmaPx": 24,
+        "rem": "1.5rem",
+        "weight": 800,
+        "lineHeight": 1.5,
+        "letterSpacing": "0"
+      },
+      "subtitle": {
+        "use": "Card titles, taglines, secondary text",
+        "figmaPx": 20,
+        "rem": "1.25rem",
+        "weight": 400,
+        "lineHeight": 1.4,
+        "letterSpacing": "0"
+      },
+      "cta": {
+        "use": "Call-to-action links",
+        "figmaPx": 24,
+        "rem": "1.5rem",
+        "weight": 400,
+        "lineHeight": 1.0,
+        "letterSpacing": "0"
+      },
+      "buttonLarge": {
+        "use": "Primary button text",
+        "figmaPx": 24,
+        "rem": "1.5rem",
+        "weight": 400,
+        "lineHeight": 1.0,
+        "letterSpacing": "0"
+      },
+      "buttonSmall": {
+        "use": "Secondary/ghost button text, nav links",
+        "figmaPx": 18,
+        "rem": "1.125rem",
+        "weight": 400,
+        "lineHeight": 1.333,
+        "letterSpacing": "0"
+      }
+    }
+  },
+
+  "spacing": {
+    "_note": "Named by px value for clarity. 40 and 64 promoted from the 4px-base reserve to named steps — both are already load-bearing in site.css (offering padding, article-grid gap).",
+    "scale": {
+      "12": { "rem": "0.75rem", "px": 12 },
+      "16": { "rem": "1rem",    "px": 16 },
+      "24": { "rem": "1.5rem",  "px": 24 },
+      "32": { "rem": "2rem",    "px": 32 },
+      "40": { "rem": "2.5rem",  "px": 40 },
+      "48": { "rem": "3rem",    "px": 48 },
+      "64": { "rem": "4rem",    "px": 64 },
+      "80": { "rem": "5rem",    "px": 80 },
+      "96": { "rem": "6rem",    "px": 96 },
+      "128":{ "rem": "8rem",    "px": 128 }
+    },
+    "rhythm": {
+      "_status": "Reconciled 2026-07-09 to match what's actually live in site.css (which mirrors the service-page HTML as sent) — that took priority over this export's earlier values. xl is carried over unconfirmed; nothing built uses it yet.",
+      "xs": { "rem": "1.5rem", "px": 24,  "spaceRef": "24" },
+      "sm": { "rem": "3rem",  "px": 48,  "spaceRef": "48" },
+      "md": { "rem": "6rem",  "px": 96,  "spaceRef": "96" },
+      "lg": { "rem": "8rem",  "px": 128, "spaceRef": "128" },
+      "xl": { "rem": "8rem",  "px": 128, "spaceRef": "128", "_note": "Unconfirmed — carried over from the earlier export, not yet used by any built page." }
+    }
+  },
+
+  "layout": {
+    "maxWidth": { "rem": "80rem", "px": 1280 },
+    "figmaCanvasWidth": 1440,
+    "_note": "Content area is 1280px within 1440px viewport. Figma px values map directly — no scale factor needed. site.css additionally carries width-header (85rem/1360px), width-content (51.25rem/820px) and width-text (40rem/640px), all already load-bearing and not yet reconciled into this export."
+  },
+
+  "border": {
+    "width": "1px",
+    "color": "#dddddd",
+    "colorCard": "#aaaaaa",
+    "default": "1px solid #dddddd",
+    "card": "1px solid #aaaaaa"
+  },
+
+  "radius": {
+    "sm":     { "rem": "0.75rem",  "px": 12, "figmaVar": "--radius-small" },
+    "md":     { "rem": "1.25rem",  "px": 20, "figmaVar": "--radius-medium" },
+    "lg":     { "rem": "2.8125rem","px": 45, "figmaVar": "--radius-large" },
+    "pill":   { "px": 100 }
+  },
+
+  "shadow": {
+    "sm": "0 1px 4px rgba(0,0,0,0.06)",
+    "md": "0 4px 16px rgba(0,0,0,0.08)",
+    "lg": "0 8px 32px rgba(0,0,0,0.10)"
+  },
+
+  "transition": {
+    "default": "200ms ease"
+  },
+
+  "breakpoints": {
+    "_status": "PLACEHOLDER — not yet validated against Figma mobile/tablet frames. Only desktop (1440px) has been designed. Confirm with Fergal before using in build.",
+    "mobile":       { "px": 375, "minWidth": "0px",    "maxWidth": "599px" },
+    "tablet":       { "px": 768, "minWidth": "600px",  "maxWidth": "959px" },
+    "smallDesktop": { "px": 1024,"minWidth": "960px",  "maxWidth": "1439px" },
+    "largeDesktop": { "px": 1440,"minWidth": "1440px", "maxWidth": null }
+  },
+
+  "components": {
+    "button": {
+      "variants": {
+        "large": {
+          "fontSize": "1.5rem",
+          "padding": "1rem 2rem",
+          "borderRadius": "100px"
+        },
+        "small": {
+          "fontSize": "1.125rem",
+          "padding": "0.75rem 1.5rem",
+          "borderRadius": "100px"
+        },
+        "primary": { "background": "#111111", "color": "#ffffff" },
+        "ghost":   { "background": "transparent", "border": "1px solid #dddddd" }
+      }
+    },
+    "tag": {
+      "fontSize": "1.125rem",
+      "padding": "0.5rem 1.25rem",
+      "borderRadius": "100px",
+      "border": "1px solid #dddddd"
+    },
+    "tooltip": {
+      "borderBottom": "1px dashed #bbbbbb",
+      "background": "#111111",
+      "color": "#ffffff",
+      "borderRadius": "0.75rem",
+      "width": "240px"
+    }
+  }
+}

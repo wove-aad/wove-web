@@ -26,13 +26,14 @@ $initial = get('filter') ?: '*';
 // masonry, ?heights=own|set, ?card=framed|open|tinted|compact. The options panel
 // (snippets/home/feed-options.php) shows when any of them is set, or with
 // ?options.
-// Defaults (2026-10-29, used on every feed): 2 columns, masonry, own image
-// shape, open cards.
+// Defaults (2026-10-29, used on every feed): 3 columns, rows aligned at
+// the top, three image heights varied by position (assets/js/feed.js),
+// compact cards.
 $opt = [
-  'cols'    => get('cols') === '3' ? '3' : '2',
-  'layout'  => get('layout') === 'grid' ? 'grid' : 'masonry',
-  'heights' => get('heights') === 'set' ? 'set' : 'own',
-  'card'    => in_array(get('card'), ['framed', 'tinted', 'compact'], true) ? get('card') : 'open',
+  'cols'    => get('cols') === '2' ? '2' : '3',
+  'layout'  => get('layout') === 'masonry' ? 'masonry' : 'grid',
+  'heights' => get('heights') === 'own' ? 'own' : 'set',
+  'card'    => in_array(get('card'), ['framed', 'tinted', 'open'], true) ? get('card') : 'compact',
 ];
 $showOptions = get('options') !== null || get('cols') || get('layout') || get('heights') || get('card');
 // Compact builds on the open cards
@@ -65,7 +66,7 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>
 
-      <div class="feed-cards pc-grid <?= $gridClass ?>" id="feed-grid"<?= $opt['layout'] === 'masonry' ? ' data-masonry' : '' ?> tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url() ?>/" data-page="<?= $feedLimit ?>">
+      <div class="feed-cards pc-grid <?= $gridClass ?>" id="feed-grid"<?= $opt['layout'] === 'masonry' ? ' data-masonry' : '' ?><?= $opt['heights'] === 'set' ? ' data-heights' : '' ?> tabindex="-1" data-initial="<?= html($initial) ?>" data-url="<?= url() ?>/" data-page="<?= $feedLimit ?>">
         <?php $i = 0; foreach ($entries as $entry): ?>
           <?php snippet('home/post-card', [
             'post'    => $entry,

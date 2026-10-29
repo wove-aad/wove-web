@@ -124,7 +124,7 @@ $pill = function ($p) use ($site) {
       <?php if ($projects): ?>
         <section class="sv-section" aria-labelledby="sv-projects">
           <h2 class="sv-heading" id="sv-projects"><?= html($name) ?> projects</h2>
-          <ul class="sv-projects feed-masonry" role="list" data-projects data-masonry data-page="<?= $perPage ?>">
+          <ul class="sv-projects feed-varied" role="list" data-projects data-heights data-page="<?= $perPage ?>">
             <?php foreach ($projects as $n => $p):
               $isCase = $p->intendedTemplate()->name() === 'case-study';
               $image  = $imageOf($p);

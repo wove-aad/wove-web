@@ -88,7 +88,7 @@ $ogType = $page->ogtype()->or('website')->value();
   <?php endif ?>
 <?php endforeach; endif ?>
 <script src="<?= wove_asset('/assets/js/nav.js') ?>" defer></script>
-<script src="<?= wove_asset('/assets/js/masonry.js') ?>" defer></script>
+<script src="<?= wove_asset('/assets/js/feed.js') ?>" defer></script>
 </head>
 <body class="tpl-<?= $page->template()->name() ?>">
 

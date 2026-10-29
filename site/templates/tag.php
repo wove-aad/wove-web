@@ -164,7 +164,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
               </div>
             <?php endif ?>
           </div>
-          <ul class="cp-posts feed-masonry" role="list" data-activity data-masonry>
+          <ul class="cp-posts feed-varied" role="list" data-activity data-heights>
             <?php foreach ($browse as $i => $p) $card($p, $i === 0) ?>
           </ul>
         </section>
@@ -212,7 +212,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
     <?php if ($browse): ?>
       <div class="pg ia-more">
         <?php if ($more): ?>
-          <ul class="cp-posts feed-masonry" role="list" data-activity data-flat data-masonry>
+          <ul class="cp-posts feed-varied" role="list" data-activity data-flat data-heights>
             <?php foreach ($more as $p) $card($p) ?>
           </ul>
         <?php endif ?>

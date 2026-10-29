@@ -14,7 +14,8 @@
  * Our work: the grid's data-initial is the filter to start with, and
  * data-url is the Our work address, kept in step with ?filter=.
  *
- * Layout: masonry by default (assets/js/masonry.js on [data-masonry]),
+ * Layout: a grid with rows aligned at the top and image heights varied by
+ * position (assets/js/feed.js; masonry with ?layout=masonry),
  * cards in date order in the DOM, so reading and tab order follow it.
  *
  * Pinned header: the site header (#sticky-head, brand/menu-bar) slides

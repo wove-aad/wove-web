@@ -304,6 +304,32 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* The hero sizes to its content so the featured item shows on landing
    (2026-10-29); the blue ?hero= options keep the full screen. */
 .hx--home { display: flex; flex-direction: column; }
+
+/* Homepage hero colourscape (2026-10-29): two soft colour fields over a
+   base colour, all slowly morphing between the light blue, green and
+   lilac tints. The colours are registered custom properties so they can
+   animate inside the gradients; without @property support the hero shows
+   a still blend. Off for reduced motion. The blue ?hero= options keep
+   their own background. */
+@property --hx-a { syntax: '<color>'; inherits: false; initial-value: #d5faff; }
+@property --hx-b { syntax: '<color>'; inherits: false; initial-value: #e1f5ee; }
+@property --hx-c { syntax: '<color>'; inherits: false; initial-value: #d3cae0; }
+.hx--home:not(.hx--blue) {
+  --hx-a: var(--color-aqua);
+  --hx-b: var(--color-mint);
+  --hx-c: var(--color-service-labs);
+  background:
+    radial-gradient(60% 70% at 15% 20%, var(--hx-a), transparent 70%),
+    radial-gradient(55% 65% at 85% 75%, var(--hx-b), transparent 70%),
+    var(--hx-c);
+  animation: hx-scape 36s ease-in-out infinite alternate;
+}
+@keyframes hx-scape {
+  0%   { --hx-a: var(--color-aqua);          --hx-b: var(--color-mint);          --hx-c: var(--color-service-labs); }
+  50%  { --hx-a: var(--color-mint);          --hx-b: var(--color-service-labs);  --hx-c: var(--color-aqua); }
+  100% { --hx-a: var(--color-service-labs);  --hx-b: var(--color-aqua);          --hx-c: var(--color-mint); }
+}
+@media (prefers-reduced-motion: reduce) { .hx--home:not(.hx--blue) { animation: none; } }
 .hx--home.hx--blue { min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
 /* More room around the oversize title (2026-10-29) */
@@ -876,11 +902,12 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    (assets/js/home.js), so cards pack up under each other in date order */
 .feed-cards.pc-grid--masonry { grid-auto-rows: 4px; row-gap: 0; }
 
-/* Three set image heights, by post type: Projects tall, News medium,
-   Thinking short. Images are cropped to fit. */
-.pc-grid--heights-set .pc[data-size="tall"] .pc__media { aspect-ratio: 4 / 5 !important; }
-.pc-grid--heights-set .pc[data-size="medium"] .pc__media { aspect-ratio: 1 / 1 !important; }
-.pc-grid--heights-set .pc[data-size="short"] .pc__media { aspect-ratio: 3 / 2 !important; }
+/* Three image heights, varied by position on every feed (data-size from
+   assets/js/feed.js, on [data-heights] grids): each row has one tall,
+   one medium and one short. Images are cropped to fit. */
+[data-heights] > [data-size="tall"] :is(.pc__media, .cp-post__media, .sv-project__media) { aspect-ratio: 3 / 4 !important; }
+[data-heights] > [data-size="medium"] :is(.pc__media, .cp-post__media, .sv-project__media) { aspect-ratio: 1 / 1 !important; }
+[data-heights] > [data-size="short"] :is(.pc__media, .cp-post__media, .sv-project__media) { aspect-ratio: 3 / 2 !important; }
 
 /* Open: no card frame, the image and a caption (Figma 1287:5157) */
 .feed-cards.pc-grid--card-open { column-gap: var(--space-40); }

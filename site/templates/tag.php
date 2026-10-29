@@ -143,7 +143,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
   </header>
 
   <div class="feed-wrap">
-    <?php snippet('brand/menu-bar') ?>
+    <?php snippet('brand/menu-bar', ['current' => $key]) ?>
 
     <main class="pg ia-main" id="main">
 

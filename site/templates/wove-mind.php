@@ -45,6 +45,7 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 
   <div class="feed-wrap">
 
+    <?php snippet('brand/menu-bar') ?>
     <?php snippet('home/filter-bar', ['types' => $types, 'totalCount' => $totalCount]) ?>
 
     <main class="feed feed--home" id="main">

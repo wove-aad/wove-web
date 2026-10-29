@@ -1,14 +1,15 @@
 <?php
 /**
- * Pinned bar for pages without feed filters: a back-to-top button and the
- * logo. It shows on scroll-up once the page header has scrolled away
- * (assets/js/pages.js). The feed pages use home/filter-bar instead. The
- * back-to-top button replaced a menu on 2026-10-08.
+ * Pinned header: the full header row (logo, menu, Get in touch) in a bar
+ * that slides down on scroll-up once the page header has scrolled away
+ * (assets/js/pages.js; on the homepage assets/js/home.js). It replaced
+ * the back-to-top and logo bar on 2026-10-29.
+ * Usage: <?php snippet('brand/menu-bar', ['current' => 'people']) ?>
+ * `current` is passed on to brand/header-row.
  */
 ?>
-<div class="filter-bar" id="filter-bar" role="region" aria-label="Page" inert data-menu-bar>
-  <div class="filter-bar__inner">
-    <button type="button" class="filter-bar__menu-btn" data-top aria-label="Back to top"><?php snippet('brand/top-icon') ?></button>
-    <a class="filter-bar__logo" href="<?= url() ?>"><?php snippet('brand/logo') ?></a>
+<div class="filter-bar sticky-head" id="sticky-head" role="region" aria-label="Site header" inert data-menu-bar>
+  <div class="sticky-head__inner">
+    <?php snippet('brand/header-row', ['current' => $current ?? null]) ?>
   </div>
 </div>

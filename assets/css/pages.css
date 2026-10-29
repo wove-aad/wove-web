@@ -103,13 +103,6 @@
   .ph__intro { font-size: var(--size-p4); }
 }
 
-/* Logo in the menu-only pinned bar (pages without feed filters) */
-.filter-bar__logo {
-  font-size: var(--size-subtitle);
-  font-weight: var(--weight-bold);
-  letter-spacing: -0.02em;
-  color: var(--color-black);
-}
 
 
 /* ============================================================

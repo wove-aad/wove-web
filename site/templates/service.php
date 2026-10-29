@@ -117,7 +117,7 @@ $pill = function ($p) use ($site) {
   </header>
 
   <div class="feed-wrap">
-    <?php snippet('brand/menu-bar') ?>
+    <?php snippet('brand/menu-bar', ['current' => 'service:' . $slug]) ?>
 
     <main class="pg sv-main" id="main">
 

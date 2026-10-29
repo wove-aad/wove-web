@@ -64,7 +64,7 @@ $address = array_filter([
   </header>
 
   <div class="feed-wrap">
-    <?php snippet('brand/menu-bar') ?>
+    <?php snippet('brand/menu-bar', ['current' => 'contact']) ?>
 
     <main class="pg" id="main">
 

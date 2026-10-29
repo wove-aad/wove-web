@@ -18,9 +18,10 @@
  * Layout: a plain CSS grid in date order, rows aligned at the top
  * (home.css), so reading and tab order match what you see.
  *
- * Pinned bar: shows once the feed heading has scrolled away while the feed
- * is on screen, and (back-to-top button only) on scroll-up elsewhere past
- * the hero.
+ * Pinned bar: the type filters show once the feed heading has scrolled
+ * away while the feed is on screen. The site header (#sticky-head,
+ * brand/menu-bar) slides down on scroll-up past the hero; the filters sit
+ * under it when both show.
  */
 (function () {
   var filters = document.getElementById('filters');
@@ -207,7 +208,8 @@
 
   /* ---------- Pinned bar ---------- */
 
-  var barShown = false;
+  var barShown = false, headShown = false;
+  var head = document.getElementById('sticky-head');
 
   // Narrow screens: keep the active chip in view in the swipe row
   function syncBar() {
@@ -231,16 +233,26 @@
     if (travel < -40) scrollingUp = true;
     if (travel > 12) scrollingUp = false;
 
-    var chipsH = bar.querySelector('.filter-bar__inner').offsetHeight || 56;
-    var inFeed = heading.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
     var pastHero = hero ? hero.getBoundingClientRect().bottom < 0 : y > 400;
-    var show = inFeed || (scrollingUp && pastHero);
+    // The site header comes back on scroll-up past the hero
+    var showHead = !!head && scrollingUp && pastHero;
+    if (head && showHead !== headShown) {
+      headShown = showHead;
+      head.classList.toggle('is-visible', showHead);
+      head.inert = !showHead;
+    }
+    var headH = showHead ? head.offsetHeight : 0;
 
+    // The type filters pin while the feed is on screen, under the header
+    // when it shows
+    var chipsH = (bar.querySelector('.filter-bar__inner').offsetHeight || 56) + headH;
+    var inFeed = heading.getBoundingClientRect().bottom < chipsH && grid.getBoundingClientRect().bottom > chipsH + 80;
+    bar.style.top = headH + 'px';
     bar.classList.toggle('show-chips', inFeed);
-    if (show !== barShown) {
-      barShown = show;
-      bar.classList.toggle('is-visible', show);
-      bar.inert = !show;
+    if (inFeed !== barShown) {
+      barShown = inFeed;
+      bar.classList.toggle('is-visible', inFeed);
+      bar.inert = !inFeed;
     }
   }
 

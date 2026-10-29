@@ -32,7 +32,7 @@ $tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
   </header>
 
   <div class="feed-wrap">
-    <?php snippet('brand/menu-bar') ?>
+    <?php snippet('brand/menu-bar', ['current' => 'people']) ?>
 
     <main class="pg" id="main">
       <?php if ($members): ?>

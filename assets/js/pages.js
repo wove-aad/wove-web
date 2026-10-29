@@ -57,6 +57,14 @@
     });
   }
 
+  /* ---------- Impact area strip: current area in view on phones ---------- */
+
+  var areaList = document.querySelector('.ia-areas__list');
+  var areaCurrent = areaList && areaList.querySelector('[aria-current="page"]');
+  if (areaCurrent && areaList.scrollWidth > areaList.clientWidth) {
+    areaList.scrollLeft = areaCurrent.parentElement.offsetLeft - areaList.offsetLeft - 16;
+  }
+
   /* ---------- Menu bar ---------- */
 
   var bar = document.querySelector('[data-menu-bar]');

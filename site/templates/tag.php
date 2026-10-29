@@ -6,7 +6,7 @@
  * Taxonomies). Sector slugs on this route still go to the work feed.
  *
  * - A strip of every published impact area with work, to move between
- *   them; the current one is filled in.
+ *   them: soft chips, the current one lifted in white.
  * - Opening on a mint band: the name, the tag's intro and an optional
  *   "Currently interested in" card (the tag's own field).
  * - Browse work: the area's posts and case studies, the newest large
@@ -113,10 +113,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
       <?php snippet('brand/header-row', ['current' => $key]) ?>
 
       <?php if (count($areas) > 1): ?>
-        <?php /* Options for review (2026-10-29): ?strip=a, b or c; without it, the current pills */
-        $strip = in_array(get('strip'), ['a', 'b', 'c'], true) ? get('strip') : null ?>
-        <nav class="ia-areas<?= $strip ? ' ia-areas--' . $strip : '' ?>" aria-label="Impact areas">
-          <?php if ($strip === 'c'): ?><span class="ia-areas__label">Impact areas</span><?php endif ?>
+        <nav class="ia-areas" aria-label="Impact areas">
           <ul class="ia-areas__list" role="list">
             <?php foreach ($areas as $i => $area): ?>
               <li>

@@ -71,6 +71,17 @@ function wove_post_type_labels(): array
 }
 
 /**
+ * The first sentence of a text (writer HTML or plain), for card excerpts:
+ * everything up to and including the first full stop, question or
+ * exclamation mark that ends a sentence. Text without one is returned whole.
+ */
+function wove_first_sentence(string $html): string
+{
+	$text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags(preg_replace('/<(br|\/p|\/li|\/h[1-6]|\/blockquote)[^>]*>/i', ' ', $html)), ENT_QUOTES | ENT_HTML5)));
+	return preg_match('/^.+?[.!?…](?=["”’)]*(\s|$))["”’)]*/u', $text, $m) ? $m[0] : $text;
+}
+
+/**
  * The pill on a feed card's image: the first service and the post type,
  * "Labs · Thinking". Posts without a service read "Studio".
  */

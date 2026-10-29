@@ -9,9 +9,10 @@
  *   Thinking" (wove_post_pill()); without an image it sits above the title.
  *   The format names (Thread, Long Read…) aren't shown.
  * - Posts from a project lead with the client name in bold, with the title
- *   under it on one line and no excerpt; other posts show the title and a
- *   one-line excerpt. What Ifs sit on a pale blue card with "Explore the
- *   idea". Sparks show their text in place of a title.
+ *   under it and no excerpt; other posts show the title and the first
+ *   sentence of the lead (wove_first_sentence()), never cut mid-sentence.
+ *   What Ifs sit on a pale blue card with "Explore the idea". Sparks show
+ *   their text in place of a title.
  * - The credited author (photo or initials, filtering the feed to their
  *   posts) closes the card. No date or tags (2026-10-29).
  * `filters` (from the controller) drives the data-filters attribute
@@ -26,7 +27,7 @@ $client = $client ? $client->eyebrow()->or($client->title())->value() : '';
 $pill   = '<span class="pc__pill">' . html(wove_post_pill($post)) . '</span>';
 $linked = $format !== 'spark';
 
-$excerpt = !$client && $post->body()->isNotEmpty() ? $post->body()->excerpt(160) : '';
+$excerpt = !$client && $post->body()->isNotEmpty() ? html(wove_first_sentence($post->body()->value())) : '';
 $ratio   = $image && $image->height() ? $image->width() . ' / ' . $image->height() : null;
 
 $titleText = $client

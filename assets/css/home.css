@@ -305,29 +305,20 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    (2026-10-29); the blue ?hero= options keep the full screen. */
 .hx--home { display: flex; flex-direction: column; }
 
-/* Homepage hero colourscape (2026-10-29): two soft colour fields over a
-   base colour, all slowly morphing between the light blue, green and
-   lilac tints. The colours are registered custom properties so they can
-   animate inside the gradients; without @property support the hero shows
-   a still blend. Off for reduced motion. The blue ?hero= options keep
-   their own background. */
-@property --hx-a { syntax: '<color>'; inherits: false; initial-value: #d5faff; }
-@property --hx-b { syntax: '<color>'; inherits: false; initial-value: #e1f5ee; }
-@property --hx-c { syntax: '<color>'; inherits: false; initial-value: #d3cae0; }
+/* Homepage hero colour (2026-10-29): one flat colour at a time, holding
+   for about 9s and then easing into the next over about 2s, through the
+   light blue, green and lilac tints (33s cycle). Off for reduced motion,
+   which shows the blue. The blue ?hero= options keep their own
+   background. */
 .hx--home:not(.hx--blue) {
-  --hx-a: var(--color-aqua);
-  --hx-b: var(--color-mint);
-  --hx-c: var(--color-service-labs);
-  background:
-    radial-gradient(60% 70% at 15% 20%, var(--hx-a), transparent 70%),
-    radial-gradient(55% 65% at 85% 75%, var(--hx-b), transparent 70%),
-    var(--hx-c);
-  animation: hx-scape 36s ease-in-out infinite alternate;
+  background: var(--color-aqua);
+  animation: hx-scape 33s ease-in-out infinite;
 }
 @keyframes hx-scape {
-  0%   { --hx-a: var(--color-aqua);          --hx-b: var(--color-mint);          --hx-c: var(--color-service-labs); }
-  50%  { --hx-a: var(--color-mint);          --hx-b: var(--color-service-labs);  --hx-c: var(--color-aqua); }
-  100% { --hx-a: var(--color-service-labs);  --hx-b: var(--color-aqua);          --hx-c: var(--color-mint); }
+  0%, 27%    { background-color: var(--color-aqua); }
+  33%, 60%   { background-color: var(--color-mint); }
+  66%, 94%   { background-color: var(--color-service-labs); }
+  100%       { background-color: var(--color-aqua); }
 }
 @media (prefers-reduced-motion: reduce) { .hx--home:not(.hx--blue) { animation: none; } }
 .hx--home.hx--blue { min-height: 100svh; }

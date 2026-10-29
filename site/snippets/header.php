@@ -82,6 +82,7 @@ $ogType = $page->ogtype()->or('website')->value();
     <link rel="stylesheet" href="<?= wove_asset($href) ?>">
   <?php endif ?>
 <?php endforeach; endif ?>
+<script src="<?= wove_asset('/assets/js/nav.js') ?>" defer></script>
 </head>
 <body class="tpl-<?= $page->template()->name() ?>">
 

@@ -656,10 +656,60 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   letter-spacing: -0.02em;
 }
 
-.hx-nav { display: flex; gap: var(--space-32); padding-top: 0.6rem; }
+.hx-nav { display: flex; flex-wrap: wrap; gap: var(--space-12) var(--space-32); padding-top: 0.6rem; }
 .hx-nav a { font-size: var(--size-subtitle); font-weight: var(--weight-bold); color: var(--color-black); }
 .hx-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.hx-row--no-nav { grid-template-columns: minmax(0, 1fr) auto; }
+
+/* Services and Impact areas: a list under the toggle (site/snippets/brand/header-row.php) */
+.hx-menu { position: relative; }
+.hx-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8, 0.5rem);
+  font-size: var(--size-subtitle);
+  font-weight: var(--weight-bold);
+  color: var(--color-black);
+  list-style: none;
+  cursor: pointer;
+}
+.hx-menu__toggle::-webkit-details-marker { display: none; }
+.hx-menu__toggle:hover { text-decoration: underline; text-underline-offset: 4px; }
+.hx-menu__toggle:focus-visible { outline: 2px solid var(--color-black); outline-offset: 4px; border-radius: 4px; }
+.hx-menu__caret {
+  width: 0.5rem; height: 0.5rem;
+  margin-top: -0.25rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--transition);
+}
+.hx-menu[open] .hx-menu__caret { margin-top: 0.25rem; transform: rotate(-135deg); }
+.hx-menu__list {
+  position: absolute;
+  top: calc(100% + var(--space-12));
+  left: calc(-1 * var(--space-16));
+  z-index: 20;
+  min-width: 14rem;
+  margin: 0;
+  padding: var(--space-8, 0.5rem);
+  list-style: none;
+  border: var(--feed-border-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+  animation: panel-in 150ms ease;
+}
+@media (prefers-reduced-motion: reduce) { .hx-menu__list { animation: none; } }
+.hx-nav .hx-menu__list a {
+  display: block;
+  padding: var(--space-8, 0.5rem) var(--space-12);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-black);
+  text-decoration: none;
+}
+.hx-nav .hx-menu__list a:hover,
+.hx-nav .hx-menu__list a:focus-visible { background: var(--color-100); }
 .hx-voice__title {
   margin-top: var(--space-80);
   /* As large as the column allows "Human Centred" on one line: 130px at
@@ -701,7 +751,8 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 .hx--blue .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0; }
 .hx--blue .hero-bar__logo,
-.hx--blue .hx-nav a,
+.hx--blue .hx-nav > a,
+.hx--blue .hx-menu__toggle,
 .hx--blue .hx-link { color: inherit; }
 .hx--blue .hx-voice__title { color: var(--color-aqua); }
 .hx--blue .hero-bar__cta { background: var(--color-white); color: var(--color-black); }
@@ -839,18 +890,20 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   .hx__inner { padding-block: var(--space-32) var(--space-64); }
   .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: start; }
   .hx-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
-  .hx-row--nav { row-gap: var(--space-16); }
   .hx-body { grid-template-columns: minmax(0, 1fr); }
   .hx-body > * { grid-column: 1; }
   .hx-voice__title { margin-top: var(--space-48); font-size: clamp(2.75rem, 13vw, 7rem); }
-  .hx-row--no-nav > :nth-child(2) { grid-column: auto; grid-row: auto; }
   .hx-nav { padding-top: 0; }
 }
 @media (max-width: 600px) {
   .hx-row .hero-bar__logo { font-size: 1.5rem; }
-  /* The hero links below cover Our work and Our people on phones */
-  .hx-nav { display: none; }
-  .hx-row--nav { row-gap: 0; }
+  .hx-row { row-gap: var(--space-24); }
+  .hx-nav { column-gap: var(--space-24); }
+  /* Lists open under the whole menu, full width */
+  .hx-nav { position: relative; }
+  .hx-menu { position: static; }
+  .hx-menu__list { left: 0; right: 0; min-width: 0; top: calc(100% + 0.5rem); }
+  .hx-nav > a, .hx-menu__toggle { font-size: 1.125rem; }
 }
 
 /* ============================================================

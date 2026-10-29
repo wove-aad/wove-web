@@ -16,8 +16,9 @@
    the homepage statement uses.
    ============================================================ */
 .hx--page .hx__inner { padding-bottom: var(--space-80); }
-.hx-nav a { transition: color var(--transition); }
-.hx-nav--has-current a { color: var(--color-600); }
+.hx-nav a, .hx-menu__toggle { transition: color var(--transition); }
+.hx-nav--has-current > a,
+.hx-nav--has-current .hx-menu__toggle { color: var(--color-600); }
 .hx-nav--has-current a[aria-current="page"] { color: var(--color-black); }
 .hx-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Homepage hero: logo and contact button, then the statement as the page
+ * Homepage hero: logo, main menu and contact button, then the statement as the page
  * title, with preview links to Our work and Our people. The description
  * is in home/intro, under the hero.
  * Usage: <?php snippet('home/hero', ['clients' => $clients, 'people' => $people]) ?>
@@ -26,7 +26,7 @@ $shape       = get('hero') === '3d';
 ?>
 <header class="hx hx--home<?= $variant ? ' hx--blue hx--blue-' . $variant : '' ?>"<?= $variant ? ' data-hero="' . $variant . '"' : '' ?>>
   <div class="hx__inner">
-    <?php snippet('brand/header-row', ['nav' => false]) ?>
+    <?php snippet('brand/header-row') ?>
     <div class="hx-body">
       <?php if ($shape): ?>
         <div class="hx-title-row">

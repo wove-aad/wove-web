@@ -137,7 +137,6 @@
   color: var(--color-white);
 }
 .pc__logo img { max-width: 70%; max-height: 40%; width: auto; height: auto; object-fit: contain; }
-.pc--case .pc__label { background: var(--color-blush); color: var(--color-black); }
 .pc--case .pc__title { font-size: 1.375rem; line-height: 1.25; letter-spacing: -0.01em; }
 
 

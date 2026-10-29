@@ -37,7 +37,7 @@ $initial = get('filter') ?: '*';
     <main class="feed feed--home" id="main">
 
       <div class="feed__header" id="feed">
-        <h2 class="feed__title">Our work</h2>
+        <h2 class="feed__title">Wove latest</h2>
       </div>
 
       <?php snippet('home/filters', ['clients' => $clients, 'topics' => $topics, 'authors' => $authors, 'sectors' => $sectors, 'totalCount' => $totalCount]) ?>

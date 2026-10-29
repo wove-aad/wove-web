@@ -178,6 +178,7 @@ import { FORMAT_MAP } from "../formats.js";
 // Rail (settings sidebar). Uses Grace's site/blueprints field names.
 const RAIL_FIELDS = [
   "show_author",
+  "posttype",
   "case_study",
   "services",
   "tags",
@@ -266,9 +267,9 @@ function excerpt(text, length) {
   return (space > length * 0.6 ? cut.slice(0, space) : cut).trim() + "…";
 }
 const RAIL_FIELDS_BY_FORMAT = {
-  spark:    ["tags", "case_study", "services", "seotitle", "seodescription"],
-  thread:   ["tags", "case_study", "services", "seotitle", "seodescription"],
-  whatif:   ["tags", "case_study", "services", "seotitle", "seodescription"],
+  spark:    ["posttype", "tags", "case_study", "services", "seotitle", "seodescription"],
+  thread:   ["posttype", "tags", "case_study", "services", "seotitle", "seodescription"],
+  whatif:   ["posttype", "tags", "case_study", "services", "seotitle", "seodescription"],
   longread: null,
 };
 

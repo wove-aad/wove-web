@@ -104,6 +104,15 @@ tabs:
             type: fields
             fields:
 
+              postType:
+                label: Post type
+                type: select
+                options:
+                  project: Project
+                  thinking: Thinking
+                  news: News
+                help: Shown on the card's image with the service. Leave empty for Project when a case study is related, otherwise Thinking.
+
               case_study:
                 label: Relate to case study
                 type: pages

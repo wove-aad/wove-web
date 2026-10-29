@@ -52,6 +52,30 @@ function wove_service_intro(string $slug): string
 }
 
 /**
+ * The pill on a feed card's image: the first service and the post type,
+ * "Labs · Thinking". Posts without a service read "Studio". The type is a
+ * post's Post type field, or Project when it (or its page) is a case
+ * study, otherwise Thinking.
+ */
+function wove_post_pill(Page $p): string
+{
+	$labels  = wove_service_labels();
+	$service = 'Studio';
+	foreach ($p->services()->split(',') as $s) {
+		if (isset($labels[$s])) { $service = $labels[$s]; break; }
+	}
+
+	$types = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
+	$type  = $types[$p->content()->get('postType')->value()] ?? null;
+	if ($type === null) {
+		$isProject = $p->intendedTemplate()->name() === 'case-study' || $p->case_study()->toPages()->isNotEmpty();
+		$type = $isProject ? 'Project' : 'Thinking';
+	}
+
+	return $service . ' · ' . $type;
+}
+
+/**
  * Default text for a service page (site/templates/service.php), used when
  * the page's own field is empty. Labs has the copy from the Figma page;
  * the others start with their one-line intro and fill in from the Panel.

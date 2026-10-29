@@ -53,9 +53,9 @@
    HERO: logo and button (shared with the hero row below)
    ============================================================ */
 .hero-bar__logo {
-  /* Top of the wordmark on the same line as the top of Get in touch */
+  /* Centred on one line with the menu and Get in touch (2026-10-29) */
   display: inline-flex;
-  align-items: flex-start;
+  align-items: center;
   white-space: nowrap;
   font-size: 2rem;
   font-weight: var(--weight-h4);
@@ -64,7 +64,7 @@
   color: var(--color-black);
   text-decoration: none;
 }
-.hero-bar__cta { align-self: start; }
+.hero-bar__cta { align-self: center; }
 @media (max-width: 600px) {
   .hero-bar__logo { font-size: 1.5rem; }
 }
@@ -381,6 +381,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   column-gap: var(--space-32);
   align-items: start;
 }
+.hx-row { align-items: center; }
 .hx-row .hero-bar__cta { justify-self: end; }
 .hx-body > * { grid-column: 2 / -1; min-width: 0; }
 
@@ -416,7 +417,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   letter-spacing: -0.02em;
 }
 
-.hx-nav { display: flex; flex-wrap: wrap; gap: var(--space-12) var(--space-32); padding-top: 0.6rem; }
+.hx-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12) var(--space-32); }
 .hx-nav a { font-size: var(--size-subtitle); font-weight: var(--weight-bold); color: var(--color-black); }
 .hx-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
@@ -496,7 +497,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-featured {
   position: relative;
   display: block;
-  margin-top: var(--space-48);
+  margin-top: var(--space-80);
   aspect-ratio: 81 / 40;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -541,7 +542,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-featured:hover .hx-featured__title { text-decoration: underline; text-underline-offset: 4px; }
 .hx-featured__client { font-size: 0.875rem; line-height: 1.43; color: var(--color-text-muted); }
 @media (max-width: 600px) {
-  .hx-featured { aspect-ratio: auto; background: none; overflow: visible; }
+  .hx-featured { margin-top: var(--space-48); aspect-ratio: auto; background: none; overflow: visible; }
   .hx-featured__image { aspect-ratio: 4 / 3; border-radius: var(--radius-md); }
   .hx-featured__box { position: relative; right: auto; bottom: auto; width: auto; margin: calc(-1 * var(--space-48)) var(--space-12) 0; }
   .hx-featured--no-image .hx-featured__box { margin-top: 0; }
@@ -734,12 +735,11 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 @media (max-width: 960px) {
   .hx__inner { padding-block: var(--space-32) var(--space-64); }
-  .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: start; }
+  .hx-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-48); align-items: center; }
   .hx-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
   .hx-body { grid-template-columns: minmax(0, 1fr); }
   .hx-body > * { grid-column: 1; }
   .hx-voice__title { margin-top: var(--space-48); font-size: clamp(2.75rem, 13vw, 7rem); }
-  .hx-nav { padding-top: 0; }
 }
 @media (max-width: 600px) {
   .hx-row .hero-bar__logo { font-size: 1.5rem; }

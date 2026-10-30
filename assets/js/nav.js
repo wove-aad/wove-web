@@ -25,8 +25,34 @@
   // via its current chip, while data-open isn't set).
   var option = document.documentElement.getAttribute('data-menu');
   var rows = Array.prototype.slice.call(document.querySelectorAll('.hx-row'));
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Where the menu item sits within its bar (--from-l, --from-r), so the
+  // bar grows out of the item and shrinks back into it (2026-10-30). The
+  // item is measured with the menu briefly shown (.is-measuring), within
+  // one task, so nothing flashes.
+  var fromItem = function (row, bar) {
+    var toggle = row.querySelector('[data-bar-menu="' + bar.getAttribute('data-areas') + '"] summary');
+    if (!toggle) return;
+    row.classList.add('is-measuring');
+    var t = toggle.getBoundingClientRect();
+    row.classList.remove('is-measuring');
+    var b = bar.getBoundingClientRect();
+    if (!b.width || !t.width) return;
+    bar.style.setProperty('--from-l', Math.max(0, t.left - b.left) + 'px');
+    bar.style.setProperty('--from-r', Math.max(0, b.right - t.right) + 'px');
+  };
   var setBar = function (id) {
     rows.forEach(function (row) { row.setAttribute('data-open', id); });
+    if (!id || still.matches) return;
+    rows.forEach(function (row) {
+      var bar = row.querySelector('[data-areas="' + id + '"]');
+      if (!bar) return;
+      fromItem(row, bar);
+      // Restart the grow with the measured start
+      bar.style.animation = 'none';
+      void bar.offsetWidth;
+      bar.style.animation = '';
+    });
   };
   var openBar = function (row) {
     var open = row.getAttribute('data-open');
@@ -36,17 +62,24 @@
     }
     return open && row.querySelector('[data-areas="' + open + '"]');
   };
-  // Closing: the open bars shrink away (.is-closing, CSS), then the menu
-  // comes back. Without motion it closes at once.
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Closing: the open bars shrink back into their menu item
+  // (.is-closing, CSS), then the menu fades in. Without motion it closes
+  // at once.
+  var closing = false;
   var closeBars = function () {
     var bars = rows.map(openBar).filter(Boolean);
     if (!bars.length || still.matches) return setBar('');
-    bars.forEach(function (bar) { bar.classList.add('is-closing'); });
+    if (closing) return;
+    closing = true;
+    bars.forEach(function (bar) {
+      fromItem(bar.closest('.hx-row'), bar);
+      bar.classList.add('is-closing');
+    });
     setTimeout(function () {
       bars.forEach(function (bar) { bar.classList.remove('is-closing'); });
       setBar('');
-    }, 160);
+      closing = false;
+    }, 260);
   };
   if (option) {
     rows.forEach(function (row) {

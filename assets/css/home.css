@@ -1112,7 +1112,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 .hx-areas__close:hover { background: var(--color-black); color: var(--color-white); }
 .hx-areas__close:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-@keyframes hx-areas-grow { from { clip-path: inset(0 0 0 100% round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
+@keyframes hx-areas-grow { from { clip-path: inset(0 var(--from-r, 0px) 0 var(--from-l, 100%) round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
 
 /* A and C: the chips take the menu's place, scrolling sideways when they
    don't fit, with the edges faded */
@@ -1139,14 +1139,22 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 :root[data-menu="c"] .hx-areas { padding: 0.25rem 0.25rem 0.25rem 1rem; border-radius: var(--radius-pill); background: rgb(17 17 17 / 0.05); gap: 0.25rem; }
 /* Smooth (2026-10-30): the bar grows in only when opened from the menu,
    not when a page loads with it open, so moving between service or
-   impact area pages doesn't replay it. Closing shrinks it back towards
-   the right (.is-closing, nav.js) and the menu fades in. The row keeps
+   impact area pages doesn't replay it. It grows out of its menu item
+   (--from-l / --from-r, the item's place in the bar, nav.js), the chips
+   fading in as it does, and closing shrinks it back into the item
+   (.is-closing) before the menu fades in. The row keeps
    the bar's height on every page, so the logo and button don't shift
    between pages with and without it. */
 :root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) { animation: hx-areas-grow var(--motion-base) var(--motion-ease); }
-:root[data-menu="c"] .hx-row .hx-areas.is-closing[data-areas] { animation: hx-areas-shrink var(--motion-fast) var(--motion-ease) forwards; pointer-events: none; }
+:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) > * { animation: hx-chips-in var(--motion-base) var(--motion-ease); }
+:root[data-menu="c"] .hx-row .hx-areas.is-closing[data-areas] { animation: hx-areas-shrink 250ms var(--motion-ease) forwards; pointer-events: none; }
+:root[data-menu="c"] .hx-row .hx-areas.is-closing[data-areas] > * { animation: hx-chips-out 250ms var(--motion-ease) forwards; }
+:root[data-menu="c"] .hx-row.is-measuring .hx-nav { display: flex !important; animation: none !important; }
+:root[data-menu="c"] .hx-row.is-measuring .hx-areas { display: none !important; }
+@keyframes hx-chips-in { from { opacity: 0; } 30% { opacity: 0; } to { opacity: 1; } }
+@keyframes hx-chips-out { from { opacity: 1; } 60% { opacity: 0; } to { opacity: 0; } }
 :root[data-menu="c"] .hx-row[data-open=""] .hx-nav { animation: hx-nav-in var(--motion-base) var(--motion-ease); }
-@keyframes hx-areas-shrink { from { clip-path: inset(0 0 0 0 round 999px); opacity: 1; } to { clip-path: inset(0 0 0 100% round 999px); opacity: 0; } }
+@keyframes hx-areas-shrink { from { clip-path: inset(0 0 0 0 round 999px); } to { clip-path: inset(0 var(--from-r, 0px) 0 var(--from-l, 100%) round 999px); } }
 @keyframes hx-nav-in { from { opacity: 0; } to { opacity: 1; } }
 @media (min-width: 961px) { :root[data-menu="c"] .hx-row { min-height: calc(var(--chip-height) + 0.5rem); } }
 :root[data-menu="c"] .hx-chip { background: transparent; }
@@ -1178,7 +1186,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   :root[data-menu] .hx-areas__label { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root[data-menu] .hx-row :is(.hx-areas, .hx-nav) { animation: none !important; }
+  :root[data-menu] .hx-row :is(.hx-areas, .hx-areas > *, .hx-nav) { animation: none !important; }
 }
 :root[data-menu] .hx-row .hero-bar__logo { flex-shrink: 0; }
 :root[data-menu] .ia-head__title { margin-top: var(--space-96); }

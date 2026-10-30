@@ -1144,7 +1144,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    the bar's height on every page, so the logo and button don't shift
    between pages with and without it. */
 :root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) { animation: hx-areas-grow var(--motion-base) var(--motion-ease); }
-:root[data-menu="c"] .hx-row[data-open] .hx-areas.is-closing { animation: hx-areas-shrink var(--motion-fast) var(--motion-ease) forwards; pointer-events: none; }
+:root[data-menu="c"] .hx-row .hx-areas.is-closing[data-areas] { animation: hx-areas-shrink var(--motion-fast) var(--motion-ease) forwards; pointer-events: none; }
 :root[data-menu="c"] .hx-row[data-open=""] .hx-nav { animation: hx-nav-in var(--motion-base) var(--motion-ease); }
 @keyframes hx-areas-shrink { from { clip-path: inset(0 0 0 0 round 999px); opacity: 1; } to { clip-path: inset(0 0 0 100% round 999px); opacity: 0; } }
 @keyframes hx-nav-in { from { opacity: 0; } to { opacity: 1; } }

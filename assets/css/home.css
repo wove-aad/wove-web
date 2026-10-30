@@ -1278,11 +1278,12 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    Tokens: --band-blend and --motion-* in site.css.
    ============================================================ */
 
-/* Page headers fade into the light grey page below over --band-blend,
-   behind their content. The homepage hero fades into the white intro,
-   and the intro into the grey feed. */
+/* Full-height heroes only (2026-10-30: the homepage, service and client
+   page heroes) fade into the page below over --band-blend, behind their
+   content: the homepage hero into the white intro, the others into the
+   grey feed. Shorter headers and bands keep a clean edge. */
 .hx { position: relative; isolation: isolate; }
-.hx:not(.hx--blue)::after {
+.hx:is(.hx--home, .sv-head, .cp-head):not(.hx--blue)::after {
   content: "";
   position: absolute;
   right: 0;
@@ -1294,10 +1295,15 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   pointer-events: none;
 }
 .hx--home { --blend-to: var(--color-white); }
-.hx-intro { background: linear-gradient(to bottom, var(--color-white) calc(100% - var(--band-blend)), var(--color-page)); }
-/* Bands inside the page blend in at the top and out at the bottom */
-.ia-collection { background: linear-gradient(to bottom, var(--color-page), var(--color-mint) var(--band-blend), var(--color-mint) calc(100% - var(--band-blend)), var(--color-page)); }
-.tp { background: linear-gradient(to bottom, var(--color-page), var(--color-stone-100) var(--band-blend)); }
+
+/* Service and client page heroes fill the window, with the title and
+   lead low in it, as on the homepage */
+.sv-head .hx__inner,
+.cp-head .hx__inner { display: flex; flex-direction: column; min-height: 100svh; }
+.sv-head .hx-row,
+.cp-head .hx-row { margin-bottom: var(--space-96); }
+.sv-head .sv-head__title,
+.cp-head .cp-head__title { margin-top: auto; }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {

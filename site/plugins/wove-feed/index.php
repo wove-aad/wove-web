@@ -117,6 +117,28 @@ function wove_post_pill(Page $p): string
 }
 
 /**
+ * Default intro for an impact area (an editorial tag in the site's
+ * Taxonomies tab), used when the tag's own Tag Intro is empty
+ * (2026-10-30). Matched on the slug or the name, ignoring "and" and "&",
+ * so "arts-culture-humanities" and "Arts, culture & humanities" both find
+ * the same line.
+ */
+function wove_tag_intro(string $slug, string $name = ''): string
+{
+	$defaults = [
+		'arts-culture-humanities'      => 'Helping organisations evolve their models to better serve audiences in a changing world.',
+		'public-social-civic-services' => 'Working with leaders to implement change and develop more sustainable and equitable models.',
+		'mission-led-organisations'    => 'We support founders and businesses dedicated to making people, planet and profit a reality.',
+		'education-learning'           => 'We work with students and educators, helping them explore ways to make learning more accessible, impactful and inclusive.',
+		'circular-economy'             => 'Helping people and organisations move towards a circular economy.',
+		'data-privacy'                 => 'How our everyday data is tracked and sold.',
+		'climate-nature'               => 'Work and thinking on climate and nature.',
+	];
+	$key = fn (string $s) => implode('-', array_diff(explode('-', Str::slug(str_replace('&', ' ', $s))), ['and', '']));
+	return $defaults[$key($slug)] ?? ($name !== '' ? ($defaults[$key($name)] ?? '') : '');
+}
+
+/**
  * Default text for a service page (site/templates/service.php), used when
  * the page's own field is empty. The statements and supporting lines are
  * from the Figma service page openings (1240:8359, 1240:8451, 1240:9680,

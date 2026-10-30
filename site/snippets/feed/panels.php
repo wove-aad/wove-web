@@ -28,6 +28,7 @@ $tones    = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
     $tag     = $siteTags->findBy('slug', $slug);
     $eyebrow = 'Topic';
     $text    = $tag ? $tag->intro()->or($tag->subtitle())->value() : '';
+    $text    = $text ?: wove_tag_intro($slug, $tag ? $tag->name()->value() : '');
   }
 ?>
   <section class="topic-panel<?= $image ? ' has-image' : '' ?>" data-panel="<?= html($key) ?>" data-label="<?= html($label) ?>" aria-label="<?= html($eyebrow . ': ' . $label) ?>" hidden>

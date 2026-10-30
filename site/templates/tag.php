@@ -34,6 +34,7 @@ $siteTags = $site->tags()->toStructure()->filter(fn ($t) => $t->active()->toBool
 $tag      = $siteTags->findBy('slug', $slug);
 $name     = $tag ? $tag->name()->value() : ($tagName ?? $slug);
 $intro    = $tag ? $tag->intro()->or($tag->subtitle())->value() : ($tagIntro ?? '');
+$intro    = $intro ?: wove_tag_intro($slug, $name);
 $interest = $tag ? $tag->interest()->value() : '';
 $feed     = wove_feed();
 $key      = 'tag:' . $slug;

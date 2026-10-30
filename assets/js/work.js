@@ -4,7 +4,8 @@
  * with AND), "Load more" (12 at a time) and the address kept in step
  * (?theme=a,b&discipline=labs&client=x). With a client chosen, its units
  * show oldest first and a card in second place in the grid names it and
- * links to its client page.
+ * links to its client page. A change scrolls back up to the top of the
+ * results.
  */
 (function () {
   var grid = document.querySelector('[data-work-grid]');
@@ -95,7 +96,17 @@
     history.replaceState(null, '', location.pathname + (q.length ? '?' + q.join('&') : ''));
   }
 
-  function change() { shown = step; render(); writeUrl(); }
+  // After a filter change, back to the top of the results if the page is
+  // scrolled past them (under the pinned header)
+  var top = document.querySelector('.wk-status') || grid;
+  function toTop() {
+    var y = top.getBoundingClientRect().top + window.scrollY - 112;
+    if (window.scrollY > y) {
+      window.scrollTo({ top: Math.max(0, y), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+  }
+
+  function change() { shown = step; render(); writeUrl(); toTop(); }
 
   // From the address, keeping only values the page has
   var params = new URLSearchParams(location.search);

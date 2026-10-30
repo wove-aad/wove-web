@@ -1112,7 +1112,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 .hx-areas__close:hover { background: var(--color-black); color: var(--color-white); }
 .hx-areas__close:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-@keyframes hx-areas-in { from { opacity: 0; transform: translateX(0.75rem); } to { opacity: 1; transform: none; } }
 @keyframes hx-areas-grow { from { clip-path: inset(0 0 0 100% round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
 
 /* A and C: the chips take the menu's place, scrolling sideways when they
@@ -1124,7 +1123,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   order: 1;
   margin-left: auto;
   max-width: max-content;
-  animation: hx-areas-in 220ms ease;
 }
 :root[data-menu="c"] .hx-row .hero-bar__cta { order: 2; }
 :root[data-menu="c"] .hx-areas__list {
@@ -1139,7 +1137,18 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* C: one joined control, the current area lifted in white; closed, the
    menu item names the current area */
 :root[data-menu="c"] .hx-areas { padding: 0.25rem 0.25rem 0.25rem 1rem; border-radius: var(--radius-pill); background: rgb(17 17 17 / 0.05); gap: 0.25rem; }
-:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) { animation: hx-areas-grow 320ms ease; }
+/* Smooth (2026-10-30): the bar grows in only when opened from the menu,
+   not when a page loads with it open, so moving between service or
+   impact area pages doesn't replay it. Closing shrinks it back towards
+   the right (.is-closing, nav.js) and the menu fades in. The row keeps
+   the bar's height on every page, so the logo and button don't shift
+   between pages with and without it. */
+:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) { animation: hx-areas-grow var(--motion-base) var(--motion-ease); }
+:root[data-menu="c"] .hx-row[data-open] .hx-areas.is-closing { animation: hx-areas-shrink var(--motion-fast) var(--motion-ease) forwards; pointer-events: none; }
+:root[data-menu="c"] .hx-row[data-open=""] .hx-nav { animation: hx-nav-in var(--motion-base) var(--motion-ease); }
+@keyframes hx-areas-shrink { from { clip-path: inset(0 0 0 0 round 999px); opacity: 1; } to { clip-path: inset(0 0 0 100% round 999px); opacity: 0; } }
+@keyframes hx-nav-in { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 961px) { :root[data-menu="c"] .hx-row { min-height: calc(var(--chip-height) + 0.5rem); } }
 :root[data-menu="c"] .hx-chip { background: transparent; }
 :root[data-menu="c"] .hx-chip:hover { background: rgb(255 255 255 / 0.6); }
 :root[data-menu="c"] .hx-chip[aria-current="page"] { background: var(--color-white); }
@@ -1169,7 +1178,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   :root[data-menu] .hx-areas__label { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root[data-menu] .hx-row .hx-areas { animation: none !important; }
+  :root[data-menu] .hx-row :is(.hx-areas, .hx-nav) { animation: none !important; }
 }
 :root[data-menu] .hx-row .hero-bar__logo { flex-shrink: 0; }
 :root[data-menu] .ia-head__title { margin-top: var(--space-96); }

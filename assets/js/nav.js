@@ -35,6 +35,18 @@
     }
     return open && row.querySelector('[data-areas="' + open + '"]');
   };
+  // Closing: the open bars shrink away (.is-closing, CSS), then the menu
+  // comes back. Without motion it closes at once.
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var closeBars = function () {
+    var bars = rows.map(openBar).filter(Boolean);
+    if (!bars.length || still.matches) return setBar('');
+    bars.forEach(function (bar) { bar.classList.add('is-closing'); });
+    setTimeout(function () {
+      bars.forEach(function (bar) { bar.classList.remove('is-closing'); });
+      setBar('');
+    }, 160);
+  };
   if (option) {
     rows.forEach(function (row) {
       [].forEach.call(row.querySelectorAll('[data-bar-menu]'), function (menu) {
@@ -51,7 +63,7 @@
       [].forEach.call(row.querySelectorAll('[data-areas-close]'), function (btn) {
         btn.addEventListener('click', function () {
           var id = btn.closest('[data-areas]').getAttribute('data-areas');
-          setBar('');
+          closeBars();
           var toggle = row.querySelector('[data-bar-menu="' + id + '"] summary');
           if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
         });
@@ -64,7 +76,7 @@
     // A click anywhere outside the header closes the chips (2026-10-30)
     document.addEventListener('click', function (ev) {
       if (ev.target.closest('.hx-row')) return;
-      if (rows.some(openBar)) setBar('');
+      if (rows.some(openBar)) closeBars();
     });
 
     // Keep the current chip in view where the row scrolls

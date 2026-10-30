@@ -1014,9 +1014,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   list-style: none;
   animation: tp-drift var(--tp-speed, 80s) linear infinite;
 }
-.tp-row--1 .tp-track { --tp-speed: 90s; animation-delay: -12s; }
-.tp-row--2 .tp-track { --tp-speed: 110s; animation-direction: reverse; animation-delay: -40s; }
-.tp-row--3 .tp-track { --tp-speed: 100s; animation-delay: -60s; }
+.tp-row--1 .tp-track { --tp-speed: 180s; animation-delay: -24s; }
+.tp-row--2 .tp-track { --tp-speed: 220s; animation-direction: reverse; animation-delay: -80s; }
+.tp-row--3 .tp-track { --tp-speed: 200s; animation-delay: -120s; }
 .tp__rows:hover .tp-track,
 .tp__rows:focus-within .tp-track { animation-play-state: paused; }
 @keyframes tp-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }

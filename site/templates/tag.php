@@ -39,11 +39,9 @@ $interest = $tag ? $tag->interest()->value() : '';
 $feed     = wove_feed();
 $key      = 'tag:' . $slug;
 
-// Every published impact area with work, in the site's order
+// Every published impact area (wove_impact_areas()), in the site's order
 $areas = [];
-foreach ($siteTags as $t) {
-  if (isset($feed['topics']['tag:' . $t->slug()->value()])) $areas[] = ['slug' => $t->slug()->value(), 'name' => $t->name()->value()];
-}
+foreach (wove_impact_areas() as $s => $n) $areas[] = ['slug' => $s, 'name' => $n];
 $swatches = ['coral', 'aqua', 'lilac', 'mint', 'stone-200'];
 
 // The area's posts and case studies, newest first (no sparks)
@@ -179,7 +177,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
     ?>
       <section class="ia-collection" aria-labelledby="ia-collection">
         <div class="ia-collection__inner">
-          <h2 class="ia-collection__title" id="ia-collection"><?= html($titleOf($case)) ?></h2>
+          <h2 class="ia-collection__title" id="ia-collection"><?= html($titleOf($case)) ?> <span class="ia-collection__client"><?= html($caseName) ?></span></h2>
           <?php if ($statement = wove_first_sentence((string) $case->summary()->or($case->subStatement())->value())): ?>
             <p class="ia-collection__text"><?= html($statement) ?></p>
           <?php endif ?>

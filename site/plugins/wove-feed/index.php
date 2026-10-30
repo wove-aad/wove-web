@@ -187,10 +187,12 @@ function wove_feed(): array
 	$sectors  = wove_sector_labels();
 	$siteTags = $site->tags()->toStructure()->filter(fn ($t) => $t->active()->toBool() !== false);
 
-	// Tag field values are slugs; older content may hold names.
+	// Tag field values are the tag's slug, or the slug of its name (the
+	// Panel stores {{ item.name.slug }}); older content may hold names.
 	$tagSlug = function (string $value) use ($siteTags): string {
 		$value = trim($value);
-		$tag   = $siteTags->findBy('slug', $value) ?? $siteTags->findBy('name', $value);
+		$tag   = $siteTags->findBy('slug', $value) ?? $siteTags->findBy('name', $value)
+			?? $siteTags->filter(fn ($t) => Str::slug($t->name()->value()) === Str::slug($value))->first();
 		return $tag ? $tag->slug()->value() : Str::slug($value);
 	};
 
@@ -272,6 +274,21 @@ function wove_feed(): array
 		'sectors'  => array_intersect_key($sectors, $used['sector']),
 		'authors'  => $used['author'],
 	];
+}
+
+/**
+ * The impact areas: every published tag in the site's Taxonomies tab, in
+ * its order, slug => name (2026-10-30). The menu, the impact area pages'
+ * chips and the Explore by topic band list all of them, with work or not.
+ */
+function wove_impact_areas(): array
+{
+	$areas = [];
+	foreach (site()->tags()->toStructure() as $tag) {
+		if ($tag->active()->toBool() === false || $tag->slug()->isEmpty()) continue;
+		$areas[$tag->slug()->value()] = $tag->name()->or($tag->slug())->value();
+	}
+	return $areas;
 }
 
 /**

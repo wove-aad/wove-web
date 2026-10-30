@@ -8,8 +8,8 @@
  * muted.
  *
  * Menu (2026-10-29): Work, then Services lists the four service pages
- * (templates/service.php); Impact areas lists the editorial tags (site
- * order) that have work, each going to its impact area page
+ * (templates/service.php); Impact areas lists every published tag in
+ * the site's Taxonomies tab (wove_impact_areas()), in its order, each going to its impact area page
  * (templates/tag.php), after Work (templates/work.php). Then People, Wove Mind (every post,
  * templates/wove-mind-feed.php) and Get in touch. The lists are
  * <details> so they open without JS; assets/js/nav.js opens them on
@@ -35,10 +35,8 @@ foreach (['labs', 'strategy', 'brand', 'digital'] as $slug) {
 }
 
 $impactAreas = [];
-foreach (wove_feed()['topics'] as $key => $label) {
-  if (str_starts_with($key, 'tag:')) {
-    $impactAreas[] = ['href' => url('tag/' . substr($key, 4)), 'current' => $current === $key, 'label' => $label, 'swatch' => ['coral', 'aqua', 'lilac', 'mint', 'stone-200'][count($impactAreas) % 5]];
-  }
+foreach (wove_impact_areas() as $slug => $label) {
+  $impactAreas[] = ['href' => url('tag/' . $slug), 'current' => $current === 'tag:' . $slug, 'label' => $label, 'swatch' => ['coral', 'aqua', 'lilac', 'mint', 'stone-200'][count($impactAreas) % 5]];
 }
 
 $menus = array_filter([

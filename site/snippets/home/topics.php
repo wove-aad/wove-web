@@ -1,7 +1,7 @@
 <?php
 /**
  * "Explore by topic" band, from the Figma frame (873:6039), 2026-10-30:
- * the impact areas with work, in three rows of large links that drift
+ * every impact area (wove_impact_areas()), in three rows of large links that drift
  * sideways (alternate rows the other way; paused on hover or focus, still
  * and wrapped with reduced motion). Each topic has a small square with
  * the image of its newest post, or a colour swatch. Links go to the
@@ -15,8 +15,8 @@ $feed     = wove_feed();
 $swatches = ['coral', 'aqua', 'lilac', 'mint', 'white'];
 
 $topics = [];
-foreach ($feed['topics'] as $key => $label) {
-  if (!str_starts_with($key, 'tag:')) continue;
+foreach (wove_impact_areas() as $areaSlug => $label) {
+  $key   = 'tag:' . $areaSlug;
   $image = null;
   foreach ($feed['items'] as $p) {
     if (!in_array($key, $feed['keys'][$p->id()] ?? [], true)) continue;

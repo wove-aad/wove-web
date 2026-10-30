@@ -1095,6 +1095,7 @@ html:not(.js) .person-detail__close { display: none; }
   letter-spacing: -0.025em;
   text-wrap: balance;
 }
+.ia-collection__client { display: block; margin-top: var(--space-8, 0.5rem); color: var(--color-stone-600); }
 .ia-collection__text { max-width: 30em; margin-top: var(--space-16); font-size: var(--size-subtitle); font-weight: var(--weight-medium); line-height: 1.4; }
 .ia-pieces {
   --edge: max(var(--gutter-x), calc((100vw - var(--width-header)) / 2 + var(--gutter-x)));

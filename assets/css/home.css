@@ -336,10 +336,14 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx--home.hx--blue { min-height: 100svh; }
 .hx--home .hx__inner { flex: 1; display: flex; flex-direction: column; width: 100%; }
 /* More room around the oversize title (2026-10-29) */
-.hx--home .hx-body { margin-block: auto 0; padding-block: var(--space-96) 0; }
+/* Text a little lower and its rows a little tighter (2026-10-30): 160px
+   above (was 96), 32 / 48px between the rows (was 40 / 64), and 96px
+   to the featured item (was 128), so it still shows on landing */
+.hx--home .hx-body { margin-block: auto 0; padding-block: calc(var(--space-128) + var(--space-32)) 0; }
 .hx--home .hx-voice__title { color: var(--color-black); font-weight: var(--weight-xbold); }
-.hx--home .hx-voice__links { margin-top: var(--space-64); }
-.hx--home .hx-voice__subtitle { margin-top: var(--space-40); }
+.hx--home .hx-voice__links { margin-top: var(--space-48); }
+.hx--home .hx-voice__subtitle { margin-top: var(--space-32); }
+@media (min-width: 601px) { .hx--home .hx-featured { margin-top: var(--space-96); } }
 .hx--home .hx-voice__title,
 .hx--home .hx-title-row { margin-top: 0; }
 .hx__inner {

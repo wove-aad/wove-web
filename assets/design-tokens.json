@@ -375,6 +375,13 @@
         "lineHeight": 1.333,
         "letterSpacing": "0"
       },
+      "chip": {
+        "use": "Filter chips and their toggles (Work filters, impact area chips), 2026-10-30. Height 2.5rem (--chip-height), side padding 1.125rem (--chip-px)",
+        "cssVar": "--size-chip",
+        "figmaPx": 16,
+        "rem": "1rem",
+        "weight": 400
+      },
       "meta": {
         "use": "Card meta (Brand · 4 min) and person roles (16px)",
         "source": "1253:12465",

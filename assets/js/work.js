@@ -21,6 +21,11 @@
   var more = document.querySelector('[data-work-more]');
   var moreCount = document.querySelector('[data-work-more-count]');
   var active = document.querySelector('[data-client-active]');
+  var picked = document.querySelector('[data-work-picked]');
+  var root = document.querySelector('.wk');
+  var layout = root ? root.getAttribute('data-filter-layout') : 'stack';
+  var labels = {};
+  [].forEach.call(bar.querySelectorAll('.wk-chip'), function (b) { labels[b.getAttribute('data-group') + ':' + b.getAttribute('data-value')] = b.textContent.trim(); });
 
   var picker = document.querySelector('[data-client-picker]');
   var toggle = picker && picker.querySelector('.wk-client__toggle');
@@ -78,6 +83,32 @@
       if (on) pick = b;
     });
     if (current) current.textContent = pick ? pick.getAttribute('data-label') : 'All clients';
+
+    // How many are chosen in each group, on the bar and tab toggles
+    [].forEach.call(bar.querySelectorAll('[data-group-count]'), function (el) {
+      var g = el.getAttribute('data-group-count');
+      var n = g === 'client' ? (state.client ? 1 : 0) : state[g].length;
+      el.textContent = n ? String(n) : '';
+    });
+
+    // The chosen filters, each removable (shown by CSS in bar and tabs)
+    if (picked) {
+      var items = [];
+      state.theme.forEach(function (v) { items.push(['theme', v, labels['theme:' + v]]); });
+      state.discipline.forEach(function (v) { items.push(['discipline', v, labels['discipline:' + v]]); });
+      if (pick) items.push(['client', state.client, pick.getAttribute('data-label')]);
+      picked.innerHTML = '';
+      items.forEach(function (it) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'wk-chip wk-chip--picked';
+        b.setAttribute('aria-label', 'Remove ' + it[2]);
+        b.setAttribute('data-remove', it[0] + ':' + it[1]);
+        b.textContent = it[2];
+        picked.appendChild(b);
+      });
+      picked.hidden = !items.length;
+    }
     if (toggle) toggle.classList.toggle('is-set', !!pick);
     if (active) {
       active.hidden = !pick;
@@ -119,6 +150,54 @@
     if (i === -1) list.push(v); else list.splice(i, 1);
     change();
   });
+
+  if (picked) picked.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-remove]');
+    if (!b) return;
+    var parts = b.getAttribute('data-remove').split(':');
+    if (parts[0] === 'client') state.client = '';
+    else state[parts[0]].splice(state[parts[0]].indexOf(parts[1]), 1);
+    change();
+  });
+
+  // Bar: each group a dropdown. Tabs: one group showing at a time.
+  var groups = [].slice.call(bar.querySelectorAll('.wk-filter'));
+  var openGroup = function (g, on) {
+    groups.forEach(function (o) {
+      var show = o === g ? on : false;
+      o.classList.toggle('is-open', show);
+      var t = o.querySelector('[data-filter-toggle]');
+      if (t) t.setAttribute('aria-expanded', String(show));
+    });
+  };
+  groups.forEach(function (g) {
+    var t = g.querySelector('[data-filter-toggle]');
+    if (!t) return;
+    t.addEventListener('click', function () {
+      openGroup(g, layout === 'tabs' ? true : !g.classList.contains('is-open'));
+    });
+  });
+  if (layout === 'tabs' && groups[0]) openGroup(groups[0], true);
+  if (layout === 'bar') {
+    document.addEventListener('click', function (ev) {
+      if (!bar.contains(ev.target)) openGroup(null, false);
+    });
+    bar.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape') return;
+      var g = groups.filter(function (o) { return o.classList.contains('is-open'); })[0];
+      if (g) { openGroup(null, false); g.querySelector('[data-filter-toggle]').focus(); }
+    });
+  }
+
+  // A switcher for comparing the layouts
+  var panel = document.createElement('aside');
+  panel.className = 'feed-options menu-options menu-options--left';
+  panel.setAttribute('aria-label', 'Filter layouts');
+  panel.innerHTML = '<p class="feed-options__title">Filter layouts</p><div class="feed-options__group">'
+    + [['stack', 'Stacked'], ['bar', 'Bar'], ['tabs', 'Tabs'], ['side', 'Sidebar']].map(function (o) {
+      return '<a href="' + location.pathname + '?filters=' + o[0] + '"' + (o[0] === layout ? ' aria-current="true"' : '') + '>' + o[1] + '</a>';
+    }).join('') + '</div>';
+  document.body.appendChild(panel);
 
   clearBtn.addEventListener('click', function () {
     state = { theme: [], discipline: [], client: '' };

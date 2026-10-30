@@ -1061,12 +1061,12 @@ html:not(.js) .person-detail__close { display: none; }
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2rem;
-  padding: 0 0.875rem 0 0.75rem;
+  min-height: var(--chip-height);
+  padding: 0 var(--chip-px) 0 calc(var(--chip-px) - 0.25rem);
   border-radius: var(--radius-pill);
   background: rgb(255 255 255 / 0.45);
   color: var(--color-text-muted);
-  font-size: var(--size-p6);
+  font-size: var(--size-chip);
   white-space: nowrap;
   text-decoration: none;
   transition: background var(--transition), color var(--transition), box-shadow var(--transition);
@@ -1198,14 +1198,14 @@ html:not(.js) .person-detail__close { display: none; }
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2.25rem;
-  padding: 0 1rem;
+  min-height: var(--chip-height);
+  padding: 0 var(--chip-px);
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--color-stone-100);
   color: var(--color-black);
   font: inherit;
-  font-size: var(--size-p6);
+  font-size: var(--size-chip);
   white-space: nowrap;
   cursor: pointer;
   transition: background var(--transition), color var(--transition);
@@ -1308,3 +1308,87 @@ html:not(.js) .wk-client__list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5
    People, Work and Wove Mind */
 .hx--aligned h1 { margin-left: calc((100% - 8.5rem - 2 * var(--space-32)) * var(--lead-fr) / (var(--lead-fr) + var(--main-fr)) + var(--space-32)); }
 @media (max-width: 960px) { .hx--aligned h1 { margin-left: 0; } }
+
+/* Filter layouts for review (2026-10-30), on .wk[data-filter-layout]:
+   stack (the rows above), bar, tabs and side (assets/js/work.js) */
+.wk-filter__toggle, .wk-picked { display: none; }
+.wk-filter__n:not(:empty) {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.375rem;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: var(--size-label-sm);
+  font-weight: var(--weight-bold);
+}
+.wk:is([data-filter-layout="bar"], [data-filter-layout="tabs"]) .wk-picked:not([hidden]) { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-16); }
+.wk-chip--picked { background: var(--color-black); color: var(--color-white); }
+.wk-chip--picked::after { content: "\00d7"; font-size: var(--size-p5); line-height: 1; }
+.wk-chip--picked:hover { background: var(--color-800, #333); }
+.menu-options--left { right: auto; left: var(--space-16); }
+
+/* Bar: one row of dropdowns */
+.wk[data-filter-layout="bar"] .wk-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.wk[data-filter-layout="bar"] .wk-filter { position: relative; display: block; }
+.wk[data-filter-layout="bar"] .wk-filter__label { display: none; }
+.wk[data-filter-layout="bar"] .wk-filter:not(.wk-filter--client) .wk-filter__toggle { display: inline-flex; }
+.wk[data-filter-layout="bar"] .wk-filter__toggle,
+.wk[data-filter-layout="tabs"] .wk-filter__toggle {
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--chip-height);
+  padding: 0 var(--chip-px);
+  border: 1px solid rgb(17 17 17 / 0.15);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-black);
+  font: inherit;
+  font-size: var(--size-chip);
+  cursor: pointer;
+}
+.wk[data-filter-layout="bar"] .wk-filter__toggle:hover { border-color: var(--color-black); }
+.wk[data-filter-layout="bar"] .wk-filter__toggle:focus-visible,
+.wk[data-filter-layout="tabs"] .wk-filter__toggle:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.wk[data-filter-layout="bar"] .wk-client__toggle { border: 1px solid rgb(17 17 17 / 0.15); background: var(--color-white); }
+.wk[data-filter-layout="bar"] .wk-client__toggle.is-set { border-color: var(--color-black); background: var(--color-black); }
+.wk[data-filter-layout="bar"] .wk-filter:not(.is-open) > .wk-chips { display: none; }
+.wk[data-filter-layout="bar"] .wk-filter.is-open > .wk-chips {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 30;
+  width: max-content;
+  max-width: min(32rem, calc(100vw - 2 * var(--gutter-x)));
+  padding: var(--space-12);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+
+/* Tabs: one group at a time under a row of tabs */
+.wk[data-filter-layout="tabs"] .wk-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.wk[data-filter-layout="tabs"] .wk-filter { display: contents; }
+.wk[data-filter-layout="tabs"] .wk-filter__label { display: none; }
+.wk[data-filter-layout="tabs"] .wk-filter__toggle { display: inline-flex; order: 1; }
+.wk[data-filter-layout="tabs"] .wk-filter__toggle .hx-menu__caret { display: none; }
+.wk[data-filter-layout="tabs"] .wk-filter__toggle[aria-expanded="true"] { border-color: var(--color-black); background: var(--color-black); color: var(--color-white); }
+.wk[data-filter-layout="tabs"] .wk-filter__toggle[aria-expanded="true"] .wk-filter__n { background: var(--color-white); color: var(--color-black); }
+.wk[data-filter-layout="tabs"] .wk-filter > :is(.wk-chips, .wk-client) { order: 2; flex-basis: 100%; margin-top: var(--space-12); padding: var(--space-16); border-radius: var(--radius-md); background: var(--color-white); }
+.wk[data-filter-layout="tabs"] .wk-filter:not(.is-open) > :is(.wk-chips, .wk-client) { display: none; }
+.wk[data-filter-layout="tabs"] .wk-client__toggle { display: none; }
+.wk[data-filter-layout="tabs"] .wk-client .wk-client__panel { position: static; display: block; width: auto; max-width: 32rem; padding: 0; box-shadow: none; }
+
+/* Side: the filters in a column beside a two-column grid */
+@media (min-width: 961px) {
+  .wk[data-filter-layout="side"] .wk-main { display: grid; grid-template-columns: 15rem minmax(0, 1fr); column-gap: var(--space-48); align-items: start; }
+  .wk[data-filter-layout="side"] .wk-main > * { grid-column: 2; }
+  .wk[data-filter-layout="side"] .wk-filters { position: sticky; top: var(--space-96); grid-column: 1; grid-row: 1 / span 8; gap: var(--space-32); }
+  .wk[data-filter-layout="side"] .wk-filter { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-12); }
+  .wk[data-filter-layout="side"] .wk-filter__label { padding-top: 0; }
+  .wk[data-filter-layout="side"] .wk-status { margin-top: 0; }
+  .wk[data-filter-layout="side"] .wk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

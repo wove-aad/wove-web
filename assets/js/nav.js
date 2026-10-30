@@ -71,6 +71,8 @@
           thumb.style.width = (list.clientWidth / list.scrollWidth * 100) + '%';
           thumb.style.left = (list.scrollLeft / list.scrollWidth * 100) + '%';
         }
+        list.classList.toggle('at-start', list.scrollLeft <= 1);
+        list.classList.toggle('at-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 1);
         prev.disabled = list.scrollLeft <= 1;
         next.disabled = list.scrollLeft + list.clientWidth >= list.scrollWidth - 1;
       };

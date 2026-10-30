@@ -12,6 +12,10 @@
  * first, or oldest first for one client, 12 at a time with "Load more".
  * Filters come in from the address (?theme=a,b&discipline=labs&client=x)
  * and the address follows them.
+ * Filter layouts for review (2026-10-30, ?filters=…, kept per browser):
+ * stack (labelled rows), bar (one row of dropdowns), tabs (one group at
+ * a time) and side (a column beside the grid). Bar and tabs list the
+ * chosen filters under the controls (.wk-picked).
  * Styles: the WORK PAGE section of assets/css/pages.css.
  * Behaviour: assets/js/work.js; image heights: assets/js/feed.js.
  */
@@ -57,6 +61,14 @@ $total = count($units);
 ]) ?>
 
 <div class="home wk" data-theme="light">
+  <script>
+    // Filter layout options for review (?filters=stack|bar|tabs|side, kept per browser), see assets/js/work.js
+    (function (el) { try {
+      var m = (location.search.match(/[?&]filters=(stack|bar|tabs|side)\b/) || [])[1];
+      if (m) localStorage.setItem('wove.filters', m);
+      el.setAttribute('data-filter-layout', localStorage.getItem('wove.filters') || 'stack');
+    } catch (e) { el.setAttribute('data-filter-layout', 'stack'); } })(document.currentScript.parentElement);
+  </script>
 
   <header class="hx hx--page hx--aligned wk-head">
     <div class="hx__inner">
@@ -77,6 +89,7 @@ $total = count($units);
         <?php if ($themes): ?>
           <div class="wk-filter">
             <span class="wk-filter__label" id="wk-themes">Themes</span>
+            <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Themes<span class="wk-filter__n" data-group-count="theme"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
             <div class="wk-chips" role="group" aria-labelledby="wk-themes">
               <?php foreach ($themes as $slug => $name): ?>
                 <button type="button" class="wk-chip" data-group="theme" data-value="<?= html($slug) ?>" aria-pressed="false"><?= html($name) ?></button>
@@ -87,6 +100,7 @@ $total = count($units);
 
         <div class="wk-filter">
           <span class="wk-filter__label" id="wk-disciplines">Disciplines</span>
+          <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Disciplines<span class="wk-filter__n" data-group-count="discipline"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
           <div class="wk-chips" role="group" aria-labelledby="wk-disciplines">
             <?php foreach ($services as $slug => $name): ?>
               <button type="button" class="wk-chip" data-group="discipline" data-value="<?= html($slug) ?>" aria-pressed="false"><?= html($name) ?></button>
@@ -95,8 +109,9 @@ $total = count($units);
         </div>
 
         <?php if ($clients): ?>
-          <div class="wk-filter">
+          <div class="wk-filter wk-filter--client">
             <span class="wk-filter__label" id="wk-clients">Client</span>
+            <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Client<span class="wk-filter__n" data-group-count="client"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
             <div class="wk-client" data-client-picker>
               <button type="button" class="wk-client__toggle" aria-expanded="false" aria-controls="wk-client-panel" aria-labelledby="wk-clients wk-client-current">
                 <span id="wk-client-current" data-client-current>All clients</span>
@@ -121,6 +136,8 @@ $total = count($units);
           </div>
         <?php endif ?>
       </div>
+
+      <div class="wk-picked" data-work-picked aria-label="Selected filters"></div>
 
       <div class="wk-status">
         <p class="wk-status__count" aria-live="polite" data-work-count><?= $total ?> <?= $total === 1 ? 'project' : 'projects' ?></p>

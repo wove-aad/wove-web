@@ -1077,12 +1077,12 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2.25rem;
-  padding: 0 0.875rem 0 0.75rem;
+  min-height: var(--chip-height);
+  padding: 0 var(--chip-px) 0 calc(var(--chip-px) - 0.25rem);
   border-radius: var(--radius-pill);
   background: rgb(17 17 17 / 0.05);
   color: var(--color-text-muted);
-  font-size: var(--size-p6);
+  font-size: var(--size-chip);
   white-space: nowrap;
   text-decoration: none;
   transition: background var(--transition), color var(--transition), box-shadow var(--transition);
@@ -1239,3 +1239,13 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   :root[data-menu="d"] .hx-areas.has-overflow .hx-areas__arrow, .hx-areas__bar { display: none; }
 .hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
 }
+/* D: the chips fade out at an edge where there are more to scroll to
+   (nav.js sets .at-start / .at-end on the list) */
+.hx-areas__list { --fade-l: 2.5rem; --fade-r: 2.5rem; }
+.hx-areas__list.at-start { --fade-l: 0px; }
+.hx-areas__list.at-end { --fade-r: 0px; }
+:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__list {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+}
+:root[data-menu="d"] .hx-areas__scroller { margin: 0 0.25rem; }

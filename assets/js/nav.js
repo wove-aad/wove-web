@@ -39,10 +39,13 @@
         var chip = row.querySelector('.hx-chip[aria-current]') || row.querySelector('.hx-chip');
         if (chip) chip.focus({ preventScroll: true });
       });
-      close.addEventListener('click', function () {
-        setAreas(false);
-        var toggle = row.querySelector('[data-impact-menu] summary');
-        if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
+      // The × on the right, and in option D a back button on the left
+      [].forEach.call(row.querySelectorAll('[data-areas-close]'), function (btn) {
+        btn.addEventListener('click', function () {
+          setAreas(false);
+          var toggle = row.querySelector('[data-impact-menu] summary');
+          if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
+        });
       });
       row.addEventListener('keydown', function (ev) {
         if (ev.key === 'Escape' && row.querySelector('[data-areas]').contains(document.activeElement)) close.click();

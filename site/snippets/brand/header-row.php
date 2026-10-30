@@ -25,7 +25,8 @@
  * C: like A, as one joined control; closed, the menu item names the
  *    current area.
  * D: like A, taking the whole header row (the logo and Get in touch
- *    too), with arrows and a thin scroll bar when the chips overflow. Without an option, the dropdown as before.
+ *    too), with arrows and a thin scroll bar when the chips overflow,
+ *    and a back button on the left as well as the × on the right. Without an option, the dropdown as before.
  */
 
 $current = $current ?? null;
@@ -66,6 +67,7 @@ $menus = array_filter([
   <a href="<?= url('contact') ?>" class="btn btn--sm btn--primary hero-bar__cta"<?= $mark('contact') ?>>Get in touch</a>
   <?php if ($impactAreas): ?>
     <div class="hx-areas" data-areas>
+      <button type="button" class="hx-areas__back" data-areas-close aria-label="Close impact areas, back to the menu"><span aria-hidden="true">&larr;</span></button>
       <span class="hx-areas__label">Impact areas</span>
       <button type="button" class="hx-areas__arrow" data-areas-prev aria-label="Scroll impact areas left" hidden><span aria-hidden="true">&larr;</span></button>
       <div class="hx-areas__scroller">

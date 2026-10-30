@@ -1249,3 +1249,25 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
 }
 :root[data-menu="d"] .hx-areas__scroller { margin: 0 0.25rem; }
+/* D: a back button on the left closes the chips too, where people reach
+   for the way back (2026-10-30) */
+.hx-areas__back { display: none; }
+:root[data-menu="d"] .hx-areas__back {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: var(--space-4, 0.25rem);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-black);
+  color: var(--color-white);
+  font: inherit;
+  font-size: var(--size-p4);
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+:root[data-menu="d"] .hx-areas__back:hover { opacity: 0.85; }
+:root[data-menu="d"] .hx-areas__back:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }

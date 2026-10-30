@@ -19,6 +19,15 @@ tabs:
         width: 1/3
         sections:
 
+          page:
+            type: fields
+            fields:
+              intro:
+                label: Page intro
+                type: textarea
+                buttons: false
+                help: One line under the Work title. Leave empty for the default.
+
           drafts:
             extends: sections/case-studies
             label: Drafts

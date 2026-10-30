@@ -136,7 +136,7 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
                         'class'  => 'cp-post__image',
                       ]) ?>
                     <?php endif ?>
-                    <span class="pc__pill"><?= $i === 0 ? 'Pinned · ' : '' ?><?= $typeLabels[$type] ?></span>
+                    <span class="pc__pill"><?= html(wove_post_pill($post)) ?></span>
                   </span>
                   <span class="cp-post__title"><?= $post->title()->html() ?></span>
                   <?php if ($line): ?><span class="cp-post__line"><?= html($line) ?></span><?php endif ?>

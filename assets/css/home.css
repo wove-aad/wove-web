@@ -437,6 +437,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   animation: panel-in 150ms ease;
 }
 @media (prefers-reduced-motion: reduce) { .hx-menu__list { animation: none; } }
+/* Covers the gap above the list, so a hover-opened list stays open as the
+   pointer moves down to it (assets/js/nav.js) */
+.hx-menu__list::before { content: ""; position: absolute; right: 0; bottom: 100%; left: 0; height: var(--space-12); }
 .hx-nav .hx-menu__list a {
   display: block;
   padding: var(--space-8, 0.5rem) var(--space-12);

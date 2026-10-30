@@ -61,7 +61,6 @@ $casePosts = $case && ($wm = $site->find('wove-mind'))
   ? $wm->children()->listed()->filter(fn ($p) => $p->case_study()->toPages()->has($case) && $p->format()->value() !== 'spark')->sortBy('date', 'desc')
   : null;
 
-$typeLabels = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
 $types = [];
 foreach (array_merge($browse, $more) as $p) $types[wove_post_type($p)] = true;
 
@@ -75,7 +74,7 @@ $lineOf = fn ($p) => wove_card_excerpt($p->intendedTemplate()->name() === 'case-
   ? (string) $p->summary()->or($p->subStatement())->value()
   : (string) $p->body()->value());
 
-$card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $typeLabels) {
+$card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
   $type  = wove_post_type($p);
   $image = $imageOf($p);
   $line  = $lineOf($p);
@@ -93,7 +92,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
             'class'  => 'cp-post__image',
           ]) ?>
         <?php endif ?>
-        <span class="pc__pill"><?= $pinned ? 'Pinned · ' : '' ?><?= $typeLabels[$type] ?></span>
+        <span class="pc__pill"><?= html(wove_post_pill($p)) ?></span>
       </span>
       <span class="cp-post__title"><?= html($titleOf($p)) ?></span>
       <?php if ($client): ?><span class="cp-post__client"><?= html($client) ?></span><?php endif ?>
@@ -195,8 +194,8 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf, $t
                   <?php if ($image): ?>
                     <?php snippet('picture', ['file' => $image, 'widths' => [380, 760], 'ratio' => 38 / 25, 'sizes' => '23.75rem', 'class' => 'ia-piece__image']) ?>
                   <?php endif ?>
+                  <span class="pc__pill"><?= html(wove_post_pill($p)) ?></span>
                 </span>
-                <span class="ia-piece__label"><?= $typeLabels[wove_post_type($p)] ?></span>
                 <span class="ia-piece__title"><?= $p->title()->html() ?></span>
                 <?php if ($services): ?><span class="ia-piece__meta"><?= html(implode(', ', $services)) ?></span><?php endif ?>
               </a>

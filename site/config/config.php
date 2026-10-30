@@ -205,8 +205,9 @@ return [
         [
             'pattern' => 'our-work',
             'action'  => function () {
-                // The homepage feed is the work feed (2026-10-08)
-                return go(wove_work_url(get('filter')), 302);
+                // Filtered links go to the homepage feed (2026-10-08); the
+                // rest to the Work page (2026-10-30)
+                return go(get('filter') ? wove_work_url(get('filter')) : url('work'), 302);
             }
         ],
         [

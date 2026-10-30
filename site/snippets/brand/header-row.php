@@ -3,17 +3,18 @@
  * Logo, main menu and contact button: the top row of the homepage hero and
  * of every inner page header.
  * Usage: <?php snippet('brand/header-row', ['current' => 'people']) ?>
- * `current` marks a menu item as the current page ('people', 'wove-mind',
+ * `current` marks a menu item as the current page ('work', 'people', 'wove-mind',
  * 'contact', 'service:{slug}' or 'tag:{slug}'); the other links are then
  * muted.
  *
- * Menu (2026-10-29): Services lists the four service pages
+ * Menu (2026-10-29): Work, then Services lists the four service pages
  * (templates/service.php); Impact areas lists the editorial tags (site
  * order) that have work, each going to its impact area page
- * (templates/tag.php). Then People, Wove Mind (every post,
+ * (templates/tag.php), after Work (templates/work.php). Then People, Wove Mind (every post,
  * templates/wove-mind-feed.php) and Get in touch. The lists are
- * <details> so they open without JS; assets/js/nav.js closes them on an
- * outside click or Escape.
+ * <details> so they open without JS; assets/js/nav.js opens them on
+ * hover where there is a mouse and closes them on an outside click or
+ * Escape.
  */
 
 $current = $current ?? null;
@@ -38,7 +39,8 @@ $menus = array_filter([
 ?>
 <div class="hx-row">
   <a href="<?= url() ?>" class="hero-bar__logo"><?php snippet('brand/logo') ?></a>
-  <nav class="hx-nav<?= in_array($current, ['people', 'wove-mind'], true) || preg_match('/^(service|tag):/', (string) $current) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
+  <nav class="hx-nav<?= in_array($current, ['work', 'people', 'wove-mind'], true) || preg_match('/^(service|tag):/', (string) $current) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
+    <a href="<?= url('work') ?>"<?= $mark('work') ?>>Work</a>
     <?php foreach ($menus as $id => $menu): $hasCurrent = in_array(true, array_column($menu['items'], 'current'), true) ?>
       <details class="hx-menu<?= $hasCurrent ? ' hx-menu--current' : '' ?>" data-nav-menu>
         <summary class="hx-menu__toggle"><?= $menu['label'] ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>

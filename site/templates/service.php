@@ -75,15 +75,6 @@ $i     = $i === false ? 0 : $i;
 $prev  = $order[($i + count($order) - 1) % count($order)];
 $next  = $order[($i + 1) % count($order)];
 
-$pill = function ($p) use ($site) {
-  $isCase = $p->intendedTemplate()->name() === 'case-study';
-  $tags   = $site->tags()->toStructure();
-  foreach ($p->content()->get($isCase ? 'impactAreas' : 'tags')->split(',') as $t) {
-    $tag = $tags->findBy('slug', $t) ?? $tags->findBy('name', $t);
-    if ($tag && $tag->active()->toBool() !== false) return $tag->name()->value();
-  }
-  return $isCase ? 'Case study' : '';
-};
 ?>
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
@@ -131,7 +122,6 @@ $pill = function ($p) use ($site) {
               $title  = $isCase && $p->heroTitle()->isNotEmpty() ? strip_tags($p->heroTitle()->value()) : $p->title()->value();
               $client = $isCase ? $p : $p->case_study()->toPages()->first();
               $client = $client ? $client->eyebrow()->or($client->title())->value() : '';
-              $label  = $pill($p);
               $line   = wove_card_excerpt($isCase ? (string) $p->summary()->or($p->subStatement())->value() : (string) $p->body()->value());
             ?>
               <li class="sv-project"<?= $n >= $perPage ? ' data-later' : '' ?>>
@@ -145,7 +135,7 @@ $pill = function ($p) use ($site) {
                         'class'  => 'sv-project__image',
                       ]) ?>
                     <?php endif ?>
-                    <?php if ($label): ?><span class="sv-project__pill"><?= html($label) ?></span><?php endif ?>
+                    <span class="pc__pill"><?= html(wove_post_pill($p)) ?></span>
                   </span>
                   <span class="sv-project__title"><?= html($title) ?></span>
                   <?php if ($client): ?><span class="sv-project__client"><?= html($client) ?></span><?php endif ?>

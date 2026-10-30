@@ -14,10 +14,13 @@
  * first, or oldest first for one client, 12 at a time with "Load more".
  * Filters come in from the address (?theme=a,b&discipline=labs&client=x)
  * and the address follows them.
- * Two layouts for review (2026-10-30, ?layout=side|top, kept per browser,
- * with a switcher in the corner): the filters in a column beside the
- * 2-column feed, the title lined up with the feed; or in a bar above it,
- * everything on one left edge.
+ * Layouts for review (2026-10-30, ?layout=…, kept per browser, with a
+ * switcher in the corner): side (the filters in a column beside the
+ * 2-column feed, the title lined up with the feed); top (a bar of filters
+ * above it, everything on one left edge); centre (no filters, the title,
+ * intro and feed in one centred column); centre-quiet (the same, with the
+ * services as a quiet line of text filters); centre-head (no filters, the
+ * title and intro centred over the centred feed).
  * Styles: the WORK PAGE section of assets/css/pages.css.
  * Behaviour: assets/js/work.js; image heights: assets/js/feed.js.
  */
@@ -64,9 +67,9 @@ $total = count($units);
 
 <div class="home wk" data-theme="light" data-wk-layout="side">
   <script>
-    // Layout for review (?layout=side|top, kept per browser), see the WORK PAGE styles in pages.css
+    // Layout for review (?layout=side|top|centre|centre-quiet|centre-head, kept per browser), see the WORK PAGE styles in pages.css
     (function (el) { try {
-      var m = (location.search.match(/[?&]layout=(side|top)\b/) || [])[1];
+      var m = (location.search.match(/[?&]layout=(side|top|centre-quiet|centre-head|centre)(?![\w-])/) || [])[1];
       if (m) localStorage.setItem('wove.workLayout', m);
       el.setAttribute('data-wk-layout', localStorage.getItem('wove.workLayout') || 'side');
     } catch (e) {} })(document.currentScript.parentElement);
@@ -198,6 +201,9 @@ $total = count($units);
   <div class="feed-options__group">
     <a href="<?= url('work') ?>?layout=side" data-wk-switch="side">Sidebar</a>
     <a href="<?= url('work') ?>?layout=top" data-wk-switch="top">Top bar</a>
+    <a href="<?= url('work') ?>?layout=centre" data-wk-switch="centre">Centred</a>
+    <a href="<?= url('work') ?>?layout=centre-quiet" data-wk-switch="centre-quiet">Centred, quiet filters</a>
+    <a href="<?= url('work') ?>?layout=centre-head" data-wk-switch="centre-head">Centred heading</a>
   </div>
 </aside>
 <script>

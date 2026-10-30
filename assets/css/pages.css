@@ -1361,3 +1361,30 @@ html:not(.js) .person-detail__close { display: none; }
 .cp-partners__list { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-16) var(--space-40); margin: var(--space-16) 0 0; padding: 0; list-style: none; }
 .cp-partners__list img { display: block; width: auto; height: 3.5rem; max-width: 16rem; object-fit: contain; mix-blend-mode: multiply; }
 @media (max-width: 600px) { .cp-partners__list img { height: 2.75rem; } }
+
+/* Centred layouts (2026-10-30): the title, intro and feed in one column
+   up to --wk-feed-max wide, centred on the page, so they share one left
+   edge with nothing beside them */
+.wk[data-wk-layout^="centre"] .wk-head :is(.cp-head__title, .cp-head__lead),
+.wk[data-wk-layout^="centre"] .wk-main > * { max-width: var(--wk-feed-max); margin-inline: auto; }
+.wk[data-wk-layout^="centre"] .wk-head .cp-head__lead > * { max-width: none; }
+.wk[data-wk-layout="centre"] .wk-filters,
+.wk[data-wk-layout="centre-head"] .wk-filters { display: none; }
+.wk[data-wk-layout^="centre"] .wk-status { margin-top: 0; }
+
+/* Centred, quiet filters: only the services, as a line of text above
+   the feed, like the type filters on the homepage */
+.wk[data-wk-layout="centre-quiet"] .wk-filters { display: flex; align-items: baseline; gap: var(--space-24); padding-bottom: var(--space-24); border-bottom: 1px solid rgb(17 17 17 / 0.1); }
+.wk[data-wk-layout="centre-quiet"] .wk-group:not(:has([data-group="discipline"])) { display: none; }
+.wk[data-wk-layout="centre-quiet"] .wk-group { display: flex; align-items: baseline; gap: var(--space-24); }
+.wk[data-wk-layout="centre-quiet"] .wk-group__label { font-size: var(--size-p5); }
+.wk[data-wk-layout="centre-quiet"] .wk-chips { gap: var(--space-24); }
+.wk[data-wk-layout="centre-quiet"] .wk-chip { min-height: 0; padding: 0; background: none; color: var(--color-text-muted); font-size: var(--size-p3); font-weight: var(--weight-bold); }
+.wk[data-wk-layout="centre-quiet"] .wk-chip:hover { background: none; color: var(--color-black); }
+.wk[data-wk-layout="centre-quiet"] .wk-chip[aria-pressed="true"] { background: none; color: var(--color-black); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.wk[data-wk-layout="centre-quiet"] .wk-chip[aria-pressed="true"]::after { content: none; }
+.wk[data-wk-layout="centre-quiet"] .wk-status { margin-top: var(--space-24); }
+
+/* Centred heading: the title and intro centred over the feed */
+.wk[data-wk-layout="centre-head"] .wk-head :is(.cp-head__title, .cp-head__lead) { text-align: center; }
+.wk[data-wk-layout="centre-head"] .wk-head .cp-head__summary { max-width: 26em; margin-inline: auto; }

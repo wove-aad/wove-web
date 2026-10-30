@@ -60,8 +60,6 @@ $casePosts = $case && ($wm = $site->find('wove-mind'))
   ? $wm->children()->listed()->filter(fn ($p) => $p->case_study()->toPages()->has($case) && $p->format()->value() !== 'spark')->sortBy('date', 'desc')
   : null;
 
-$types = [];
-foreach (array_merge($browse, $more) as $p) $types[wove_post_type($p)] = true;
 
 $imageOf = fn ($p) => $p->intendedTemplate()->name() === 'case-study'
   ? $p->caseStudyImages()->toFile()
@@ -110,7 +108,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
 
 <div class="home ia" data-theme="light">
 
-  <header class="hx hx--page hx--aligned ia-head">
+  <header class="hx hx--page ia-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => $key]) ?>
 
@@ -153,14 +151,6 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
         <section class="cp-activity" aria-labelledby="ia-browse">
           <div class="cp-activity__head">
             <h2 class="cp-activity__title" id="ia-browse">Browse work</h2>
-            <?php if (count($types) > 1): ?>
-              <div class="feed-types" role="group" aria-label="Filter by type" data-activity-filters>
-                <button type="button" class="feed-type" data-type="*" aria-pressed="true">All</button>
-                <?php foreach (wove_post_type_labels() as $type => $label): if (empty($types[$type])) continue ?>
-                  <button type="button" class="feed-type" data-type="<?= $type ?>" aria-pressed="false"><?= $label ?></button>
-                <?php endforeach ?>
-              </div>
-            <?php endif ?>
           </div>
           <ul class="cp-posts feed-varied" role="list" data-activity data-heights>
             <?php foreach ($browse as $i => $p) $card($p, $i === 0) ?>

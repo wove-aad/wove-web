@@ -1187,7 +1187,7 @@ html:not(.js) .person-detail__close { display: none; }
    browser; data-wk-layout on .wk, set in work.php): the title, a 2-column
    feed up to --wk-feed-max wide, and the filters either in a column
    beside the feed (side) or in a bar above it (top). */
-.wk { --wk-feed-max: 60rem; --wk-side: 15rem; }
+.wk { --wk-feed-max: var(--width-column); --wk-side: 15rem; }
 .wk-head .cp-head__lead { display: block; }
 
 /* Side: the filters in a column on the left; the title, intro and feed
@@ -1388,3 +1388,17 @@ html:not(.js) .person-detail__close { display: none; }
 /* Centred heading: the title and intro centred over the feed */
 .wk[data-wk-layout="centre-head"] .wk-head :is(.cp-head__title, .cp-head__lead) { text-align: center; }
 .wk[data-wk-layout="centre-head"] .wk-head .cp-head__summary { max-width: 26em; margin-inline: auto; }
+
+/* Service and impact area pages in one centred column (2026-10-30), up
+   to --width-column wide, no filters: the hero text starts on the
+   column's left edge and every section below sits in the column. The
+   impact area client band stays full width. */
+.sv .sv-head :is(.sv-head__title, .sv-head__lower),
+.ia .ia-head :is(.ia-head__title, .ia-head__lead) { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }
+.sv .sv-head .sv-head__lower { max-width: var(--width-column); }
+.ia .ia-head .ia-head__lead { display: block; max-width: var(--width-column); }
+.sv-main > *,
+.ia-main > *,
+.ia-more > * { max-width: var(--width-column); margin-inline: auto; }
+.ia-collection__inner { max-width: calc(var(--width-column) + 2 * var(--gutter-x)); }
+.ia-more > .cp-explore { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }

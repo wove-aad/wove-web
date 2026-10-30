@@ -139,6 +139,7 @@
   --rhythm-lg: 8rem;
 
   /* Content widths */
+  --width-column:  60rem;    /* 960px — the centred column on Work, service and impact area pages (2026-10-30) */
   --width-header:  85rem;    /* 1360px */
   --width-block:   80rem;    /* 1280px */
   --width-content: 51.25rem; /* 820px */

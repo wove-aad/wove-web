@@ -213,7 +213,7 @@ $nowLine = function ($p) {
             <?php endforeach ?>
           </div>
         </div>
-        <div class="feed-cards pc-grid pc-grid--cols-3 pc-grid--grid pc-grid--heights-set pc-grid--card-compact pc-grid--card-open" data-heights>
+        <div class="feed-cards pc-grid pc-grid--cols-2 pc-grid--grid pc-grid--heights-set pc-grid--card-compact pc-grid--card-open" data-heights>
           <?php foreach ($posts->limit(18) as $i => $p): ?>
             <?php snippet('home/post-card', ['post' => $p, 'filters' => $entryFilters[$p->id()] ?? [], 'hidden' => false]) ?>
           <?php endforeach ?>

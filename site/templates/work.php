@@ -14,6 +14,10 @@
  * first, or oldest first for one client, 12 at a time with "Load more".
  * Filters come in from the address (?theme=a,b&discipline=labs&client=x)
  * and the address follows them.
+ * Two layouts for review (2026-10-30, ?layout=side|top, kept per browser,
+ * with a switcher in the corner): the filters in a column beside the
+ * 2-column feed, the title lined up with the feed; or in a bar above it,
+ * everything on one left edge.
  * Styles: the WORK PAGE section of assets/css/pages.css.
  * Behaviour: assets/js/work.js; image heights: assets/js/feed.js.
  */
@@ -58,9 +62,17 @@ $total = count($units);
   'metaTitle' => $page->seoTitle()->or('Work')->value(),
 ]) ?>
 
-<div class="home wk" data-theme="light">
+<div class="home wk" data-theme="light" data-wk-layout="side">
+  <script>
+    // Layout for review (?layout=side|top, kept per browser), see the WORK PAGE styles in pages.css
+    (function (el) { try {
+      var m = (location.search.match(/[?&]layout=(side|top)\b/) || [])[1];
+      if (m) localStorage.setItem('wove.workLayout', m);
+      el.setAttribute('data-wk-layout', localStorage.getItem('wove.workLayout') || 'side');
+    } catch (e) {} })(document.currentScript.parentElement);
+  </script>
 
-  <header class="hx hx--page hx--aligned wk-head">
+  <header class="hx hx--page wk-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'work']) ?>
       <h1 class="cp-head__title">Work</h1>
@@ -181,6 +193,17 @@ $total = count($units);
   </div>
 </div>
 
+<aside class="feed-options wk-switch" aria-label="Work layouts">
+  <p class="feed-options__title">Work layout</p>
+  <div class="feed-options__group">
+    <a href="<?= url('work') ?>?layout=side" data-wk-switch="side">Sidebar</a>
+    <a href="<?= url('work') ?>?layout=top" data-wk-switch="top">Top bar</a>
+  </div>
+</aside>
+<script>
+  (function () { var l = document.querySelector('.wk').getAttribute('data-wk-layout');
+    var a = document.querySelector('[data-wk-switch="' + l + '"]'); if (a) a.setAttribute('aria-current', 'true'); })();
+</script>
 <script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <script src="<?= wove_asset('/assets/js/work.js') ?>" defer></script>
 <?php snippet('footer') ?>

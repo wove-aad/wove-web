@@ -1393,3 +1393,4 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 @media (prefers-reduced-motion: reduce) {
   [data-slide], .hi-ticker__line { transition: none; }
 }
+.feed-cards.pc-grid--cols-2.pc-grid--card-compact:not(.pc-grid--masonry) { column-gap: var(--space-32); }

@@ -1145,21 +1145,20 @@ html:not(.js) .person-detail__close { display: none; }
 /* ============================================================
    SHARED FEED LAYOUT (2026-10-29): the client page activity, service
    projects and impact area work (.cp-posts, .sv-projects) use the same
-   layout as the homepage feed: 3 columns (2 on tablets, 1 on phones),
+   layout as the homepage feed: 2 columns (2026-10-30; 1 on phones),
    rows aligned at the top, three image heights varied by position
    (assets/js/feed.js on [data-heights]) and compact text: the client as
    a small line above the title, a 20px title and a two-line excerpt.
    ============================================================ */
 .feed-varied {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-64) var(--space-24);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-64) var(--space-32);
   align-items: start;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-@media (max-width: 959px) { .feed-varied { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 599px) { .feed-varied { grid-template-columns: minmax(0, 1fr); } }
 .feed-varied :is(.cp-post__media, .sv-project__media) { order: -2; margin-bottom: var(--space-12); }
 .feed-varied :is(.cp-post__client, .sv-project__client) { order: -1; margin: 0 0 var(--space-4, 0.25rem); font-size: var(--size-label); letter-spacing: 0.01em; }
@@ -1184,15 +1183,23 @@ html:not(.js) .person-detail__close { display: none; }
 .wk-head .hx__inner { padding-bottom: var(--space-64); }
 .wk-main { padding-top: var(--space-64); padding-bottom: var(--space-96); }
 
-/* Filters (2026-10-30): a column beside the grid with clients (a small
-   image, name and count), services and impact areas as chips */
+/* Work layouts for review (2026-10-30, ?layout=side|top on /work, kept per
+   browser; data-wk-layout on .wk, set in work.php): the title, a 2-column
+   feed up to --wk-feed-max wide, and the filters either in a column
+   beside the feed (side) or in a bar above it (top). */
+.wk { --wk-feed-max: 60rem; --wk-side: 15rem; }
+.wk-head .cp-head__lead { display: block; }
+
+/* Side: the filters in a column on the left; the title, intro and feed
+   share the feed column's left edge */
 @media (min-width: 961px) {
-  .wk-main { display: grid; grid-template-columns: 15rem minmax(0, 1fr); column-gap: var(--space-48); align-items: start; }
-  .wk-main > * { grid-column: 2; }
+  .wk[data-wk-layout="side"] .wk-head :is(.cp-head__title, .cp-head__lead) { margin-left: calc(var(--wk-side) + var(--space-48)); }
+  .wk[data-wk-layout="side"] .wk-main { display: grid; grid-template-columns: var(--wk-side) minmax(0, var(--wk-feed-max)); column-gap: var(--space-48); align-items: start; }
+  .wk[data-wk-layout="side"] .wk-main > * { grid-column: 2; }
   /* Sticks in the upper middle of the window once scrolled to. When it is
      taller than the window, work.js lowers its top so it scrolls with the
      page until its end shows, then sticks (no scroll bar of its own). */
-  .wk-filters {
+  .wk[data-wk-layout="side"] .wk-filters {
     position: sticky;
     top: var(--wk-top, max(var(--space-96), 16vh));
     grid-column: 1;
@@ -1200,26 +1207,45 @@ html:not(.js) .person-detail__close { display: none; }
     gap: var(--space-32);
   }
   /* Compact chips and client rows in the column (the -sm chip tokens) */
-  .wk-filters .wk-chip { min-height: var(--chip-height-sm); padding: 0 var(--chip-px-sm); font-size: var(--size-chip-sm); gap: 0.375rem; }
-  .wk-filters .wk-chips { gap: 0.375rem; }
-  .wk-filters .wk-cl { gap: var(--space-8, 0.5rem); padding: 0.25rem 0.625rem 0.25rem 0.25rem; font-size: var(--size-chip-sm); }
-  .wk-filters .wk-cl__thumb { width: 2rem; height: 2rem; border-radius: 0.5rem; }
-  .wk-filters .wk-clients { gap: 0.125rem; }
-  .wk-filters .wk-group { gap: var(--space-8, 0.5rem); }
+  .wk[data-wk-layout="side"] .wk-filters .wk-chip { min-height: var(--chip-height-sm); padding: 0 var(--chip-px-sm); font-size: var(--size-chip-sm); gap: 0.375rem; }
+  .wk[data-wk-layout="side"] .wk-filters .wk-chips { gap: 0.375rem; }
+  .wk[data-wk-layout="side"] .wk-filters .wk-cl { gap: var(--space-8, 0.5rem); padding: 0.25rem 0.625rem 0.25rem 0.25rem; font-size: var(--size-chip-sm); }
+  .wk[data-wk-layout="side"] .wk-filters .wk-cl__thumb { width: 2rem; height: 2rem; border-radius: 0.5rem; }
+  .wk[data-wk-layout="side"] .wk-filters .wk-clients { gap: 0.125rem; }
+  .wk[data-wk-layout="side"] .wk-filters .wk-group { gap: var(--space-8, 0.5rem); }
   /* Hidden on landing; rises gently into place over the first part of
      the scroll (2026-10-30) */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: scroll()) {
-      .wk-filters {
+      .wk[data-wk-layout="side"] .wk-filters {
         animation: motion-arrive linear both;
         animation-timeline: scroll(root);
         animation-range: 0 min(60vh, 32rem);
       }
     }
   }
-  .wk-status { margin-top: 0 !important; }
-  .wk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wk[data-wk-layout="side"] .wk-status { margin-top: 0 !important; }
 }
+
+/* Top: the title, a bar of filters and the feed on one left edge, the
+   whole column up to --wk-feed-max wide */
+.wk[data-wk-layout="top"] .wk-main > * { max-width: var(--wk-feed-max); }
+.wk[data-wk-layout="top"] .wk-head :is(.cp-head__title, .cp-head__lead) { max-width: var(--wk-feed-max); }
+@media (min-width: 961px) {
+  .wk[data-wk-layout="top"] .wk-filters { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-24) var(--space-48); padding-bottom: var(--space-32); border-bottom: 1px solid rgb(17 17 17 / 0.1); }
+  .wk[data-wk-layout="top"] .wk-group:first-child { flex-basis: 100%; }
+  .wk[data-wk-layout="top"] .wk-clients { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .wk[data-wk-layout="top"] .wk-clients > li[hidden] { display: block; }
+  .wk[data-wk-layout="top"] .wk-cl { width: auto; padding: 0.25rem 1rem 0.25rem 0.25rem; border-radius: var(--radius-pill); background: var(--color-stone-100); }
+  .wk[data-wk-layout="top"] .wk-cl[aria-pressed="true"] { background: var(--color-black); }
+  .wk[data-wk-layout="top"] .wk-cl__thumb { width: 2rem; height: 2rem; border-radius: 50%; }
+  .wk[data-wk-layout="top"] .wk-cl__name { flex: none; }
+  .wk[data-wk-layout="top"] .wk-group__more { display: none; }
+}
+.wk-switch { left: var(--space-16); right: auto; }
+.wk-switch a { color: var(--color-400); }
+.wk-switch a:hover, .wk-switch a[aria-current] { color: var(--color-white); }
+.wk-switch a[aria-current] { text-decoration: underline; text-underline-offset: 3px; }
 .wk-filters { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-40); }
 .wk-group { display: grid; gap: var(--space-12); min-width: 0; }
 .wk-group__label { font-size: var(--size-label); font-weight: var(--weight-bold); color: var(--color-text-muted); }

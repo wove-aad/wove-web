@@ -61,7 +61,7 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
 
 <div class="home cp" data-theme="light">
 
-  <header class="hx hx--page cp-head">
+  <header class="hx hx--page hx--aligned cp-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row') ?>
       <h1 class="cp-head__title">

@@ -1325,6 +1325,6 @@ html:not(.js) .person-detail__close { display: none; }
 
 /* Page titles in line with the lead under them and with the homepage
    title (the main column of --grid-page), 2026-10-30: impact areas,
-   People, Work and Wove Mind */
+   People, Work, Wove Mind and client pages */
 .hx--aligned h1 { margin-left: calc((100% - 8.5rem - 2 * var(--space-32)) * var(--lead-fr) / (var(--lead-fr) + var(--main-fr)) + var(--space-32)); }
 @media (max-width: 960px) { .hx--aligned h1 { margin-left: 0; } }

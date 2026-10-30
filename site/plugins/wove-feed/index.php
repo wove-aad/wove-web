@@ -277,6 +277,20 @@ function wove_feed(): array
 }
 
 /**
+ * The published site tag (impact area) a stored value refers to: its
+ * slug, its name, or the slug of its name (the Panel stores
+ * {{ item.name.slug }}), 2026-10-30. Null for anything else.
+ */
+function wove_tag_find(string $value)
+{
+	$value = trim($value);
+	if ($value === '') return null;
+	$tags = site()->tags()->toStructure()->filter(fn ($t) => $t->active()->toBool() !== false);
+	return $tags->findBy('slug', $value) ?? $tags->findBy('name', $value)
+		?? $tags->filter(fn ($t) => Str::slug($t->name()->value()) === Str::slug($value))->first();
+}
+
+/**
  * The impact areas: every published tag in the site's Taxonomies tab, in
  * its order, slug => name (2026-10-30). The menu, the impact area pages'
  * chips and the Explore by topic band list all of them, with work or not.

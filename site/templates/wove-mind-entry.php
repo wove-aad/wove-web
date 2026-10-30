@@ -48,26 +48,26 @@ $description = $page->seoDescription()->isNotEmpty()
     ? Str::short(strip_tags($page->body()->value()), 160)
     : '');
 
-// Tags in the site-wide order: case study, services, editorial tags, sectors
+// Tags in the site-wide order: case study, services, editorial tags,
+// sectors. Each links to its own page (2026-10-30): the client page, the
+// service page, the impact area page; sectors to their page (tag route).
 $workUrl  = wove_work_url();
 $filter   = fn ($key) => $workUrl . '?filter=' . urlencode($key);
 $services = wove_service_labels();
 $sectors  = wove_sector_labels();
-$siteTags = $site->tags()->toStructure();
 $caseStudy = $page->case_study()->toPages()->first();
 $pills = [];
 foreach ($page->case_study()->toPages() as $cs) {
-  $pills[] = ['label' => $cs->eyebrow()->or($cs->title())->value(), 'url' => $filter('cs:' . $cs->slug())];
+  $pills[] = ['label' => $cs->eyebrow()->or($cs->title())->value(), 'url' => $cs->url()];
 }
 foreach ($page->services()->split(',') as $s) {
-  if (isset($services[$s])) $pills[] = ['label' => $services[$s], 'url' => $filter('service:' . $s)];
+  if (isset($services[$s])) $pills[] = ['label' => $services[$s], 'url' => url('services/' . $s)];
 }
 foreach ($page->tags()->split(',') as $t) {
-  $tag = $siteTags->findBy('slug', Str::slug($t)) ?? $siteTags->findBy('name', $t);
-  if ($tag && $tag->active()->toBool() !== false) $pills[] = ['label' => $tag->name()->value(), 'url' => $filter('tag:' . $tag->slug())];
+  if ($tag = wove_tag_find($t)) $pills[] = ['label' => $tag->name()->value(), 'url' => url('tag/' . $tag->slug())];
 }
 foreach ($page->sectors()->split(',') as $s) {
-  if (isset($sectors[$s])) $pills[] = ['label' => $sectors[$s], 'url' => $filter('sector:' . $s)];
+  if (isset($sectors[$s])) $pills[] = ['label' => $sectors[$s], 'url' => url('tag/' . $s)];
 }
 
 // More posts: the same project first, then the newest others

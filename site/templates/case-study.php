@@ -26,7 +26,6 @@ $summary  = $page->summary()->or($page->subStatement())->value();
 $image    = $page->caseStudyImages()->toFile();
 $stats    = $page->stats()->toStructure()->limit(4);
 $services = wove_service_labels();
-$siteTags = $site->tags()->toStructure();
 
 // Meta row: date, client, services, impact areas
 $meta = [];
@@ -39,8 +38,7 @@ foreach ($page->services()->split(',') as $s) {
   $meta[] = '<a href="' . url('services/' . $s) . '">' . html($services[$s]) . '</a>';
 }
 foreach ($page->impactAreas()->split(',') as $t) {
-  $tag = $siteTags->findBy('slug', $t) ?? $siteTags->findBy('name', $t);
-  if ($tag && $tag->active()->toBool() !== false) $meta[] = '<a href="' . url('tag/' . $tag->slug()) . '">' . $tag->name()->html() . '</a>';
+  if ($tag = wove_tag_find($t)) $meta[] = '<a href="' . url('tag/' . $tag->slug()) . '">' . $tag->name()->html() . '</a>';
 }
 
 // Activity: this client's posts, the pinned one first

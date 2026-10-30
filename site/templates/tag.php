@@ -109,7 +109,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
 <div class="home ia" data-theme="light">
   <?php snippet('col-layout') ?>
 
-  <header class="hx hx--page ia-head">
+  <header class="hx hx--page hx--aligned ia-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => $key]) ?>
 

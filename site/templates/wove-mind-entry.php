@@ -264,6 +264,8 @@ echo json_encode($articleData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
       <?php endif ?>
     </main>
   </div>
+
+  <?php snippet('home/topics') ?>
 </div>
 
 <script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>

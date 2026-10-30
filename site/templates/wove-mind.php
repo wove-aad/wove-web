@@ -88,6 +88,8 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 
 
   </div>
+
+  <?php snippet('home/topics') ?>
 </div>
 
 <script src="<?= wove_asset('/assets/js/home.js') ?>" defer></script>

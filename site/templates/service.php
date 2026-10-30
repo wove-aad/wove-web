@@ -79,7 +79,7 @@ $next  = $order[($i + 1) % count($order)];
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
 <div class="home sv sv--<?= html($slug) ?>" data-theme="light">
-  <?php snippet('col-layout') ?>
+  <?php snippet('col-layout', ['key' => 'service', 'default' => 'feed']) ?>
 
   <header class="hx hx--page sv-head">
     <div class="hx__inner">

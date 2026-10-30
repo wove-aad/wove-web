@@ -6,16 +6,21 @@
  * page's .home element (it sets data-col-layout on it before the first
  * paint), and <?php snippet('col-layout', ['switch' => true]) ?> before
  * the footer for the switcher in the corner.
+ * Pass 'key' and 'default' to the first call for a page type with
+ * its own default and choice: service pages start on the centred feed
+ * (2026-10-30, ['key' => 'service', 'default' => 'feed']).
  */
+$key     = 'wove.colLayout' . (empty($key) ? '' : '.' . $key);
+$default = $default ?? 'left';
 $options = ['left' => 'All left-aligned', 'feed' => 'Centred feed', 'centre' => 'All centred'];
 ?>
 <?php if (empty($switch)): ?>
   <script>
     (function (el) { try {
       var m = (location.search.match(/[?&]cols=(left|feed|centre)(?![\w-])/) || [])[1];
-      if (m) localStorage.setItem('wove.colLayout', m);
-      el.setAttribute('data-col-layout', localStorage.getItem('wove.colLayout') || 'left');
-    } catch (e) { el.setAttribute('data-col-layout', 'left'); } })(document.currentScript.parentElement);
+      if (m) localStorage.setItem('<?= $key ?>', m);
+      el.setAttribute('data-col-layout', localStorage.getItem('<?= $key ?>') || '<?= $default ?>');
+    } catch (e) { el.setAttribute('data-col-layout', '<?= $default ?>'); } })(document.currentScript.parentElement);
   </script>
 <?php else: ?>
   <aside class="feed-options col-switch" aria-label="Page layouts">

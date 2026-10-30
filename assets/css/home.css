@@ -1188,3 +1188,54 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 :root[data-menu] .ia-head__title { margin-top: var(--space-96); }
 :root[data-menu="c"] .hx-menu--current .hx-menu__toggle { text-decoration: none; }
 @media (max-width: 960px) { :root[data-menu] .ia-head__title { margin-top: var(--space-48); } }
+
+/* D: the chips take the whole header row; arrows and a thin scroll bar
+   when they overflow (assets/js/nav.js sets .has-overflow) */
+.hx-areas__arrow, .hx-areas__bar { display: none; }
+.hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
+:root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) > :not(.hx-areas) { display: none; }
+:root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 3rem;
+  animation: hx-areas-in 220ms ease;
+}
+:root[data-menu="d"] .hx-areas__list { flex: 1 1 auto; overflow-x: auto; padding: 0.25rem 0 0.75rem; scrollbar-width: none; }
+:root[data-menu="d"] .hx-areas__list::-webkit-scrollbar { display: none; }
+/* A thin bar under the chips showing how much is in view and where (the
+   native scroll bar is hidden on Macs until you scroll) */
+:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 2px;
+  border-radius: 1px;
+  background: rgb(17 17 17 / 0.08);
+}
+.hx-areas__bar > span { position: absolute; top: 0; bottom: 0; border-radius: 1px; background: rgb(17 17 17 / 0.35); transition: left 120ms linear; }
+:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__arrow {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgb(17 17 17 / 0.15);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-black);
+  font: inherit;
+  font-size: var(--size-p5);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), opacity var(--transition);
+}
+:root[data-menu="d"] .hx-areas__arrow:hover:not(:disabled) { background: var(--color-black); color: var(--color-white); }
+:root[data-menu="d"] .hx-areas__arrow:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+:root[data-menu="d"] .hx-areas__arrow:disabled { opacity: 0.3; cursor: default; }
+:root[data-menu="d"] .hx-areas__close { margin-left: var(--space-8, 0.5rem); }
+@media (max-width: 960px) {
+  :root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) { display: flex; }
+  :root[data-menu="d"] .hx-areas.has-overflow .hx-areas__arrow, .hx-areas__bar { display: none; }
+.hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
+}

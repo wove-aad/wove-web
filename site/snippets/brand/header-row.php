@@ -16,14 +16,16 @@
  * hover where there is a mouse and closes them on an outside click or
  * Escape.
  *
- * Menu options for review (2026-10-30), chosen with ?menu=a|b|c (kept
+ * Menu options for review (2026-10-30), chosen with ?menu=a|b|c|d (kept
  * per browser; ?menu=off clears it): Impact areas opens the impact
  * areas as chips in the header (.hx-areas) in place of the dropdown, and
  * an impact area page opens with them showing, its own chip active.
  * A: the chips replace the menu between the logo and Get in touch.
  * B: the chips open in a row under the header row; the menu stays.
  * C: like A, as one joined control; closed, the menu item names the
- *    current area. Without an option, the dropdown as before.
+ *    current area.
+ * D: like A, taking the whole header row (the logo and Get in touch
+ *    too), with arrows and a thin scroll bar when the chips overflow. Without an option, the dropdown as before.
  */
 
 $current = $current ?? null;
@@ -65,11 +67,16 @@ $menus = array_filter([
   <?php if ($impactAreas): ?>
     <div class="hx-areas" data-areas>
       <span class="hx-areas__label">Impact areas</span>
+      <button type="button" class="hx-areas__arrow" data-areas-prev aria-label="Scroll impact areas left" hidden><span aria-hidden="true">&larr;</span></button>
+      <div class="hx-areas__scroller">
       <ul class="hx-areas__list" role="list">
         <?php foreach ($impactAreas as $item): ?>
           <li><a class="hx-chip" href="<?= $item['href'] ?>"<?= $item['current'] ? ' aria-current="page"' : '' ?>><span class="hx-chip__dot" style="--dot: var(--color-<?= $item['swatch'] ?>)" aria-hidden="true"></span><?= html($item['label']) ?></a></li>
         <?php endforeach ?>
       </ul>
+      <span class="hx-areas__bar" aria-hidden="true"><span></span></span>
+      </div>
+      <button type="button" class="hx-areas__arrow" data-areas-next aria-label="Scroll impact areas right" hidden><span aria-hidden="true">&rarr;</span></button>
       <button type="button" class="hx-areas__close" data-areas-close aria-label="Close impact areas"><span aria-hidden="true">&times;</span></button>
     </div>
   <?php endif ?>

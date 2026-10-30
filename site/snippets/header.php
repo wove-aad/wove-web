@@ -59,9 +59,9 @@ $ogType = $page->ogtype()->or('website')->value();
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.className += ' js';
-// Menu option for review (?menu=a|b|c, kept per browser; ?menu=off clears it), see brand/header-row.php
+// Menu option for review (?menu=a|b|c|d, kept per browser; ?menu=off clears it), see brand/header-row.php
 (function () { try {
-  var m = (location.search.match(/[?&]menu=(a|b|c|off)\b/) || [])[1];
+  var m = (location.search.match(/[?&]menu=(a|b|c|d|off)\b/) || [])[1];
   if (m === 'off') localStorage.removeItem('wove.menu'); else if (m) localStorage.setItem('wove.menu', m);
   m = localStorage.getItem('wove.menu');
   if (m) document.documentElement.setAttribute('data-menu', m);

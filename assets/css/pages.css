@@ -1414,3 +1414,8 @@ html:not(.js) .person-detail__close { display: none; }
 .col-switch a { color: var(--color-400); }
 .col-switch a:hover, .col-switch a[aria-current] { color: var(--color-white); }
 .col-switch a[aria-current] { text-decoration: underline; text-underline-offset: 3px; }
+
+/* View (?view=3, snippets/col-layout.php): the feeds in 3 columns at
+   full width, in any layout; 2 columns between 600 and 960px */
+.home[data-col-view="3"] :is(.sv-main, .ia-main, .ia-more) > :is(:has(.feed-varied), .feed-varied) { max-width: none; margin-inline: 0; }
+@media (min-width: 961px) { .home[data-col-view="3"] .feed-varied { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

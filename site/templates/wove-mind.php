@@ -18,7 +18,8 @@
 
 // Homepage iterations for review (2026-10-30): ?home=1|2|3 shows one of
 // the three Figma homepages (snippets/home/iteration.php) in place of this;
-// ?home=0 is this homepage with the switcher showing
+// the switcher shows on this homepage too (since 2026-10-30, with or
+// without ?home=0)
 if (in_array(get('home'), ['1', '2', '3'], true)) {
   snippet('home/iteration', ['v' => get('home'), 'entries' => $entries, 'entryFilters' => $entryFilters, 'clients' => $clients]);
   return;
@@ -32,8 +33,7 @@ $initial = get('filter') ?: '*';
 
 // Feed layout options, for review (2026-10-29): ?cols=2|3, ?layout=grid|
 // masonry, ?heights=own|set, ?card=framed|open|tinted|compact. The options panel
-// (snippets/home/feed-options.php) shows when any of them is set, or with
-// ?options.
+// (snippets/home/feed-options.php) always shows, for review (2026-10-30).
 // Defaults (2026-10-29, 2 columns since 2026-10-30): rows aligned at
 // the top, three image heights varied by position (assets/js/feed.js),
 // compact cards.
@@ -43,7 +43,7 @@ $opt = [
   'heights' => get('heights') === 'own' ? 'own' : 'set',
   'card'    => in_array(get('card'), ['framed', 'tinted', 'open'], true) ? get('card') : 'compact',
 ];
-$showOptions = get('options') !== null || get('cols') || get('layout') || get('heights') || get('card');
+$showOptions = true;
 // Compact builds on the open cards
 $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . ' pc-grid--heights-' . $opt['heights'] . ' pc-grid--card-' . $opt['card'] . ($opt['card'] === 'compact' ? ' pc-grid--card-open' : '');
 ?>
@@ -110,6 +110,6 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 })();
 </script>
 
-<?php if (get('home') === '0') snippet('home/iteration-switch', ['v' => '0']) ?>
+<?php snippet('home/iteration-switch', ['v' => '0']) ?>
 <?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

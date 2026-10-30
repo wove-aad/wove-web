@@ -306,18 +306,18 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 /* Homepage hero colour (2026-10-29): one flat colour at a time, holding
    for about 5.5s and then easing into the next over about 1.2s, through
-   the light blue, green and lilac tints (20s cycle). Off for reduced motion,
-   which shows the blue. The blue ?hero= options keep their own
+   the green, lilac and light blue tints (20s cycle, starting on the green
+   since 2026-10-30). Off for reduced motion, which shows the green. The blue ?hero= options keep their own
    background. */
 .hx--home:not(.hx--blue) {
-  background: var(--color-aqua);
+  background: var(--color-mint);
   animation: hx-scape 20s ease-in-out infinite;
 }
 @keyframes hx-scape {
-  0%, 27%    { background-color: var(--color-aqua); }
-  33%, 60%   { background-color: var(--color-mint); }
-  66%, 94%   { background-color: var(--color-service-labs); }
-  100%       { background-color: var(--color-aqua); }
+  0%, 27%    { background-color: var(--color-mint); }
+  33%, 60%   { background-color: var(--color-service-labs); }
+  66%, 94%   { background-color: var(--color-aqua); }
+  100%       { background-color: var(--color-mint); }
 }
 @media (prefers-reduced-motion: reduce) { .hx--home:not(.hx--blue) { animation: none; } }
 /* The colour fades to white as you scroll towards the featured item

@@ -1,8 +1,8 @@
 <?php
 /**
  * The switcher for the homepage iterations (snippets/home/iteration.php),
- * fixed to the bottom corner. "Current" is ?home=0: the homepage as it is,
- * with the switcher still showing.
+ * fixed to the bottom corner. "Current" is ?home=0: the homepage as it is
+ * (the switcher shows there with or without it).
  * Usage: <?php snippet('home/iteration-switch', ['v' => '0']) ?>
  */
 ?>

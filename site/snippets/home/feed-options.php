@@ -1,7 +1,7 @@
 <?php
 /**
  * Feed layout options panel, for review (2026-10-29). Fixed to the bottom
- * corner of the homepage when an option is in the address (or ?options).
+ * corner of the homepage, always shown (2026-10-30).
  * Each link changes one option and keeps the others.
  * Usage: <?php snippet('home/feed-options', ['opt' => $opt]) ?>
  */

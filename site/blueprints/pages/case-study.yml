@@ -35,7 +35,6 @@ tabs:
                 type: textarea
                 size: small
                 buttons: false
-                maxlength: 220
                 help: One or two sentences shown with the case study on the homepage, under the client carousel. Falls back to the sub-statement.
 
               # Named to match the `image` query in sections/case-studies.yml

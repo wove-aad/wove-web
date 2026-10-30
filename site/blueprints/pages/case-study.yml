@@ -138,7 +138,7 @@ tabs:
                 type: multiselect
                 options:
                   type: query
-                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  query: site.tags.toStructure.filterBy("active", true).sortBy("name", "desc")
                   text: "{{ item.name }}"
                   value: "{{ item.name.slug }}"
                 help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.

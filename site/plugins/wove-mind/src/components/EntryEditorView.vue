@@ -318,6 +318,10 @@ export default {
       isDeleting: false,
       deleteOpen: false,
       dirty: false,
+      // What was last loaded or saved, so a save sends only the fields
+      // that differ from it (2026-10-30). Sending every field let a save
+      // clear the title, text and image of entries nobody had changed.
+      saved: JSON.parse(JSON.stringify(values)),
       lastSavedAt: this.isNew ? null : new Date(),
       autosaveTimer: null,
     };
@@ -573,8 +577,15 @@ export default {
       if (this.currentFormat === "spark") {
         this.values = { ...this.values, title: this.sparkTitle() };
       }
+      const changes = this.changedValues();
+      if (!Object.keys(changes).length) {
+        this.dirty = false;
+        this.isSaving = false;
+        return;
+      }
       try {
-        await this.$api.patch(`pages/${this.apiId}`, this.values);
+        await this.$api.patch(`pages/${this.apiId}`, changes);
+        this.saved = { ...this.saved, ...JSON.parse(JSON.stringify(changes)) };
         this.dirty = false;
         this.lastSavedAt = new Date();
         if (!silent) this.$panel.notification.success("Saved");
@@ -586,6 +597,17 @@ export default {
       } finally {
         this.isSaving = false;
       }
+    },
+    // The fields whose value differs from the last load or save. A title
+    // is never cleared: an empty one is left out.
+    changedValues() {
+      const out = {};
+      for (const [name, value] of Object.entries(this.values)) {
+        if (JSON.stringify(value ?? "") === JSON.stringify(this.saved[name] ?? "")) continue;
+        if (name === "title" && !String(value ?? "").trim()) continue;
+        out[name] = value;
+      }
+      return out;
     },
     errorText(error) {
       if (!error) return "unknown error";

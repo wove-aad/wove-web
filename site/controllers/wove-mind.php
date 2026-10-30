@@ -24,7 +24,7 @@ use Kirby\Toolkit\Str;
 
 return function ($page, $site, $kirby) {
     $serviceLabels = ['strategy' => 'Strategy', 'labs' => 'Labs', 'digital' => 'Digital', 'brand' => 'Brand'];
-    $siteTags      = $site->tags()->toStructure()->filterBy('active', 'true');
+    $siteTags      = $site->tags()->toStructure()->filter(fn ($t) => $t->active()->toBool());
 
     // Tag field values are slugs; older content may hold names.
     $tagSlug = function (string $value) use ($siteTags): string {

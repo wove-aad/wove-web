@@ -143,10 +143,13 @@ tabs:
               tags:
                 label: Tags
                 type: tags
-                accept: options
+                # accept: all (2026-10-30): with options, any stored tag not
+                # in the list (an older name, or a slug written another way)
+                # was dropped on the next save
+                accept: all
                 options:
                   type: query
-                  query: site.tags.toStructure.filterBy("active", 'true').sortBy("name", "desc")
+                  query: site.tags.toStructure.filterBy("active", true).sortBy("name", "desc")
                   text: "{{ item.name }}"
                   value: "{{ item.name.slug }}"
                 help: These options are managed in the <a href="/panel/site?tab=tabTaxonomies">Global Site Taxonomies tab</a> of the site settings.

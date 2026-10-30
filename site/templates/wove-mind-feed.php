@@ -40,7 +40,7 @@ $intro      = $page->content()->get('feedIntro')->or('Ideas, experiments, projec
     <main class="feed feed--home wm-feed" id="main">
 
       <div class="feed__header" id="feed">
-        <h2 class="feed__title"><?= $totalCount ?> posts</h2>
+        <h2 class="feed__title">Latest</h2>
         <?php if ($types): ?>
           <div class="feed-types" id="feed-types" role="group" aria-label="Filter by type">
             <?php foreach ($types as $key => $type): ?>

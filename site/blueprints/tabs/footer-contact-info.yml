@@ -39,6 +39,11 @@ fields:
     label: Email
     type: email
     width: 1/2
+  newsletterUrl:
+    label: Newsletter sign-up address
+    type: url
+    width: 1/2
+    help: Where the newsletter form sends the email address (for example a Mailchimp form action). Until it's set, Sign up opens an email to the address above.
   phone:
     label: Phone
     type: tel  

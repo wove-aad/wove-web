@@ -16,6 +16,13 @@
  * Behaviour: assets/js/home.js. Styles: assets/css/home.css.
  */
 
+// Homepage iterations for review (2026-10-30): ?home=1|2|3 shows one of
+// the three Figma homepages (snippets/home/iteration.php) in place of this
+if (in_array(get('home'), ['1', '2', '3'], true)) {
+  snippet('home/iteration', ['v' => get('home'), 'entries' => $entries, 'entryFilters' => $entryFilters, 'clients' => $clients]);
+  return;
+}
+
 $totalCount = $entries->count();
 // Shareable filtered views: /?filter=service:strategy (Our work, service,
 // tag and sector pages redirect here). Unknown keys fall back to all work

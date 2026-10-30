@@ -16,9 +16,9 @@
     });
   });
 
-  // Menu options for review (?menu=a|b|c, brand/header-row.php): Impact
+  // Impact areas (data-menu="c" on <html>, brand/header-row.php): Impact
   // areas opens the chips in the header (in every header row at once, the
-  // page header and the pinned one); the close button shuts them. An
+  // page header and the pinned one); × or a click outside closes them. An
   // impact area page starts open (CSS, via its current chip).
   var option = document.documentElement.getAttribute('data-menu');
   var rows = Array.prototype.slice.call(document.querySelectorAll('.hx-row'));
@@ -39,7 +39,7 @@
         var chip = row.querySelector('.hx-chip[aria-current]') || row.querySelector('.hx-chip');
         if (chip) chip.focus({ preventScroll: true });
       });
-      // The × on the right, and in option D a back button on the left
+      // The × closes them
       [].forEach.call(row.querySelectorAll('[data-areas-close]'), function (btn) {
         btn.addEventListener('click', function () {
           setAreas(false);
@@ -53,7 +53,7 @@
     });
     // A click anywhere outside the header closes the chips (2026-10-30)
     document.addEventListener('click', function (ev) {
-      if (ev.target.closest('.hx-row, .menu-options')) return;
+      if (ev.target.closest('.hx-row')) return;
       var open = rows.some(function (row) { return row.querySelector('.hx-areas') && getComputedStyle(row.querySelector('.hx-areas')).display !== 'none'; });
       if (open) setAreas(false);
     });
@@ -63,38 +63,6 @@
       var list = row.querySelector('.hx-areas__list');
       var chip = list && list.querySelector('[aria-current]');
       if (chip && list.scrollWidth > list.clientWidth) list.scrollLeft = chip.parentElement.offsetLeft - list.offsetLeft - 24;
-    });
-
-    // Arrows and a position bar when the chips overflow (shown by CSS in
-    // option D), each arrow disabled at its end
-    rows.forEach(function (row) {
-      var list = row.querySelector('.hx-areas__list');
-      var prev = row.querySelector('[data-areas-prev]');
-      var next = row.querySelector('[data-areas-next]');
-      if (!list || !prev || !next) return;
-      prev.hidden = next.hidden = false;
-      var update = function () {
-        var over = list.scrollWidth > list.clientWidth + 1;
-        row.querySelector('[data-areas]').classList.toggle('has-overflow', over);
-        var thumb = row.querySelector('.hx-areas__bar > span');
-        if (thumb && over) {
-          thumb.style.width = (list.clientWidth / list.scrollWidth * 100) + '%';
-          thumb.style.left = (list.scrollLeft / list.scrollWidth * 100) + '%';
-        }
-        list.classList.toggle('at-start', list.scrollLeft <= 1);
-        list.classList.toggle('at-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 1);
-        prev.disabled = list.scrollLeft <= 1;
-        next.disabled = list.scrollLeft + list.clientWidth >= list.scrollWidth - 1;
-      };
-      var by = function (dir) {
-        list.scrollBy({ left: dir * list.clientWidth * 0.7, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      };
-      prev.addEventListener('click', function () { by(-1); });
-      next.addEventListener('click', function () { by(1); });
-      list.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update);
-      if (window.ResizeObserver) new ResizeObserver(update).observe(list);
-      update();
     });
 
     // Click and drag the chips sideways with a mouse (touch swipes
@@ -129,17 +97,6 @@
       }, true);
       list.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
     });
-
-    // A switcher for comparing the options
-    var panel = document.createElement('aside');
-    panel.className = 'feed-options menu-options';
-    panel.setAttribute('aria-label', 'Menu options');
-    var here = location.pathname;
-    panel.innerHTML = '<p class="feed-options__title">Menu options</p><div class="feed-options__group"><span class="feed-options__label">Impact areas</span>'
-      + [['a', 'A Replace'], ['b', 'B Row below'], ['c', 'C Joined'], ['d', 'D Whole header'], ['off', 'Dropdown']].map(function (o) {
-        return '<a href="' + here + '?menu=' + o[0] + '"' + (o[0] === option ? ' aria-current="true"' : '') + '>' + o[1] + '</a>';
-      }).join('') + '</div>';
-    document.body.appendChild(panel);
   }
 
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {

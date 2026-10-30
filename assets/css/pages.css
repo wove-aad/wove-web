@@ -1321,10 +1321,17 @@ html:not(.js) .person-detail__close { display: none; }
 .wk-empty[hidden] { display: none; }
 
 
-.menu-options--left { right: auto; left: var(--space-16); }
 
 /* Page titles in line with the lead under them and with the homepage
    title (the main column of --grid-page), 2026-10-30: impact areas,
    People, Work, Wove Mind and client pages */
 .hx--aligned h1 { margin-left: calc((100% - 8.5rem - 2 * var(--space-32)) * var(--lead-fr) / (var(--lead-fr) + var(--main-fr)) + var(--space-32)); }
 @media (max-width: 960px) { .hx--aligned h1 { margin-left: 0; } }
+
+/* Partner logos on the client page, under the client name and above the
+   line with the date and services (2026-10-30) */
+.cp-partners { margin-bottom: var(--space-40); }
+.cp-partners__label { font-size: var(--size-label); font-weight: var(--weight-bold); color: var(--color-text-muted); }
+.cp-partners__list { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-16) var(--space-40); margin: var(--space-16) 0 0; padding: 0; list-style: none; }
+.cp-partners__list img { display: block; width: auto; height: 3.5rem; max-width: 16rem; object-fit: contain; mix-blend-mode: multiply; }
+@media (max-width: 600px) { .cp-partners__list img { height: 2.75rem; } }

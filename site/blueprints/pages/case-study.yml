@@ -119,6 +119,20 @@ tabs:
                 query: page.images
                 info: Shown over the hero image on the homepage client carousel. Use a white or single-colour logo (SVG or PNG with transparency). Falls back to the client name.
 
+              partnerLogos:
+                label: Partner logos
+                type: files
+                query: page.images
+                layout: cards
+                size: small
+                help: Shown under the client name at the top of the client page, in order. Use the logos in colour, on a white or transparent background (PNG or SVG). Leave empty to show none.
+
+              partnerLabel:
+                label: Partner logos label
+                type: text
+                placeholder: In partnership with
+                help: The line above the partner logos. Leave empty for "In partnership with".
+
               impactAreas:
                 label: Impact Areas (Tags)
                 type: multiselect

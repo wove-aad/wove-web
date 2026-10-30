@@ -1058,17 +1058,16 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 
 /* ============================================================
-   MENU OPTIONS FOR REVIEW (2026-10-30): impact areas as chips in the
-   header (brand/header-row.php .hx-areas), with ?menu=a|b|c. Open when
-   Impact areas is chosen (.is-areas, assets/js/nav.js) or on an impact
-   area page (its chip is current) until closed (.is-closed).
+   IMPACT AREAS IN THE HEADER (2026-10-30, option C "Joined", chosen
+   from four): the impact areas as chips in one joined control in the
+   menu's place (brand/header-row.php .hx-areas; data-menu="c" is set on
+   <html> by snippets/header.php). Open when Impact areas is chosen
+   (.is-areas, assets/js/nav.js) or on an impact area page (its chip is
+   current) until closed (.is-closed); closed, the menu item names the
+   current area.
    ============================================================ */
 .hx-areas, .hx-menu__now { display: none; }
 :root[data-menu] .ia-areas { display: none; }
-.menu-options .feed-options__label { width: auto; margin-right: 0.25rem; }
-.menu-options a { color: var(--color-400); }
-.menu-options a:hover { color: var(--color-white); }
-.menu-options a[aria-current] { color: var(--color-white); text-decoration: underline; text-underline-offset: 3px; }
 
 .hx-areas { align-items: center; gap: var(--space-12); min-width: 0; }
 .hx-areas__label { flex-shrink: 0; font-size: var(--size-label); font-weight: var(--weight-bold); white-space: nowrap; }
@@ -1113,8 +1112,8 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 /* A and C: the chips take the menu's place, scrolling sideways when they
    don't fit, with the edges faded */
-:root:is([data-menu="a"], [data-menu="c"]) :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-nav { display: none; }
-:root:is([data-menu="a"], [data-menu="c"]) :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-nav { display: none; }
+:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
   display: flex;
   flex: 1 1 auto;
   order: 1;
@@ -1122,15 +1121,15 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   max-width: max-content;
   animation: hx-areas-in 220ms ease;
 }
-:root:is([data-menu="a"], [data-menu="c"]) .hx-row .hero-bar__cta { order: 2; }
-:root:is([data-menu="a"], [data-menu="c"]) .hx-areas__list {
+:root[data-menu="c"] .hx-row .hero-bar__cta { order: 2; }
+:root[data-menu="c"] .hx-areas__list {
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 1rem, #000 calc(100% - 1.5rem), transparent);
   mask-image: linear-gradient(90deg, transparent, #000 1rem, #000 calc(100% - 1.5rem), transparent);
   padding: 0.25rem 1.5rem 0.25rem 1rem;
 }
-:root:is([data-menu="a"], [data-menu="c"]) .hx-areas__list::-webkit-scrollbar { display: none; }
+:root[data-menu="c"] .hx-areas__list::-webkit-scrollbar { display: none; }
 
 /* C: one joined control, the current area lifted in white; closed, the
    menu item names the current area */
@@ -1155,21 +1154,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   font-weight: var(--weight-medium);
 }
 
-/* B: a row under the header row; the menu stays, Impact areas marked */
-:root[data-menu="b"] .hx-row { flex-wrap: wrap; row-gap: 0; }
-:root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
-  display: flex;
-  flex-basis: 100%;
-  order: 3;
-  margin-top: var(--space-16);
-  padding-top: var(--space-16);
-  border-top: 1px solid rgb(17 17 17 / 0.1);
-  animation: hx-areas-in 220ms ease;
-}
-:root[data-menu="b"] .hx-areas__list { flex: 1; flex-wrap: wrap; }
-:root[data-menu="b"] .hx-areas__label { margin-right: var(--space-12); }
-:root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) [data-impact-menu] .hx-menu__toggle { text-decoration: underline; text-underline-offset: 4px; }
-
 @media (max-width: 960px) {
   :root[data-menu] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
     grid-column: 1 / -1;
@@ -1177,8 +1161,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
     max-width: none;
     margin: 0;
   }
-  :root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas { grid-row: 3; padding-top: var(--space-12); }
-  :root[data-menu="b"] .hx-areas__list { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   :root[data-menu] .hx-areas__label { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1189,89 +1171,8 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 :root[data-menu="c"] .hx-menu--current .hx-menu__toggle { text-decoration: none; }
 @media (max-width: 960px) { :root[data-menu] .ia-head__title { margin-top: var(--space-48); } }
 
-/* D: the chips take the whole header row; arrows and a thin scroll bar
-   when they overflow (assets/js/nav.js sets .has-overflow) */
-.hx-areas__arrow, .hx-areas__bar { display: none; }
 .hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
-:root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) > :not(.hx-areas) { display: none; }
-:root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
-  display: flex;
-  flex: 1 1 auto;
-  min-height: 3rem;
-  animation: hx-areas-in 220ms ease;
-}
-:root[data-menu="d"] .hx-areas__list { flex: 1 1 auto; overflow-x: auto; padding: 0.25rem 0 0.75rem; scrollbar-width: none; }
-:root[data-menu="d"] .hx-areas__list::-webkit-scrollbar { display: none; }
-/* A thin bar under the chips showing how much is in view and where (the
-   native scroll bar is hidden on Macs until you scroll) */
-:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__bar {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: block;
-  height: 2px;
-  border-radius: 1px;
-  background: rgb(17 17 17 / 0.08);
-}
-.hx-areas__bar > span { position: absolute; top: 0; bottom: 0; border-radius: 1px; background: rgb(17 17 17 / 0.35); transition: left 120ms linear; }
-:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__arrow {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: 1px solid rgb(17 17 17 / 0.15);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-black);
-  font: inherit;
-  font-size: var(--size-p5);
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition), opacity var(--transition);
-}
-:root[data-menu="d"] .hx-areas__arrow:hover:not(:disabled) { background: var(--color-black); color: var(--color-white); }
-:root[data-menu="d"] .hx-areas__arrow:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-:root[data-menu="d"] .hx-areas__arrow:disabled { opacity: 0.3; cursor: default; }
-:root[data-menu="d"] .hx-areas__close { margin-left: var(--space-8, 0.5rem); }
-@media (max-width: 960px) {
-  :root[data-menu="d"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) { display: flex; }
-  :root[data-menu="d"] .hx-areas.has-overflow .hx-areas__arrow, .hx-areas__bar { display: none; }
 .hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
-}
-/* D: the chips fade out at an edge where there are more to scroll to
-   (nav.js sets .at-start / .at-end on the list) */
-.hx-areas__list { --fade-l: 2.5rem; --fade-r: 2.5rem; }
-.hx-areas__list.at-start { --fade-l: 0px; }
-.hx-areas__list.at-end { --fade-r: 0px; }
-:root[data-menu="d"] .hx-areas.has-overflow .hx-areas__list {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
-}
-:root[data-menu="d"] .hx-areas__scroller { margin: 0 0.25rem; }
-/* D: a back button on the left closes the chips too, where people reach
-   for the way back (2026-10-30) */
-.hx-areas__back { display: none; }
-:root[data-menu="d"] .hx-areas__back {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-right: var(--space-4, 0.25rem);
-  border: 0;
-  border-radius: 50%;
-  background: var(--color-black);
-  color: var(--color-white);
-  font: inherit;
-  font-size: var(--size-p4);
-  line-height: 1;
-  cursor: pointer;
-  transition: opacity var(--transition);
-}
-:root[data-menu="d"] .hx-areas__back:hover { opacity: 0.85; }
-:root[data-menu="d"] .hx-areas__back:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
-
 
 /* ============================================================
    COLOUR BLENDS AND MOTION (2026-10-30)
@@ -1291,14 +1192,13 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   background-color: color-mix(in srgb, var(--hx-c) calc(100% - var(--hx-fade, 0) * 100%), var(--color-page));
 }
 
-/* Service and client page heroes fill the window, with the title and
-   lead low in it, as on the homepage */
+/* Service and client page heroes fill the window. On service pages the
+   title and lead sit low in it, as on the homepage; on client pages the
+   title stays near the top (2026-10-30) */
 .sv-head .hx__inner,
 .cp-head .hx__inner { display: flex; flex-direction: column; min-height: 100svh; }
-.sv-head .hx-row,
-.cp-head .hx-row { margin-bottom: var(--space-96); }
-.sv-head .sv-head__title,
-.cp-head .cp-head__title { margin-top: auto; }
+.sv-head .hx-row { margin-bottom: var(--space-96); }
+.sv-head .sv-head__title { margin-top: auto; }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {

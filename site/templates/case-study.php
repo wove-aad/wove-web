@@ -29,6 +29,9 @@ $services = wove_service_labels();
 
 // Meta row: date, client, services, impact areas
 $meta = [];
+
+// Partner logos (Panel: Partner logos), under the client name
+$partners = $page->partnerLogos()->toFiles();
 if ($page->date()->isNotEmpty()) $meta[] = html($page->date()->toDate('j M Y'));
 $meta[] = html($name);
 $firstService = null;
@@ -67,6 +70,16 @@ foreach ($posts as $p) $typeCounts[wove_post_type($p)] = true;
         <span class="cp-head__name"><?= html($name) ?></span>
       </h1>
       <div class="cp-head__lead">
+        <?php if ($partners->count()): ?>
+          <div class="cp-partners">
+            <p class="cp-partners__label"><?= $page->partnerLabel()->or('In partnership with')->html() ?></p>
+            <ul class="cp-partners__list" role="list">
+              <?php foreach ($partners as $logo): ?>
+                <li><img src="<?= $logo->resize(null, 160)->url() ?>" alt="<?= $logo->alt()->or($logo->name())->html() ?>" height="80"<?= $logo->height() ? ' width="' . round($logo->width() * 80 / $logo->height()) . '"' : '' ?>></li>
+              <?php endforeach ?>
+            </ul>
+          </div>
+        <?php endif ?>
         <?php if ($summary): ?><p class="cp-head__summary"><?= html($summary) ?></p><?php endif ?>
         <p class="cp-head__meta"><?= implode(' ', array_map(fn ($m) => '<span>' . $m . '</span>', $meta)) ?></p>
       </div>

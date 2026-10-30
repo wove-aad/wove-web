@@ -997,7 +997,7 @@ html:not(.js) .person-detail__close { display: none; }
   gap: var(--space-16) var(--space-32);
   margin-bottom: var(--space-48);
 }
-.cp-activity__title { font-size: var(--size-h2); font-weight: var(--weight-xbold); line-height: 1; letter-spacing: -0.025em; }
+.cp-activity__title { font-size: var(--size-h3); font-weight: var(--weight-xbold); line-height: 1; letter-spacing: -0.025em; }
 .cp-post[hidden] { display: none; }
 .cp-post__link { display: flex; flex-direction: column; height: 100%; color: var(--color-black); text-decoration: none; }
 .cp-post__media {

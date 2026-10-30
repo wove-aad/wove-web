@@ -962,7 +962,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* Pinned site header (brand/menu-bar): the header row in a bar that
    slides down on scroll-up, over the type filter bar */
 .sticky-head { z-index: 45; }
-.sticky-head__inner { max-width: var(--width-header); margin: 0 auto; padding: var(--space-8, 0.5rem) var(--gutter-x); }
+.sticky-head__inner { max-width: var(--width-header); margin: 0 auto; padding: var(--space-12) var(--gutter-x); /* 12px, was 8px (2026-10-30), about 12% taller */ }
 .sticky-head .hero-bar__logo { font-size: var(--size-logo-sm); }
 @media (max-width: 960px) { .sticky-head .hx-row { row-gap: var(--space-8, 0.5rem); } }
 .filter-bar { transition: transform 250ms ease, visibility 0s linear 250ms, top 250ms ease; }

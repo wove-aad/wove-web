@@ -78,10 +78,9 @@
   margin: 0 auto;
   padding: var(--space-80) var(--gutter-x) var(--space-128);
 }
-/* "Wove latest", set like the services statement (Figma "Recent
-   activity", 1240:10102) */
+/* "Wove latest" and the Wove Mind post count, at h3 (2026-10-30) */
 .feed--home .feed__title {
-  font-size: var(--size-h2);
+  font-size: var(--size-h3);
   font-weight: var(--weight-xbold);
   line-height: 1;
   letter-spacing: -0.025em;

@@ -125,9 +125,9 @@
         "letterSpacing": "0"
       },
       "h3": {
-        "use": "Sub-section headings, approach principles",
-        "figmaPx": 56,
-        "rem": "3.5rem",
+        "use": "Feed titles, sub-section headings",
+        "figmaPx": 40,
+        "rem": "clamp(2rem, 2.8vw, 2.5rem)",
         "weight": 800,
         "lineHeight": 1.143,
         "letterSpacing": "0"

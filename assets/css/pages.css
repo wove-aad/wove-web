@@ -1389,16 +1389,27 @@ html:not(.js) .person-detail__close { display: none; }
 .wk[data-wk-layout="centre-head"] .wk-head :is(.cp-head__title, .cp-head__lead) { text-align: center; }
 .wk[data-wk-layout="centre-head"] .wk-head .cp-head__summary { max-width: 26em; margin-inline: auto; }
 
-/* Service and impact area pages in one centred column (2026-10-30), up
-   to --width-column wide, no filters: the hero text starts on the
-   column's left edge and every section below sits in the column. The
-   impact area client band stays full width. */
-.sv .sv-head :is(.sv-head__title, .sv-head__lower),
-.ia .ia-head :is(.ia-head__title, .ia-head__lead) { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }
-.sv .sv-head .sv-head__lower { max-width: var(--width-column); }
-.ia .ia-head .ia-head__lead { display: block; max-width: var(--width-column); }
-.sv-main > *,
-.ia-main > *,
-.ia-more > * { max-width: var(--width-column); margin-inline: auto; }
-.ia-collection__inner { max-width: calc(var(--width-column) + 2 * var(--gutter-x)); }
-.ia-more > .cp-explore { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }
+/* Service and impact area page layouts for review (2026-10-30,
+   ?cols=centre|left|feed, kept per browser; data-col-layout on .home, set
+   by snippets/col-layout.php), the column up to --width-column wide:
+   centre: everything in one centred column (the hero text, the feed and
+     the sections below; the impact area client band's text too);
+   left:   the hero and client band full width as before, the feed and
+     sections in the column on the same left edge;
+   feed:   the hero and client band full width, the feed and sections in
+     the column centred. */
+.ia .ia-head .ia-head__lead { display: block; }
+.home[data-col-layout] :is(.sv-main, .ia-main, .ia-more) > * { max-width: var(--width-column); }
+.home[data-col-layout="centre"] :is(.sv-main, .ia-main, .ia-more) > *,
+.home[data-col-layout="feed"] :is(.sv-main, .ia-main, .ia-more) > * { margin-inline: auto; }
+.home[data-col-layout="left"] :is(.sv-main, .ia-main, .ia-more) > * { margin-inline: 0; }
+.home:is([data-col-layout="centre"], [data-col-layout="feed"]) .ia-more > .cp-explore { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }
+.home[data-col-layout="centre"] .sv-head :is(.sv-head__title, .sv-head__lower),
+.home[data-col-layout="centre"] .ia-head :is(.ia-head__title, .ia-head__lead) { margin-left: max(0px, calc((100% - var(--width-column)) / 2)); }
+.home[data-col-layout="centre"] .sv-head .sv-head__lower { max-width: var(--width-column); }
+.home[data-col-layout="centre"] .ia-head .ia-head__lead { max-width: var(--width-column); }
+.home[data-col-layout="centre"] .ia-collection__inner { max-width: calc(var(--width-column) + 2 * var(--gutter-x)); }
+.col-switch { left: var(--space-16); right: auto; }
+.col-switch a { color: var(--color-400); }
+.col-switch a:hover, .col-switch a[aria-current] { color: var(--color-white); }
+.col-switch a[aria-current] { text-decoration: underline; text-underline-offset: 3px; }

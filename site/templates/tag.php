@@ -107,6 +107,7 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
 ]) ?>
 
 <div class="home ia" data-theme="light">
+  <?php snippet('col-layout') ?>
 
   <header class="hx hx--page ia-head">
     <div class="hx__inner">
@@ -210,5 +211,6 @@ $card = function ($p, bool $pinned = false) use ($imageOf, $titleOf, $lineOf) {
   </div>
 </div>
 
+<?php snippet('col-layout', ['switch' => true]) ?>
 <script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <?php snippet('footer') ?>

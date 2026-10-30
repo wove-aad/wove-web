@@ -79,6 +79,7 @@ $next  = $order[($i + 1) % count($order)];
 <?php snippet('header', ['css' => ['/assets/css/home.css', '/assets/css/pages.css'], 'nav' => false]) ?>
 
 <div class="home sv sv--<?= html($slug) ?>" data-theme="light">
+  <?php snippet('col-layout') ?>
 
   <header class="hx hx--page sv-head">
     <div class="hx__inner">
@@ -214,5 +215,6 @@ $next  = $order[($i + 1) % count($order)];
   </div>
 </div>
 
+<?php snippet('col-layout', ['switch' => true]) ?>
 <script src="<?= wove_asset('/assets/js/pages.js') ?>" defer></script>
 <?php snippet('footer') ?>

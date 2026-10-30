@@ -21,7 +21,7 @@ $tones   = ['#ed8c7c', '#d5faff', '#e0bdff', '#f7ecd3', '#e1eee7', '#ebf0fe'];
 
 <div class="home" data-theme="light">
 
-  <header class="hx hx--page">
+  <header class="hx hx--page hx--aligned">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'people']) ?>
       <?php /* Set like the client and impact area pages (2026-10-29): the

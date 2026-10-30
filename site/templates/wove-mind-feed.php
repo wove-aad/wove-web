@@ -24,7 +24,7 @@ $intro      = $page->content()->get('feedIntro')->or('Ideas, experiments, projec
 
 <div class="home wm" data-theme="light">
 
-  <header class="hx hx--page">
+  <header class="hx hx--page hx--aligned">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'wove-mind']) ?>
       <h1 class="cp-head__title">Wove Mind</h1>

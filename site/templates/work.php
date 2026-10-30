@@ -58,7 +58,7 @@ $total = count($units);
 
 <div class="home wk" data-theme="light">
 
-  <header class="hx hx--page wk-head">
+  <header class="hx hx--page hx--aligned wk-head">
     <div class="hx__inner">
       <?php snippet('brand/header-row', ['current' => 'work']) ?>
       <h1 class="cp-head__title">Work</h1>

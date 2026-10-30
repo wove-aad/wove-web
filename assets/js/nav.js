@@ -97,6 +97,39 @@
       update();
     });
 
+    // Click and drag the chips sideways with a mouse (touch swipes
+    // natively). A drag of more than a few pixels isn't a click on a chip.
+    rows.forEach(function (row) {
+      var list = row.querySelector('.hx-areas__list');
+      if (!list) return;
+      var drag = null, dragged = false;
+      list.addEventListener('pointerdown', function (ev) {
+        if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
+        drag = { x: ev.clientX, left: list.scrollLeft, id: ev.pointerId };
+        dragged = false;
+      });
+      list.addEventListener('pointermove', function (ev) {
+        if (!drag || ev.pointerId !== drag.id) return;
+        var dx = ev.clientX - drag.x;
+        if (!dragged && Math.abs(dx) > 5) {
+          dragged = true;
+          list.setPointerCapture(drag.id);
+          list.classList.add('is-dragging');
+        }
+        if (dragged) list.scrollLeft = drag.left - dx;
+      });
+      var end = function () {
+        drag = null;
+        list.classList.remove('is-dragging');
+      };
+      list.addEventListener('pointerup', end);
+      list.addEventListener('pointercancel', end);
+      list.addEventListener('click', function (ev) {
+        if (dragged) { ev.preventDefault(); ev.stopPropagation(); dragged = false; }
+      }, true);
+      list.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
+    });
+
     // A switcher for comparing the options
     var panel = document.createElement('aside');
     panel.className = 'feed-options menu-options';

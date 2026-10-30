@@ -3,19 +3,20 @@
  * Work page (/work, the case studies' parent page), from the Figma
  * wireframe "Work (updated)" (1208:770), 2026-10-30.
  *
- * A lean header (title and one line), then the filter bar: themes (impact
- * areas) and disciplines (services) as multi-select chips, and a
- * searchable client dropdown that doubles as a client directory (each
- * client links to its client page). All filters combine with AND. With a
+ * A lean header (title and one line), then the filters (2026-10-30, the
+ * homepage's earlier filter bar brought back): a client carousel (one
+ * card per client with projects, All work first; choosing one again
+ * clears it), then the services as chips in a row and the impact areas
+ * in a dropdown, both multi-select. All filters combine with AND. With a
  * client selected, a line above the grid names it and links to its page.
  * The grid holds every project post (wove_post_type() 'project'), newest
  * first, or oldest first for one client, 12 at a time with "Load more".
  * Filters come in from the address (?theme=a,b&discipline=labs&client=x)
  * and the address follows them.
- * Filter layouts for review (2026-10-30, ?filters=…, kept per browser):
- * stack (labelled rows), bar (one row of dropdowns), tabs (one group at
- * a time) and side (a column beside the grid). Bar and tabs list the
- * chosen filters under the controls (.wk-picked).
+ * Two layouts for review (?filters=top|side, kept per browser): top (the
+ * services and the impact areas dropdown in a row under the carousel)
+ * and side (they sit in a column beside a two-column grid, the impact
+ * areas as chips).
  * Styles: the WORK PAGE section of assets/css/pages.css.
  * Behaviour: assets/js/work.js; image heights: assets/js/feed.js.
  */
@@ -46,11 +47,11 @@ foreach ($siteTags as $tag) {
   if (isset($usedTags[$tag->slug()->value()])) $themes[$tag->slug()->value()] = $tag->name()->value();
 }
 
-// Clients: every listed case study, A to Z, with its number of units
+// Clients with projects, in the case studies' order (newest first), with
+// their number of projects
 $unitCounts = [];
 foreach ($units as $p) foreach ($valuesOf($p, 'cs') as $c) $unitCounts[$c] = ($unitCounts[$c] ?? 0) + 1;
-$clients = $feed['clients'];
-usort($clients, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+$clients = array_values(array_filter($feed['clients'], fn ($c) => !empty($unitCounts[$c['slug']])));
 
 $total = count($units);
 ?>
@@ -62,12 +63,12 @@ $total = count($units);
 
 <div class="home wk" data-theme="light">
   <script>
-    // Filter layout options for review (?filters=stack|bar|tabs|side, kept per browser), see assets/js/work.js
+    // Filter layout for review (?filters=top|side, kept per browser), see assets/js/work.js
     (function (el) { try {
-      var m = (location.search.match(/[?&]filters=(stack|bar|tabs|side)\b/) || [])[1];
-      if (m) localStorage.setItem('wove.filters', m);
-      el.setAttribute('data-filter-layout', localStorage.getItem('wove.filters') || 'stack');
-    } catch (e) { el.setAttribute('data-filter-layout', 'stack'); } })(document.currentScript.parentElement);
+      var m = (location.search.match(/[?&]filters=(top|side)\b/) || [])[1];
+      if (m) localStorage.setItem('wove.workFilters', m);
+      el.setAttribute('data-filter-layout', localStorage.getItem('wove.workFilters') || 'top');
+    } catch (e) { el.setAttribute('data-filter-layout', 'top'); } })(document.currentScript.parentElement);
   </script>
 
   <header class="hx hx--page hx--aligned wk-head">
@@ -85,59 +86,76 @@ $total = count($units);
 
     <main class="pg wk-main" id="main">
 
-      <div class="wk-filters" data-work-filters aria-label="Filter work" role="group">
-        <?php if ($themes): ?>
-          <div class="wk-filter">
-            <span class="wk-filter__label" id="wk-themes">Themes</span>
-            <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Themes<span class="wk-filter__n" data-group-count="theme"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
-            <div class="wk-chips" role="group" aria-labelledby="wk-themes">
-              <?php foreach ($themes as $slug => $name): ?>
-                <button type="button" class="wk-chip" data-group="theme" data-value="<?= html($slug) ?>" aria-pressed="false"><?= html($name) ?></button>
+      <div class="wk-filters" data-work-filters>
+
+        <?php if ($clients): ?>
+          <section class="client-carousel" aria-label="Filter by client" data-carousel>
+            <ul class="client-carousel__track" role="list">
+              <li class="client-card client-card--all">
+                <button type="button" class="client-card__btn" data-client="" aria-pressed="true">
+                  <span class="client-card__logo">All work</span>
+                  <span class="client-card__meta"><?= $total ?> <?= $total === 1 ? 'project' : 'projects' ?></span>
+                </button>
+              </li>
+              <?php foreach ($clients as $client):
+                $cs    = $client['page'];
+                $image = $cs->caseStudyImages()->toFile();
+                $logo  = $cs->logo()->toFile();
+                $n     = $unitCounts[$client['slug']];
+              ?>
+                <li class="client-card">
+                  <button type="button" class="client-card__btn" data-client="<?= html($client['slug']) ?>" data-label="<?= html($client['name']) ?>" data-url="<?= $cs->url() ?>" aria-pressed="false">
+                    <?php if ($image): ?>
+                      <?php snippet('picture', [
+                        'file'   => $image,
+                        'widths' => [320, 480, 640, 960],
+                        'ratio'  => 5 / 4,
+                        'sizes'  => '(min-width: 961px) 20vw, (min-width: 601px) 40vw, 70vw',
+                        'class'  => 'client-card__img',
+                      ]) ?>
+                    <?php endif ?>
+                    <span class="client-card__logo">
+                      <?php if ($logo): ?><img src="<?= $logo->url() ?>" alt="<?= html($client['name']) ?>"><?php else: ?><?= html($client['name']) ?><?php endif ?>
+                    </span>
+                    <span class="client-card__meta"><?= html($client['name']) ?> · <?= $n ?> <?= $n === 1 ? 'project' : 'projects' ?></span>
+                  </button>
+                </li>
               <?php endforeach ?>
+            </ul>
+            <div class="client-carousel__controls">
+              <span class="client-carousel__bar" aria-hidden="true"><span></span></span>
+              <div class="client-carousel__arrows">
+                <button type="button" class="client-carousel__arrow" data-step="-1" aria-label="Previous clients">&larr;</button>
+                <button type="button" class="client-carousel__arrow" data-step="1" aria-label="Next clients">&rarr;</button>
+              </div>
             </div>
-          </div>
+          </section>
         <?php endif ?>
 
-        <div class="wk-filter">
-          <span class="wk-filter__label" id="wk-disciplines">Disciplines</span>
-          <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Disciplines<span class="wk-filter__n" data-group-count="discipline"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
-          <div class="wk-chips" role="group" aria-labelledby="wk-disciplines">
+        <div class="wk-row">
+          <span class="wk-row__label" aria-hidden="true">Services</span>
+          <div class="wk-chips" role="group" aria-label="Filter by service">
             <?php foreach ($services as $slug => $name): ?>
               <button type="button" class="wk-chip" data-group="discipline" data-value="<?= html($slug) ?>" aria-pressed="false"><?= html($name) ?></button>
             <?php endforeach ?>
           </div>
-        </div>
 
-        <?php if ($clients): ?>
-          <div class="wk-filter wk-filter--client">
-            <span class="wk-filter__label" id="wk-clients">Client</span>
-            <button type="button" class="wk-filter__toggle" data-filter-toggle aria-expanded="false">Client<span class="wk-filter__n" data-group-count="client"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
-            <div class="wk-client" data-client-picker>
-              <button type="button" class="wk-client__toggle" aria-expanded="false" aria-controls="wk-client-panel" aria-labelledby="wk-clients wk-client-current">
-                <span id="wk-client-current" data-client-current>All clients</span>
-                <span class="hx-menu__caret" aria-hidden="true"></span>
-              </button>
-              <div class="wk-client__panel" id="wk-client-panel">
-                <input type="search" class="wk-client__search" placeholder="Search clients" aria-label="Search clients" autocomplete="off" data-client-search hidden>
-                <ul class="wk-client__list" role="list">
-                  <?php foreach ($clients as $client): $n = $unitCounts[$client['slug']] ?? 0 ?>
-                    <li class="wk-client__row" data-client-row data-name="<?= html(Str::lower($client['name'])) ?>">
-                      <button type="button" class="wk-client__pick" data-client="<?= html($client['slug']) ?>" data-label="<?= html($client['name']) ?>" data-url="<?= $client['page']->url() ?>" aria-pressed="false" hidden>
-                        <?= html($client['name']) ?> <span class="wk-client__count"><?= $n ?></span>
-                      </button>
-                      <span class="wk-client__name" data-client-name><?= html($client['name']) ?></span>
-                      <a class="wk-client__page" href="<?= $client['page']->url() ?>">See client page <span aria-hidden="true">&rarr;</span></a>
-                    </li>
+          <?php if ($themes): ?>
+            <span class="wk-row__label" aria-hidden="true">Impact areas</span>
+            <div class="wk-drop" data-drop>
+              <button type="button" class="wk-drop__toggle" aria-expanded="false" aria-controls="wk-areas">Impact areas<span class="wk-drop__n" data-group-count="theme"></span> <span class="hx-menu__caret" aria-hidden="true"></span></button>
+              <div class="wk-drop__panel" id="wk-areas">
+                <div class="wk-chips" role="group" aria-label="Filter by impact area">
+                  <?php foreach ($themes as $slug => $name): ?>
+                    <button type="button" class="wk-chip" data-group="theme" data-value="<?= html($slug) ?>" aria-pressed="false"><?= html($name) ?></button>
                   <?php endforeach ?>
-                </ul>
-                <p class="wk-client__none" data-client-none hidden>No clients match.</p>
+                </div>
               </div>
             </div>
-          </div>
-        <?php endif ?>
-      </div>
+          <?php endif ?>
+        </div>
 
-      <div class="wk-picked" data-work-picked aria-label="Selected filters"></div>
+      </div>
 
       <div class="wk-status">
         <p class="wk-status__count" aria-live="polite" data-work-count><?= $total ?> <?= $total === 1 ? 'project' : 'projects' ?></p>

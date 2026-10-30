@@ -1,14 +1,20 @@
 /**
- * Work page (templates/work.php): theme and discipline chips (any number,
- * combined with AND), a searchable client dropdown (one client), "Load
- * more" (12 at a time) and the address kept in step
+ * Work page (templates/work.php): a client carousel (one client; choosing
+ * it again, or All work, clears it), service chips and impact area chips
+ * (any number, combined with AND; in a dropdown in the top layout),
+ * "Load more" (12 at a time) and the address kept in step
  * (?theme=a,b&discipline=labs&client=x). With a client selected, its units
  * show oldest first and a line above the grid links to the client page.
+ * Two layouts for review (?filters=top|side, kept per browser; set by the
+ * inline script in work.php), with a switcher in the corner.
  */
 (function () {
   var grid = document.querySelector('[data-work-grid]');
   var bar = document.querySelector('[data-work-filters]');
   if (!grid || !bar) return;
+
+  function reduceMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function behaviour() { return reduceMotion() ? 'auto' : 'smooth'; }
 
   var units = [].slice.call(grid.children);
   var step = parseInt(grid.getAttribute('data-page'), 10) || 12;
@@ -21,23 +27,8 @@
   var more = document.querySelector('[data-work-more]');
   var moreCount = document.querySelector('[data-work-more-count]');
   var active = document.querySelector('[data-client-active]');
-  var picked = document.querySelector('[data-work-picked]');
-  var root = document.querySelector('.wk');
-  var layout = root ? root.getAttribute('data-filter-layout') : 'stack';
-  var labels = {};
-  [].forEach.call(bar.querySelectorAll('.wk-chip'), function (b) { labels[b.getAttribute('data-group') + ':' + b.getAttribute('data-value')] = b.textContent.trim(); });
-
-  var picker = document.querySelector('[data-client-picker]');
-  var toggle = picker && picker.querySelector('.wk-client__toggle');
-  var panel = picker && picker.querySelector('.wk-client__panel');
-  var search = picker && picker.querySelector('[data-client-search]');
-  var current = picker && picker.querySelector('[data-client-current]');
-  var picks = picker ? [].slice.call(picker.querySelectorAll('[data-client]')) : [];
-  var rows = picker ? [].slice.call(picker.querySelectorAll('[data-client-row]')) : [];
-
-  // JS on: the client names become buttons, with the search above them
-  picks.forEach(function (b) { b.hidden = false; });
-  if (search) search.hidden = false;
+  var cards = [].slice.call(bar.querySelectorAll('.client-card__btn'));
+  var chips = [].slice.call(document.querySelectorAll('.wk-chip[data-group]'));
 
   var words = function (el, attr) { return (el.getAttribute(attr) || '').split(' ').filter(Boolean); };
   var hasAll = function (have, want) { return want.every(function (w) { return have.indexOf(w) !== -1; }); };
@@ -68,48 +59,22 @@
     emptyEl.hidden = total > 0;
     more.hidden = total <= shown;
     moreCount.textContent = 'Showing ' + Math.min(shown, total) + ' of ' + total;
+    clearBtn.hidden = !(state.theme.length || state.discipline.length || state.client);
 
-    var any = state.theme.length || state.discipline.length || state.client;
-    clearBtn.hidden = !any;
-
-    [].forEach.call(bar.querySelectorAll('.wk-chip'), function (b) {
+    chips.forEach(function (b) {
       b.setAttribute('aria-pressed', String(state[b.getAttribute('data-group')].indexOf(b.getAttribute('data-value')) !== -1));
     });
-
-    var pick = null;
-    picks.forEach(function (b) {
-      var on = b.getAttribute('data-client') === state.client;
-      b.setAttribute('aria-pressed', String(on));
-      if (on) pick = b;
-    });
-    if (current) current.textContent = pick ? pick.getAttribute('data-label') : 'All clients';
-
-    // How many are chosen in each group, on the bar and tab toggles
-    [].forEach.call(bar.querySelectorAll('[data-group-count]'), function (el) {
-      var g = el.getAttribute('data-group-count');
-      var n = g === 'client' ? (state.client ? 1 : 0) : state[g].length;
+    [].forEach.call(document.querySelectorAll('[data-group-count]'), function (el) {
+      var n = state[el.getAttribute('data-group-count')].length;
       el.textContent = n ? String(n) : '';
     });
 
-    // The chosen filters, each removable (shown by CSS in bar and tabs)
-    if (picked) {
-      var items = [];
-      state.theme.forEach(function (v) { items.push(['theme', v, labels['theme:' + v]]); });
-      state.discipline.forEach(function (v) { items.push(['discipline', v, labels['discipline:' + v]]); });
-      if (pick) items.push(['client', state.client, pick.getAttribute('data-label')]);
-      picked.innerHTML = '';
-      items.forEach(function (it) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'wk-chip wk-chip--picked';
-        b.setAttribute('aria-label', 'Remove ' + it[2]);
-        b.setAttribute('data-remove', it[0] + ':' + it[1]);
-        b.textContent = it[2];
-        picked.appendChild(b);
-      });
-      picked.hidden = !items.length;
-    }
-    if (toggle) toggle.classList.toggle('is-set', !!pick);
+    var pick = null;
+    cards.forEach(function (b) {
+      var on = b.getAttribute('data-client') === state.client;
+      b.setAttribute('aria-pressed', String(on));
+      if (on && state.client) pick = b;
+    });
     if (active) {
       active.hidden = !pick;
       if (pick) {
@@ -135,69 +100,29 @@
   var params = new URLSearchParams(location.search);
   ['theme', 'discipline'].forEach(function (group) {
     (params.get(group) || '').split(',').forEach(function (v) {
-      if (v && bar.querySelector('.wk-chip[data-group="' + group + '"][data-value="' + CSS.escape(v) + '"]')) state[group].push(v);
+      if (v && document.querySelector('.wk-chip[data-group="' + group + '"][data-value="' + CSS.escape(v) + '"]') && state[group].indexOf(v) === -1) state[group].push(v);
     });
   });
   var c = params.get('client');
-  if (c && picks.some(function (b) { return b.getAttribute('data-client') === c; })) state.client = c;
+  if (c && cards.some(function (b) { return b.getAttribute('data-client') === c; })) state.client = c;
 
-  bar.addEventListener('click', function (ev) {
-    var chip = ev.target.closest('.wk-chip');
-    if (!chip) return;
-    var list = state[chip.getAttribute('data-group')];
-    var v = chip.getAttribute('data-value');
-    var i = list.indexOf(v);
-    if (i === -1) list.push(v); else list.splice(i, 1);
-    change();
+  document.addEventListener('click', function (ev) {
+    var chip = ev.target.closest('.wk-chip[data-group]');
+    if (chip) {
+      var list = state[chip.getAttribute('data-group')];
+      var v = chip.getAttribute('data-value');
+      var i = list.indexOf(v);
+      if (i === -1) list.push(v); else list.splice(i, 1);
+      change();
+      return;
+    }
+    var card = ev.target.closest('.client-card__btn');
+    if (card && bar.contains(card)) {
+      var slug = card.getAttribute('data-client');
+      state.client = state.client === slug ? '' : slug;
+      change();
+    }
   });
-
-  if (picked) picked.addEventListener('click', function (ev) {
-    var b = ev.target.closest('[data-remove]');
-    if (!b) return;
-    var parts = b.getAttribute('data-remove').split(':');
-    if (parts[0] === 'client') state.client = '';
-    else state[parts[0]].splice(state[parts[0]].indexOf(parts[1]), 1);
-    change();
-  });
-
-  // Bar: each group a dropdown. Tabs: one group showing at a time.
-  var groups = [].slice.call(bar.querySelectorAll('.wk-filter'));
-  var openGroup = function (g, on) {
-    groups.forEach(function (o) {
-      var show = o === g ? on : false;
-      o.classList.toggle('is-open', show);
-      var t = o.querySelector('[data-filter-toggle]');
-      if (t) t.setAttribute('aria-expanded', String(show));
-    });
-  };
-  groups.forEach(function (g) {
-    var t = g.querySelector('[data-filter-toggle]');
-    if (!t) return;
-    t.addEventListener('click', function () {
-      openGroup(g, layout === 'tabs' ? true : !g.classList.contains('is-open'));
-    });
-  });
-  if (layout === 'tabs' && groups[0]) openGroup(groups[0], true);
-  if (layout === 'bar') {
-    document.addEventListener('click', function (ev) {
-      if (!bar.contains(ev.target)) openGroup(null, false);
-    });
-    bar.addEventListener('keydown', function (ev) {
-      if (ev.key !== 'Escape') return;
-      var g = groups.filter(function (o) { return o.classList.contains('is-open'); })[0];
-      if (g) { openGroup(null, false); g.querySelector('[data-filter-toggle]').focus(); }
-    });
-  }
-
-  // A switcher for comparing the layouts
-  var panel = document.createElement('aside');
-  panel.className = 'feed-options menu-options menu-options--left';
-  panel.setAttribute('aria-label', 'Filter layouts');
-  panel.innerHTML = '<p class="feed-options__title">Filter layouts</p><div class="feed-options__group">'
-    + [['stack', 'Stacked'], ['bar', 'Bar'], ['tabs', 'Tabs'], ['side', 'Sidebar']].map(function (o) {
-      return '<a href="' + location.pathname + '?filters=' + o[0] + '"' + (o[0] === layout ? ' aria-current="true"' : '') + '>' + o[1] + '</a>';
-    }).join('') + '</div>';
-  document.body.appendChild(panel);
 
   clearBtn.addEventListener('click', function () {
     state = { theme: [], discipline: [], client: '' };
@@ -211,39 +136,106 @@
     if (first) first.querySelector('.wk-unit__link').focus({ preventScroll: true });
   });
 
-  // Client dropdown
-  if (picker) {
+  /* ---------- Impact areas dropdown (top layout) ---------- */
+
+  var drop = document.querySelector('[data-drop]');
+  if (drop) {
+    var toggle = drop.querySelector('.wk-drop__toggle');
     var open = function (on) {
-      panel.classList.toggle('is-open', on);
+      drop.classList.toggle('is-open', on);
       toggle.setAttribute('aria-expanded', String(on));
-      if (on) search.focus();
     };
-    toggle.addEventListener('click', function () { open(!panel.classList.contains('is-open')); });
-    search.addEventListener('input', function () {
-      var q = search.value.trim().toLowerCase();
-      var n = 0;
-      rows.forEach(function (r) {
-        r.hidden = q && r.getAttribute('data-name').indexOf(q) === -1;
-        if (!r.hidden) n++;
-      });
-      picker.querySelector('[data-client-none]').hidden = n > 0;
-    });
-    picks.forEach(function (b) {
-      b.addEventListener('click', function () {
-        var v = b.getAttribute('data-client');
-        state.client = state.client === v ? '' : v;
-        open(false);
-        toggle.focus();
-        change();
-      });
-    });
-    document.addEventListener('click', function (ev) {
-      if (!picker.contains(ev.target)) open(false);
-    });
-    picker.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape' && panel.classList.contains('is-open')) { open(false); toggle.focus(); }
+    toggle.addEventListener('click', function () { open(!drop.classList.contains('is-open')); });
+    document.addEventListener('click', function (ev) { if (!drop.contains(ev.target)) open(false); });
+    drop.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && drop.classList.contains('is-open')) { open(false); toggle.focus(); }
     });
   }
+
+  /* ---------- Client carousel ---------- */
+
+  var carousel = bar.querySelector('[data-carousel]');
+  if (carousel) {
+    var track = carousel.querySelector('.client-carousel__track');
+    var controls = carousel.querySelector('.client-carousel__controls');
+    var thumb = carousel.querySelector('.client-carousel__bar > span');
+    var arrows = [].slice.call(carousel.querySelectorAll('.client-carousel__arrow'));
+    var maxScroll = function () { return track.scrollWidth - track.clientWidth; };
+    var stepWidth = function () {
+      var card = track.querySelector('.client-card');
+      return card.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    };
+    var sync = function () {
+      var max = maxScroll();
+      controls.hidden = max <= 2;
+      var total = track.scrollWidth || 1;
+      thumb.style.left = (track.scrollLeft / total * 100) + '%';
+      thumb.style.width = (track.clientWidth / total * 100) + '%';
+      arrows.forEach(function (b) {
+        b.disabled = +b.getAttribute('data-step') < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2;
+      });
+    };
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    arrows.forEach(function (b) {
+      b.addEventListener('click', function () {
+        track.scrollBy({ left: +b.getAttribute('data-step') * stepWidth(), behavior: behaviour() });
+      });
+    });
+
+    // Click and drag with a mouse (touch screens swipe natively). A drag of
+    // more than a few pixels doesn't count as a click on the card under it.
+    var drag = null, dragged = false;
+    track.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
+      drag = { x: ev.clientX, left: track.scrollLeft, id: ev.pointerId };
+      dragged = false;
+    });
+    track.addEventListener('pointermove', function (ev) {
+      if (!drag || ev.pointerId !== drag.id) return;
+      var dx = ev.clientX - drag.x;
+      if (!dragged && Math.abs(dx) > 5) {
+        dragged = true;
+        track.setPointerCapture(drag.id);
+        track.classList.add('is-dragging');
+      }
+      if (dragged) track.scrollLeft = drag.left - dx;
+    });
+    var endDrag = function () {
+      if (!drag) return;
+      drag = null;
+      if (!dragged) return;
+      track.classList.remove('is-dragging');
+      var s = stepWidth();
+      track.scrollTo({ left: Math.round(track.scrollLeft / s) * s, behavior: behaviour() });
+    };
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('click', function (ev) {
+      if (dragged) { ev.preventDefault(); ev.stopPropagation(); dragged = false; }
+    }, true);
+    track.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
+
+    // A client from the address: bring its card into view
+    if (state.client) {
+      var on = track.querySelector('[data-client="' + CSS.escape(state.client) + '"]');
+      if (on) track.scrollLeft = on.parentElement.offsetLeft - track.offsetLeft;
+    }
+    sync();
+  }
+
+  /* ---------- Layout switcher, for review ---------- */
+
+  var root = document.querySelector('.wk');
+  var layout = root ? root.getAttribute('data-filter-layout') : 'top';
+  var panel = document.createElement('aside');
+  panel.className = 'feed-options menu-options menu-options--left';
+  panel.setAttribute('aria-label', 'Filter layouts');
+  panel.innerHTML = '<p class="feed-options__title">Filter layouts</p><div class="feed-options__group">'
+    + [['top', 'Top'], ['side', 'Sidebar']].map(function (o) {
+      return '<a href="' + location.pathname + '?filters=' + o[0] + '"' + (o[0] === layout ? ' aria-current="true"' : '') + '>' + o[1] + '</a>';
+    }).join('') + '</div>';
+  document.body.appendChild(panel);
 
   render();
 })();

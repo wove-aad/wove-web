@@ -3,7 +3,8 @@
  * closed by a click outside or Escape (focus goes back to its toggle).
  * With a mouse, a list opens on hover (2026-10-30) and closes shortly
  * after the pointer leaves; a click on its toggle then leaves it open.
- * Touch and keyboard still open it with a tap or Enter.
+ * Touch and keyboard still open it with a tap or Enter. Services and
+ * impact areas open their chips in the header, on hover too.
  */
 (function () {
   var menus = Array.prototype.slice.call(document.querySelectorAll('[data-nav-menu]'));
@@ -120,6 +121,35 @@
   }
 
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    // Services and impact areas also open their chips on hover
+    // (2026-10-30), after a short pause so passing over doesn't open them.
+    // Opened this way, they close again shortly after the pointer leaves
+    // the header row; opened by a click, or open on page load, they stay.
+    if (option) {
+      rows.forEach(function (row) {
+        var enter, leave, hovered = false;
+        [].forEach.call(row.querySelectorAll('[data-bar-menu]'), function (menu) {
+          var summary = menu.querySelector('summary');
+          summary.addEventListener('mouseenter', function () {
+            clearTimeout(enter);
+            enter = setTimeout(function () {
+              hovered = true;
+              setBar(menu.getAttribute('data-bar-menu'));
+            }, 120);
+          });
+          summary.addEventListener('mouseleave', function () { clearTimeout(enter); });
+          summary.addEventListener('click', function () { hovered = false; });
+        });
+        row.addEventListener('mouseenter', function () { clearTimeout(leave); });
+        row.addEventListener('mouseleave', function () {
+          if (!hovered) return;
+          leave = setTimeout(function () {
+            hovered = false;
+            if (openBar(row) && !(row.matches(':focus-within'))) closeBars();
+          }, 400);
+        });
+      });
+    }
     menus.forEach(function (menu) {
       if (option && menu.hasAttribute('data-bar-menu')) return;
       var timer;

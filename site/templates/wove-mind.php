@@ -17,7 +17,8 @@
  */
 
 // Homepage iterations for review (2026-10-30): ?home=1|2|3 shows one of
-// the three Figma homepages (snippets/home/iteration.php) in place of this
+// the three Figma homepages (snippets/home/iteration.php) in place of this;
+// ?home=0 is this homepage with the switcher showing
 if (in_array(get('home'), ['1', '2', '3'], true)) {
   snippet('home/iteration', ['v' => get('home'), 'entries' => $entries, 'entryFilters' => $entryFilters, 'clients' => $clients]);
   return;
@@ -109,5 +110,6 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 })();
 </script>
 
+<?php if (get('home') === '0') snippet('home/iteration-switch', ['v' => '0']) ?>
 <?php snippet('service-page-scripts') ?>
 <?php snippet('footer') ?>

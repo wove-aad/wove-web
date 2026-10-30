@@ -241,15 +241,7 @@ $nowLine = function ($p) {
   </div>
 </div>
 
-<aside class="feed-options hi-switch" aria-label="Homepage iterations">
-  <p class="feed-options__title">Homepage</p>
-  <div class="feed-options__group">
-    <a href="<?= url() ?>">Current</a>
-    <?php foreach (['1' => 'A Featured', '2' => 'B Full image', '3' => 'C Right now'] as $k => $label): ?>
-      <a href="<?= url() ?>/?home=<?= $k ?>"<?= $v === $k ? ' aria-current="true"' : '' ?>><?= $label ?></a>
-    <?php endforeach ?>
-  </div>
-</aside>
+<?php snippet('home/iteration-switch', ['v' => $v]) ?>
 
 <script src="<?= wove_asset('/assets/js/home-iterations.js') ?>" defer></script>
 <?php snippet('footer') ?>

@@ -1066,9 +1066,9 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    from four): the impact areas as chips in one joined control in the
    menu's place (brand/header-row.php .hx-areas; data-menu="c" is set on
    <html> by snippets/header.php). Open when Impact areas is chosen
-   (data-open="impact" on .hx-row, assets/js/nav.js) or on an impact
-   area page (its chip is current) until closed (data-open empty);
-   closed, the menu item names the current area. Services work the same
+   (data-open="impact" on .hx-row, assets/js/nav.js) until closed
+   (data-open empty); on an impact area page, the menu item names the
+   current area. Services work the same
    way (data-open="services", 2026-10-30).
    ============================================================ */
 .hx-areas, .hx-menu__now { display: none; }
@@ -1095,29 +1095,39 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 .hx-chip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 .hx-chip[aria-current="page"] { background: var(--color-white); color: var(--color-black); font-weight: var(--weight-medium); box-shadow: var(--shadow-sm); }
 .hx-chip__dot { flex-shrink: 0; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--dot); box-shadow: inset 0 0 0 1px rgb(17 17 17 / 0.18); }
-.hx-areas__close {
+/* Chevrons where the chips scroll further left or right (2026-10-30,
+   nav.js); the × that closed the bar was removed */
+.hx-areas__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
   border: 0;
   border-radius: 50%;
-  background: rgb(17 17 17 / 0.06);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
   color: var(--color-black);
   font: inherit;
   font-size: var(--size-p4);
   line-height: 1;
   cursor: pointer;
+  translate: 0 -50%;
+  transition: background var(--transition), color var(--transition);
 }
-.hx-areas__close:hover { background: var(--color-black); color: var(--color-white); }
-.hx-areas__close:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.hx-areas__arrow[hidden] { display: none; }
+.hx-areas__arrow--prev { left: 0; }
+.hx-areas__arrow--next { right: 0; }
+.hx-areas__arrow:hover { background: var(--color-black); color: var(--color-white); }
+.hx-areas__arrow:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
 @keyframes hx-areas-grow { from { clip-path: inset(0 var(--from-r, 0px) 0 var(--from-l, 100%) round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
 
 /* A and C: the chips take the menu's place, scrolling sideways when they
    don't fit, with the edges faded */
-:root[data-menu="c"] :is(.hx-row[data-open="services"], .hx-row[data-open="impact"], .hx-row:not([data-open]):has(.hx-chip[aria-current])) .hx-nav { display: none; }
-:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) {
+:root[data-menu="c"] :is(.hx-row[data-open="services"], .hx-row[data-open="impact"]) .hx-nav { display: none; }
+:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) {
   display: flex;
   flex: 1 1 auto;
   order: 1;
@@ -1161,8 +1171,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 :root[data-menu="c"] .hx-chip:hover { background: rgb(255 255 255 / 0.6); }
 :root[data-menu="c"] .hx-chip[aria-current="page"] { background: var(--color-white); }
 :root[data-menu="c"] .hx-areas__list { padding-block: 0; }
-:root[data-menu="c"] .hx-areas__close { background: transparent; }
-:root[data-menu="c"] .hx-areas__close:hover { background: var(--color-black); }
 :root[data-menu="c"] .hx-menu__now {
   display: inline-flex;
   align-items: center;
@@ -1177,7 +1185,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 
 @media (max-width: 960px) {
-  :root[data-menu] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) {
+  :root[data-menu] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"]) {
     grid-column: 1 / -1;
     grid-row: 2;
     max-width: none;

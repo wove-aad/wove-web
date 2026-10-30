@@ -20,9 +20,10 @@
   // Services and impact areas (data-menu="c" on <html>,
   // brand/header-row.php): each opens its chips in the header (in every
   // header row at once, the page header and the pinned one), named by
-  // data-open on the row; × or a click outside closes them (data-open
-  // empty). A service or impact area page starts with its own open (CSS,
-  // via its current chip, while data-open isn't set).
+  // data-open on the row; a click outside or Escape closes them (data-open
+  // empty), and with a mouse so does leaving the header (2026-10-30: they
+  // no longer start open on service and impact area pages, and have no ×).
+  // Chevrons show where the chips scroll further left or right.
   var option = document.documentElement.getAttribute('data-menu');
   var rows = Array.prototype.slice.call(document.querySelectorAll('.hx-row'));
   var still = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -48,6 +49,7 @@
       var bar = row.querySelector('[data-areas="' + id + '"]');
       if (!bar) return;
       fromItem(row, bar);
+      inView(bar);
       // Restart the grow with the measured start
       bar.style.animation = 'none';
       void bar.offsetWidth;
@@ -56,11 +58,23 @@
   };
   var openBar = function (row) {
     var open = row.getAttribute('data-open');
-    if (open === null) {
-      var cur = row.querySelector('.hx-areas .hx-chip[aria-current]');
-      open = cur ? cur.closest('[data-areas]').getAttribute('data-areas') : '';
-    }
     return open && row.querySelector('[data-areas="' + open + '"]');
+  };
+  // The chevrons show only where there is more to scroll to
+  var arrows = function (bar) {
+    var list = bar.querySelector('.hx-areas__list');
+    var prev = bar.querySelector('[data-areas-prev]');
+    var next = bar.querySelector('[data-areas-next]');
+    if (!list || !prev || !next) return;
+    prev.hidden = list.scrollLeft <= 2;
+    next.hidden = list.scrollLeft + list.clientWidth >= list.scrollWidth - 2;
+  };
+  // On opening, the current chip is brought into view
+  var inView = function (bar) {
+    var list = bar.querySelector('.hx-areas__list');
+    var chip = list && list.querySelector('[aria-current]');
+    if (chip && list.scrollWidth > list.clientWidth) list.scrollLeft = chip.parentElement.offsetLeft - list.offsetLeft - 24;
+    arrows(bar);
   };
   // Closing: the open bars shrink back into their menu item
   // (.is-closing, CSS), then the menu fades in. Without motion it closes
@@ -93,32 +107,38 @@
           if (chip) chip.focus({ preventScroll: true });
         });
       });
-      // The × closes them
-      [].forEach.call(row.querySelectorAll('[data-areas-close]'), function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.closest('[data-areas]').getAttribute('data-areas');
-          closeBars();
-          var toggle = row.querySelector('[data-bar-menu="' + id + '"] summary');
-          if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
-        });
-      });
+      // Escape closes them, focus going back to the menu item
       row.addEventListener('keydown', function (ev) {
         var bar = openBar(row);
-        if (ev.key === 'Escape' && bar && bar.contains(document.activeElement)) bar.querySelector('[data-areas-close]').click();
+        if (ev.key !== 'Escape' || !bar || !bar.contains(document.activeElement)) return;
+        var id = bar.getAttribute('data-areas');
+        closeBars();
+        setTimeout(function () {
+          var toggle = row.querySelector('[data-bar-menu="' + id + '"] summary');
+          if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
+        }, 280);
+      });
+      // Chevrons scroll the chips by most of their width
+      [].forEach.call(row.querySelectorAll('[data-areas]'), function (bar) {
+        var list = bar.querySelector('.hx-areas__list');
+        if (!list) return;
+        list.addEventListener('scroll', function () { arrows(bar); }, { passive: true });
+        [['[data-areas-prev]', -1], ['[data-areas-next]', 1]].forEach(function (pair) {
+          var btn = bar.querySelector(pair[0]);
+          if (btn) btn.addEventListener('click', function () {
+            list.scrollBy({ left: pair[1] * list.clientWidth * 0.7, behavior: still.matches ? 'auto' : 'smooth' });
+          });
+        });
+      });
+      window.addEventListener('resize', function () {
+        var bar = openBar(row);
+        if (bar) arrows(bar);
       });
     });
     // A click anywhere outside the header closes the chips (2026-10-30)
     document.addEventListener('click', function (ev) {
       if (ev.target.closest('.hx-row')) return;
       if (rows.some(openBar)) closeBars();
-    });
-
-    // Keep the current chip in view where the row scrolls
-    rows.forEach(function (row) {
-      [].forEach.call(row.querySelectorAll('.hx-areas__list'), function (list) {
-        var chip = list.querySelector('[aria-current]');
-        if (chip && list.scrollWidth > list.clientWidth) list.scrollLeft = chip.parentElement.offsetLeft - list.offsetLeft - 24;
-      });
     });
 
     // Click and drag the chips sideways with a mouse (touch swipes
@@ -156,28 +176,24 @@
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     // Services and impact areas also open their chips on hover
     // (2026-10-30), after a short pause so passing over doesn't open them.
-    // Opened this way, they close again shortly after the pointer leaves
-    // the header row; opened by a click, or open on page load, they stay.
+    // They close again shortly after the pointer leaves the header row,
+    // however they were opened.
     if (option) {
       rows.forEach(function (row) {
-        var enter, leave, hovered = false;
+        var enter, leave;
         [].forEach.call(row.querySelectorAll('[data-bar-menu]'), function (menu) {
           var summary = menu.querySelector('summary');
           summary.addEventListener('mouseenter', function () {
             clearTimeout(enter);
             enter = setTimeout(function () {
-              hovered = true;
               setBar(menu.getAttribute('data-bar-menu'));
             }, 120);
           });
           summary.addEventListener('mouseleave', function () { clearTimeout(enter); });
-          summary.addEventListener('click', function () { hovered = false; });
         });
         row.addEventListener('mouseenter', function () { clearTimeout(leave); });
         row.addEventListener('mouseleave', function () {
-          if (!hovered) return;
           leave = setTimeout(function () {
-            hovered = false;
             if (openBar(row) && !(row.matches(':focus-within'))) closeBars();
           }, 400);
         });

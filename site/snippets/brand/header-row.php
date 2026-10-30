@@ -19,13 +19,17 @@
  * Impact areas (2026-10-30, option C "Joined", chosen from four): with
  * data-menu="c" on <html> (snippets/header.php), choosing Impact areas
  * opens the impact areas as chips in one joined control in the menu's
- * place (.hx-areas), and an impact area page opens with them showing,
- * its own chip active; × or a click outside closes them, and the menu
- * item then names the current area (.hx-menu__now).
+ * place (.hx-areas), with the current area's chip active; a click
+ * outside closes them. Services name the
+ * current service beside the menu item (.hx-menu__now); Impact areas
+ * don't (removed 2026-10-30).
  * Services work the same way since 2026-10-30: choosing Services opens
  * the four services as chips (each with its service colour), and a
  * service page opens with them showing. data-open on .hx-row names the
- * open bar ('services' or 'impact'; empty when closed).
+ * open bar ('services' or 'impact'; empty when closed). Since 2026-10-30
+ * the bars close when the pointer leaves the header (also on service and
+ * impact area pages, where they no longer start open), with no ×; chevrons
+ * show where the chips scroll further.
  */
 
 $current = $current ?? null;
@@ -52,7 +56,7 @@ $menus = array_filter([
     <a href="<?= url('work') ?>"<?= $mark('work') ?>>Work</a>
     <?php foreach ($menus as $id => $menu): $hasCurrent = in_array(true, array_column($menu['items'], 'current'), true) ?>
       <details class="hx-menu<?= $hasCurrent ? ' hx-menu--current' : '' ?>" data-nav-menu data-bar-menu="<?= $id ?>">
-        <summary class="hx-menu__toggle"><?= $menu['label'] ?><?php if ($hasCurrent): ?><span class="hx-menu__now"><?= html(array_values(array_filter($menu['items'], fn ($i) => $i['current']))[0]['label']) ?></span><?php endif ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>
+        <summary class="hx-menu__toggle"><?= $menu['label'] ?><?php if ($hasCurrent && $id !== 'impact'): ?><span class="hx-menu__now"><?= html(array_values(array_filter($menu['items'], fn ($i) => $i['current']))[0]['label']) ?></span><?php endif ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>
         <ul class="hx-menu__list" role="list">
           <?php foreach ($menu['items'] as $item): ?>
             <li><a href="<?= $item['href'] ?>"<?= !empty($item['current']) ? ' aria-current="page"' : '' ?>><?= html($item['label']) ?></a></li>
@@ -68,13 +72,14 @@ $menus = array_filter([
     <div class="hx-areas" data-areas="<?= $id ?>">
       <span class="hx-areas__label"><?= $menu['label'] ?></span>
       <div class="hx-areas__scroller">
+      <button type="button" class="hx-areas__arrow hx-areas__arrow--prev" data-areas-prev aria-label="Scroll <?= Str::lower($menu['label']) ?> left" hidden><span aria-hidden="true">&lsaquo;</span></button>
       <ul class="hx-areas__list" role="list">
         <?php foreach ($menu['items'] as $item): ?>
           <li><a class="hx-chip" href="<?= $item['href'] ?>"<?= $item['current'] ? ' aria-current="page"' : '' ?>><span class="hx-chip__dot" style="--dot: var(--color-<?= $item['swatch'] ?>)" aria-hidden="true"></span><?= html($item['label']) ?></a></li>
         <?php endforeach ?>
       </ul>
+      <button type="button" class="hx-areas__arrow hx-areas__arrow--next" data-areas-next aria-label="Scroll <?= Str::lower($menu['label']) ?> right" hidden><span aria-hidden="true">&rsaquo;</span></button>
       </div>
-      <button type="button" class="hx-areas__close" data-areas-close aria-label="Close <?= Str::lower($menu['label']) ?>"><span aria-hidden="true">&times;</span></button>
     </div>
   <?php endforeach ?>
 </div>

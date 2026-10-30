@@ -1066,9 +1066,10 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
    from four): the impact areas as chips in one joined control in the
    menu's place (brand/header-row.php .hx-areas; data-menu="c" is set on
    <html> by snippets/header.php). Open when Impact areas is chosen
-   (.is-areas, assets/js/nav.js) or on an impact area page (its chip is
-   current) until closed (.is-closed); closed, the menu item names the
-   current area.
+   (data-open="impact" on .hx-row, assets/js/nav.js) or on an impact
+   area page (its chip is current) until closed (data-open empty);
+   closed, the menu item names the current area. Services work the same
+   way (data-open="services", 2026-10-30).
    ============================================================ */
 .hx-areas, .hx-menu__now { display: none; }
 :root[data-menu] .ia-areas { display: none; }
@@ -1116,8 +1117,8 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 /* A and C: the chips take the menu's place, scrolling sideways when they
    don't fit, with the edges faded */
-:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-nav { display: none; }
-:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+:root[data-menu="c"] :is(.hx-row[data-open="services"], .hx-row[data-open="impact"], .hx-row:not([data-open]):has(.hx-chip[aria-current])) .hx-nav { display: none; }
+:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) {
   display: flex;
   flex: 1 1 auto;
   order: 1;
@@ -1138,7 +1139,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 /* C: one joined control, the current area lifted in white; closed, the
    menu item names the current area */
 :root[data-menu="c"] .hx-areas { padding: 0.25rem 0.25rem 0.25rem 1rem; border-radius: var(--radius-pill); background: rgb(17 17 17 / 0.05); gap: 0.25rem; }
-:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas { animation: hx-areas-grow 320ms ease; }
+:root[data-menu="c"] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) { animation: hx-areas-grow 320ms ease; }
 :root[data-menu="c"] .hx-chip { background: transparent; }
 :root[data-menu="c"] .hx-chip:hover { background: rgb(255 255 255 / 0.6); }
 :root[data-menu="c"] .hx-chip[aria-current="page"] { background: var(--color-white); }
@@ -1159,7 +1160,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 
 @media (max-width: 960px) {
-  :root[data-menu] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+  :root[data-menu] :is(.hx-row[data-open="services"] [data-areas="services"], .hx-row[data-open="impact"] [data-areas="impact"], .hx-row:not([data-open]) .hx-areas:has(.hx-chip[aria-current])) {
     grid-column: 1 / -1;
     grid-row: 2;
     max-width: none;
@@ -1175,7 +1176,6 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 :root[data-menu="c"] .hx-menu--current .hx-menu__toggle { text-decoration: none; }
 @media (max-width: 960px) { :root[data-menu] .ia-head__title { margin-top: var(--space-48); } }
 
-.hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
 .hx-areas__scroller { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
 
 /* ============================================================

@@ -16,60 +16,68 @@
     });
   });
 
-  // Impact areas (data-menu="c" on <html>, brand/header-row.php): Impact
-  // areas opens the chips in the header (in every header row at once, the
-  // page header and the pinned one); × or a click outside closes them. An
-  // impact area page starts open (CSS, via its current chip).
+  // Services and impact areas (data-menu="c" on <html>,
+  // brand/header-row.php): each opens its chips in the header (in every
+  // header row at once, the page header and the pinned one), named by
+  // data-open on the row; × or a click outside closes them (data-open
+  // empty). A service or impact area page starts with its own open (CSS,
+  // via its current chip, while data-open isn't set).
   var option = document.documentElement.getAttribute('data-menu');
   var rows = Array.prototype.slice.call(document.querySelectorAll('.hx-row'));
-  var setAreas = function (on) {
-    rows.forEach(function (row) {
-      row.classList.toggle('is-areas', on);
-      row.classList.toggle('is-closed', !on);
-    });
+  var setBar = function (id) {
+    rows.forEach(function (row) { row.setAttribute('data-open', id); });
+  };
+  var openBar = function (row) {
+    var open = row.getAttribute('data-open');
+    if (open === null) {
+      var cur = row.querySelector('.hx-areas .hx-chip[aria-current]');
+      open = cur ? cur.closest('[data-areas]').getAttribute('data-areas') : '';
+    }
+    return open && row.querySelector('[data-areas="' + open + '"]');
   };
   if (option) {
     rows.forEach(function (row) {
-      var impact = row.querySelector('[data-impact-menu]');
-      var close = row.querySelector('[data-areas-close]');
-      if (!impact || !close) return;
-      impact.querySelector('summary').addEventListener('click', function (ev) {
-        ev.preventDefault();
-        setAreas(true);
-        var chip = row.querySelector('.hx-chip[aria-current]') || row.querySelector('.hx-chip');
-        if (chip) chip.focus({ preventScroll: true });
+      [].forEach.call(row.querySelectorAll('[data-bar-menu]'), function (menu) {
+        var id = menu.getAttribute('data-bar-menu');
+        menu.querySelector('summary').addEventListener('click', function (ev) {
+          ev.preventDefault();
+          setBar(id);
+          var bar = row.querySelector('[data-areas="' + id + '"]');
+          var chip = bar && (bar.querySelector('.hx-chip[aria-current]') || bar.querySelector('.hx-chip'));
+          if (chip) chip.focus({ preventScroll: true });
+        });
       });
       // The × closes them
       [].forEach.call(row.querySelectorAll('[data-areas-close]'), function (btn) {
         btn.addEventListener('click', function () {
-          setAreas(false);
-          var toggle = row.querySelector('[data-impact-menu] summary');
+          var id = btn.closest('[data-areas]').getAttribute('data-areas');
+          setBar('');
+          var toggle = row.querySelector('[data-bar-menu="' + id + '"] summary');
           if (toggle && row.offsetParent !== null) toggle.focus({ preventScroll: true });
         });
       });
       row.addEventListener('keydown', function (ev) {
-        if (ev.key === 'Escape' && row.querySelector('[data-areas]').contains(document.activeElement)) close.click();
+        var bar = openBar(row);
+        if (ev.key === 'Escape' && bar && bar.contains(document.activeElement)) bar.querySelector('[data-areas-close]').click();
       });
     });
     // A click anywhere outside the header closes the chips (2026-10-30)
     document.addEventListener('click', function (ev) {
       if (ev.target.closest('.hx-row')) return;
-      var open = rows.some(function (row) { return row.querySelector('.hx-areas') && getComputedStyle(row.querySelector('.hx-areas')).display !== 'none'; });
-      if (open) setAreas(false);
+      if (rows.some(openBar)) setBar('');
     });
 
     // Keep the current chip in view where the row scrolls
     rows.forEach(function (row) {
-      var list = row.querySelector('.hx-areas__list');
-      var chip = list && list.querySelector('[aria-current]');
-      if (chip && list.scrollWidth > list.clientWidth) list.scrollLeft = chip.parentElement.offsetLeft - list.offsetLeft - 24;
+      [].forEach.call(row.querySelectorAll('.hx-areas__list'), function (list) {
+        var chip = list.querySelector('[aria-current]');
+        if (chip && list.scrollWidth > list.clientWidth) list.scrollLeft = chip.parentElement.offsetLeft - list.offsetLeft - 24;
+      });
     });
 
     // Click and drag the chips sideways with a mouse (touch swipes
     // natively). A drag of more than a few pixels isn't a click on a chip.
-    rows.forEach(function (row) {
-      var list = row.querySelector('.hx-areas__list');
-      if (!list) return;
+    [].forEach.call(document.querySelectorAll('.hx-areas__list'), function (list) {
       var drag = null, dragged = false;
       list.addEventListener('pointerdown', function (ev) {
         if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
@@ -101,7 +109,7 @@
 
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     menus.forEach(function (menu) {
-      if (option && menu.hasAttribute('data-impact-menu')) return;
+      if (option && menu.hasAttribute('data-bar-menu')) return;
       var timer;
       menu.addEventListener('mouseenter', function () {
         clearTimeout(timer);

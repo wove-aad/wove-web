@@ -1275,26 +1275,21 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 
 /* ============================================================
    COLOUR BLENDS AND MOTION (2026-10-30)
-   Tokens: --band-blend and --motion-* in site.css.
+   Tokens: --motion-* in site.css.
    ============================================================ */
 
-/* Full-height heroes only (2026-10-30: the homepage, service and client
-   page heroes) fade into the page below over --band-blend, behind their
-   content: the homepage hero into the white intro, the others into the
-   grey feed. Shorter headers and bands keep a clean edge. */
+/* Full-height heroes (2026-10-30): as the page scrolls, the colour
+   changes, softly but quickly, with no gradient and no edge. The homepage
+   hero changes to white (--hx-fade, home.js). On service and client pages
+   the hero and the section under it start in the hero colour together
+   and change to the light grey of the page together (--hx-fade on .home,
+   pages.js), so they never meet on an edge. */
 .hx { position: relative; isolation: isolate; }
-.hx:is(.hx--home, .sv-head, .cp-head):not(.hx--blue)::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-  height: var(--band-blend);
-  background: linear-gradient(to bottom, transparent, var(--blend-to, var(--color-page)));
-  pointer-events: none;
+.home.sv { --hx-c: var(--sv-tint); }
+.home.cp { --hx-c: var(--color-mint); }
+.home:is(.sv, .cp) > :is(.sv-head, .cp-head, .feed-wrap) {
+  background-color: color-mix(in srgb, var(--hx-c) calc(100% - var(--hx-fade, 0) * 100%), var(--color-page));
 }
-.hx--home { --blend-to: var(--color-white); }
 
 /* Service and client page heroes fill the window, with the title and
    lead low in it, as on the homepage */

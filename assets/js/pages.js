@@ -65,6 +65,27 @@
     areaList.scrollLeft = areaCurrent.parentElement.offsetLeft - areaList.offsetLeft - 16;
   }
 
+  /* ---------- Full-height heroes: colour to the page as you scroll ---------- */
+
+  // Service and client pages: the hero and the section under it change
+  // from the hero colour to the page colour over the first half screen of
+  // scrolling (--hx-fade on .home, home.css), so they never meet on an edge.
+  var fadeHero = document.querySelector('.hx:is(.sv-head, .cp-head)');
+  if (fadeHero) {
+    var fadeRoot = fadeHero.parentElement;
+    var fadeTicking = false;
+    var fadeUpdate = function () {
+      fadeTicking = false;
+      var p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.5)));
+      fadeRoot.style.setProperty('--hx-fade', p.toFixed(3));
+    };
+    window.addEventListener('scroll', function () {
+      if (!fadeTicking) { fadeTicking = true; requestAnimationFrame(fadeUpdate); }
+    }, { passive: true });
+    window.addEventListener('resize', fadeUpdate);
+    fadeUpdate();
+  }
+
   /* ---------- Menu bar ---------- */
 
   var bar = document.querySelector('[data-menu-bar]');

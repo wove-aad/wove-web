@@ -176,9 +176,6 @@
   --motion-rise:  0.75rem; /* how far things rise as they scroll into view (12px) */
   --motion-scale: 0.94;    /* the featured card's starting size */
 
-  /* Colour bands (2026-10-30): where one coloured section meets the next,
-     the colour blends over this height instead of a hard edge */
-  --band-blend:   6rem;
   --color-page:   #f5f4f0; /* the light grey page behind the feeds (--feed-bg in the light palette) */
 
   /* Card hover — shared system, tune to taste. Not in design-tokens.json;

@@ -161,7 +161,22 @@
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
 
   /* Transition */
-  --transition: 200ms ease;
+  --transition: 200ms var(--motion-ease);
+
+  /* Motion (2026-10-30): one gentle approach for the whole site. Use
+     these for any new transition or animation; every animation is off
+     with prefers-reduced-motion. */
+  --motion-ease:  cubic-bezier(0.22, 0.61, 0.36, 1); /* eases out, no overshoot */
+  --motion-fast:  150ms;   /* hovers, small state changes */
+  --motion-base:  300ms;   /* panels, menus opening */
+  --motion-slow:  600ms;   /* larger moves */
+  --motion-rise:  0.75rem; /* how far things rise as they scroll into view (12px) */
+  --motion-scale: 0.94;    /* the featured card's starting size */
+
+  /* Colour bands (2026-10-30): where one coloured section meets the next,
+     the colour blends over this height instead of a hard edge */
+  --band-blend:   6rem;
+  --color-page:   #f5f4f0; /* the light grey page behind the feeds (--feed-bg in the light palette) */
 
   /* Card hover — shared system, tune to taste. Not in design-tokens.json;
      implementation-specific to this component, kept as-is. */

@@ -1271,3 +1271,54 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
 }
 :root[data-menu="d"] .hx-areas__back:hover { opacity: 0.85; }
 :root[data-menu="d"] .hx-areas__back:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+
+/* ============================================================
+   COLOUR BLENDS AND MOTION (2026-10-30)
+   Tokens: --band-blend and --motion-* in site.css.
+   ============================================================ */
+
+/* Page headers fade into the light grey page below over --band-blend,
+   behind their content. The homepage hero fades into the white intro,
+   and the intro into the grey feed. */
+.hx { position: relative; isolation: isolate; }
+.hx:not(.hx--blue)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  height: var(--band-blend);
+  background: linear-gradient(to bottom, transparent, var(--blend-to, var(--color-page)));
+  pointer-events: none;
+}
+.hx--home { --blend-to: var(--color-white); }
+.hx-intro { background: linear-gradient(to bottom, var(--color-white) calc(100% - var(--band-blend)), var(--color-page)); }
+/* Bands inside the page blend in at the top and out at the bottom */
+.ia-collection { background: linear-gradient(to bottom, var(--color-page), var(--color-mint) var(--band-blend), var(--color-mint) calc(100% - var(--band-blend)), var(--color-page)); }
+.tp { background: linear-gradient(to bottom, var(--color-page), var(--color-stone-100) var(--band-blend)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* The homepage featured card starts a little smaller and grows to
+       full size as it scrolls into view */
+    .hx-featured {
+      transform-origin: 50% 100%;
+      animation: motion-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+
+    /* Cards and blocks rise gently into place as they scroll into view.
+       translate and scale (not transform) so hover lifts still work. */
+    :is(.pc, .cp-post, .sv-project, .wk-unit, .wk-showing, .ia-piece, .hx-service, .sv-offer, .sv-whatif, .case-panel, .tp__title) {
+      animation: motion-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}
+@keyframes motion-grow { from { scale: var(--motion-scale); } to { scale: 1; } }
+@keyframes motion-rise { from { opacity: 0.2; translate: 0 var(--motion-rise); } to { opacity: 1; translate: 0 0; } }
+@keyframes motion-arrive { from { opacity: 0; translate: 0 calc(var(--motion-rise) * 4); } 40% { opacity: 0; } to { opacity: 1; translate: 0 0; } }

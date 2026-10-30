@@ -1,22 +1,19 @@
 /**
- * Work page (templates/work.php): a client carousel (one client; choosing
- * it again, or All work, clears it), service chips and impact area chips
- * (any number, combined with AND; in a dropdown in the top layout),
- * "Load more" (12 at a time) and the address kept in step
- * (?theme=a,b&discipline=labs&client=x). With a client selected, its units
- * show oldest first and a line above the grid links to the client page.
- * Two layouts for review (?filters=top|side, kept per browser; set by the
- * inline script in work.php), with a switcher in the corner.
+ * Work page (templates/work.php): clients (one at a time; choosing it
+ * again clears it), service and impact area chips (any number, combined
+ * with AND), "Load more" (12 at a time) and the address kept in step
+ * (?theme=a,b&discipline=labs&client=x). With a client chosen, its units
+ * show oldest first and a card in second place in the grid names it and
+ * links to its client page.
  */
 (function () {
   var grid = document.querySelector('[data-work-grid]');
   var bar = document.querySelector('[data-work-filters]');
   if (!grid || !bar) return;
 
-  function reduceMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
-  function behaviour() { return reduceMotion() ? 'auto' : 'smooth'; }
 
-  var units = [].slice.call(grid.children);
+  var showing = grid.querySelector('[data-client-active]');
+  var units = [].slice.call(grid.children).filter(function (el) { return el !== showing; });
   var step = parseInt(grid.getAttribute('data-page'), 10) || 12;
   var shown = step;
   var state = { theme: [], discipline: [], client: '' };
@@ -26,8 +23,7 @@
   var emptyEl = document.querySelector('[data-work-empty]');
   var more = document.querySelector('[data-work-more]');
   var moreCount = document.querySelector('[data-work-more-count]');
-  var active = document.querySelector('[data-client-active]');
-  var cards = [].slice.call(bar.querySelectorAll('.client-card__btn'));
+    var cards = [].slice.call(bar.querySelectorAll('.wk-cl'));
   var chips = [].slice.call(document.querySelectorAll('.wk-chip[data-group]'));
 
   var words = function (el, attr) { return (el.getAttribute(attr) || '').split(' ').filter(Boolean); };
@@ -75,13 +71,18 @@
       b.setAttribute('aria-pressed', String(on));
       if (on && state.client) pick = b;
     });
-    if (active) {
-      active.hidden = !pick;
-      if (pick) {
-        var name = pick.getAttribute('data-label');
-        active.querySelector('[data-client-active-name]').textContent = name;
-        active.querySelector('[data-client-active-label]').textContent = name;
-        active.querySelector('[data-client-active-link]').href = pick.getAttribute('data-url');
+    // The client card: second in the grid (first when only one unit shows)
+    if (showing) {
+      showing.hidden = !pick || !hits.length;
+      if (!showing.hidden) {
+        showing.querySelector('[data-client-active-name]').textContent = pick.getAttribute('data-label');
+        showing.querySelector('[data-client-active-link]').href = pick.getAttribute('data-url');
+        var img = showing.querySelector('[data-client-active-img]');
+        var src = pick.getAttribute('data-img');
+        img.hidden = !src;
+        if (src) img.src = src;
+        var after = hits[0];
+        grid.insertBefore(showing, after.nextSibling);
       }
     }
   }
@@ -116,7 +117,7 @@
       change();
       return;
     }
-    var card = ev.target.closest('.client-card__btn');
+    var card = ev.target.closest('.wk-cl');
     if (card && bar.contains(card)) {
       var slug = card.getAttribute('data-client');
       state.client = state.client === slug ? '' : slug;
@@ -136,106 +137,23 @@
     if (first) first.querySelector('.wk-unit__link').focus({ preventScroll: true });
   });
 
-  /* ---------- Impact areas dropdown (top layout) ---------- */
+  /* ---------- Clients: eight, then "Show all" ---------- */
 
-  var drop = document.querySelector('[data-drop]');
-  if (drop) {
-    var toggle = drop.querySelector('.wk-drop__toggle');
-    var open = function (on) {
-      drop.classList.toggle('is-open', on);
-      toggle.setAttribute('aria-expanded', String(on));
-    };
-    toggle.addEventListener('click', function () { open(!drop.classList.contains('is-open')); });
-    document.addEventListener('click', function (ev) { if (!drop.contains(ev.target)) open(false); });
-    drop.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape' && drop.classList.contains('is-open')) { open(false); toggle.focus(); }
-    });
-  }
-
-  /* ---------- Client carousel ---------- */
-
-  var carousel = bar.querySelector('[data-carousel]');
-  if (carousel) {
-    var track = carousel.querySelector('.client-carousel__track');
-    var controls = carousel.querySelector('.client-carousel__controls');
-    var thumb = carousel.querySelector('.client-carousel__bar > span');
-    var arrows = [].slice.call(carousel.querySelectorAll('.client-carousel__arrow'));
-    var maxScroll = function () { return track.scrollWidth - track.clientWidth; };
-    var stepWidth = function () {
-      var card = track.querySelector('.client-card');
-      return card.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
-    };
-    var sync = function () {
-      var max = maxScroll();
-      controls.hidden = max <= 2;
-      var total = track.scrollWidth || 1;
-      thumb.style.left = (track.scrollLeft / total * 100) + '%';
-      thumb.style.width = (track.clientWidth / total * 100) + '%';
-      arrows.forEach(function (b) {
-        b.disabled = +b.getAttribute('data-step') < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2;
-      });
-    };
-    track.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    arrows.forEach(function (b) {
-      b.addEventListener('click', function () {
-        track.scrollBy({ left: +b.getAttribute('data-step') * stepWidth(), behavior: behaviour() });
-      });
-    });
-
-    // Click and drag with a mouse (touch screens swipe natively). A drag of
-    // more than a few pixels doesn't count as a click on the card under it.
-    var drag = null, dragged = false;
-    track.addEventListener('pointerdown', function (ev) {
-      if (ev.pointerType !== 'mouse' || ev.button !== 0) return;
-      drag = { x: ev.clientX, left: track.scrollLeft, id: ev.pointerId };
-      dragged = false;
-    });
-    track.addEventListener('pointermove', function (ev) {
-      if (!drag || ev.pointerId !== drag.id) return;
-      var dx = ev.clientX - drag.x;
-      if (!dragged && Math.abs(dx) > 5) {
-        dragged = true;
-        track.setPointerCapture(drag.id);
-        track.classList.add('is-dragging');
-      }
-      if (dragged) track.scrollLeft = drag.left - dx;
-    });
-    var endDrag = function () {
-      if (!drag) return;
-      drag = null;
-      if (!dragged) return;
-      track.classList.remove('is-dragging');
-      var s = stepWidth();
-      track.scrollTo({ left: Math.round(track.scrollLeft / s) * s, behavior: behaviour() });
-    };
-    track.addEventListener('pointerup', endDrag);
-    track.addEventListener('pointercancel', endDrag);
-    track.addEventListener('click', function (ev) {
-      if (dragged) { ev.preventDefault(); ev.stopPropagation(); dragged = false; }
-    }, true);
-    track.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
-
-    // A client from the address: bring its card into view
-    if (state.client) {
-      var on = track.querySelector('[data-client="' + CSS.escape(state.client) + '"]');
-      if (on) track.scrollLeft = on.parentElement.offsetLeft - track.offsetLeft;
+  var moreClients = bar.querySelector('[data-more-clients]');
+  if (moreClients) {
+    var hiddenClients = [].slice.call(bar.querySelectorAll('[data-more-client]'));
+    var chosen = state.client && bar.querySelector('[data-more-client] [data-client="' + CSS.escape(state.client) + '"]');
+    if (!chosen) {
+      hiddenClients.forEach(function (li) { li.hidden = true; });
+      moreClients.hidden = false;
     }
-    sync();
+    moreClients.addEventListener('click', function () {
+      hiddenClients.forEach(function (li) { li.hidden = false; });
+      moreClients.hidden = true;
+      var first = hiddenClients[0] && hiddenClients[0].querySelector('button');
+      if (first) first.focus();
+    });
   }
-
-  /* ---------- Layout switcher, for review ---------- */
-
-  var root = document.querySelector('.wk');
-  var layout = root ? root.getAttribute('data-filter-layout') : 'top';
-  var panel = document.createElement('aside');
-  panel.className = 'feed-options menu-options menu-options--left';
-  panel.setAttribute('aria-label', 'Filter layouts');
-  panel.innerHTML = '<p class="feed-options__title">Filter layouts</p><div class="feed-options__group">'
-    + [['top', 'Top'], ['side', 'Sidebar']].map(function (o) {
-      return '<a href="' + location.pathname + '?filters=' + o[0] + '"' + (o[0] === layout ? ' aria-current="true"' : '') + '>' + o[1] + '</a>';
-    }).join('') + '</div>';
-  document.body.appendChild(panel);
 
   render();
 })();

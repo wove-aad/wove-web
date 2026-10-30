@@ -51,6 +51,13 @@
         if (ev.key === 'Escape' && row.querySelector('[data-areas]').contains(document.activeElement)) close.click();
       });
     });
+    // A click anywhere outside the header closes the chips (2026-10-30)
+    document.addEventListener('click', function (ev) {
+      if (ev.target.closest('.hx-row, .menu-options')) return;
+      var open = rows.some(function (row) { return row.querySelector('.hx-areas') && getComputedStyle(row.querySelector('.hx-areas')).display !== 'none'; });
+      if (open) setAreas(false);
+    });
+
     // Keep the current chip in view where the row scrolls
     rows.forEach(function (row) {
       var list = row.querySelector('.hx-areas__list');

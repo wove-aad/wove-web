@@ -1055,3 +1055,136 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   .tp-swatch { width: 2rem; height: 2rem; }
   .tp-sep { margin: 0 0.75rem; }
 }
+
+
+/* ============================================================
+   MENU OPTIONS FOR REVIEW (2026-10-30): impact areas as chips in the
+   header (brand/header-row.php .hx-areas), with ?menu=a|b|c. Open when
+   Impact areas is chosen (.is-areas, assets/js/nav.js) or on an impact
+   area page (its chip is current) until closed (.is-closed).
+   ============================================================ */
+.hx-areas, .hx-menu__now { display: none; }
+:root[data-menu] .ia-areas { display: none; }
+.menu-options .feed-options__label { width: auto; margin-right: 0.25rem; }
+.menu-options a { color: var(--color-400); }
+.menu-options a:hover { color: var(--color-white); }
+.menu-options a[aria-current] { color: var(--color-white); text-decoration: underline; text-underline-offset: 3px; }
+
+.hx-areas { align-items: center; gap: var(--space-12); min-width: 0; }
+.hx-areas__label { flex-shrink: 0; font-size: var(--size-label); font-weight: var(--weight-bold); white-space: nowrap; }
+.hx-areas__list { display: flex; gap: 0.5rem; min-width: 0; margin: 0; padding: 0; list-style: none; }
+.hx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0 0.875rem 0 0.75rem;
+  border-radius: var(--radius-pill);
+  background: rgb(17 17 17 / 0.05);
+  color: var(--color-text-muted);
+  font-size: var(--size-p6);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+}
+.hx-chip:hover { background: rgb(255 255 255 / 0.8); color: var(--color-black); }
+.hx-chip:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+.hx-chip[aria-current="page"] { background: var(--color-white); color: var(--color-black); font-weight: var(--weight-medium); box-shadow: var(--shadow-sm); }
+.hx-chip__dot { flex-shrink: 0; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--dot); box-shadow: inset 0 0 0 1px rgb(17 17 17 / 0.18); }
+.hx-areas__close {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(17 17 17 / 0.06);
+  color: var(--color-black);
+  font: inherit;
+  font-size: var(--size-p4);
+  line-height: 1;
+  cursor: pointer;
+}
+.hx-areas__close:hover { background: var(--color-black); color: var(--color-white); }
+.hx-areas__close:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+@keyframes hx-areas-in { from { opacity: 0; transform: translateX(0.75rem); } to { opacity: 1; transform: none; } }
+@keyframes hx-areas-grow { from { clip-path: inset(0 0 0 100% round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
+
+/* A and C: the chips take the menu's place, scrolling sideways when they
+   don't fit, with the edges faded */
+:root:is([data-menu="a"], [data-menu="c"]) :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-nav { display: none; }
+:root:is([data-menu="a"], [data-menu="c"]) :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+  display: flex;
+  flex: 1 1 auto;
+  order: 1;
+  margin-left: auto;
+  max-width: max-content;
+  animation: hx-areas-in 220ms ease;
+}
+:root:is([data-menu="a"], [data-menu="c"]) .hx-row .hero-bar__cta { order: 2; }
+:root:is([data-menu="a"], [data-menu="c"]) .hx-areas__list {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 1rem, #000 calc(100% - 1.5rem), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 1rem, #000 calc(100% - 1.5rem), transparent);
+  padding: 0.25rem 1.5rem 0.25rem 1rem;
+}
+:root:is([data-menu="a"], [data-menu="c"]) .hx-areas__list::-webkit-scrollbar { display: none; }
+
+/* C: one joined control, the current area lifted in white; closed, the
+   menu item names the current area */
+:root[data-menu="c"] .hx-areas { padding: 0.25rem 0.25rem 0.25rem 1rem; border-radius: var(--radius-pill); background: rgb(17 17 17 / 0.05); gap: 0.25rem; }
+:root[data-menu="c"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas { animation: hx-areas-grow 320ms ease; }
+:root[data-menu="c"] .hx-chip { background: transparent; }
+:root[data-menu="c"] .hx-chip:hover { background: rgb(255 255 255 / 0.6); }
+:root[data-menu="c"] .hx-chip[aria-current="page"] { background: var(--color-white); }
+:root[data-menu="c"] .hx-areas__list { padding-block: 0; }
+:root[data-menu="c"] .hx-areas__close { background: transparent; }
+:root[data-menu="c"] .hx-areas__close:hover { background: var(--color-black); }
+:root[data-menu="c"] .hx-menu__now {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  margin-left: 0.5rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--size-label);
+  font-weight: var(--weight-medium);
+}
+
+/* B: a row under the header row; the menu stays, Impact areas marked */
+:root[data-menu="b"] .hx-row { flex-wrap: wrap; row-gap: 0; }
+:root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+  display: flex;
+  flex-basis: 100%;
+  order: 3;
+  margin-top: var(--space-16);
+  padding-top: var(--space-16);
+  border-top: 1px solid rgb(17 17 17 / 0.1);
+  animation: hx-areas-in 220ms ease;
+}
+:root[data-menu="b"] .hx-areas__list { flex: 1; flex-wrap: wrap; }
+:root[data-menu="b"] .hx-areas__label { margin-right: var(--space-12); }
+:root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) [data-impact-menu] .hx-menu__toggle { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 960px) {
+  :root[data-menu] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+    margin: 0;
+  }
+  :root[data-menu="b"] :is(.hx-row.is-areas, .hx-row:has(.hx-chip[aria-current]):not(.is-closed)) .hx-areas { grid-row: 3; padding-top: var(--space-12); }
+  :root[data-menu="b"] .hx-areas__list { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  :root[data-menu] .hx-areas__label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-menu] .hx-row .hx-areas { animation: none !important; }
+}
+:root[data-menu] .hx-row .hero-bar__logo { flex-shrink: 0; }
+:root[data-menu] .ia-head__title { margin-top: var(--space-96); }
+:root[data-menu="c"] .hx-menu--current .hx-menu__toggle { text-decoration: none; }
+@media (max-width: 960px) { :root[data-menu] .ia-head__title { margin-top: var(--space-48); } }

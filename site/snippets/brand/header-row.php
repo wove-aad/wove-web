@@ -15,6 +15,15 @@
  * <details> so they open without JS; assets/js/nav.js opens them on
  * hover where there is a mouse and closes them on an outside click or
  * Escape.
+ *
+ * Menu options for review (2026-10-30), chosen with ?menu=a|b|c (kept
+ * per browser; ?menu=off clears it): Impact areas opens the impact
+ * areas as chips in the header (.hx-areas) in place of the dropdown, and
+ * an impact area page opens with them showing, its own chip active.
+ * A: the chips replace the menu between the logo and Get in touch.
+ * B: the chips open in a row under the header row; the menu stays.
+ * C: like A, as one joined control; closed, the menu item names the
+ *    current area. Without an option, the dropdown as before.
  */
 
 $current = $current ?? null;
@@ -28,7 +37,7 @@ foreach (['labs', 'strategy', 'brand', 'digital'] as $slug) {
 $impactAreas = [];
 foreach (wove_feed()['topics'] as $key => $label) {
   if (str_starts_with($key, 'tag:')) {
-    $impactAreas[] = ['href' => url('tag/' . substr($key, 4)), 'current' => $current === $key, 'label' => $label];
+    $impactAreas[] = ['href' => url('tag/' . substr($key, 4)), 'current' => $current === $key, 'label' => $label, 'swatch' => ['coral', 'aqua', 'lilac', 'mint', 'stone-200'][count($impactAreas) % 5]];
   }
 }
 
@@ -42,8 +51,8 @@ $menus = array_filter([
   <nav class="hx-nav<?= in_array($current, ['work', 'people', 'wove-mind'], true) || preg_match('/^(service|tag):/', (string) $current) ? ' hx-nav--has-current' : '' ?>" aria-label="Main">
     <a href="<?= url('work') ?>"<?= $mark('work') ?>>Work</a>
     <?php foreach ($menus as $id => $menu): $hasCurrent = in_array(true, array_column($menu['items'], 'current'), true) ?>
-      <details class="hx-menu<?= $hasCurrent ? ' hx-menu--current' : '' ?>" data-nav-menu>
-        <summary class="hx-menu__toggle"><?= $menu['label'] ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>
+      <details class="hx-menu<?= $hasCurrent ? ' hx-menu--current' : '' ?>" data-nav-menu<?= $id === 'impact' ? ' data-impact-menu' : '' ?>>
+        <summary class="hx-menu__toggle"><?= $menu['label'] ?><?php if ($id === 'impact' && $hasCurrent): ?><span class="hx-menu__now"><?= html(array_values(array_filter($menu['items'], fn ($i) => $i['current']))[0]['label']) ?></span><?php endif ?> <span class="hx-menu__caret" aria-hidden="true"></span></summary>
         <ul class="hx-menu__list" role="list">
           <?php foreach ($menu['items'] as $item): ?>
             <li><a href="<?= $item['href'] ?>"<?= !empty($item['current']) ? ' aria-current="page"' : '' ?>><?= html($item['label']) ?></a></li>
@@ -55,4 +64,15 @@ $menus = array_filter([
     <a href="<?= url('wove-mind') ?>"<?= $mark('wove-mind') ?>>Wove Mind</a>
   </nav>
   <a href="<?= url('contact') ?>" class="btn btn--sm btn--primary hero-bar__cta"<?= $mark('contact') ?>>Get in touch</a>
+  <?php if ($impactAreas): ?>
+    <div class="hx-areas" data-areas>
+      <span class="hx-areas__label">Impact areas</span>
+      <ul class="hx-areas__list" role="list">
+        <?php foreach ($impactAreas as $item): ?>
+          <li><a class="hx-chip" href="<?= $item['href'] ?>"<?= $item['current'] ? ' aria-current="page"' : '' ?>><span class="hx-chip__dot" style="--dot: var(--color-<?= $item['swatch'] ?>)" aria-hidden="true"></span><?= html($item['label']) ?></a></li>
+        <?php endforeach ?>
+      </ul>
+      <button type="button" class="hx-areas__close" data-areas-close aria-label="Close impact areas"><span aria-hidden="true">&times;</span></button>
+    </div>
+  <?php endif ?>
 </div>

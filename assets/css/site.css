@@ -96,6 +96,9 @@
   --size-chip:          1rem;       /* 16px — filter chips (2026-10-30, was 14px) */
   --chip-height:        2.5rem;     /* 40px — filter chips and their toggles */
   --chip-px:            1.125rem;   /* 18px — filter chip side padding */
+  --size-chip-sm:       0.9375rem;  /* 15px — compact chips (the Work page filter column) */
+  --chip-height-sm:     2rem;       /* 32px */
+  --chip-px-sm:         0.875rem;   /* 14px */
   --size-label-sm:      0.75rem;    /* 12px — uppercase labels, counts */
   --size-micro:         0.6875rem;  /* 11px — tiny labels, avatar initials */
   --size-logo:          2rem;       /* 32px — wordmark in the header */

@@ -148,6 +148,21 @@
     if (first) first.querySelector('.wk-unit__link').focus({ preventScroll: true });
   });
 
+  /* ---------- Filter column: stick where it fits ---------- */
+
+  // The column sticks in the upper middle of the window (CSS). When it is
+  // taller than the space below that, its top moves up so its end can be
+  // reached, and it scrolls with the page until then.
+  var fitColumn = function () {
+    bar.style.removeProperty('--wk-top');
+    var want = Math.max(96, window.innerHeight * 0.16);
+    var room = window.innerHeight - bar.offsetHeight - 24;
+    if (room < want) bar.style.setProperty('--wk-top', Math.min(want, room) + 'px');
+  };
+  window.addEventListener('resize', fitColumn);
+  if (window.ResizeObserver) new ResizeObserver(fitColumn).observe(bar);
+  fitColumn();
+
   /* ---------- Clients: eight, then "Show all" ---------- */
 
   var moreClients = bar.querySelector('[data-more-clients]');

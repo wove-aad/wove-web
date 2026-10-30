@@ -22,6 +22,15 @@ $email   = $site->email()->or('hello@wove.group')->value();
 $company = $site->companyName()->or($site->title())->value();
 ?>
 
+<?php // Recently viewed: filled from the visitor's browser by recent.js; hidden until there is something to show ?>
+<section class="rv" data-recent aria-labelledby="rv-title" hidden>
+  <div class="rv__inner">
+    <h2 class="rv__title" id="rv-title">Recently viewed</h2>
+    <ul class="rv__list" role="list"></ul>
+  </div>
+</section>
+<script src="<?= wove_asset('/assets/js/recent.js') ?>" defer></script>
+
 <footer class="ft" role="contentinfo">
   <div class="ft__inner">
 

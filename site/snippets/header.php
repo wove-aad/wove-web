@@ -52,6 +52,29 @@ $robotsContent  = implode(', ', array_filter([
   in_array('nosnippet', $robotsFlags) ? 'nosnippet' : null,
 ]));
 $ogType = $page->ogtype()->or('website')->value();
+
+// Recently viewed (2026-10-30, assets/js/recent.js): client, service,
+// impact area and post pages record themselves in the visitor's browser
+// (title, kind, a small image); index pages and the homepage don't.
+$recent = null;
+$tpl    = $page->intendedTemplate()->name();
+if ($tpl === 'case-study') {
+  $img    = $page->caseStudyImages()->toFile();
+  $recent = ['kind' => 'Client', 'title' => $page->eyebrow()->or($page->title())->value(), 'img' => $img];
+} elseif (preg_match('#/services/(labs|strategy|brand|digital)$#', $page->url(), $m)) {
+  // Service pages render through the services/(:any) route, sometimes
+  // with a stand-in page, so they're known by their address
+  $recent = ['kind' => 'Service', 'title' => wove_service_labels()[$m[1]], 'img' => $page->content()->get('image')->toFile()];
+} elseif ($tpl === 'tag' && isset($metaTitle) && $metaTitle !== '') {
+  $recent = ['kind' => 'Impact area', 'title' => $metaTitle, 'img' => null];
+} elseif ($tpl === 'wove-mind-entry') {
+  $types  = ['project' => 'Project', 'thinking' => 'Thinking', 'news' => 'News'];
+  $recent = ['kind' => $types[wove_post_type($page)] ?? 'Post', 'title' => $page->title()->value(), 'img' => $page->content()->get('image')->toFile()];
+}
+$recentAttrs = $recent
+  ? ' data-rv-title="' . html($recent['title']) . '" data-rv-kind="' . html($recent['kind']) . '" data-rv-url="' . html($pageUrl) . '"'
+    . ($recent['img'] ? ' data-rv-img="' . html($recent['img']->crop(96, 96)->url()) . '"' : '')
+  : '';
 ?>
 <!DOCTYPE html>
 <html lang="en" data-menu="c">
@@ -90,7 +113,7 @@ $ogType = $page->ogtype()->or('website')->value();
 <script src="<?= wove_asset('/assets/js/nav.js') ?>" defer></script>
 <script src="<?= wove_asset('/assets/js/feed.js') ?>" defer></script>
 </head>
-<body class="tpl-<?= $page->template()->name() ?>">
+<body class="tpl-<?= $page->template()->name() ?>"<?= $recentAttrs ?>>
 
 <a href="#main" class="skip-link">Skip to main content</a>
 

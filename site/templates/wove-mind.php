@@ -32,7 +32,9 @@ $totalCount = $entries->count();
 $initial = get('filter') ?: '*';
 
 // Feed layout options, for review (2026-10-29): ?cols=2|3, ?layout=grid|
-// masonry, ?heights=own|set, ?card=framed|open|tinted|compact. The options panel
+// masonry, ?heights=own|set, ?card=framed|open|tinted|compact, ?width=full|centred
+// (2026-10-30: centred puts the feed in one --width-column column, as on
+// the service and impact area pages). The options panel
 // (snippets/home/feed-options.php) always shows, for review (2026-10-30).
 // Defaults (2026-10-29, 2 columns since 2026-10-30): rows aligned at
 // the top, three image heights varied by position (assets/js/feed.js),
@@ -42,6 +44,7 @@ $opt = [
   'layout'  => get('layout') === 'masonry' ? 'masonry' : 'grid',
   'heights' => get('heights') === 'own' ? 'own' : 'set',
   'card'    => in_array(get('card'), ['framed', 'tinted', 'open'], true) ? get('card') : 'compact',
+  'width'   => get('width') === 'centred' ? 'centred' : 'full',
 ];
 $showOptions = true;
 // Compact builds on the open cards
@@ -59,7 +62,7 @@ $gridClass = 'pc-grid--cols-' . $opt['cols'] . ' pc-grid--' . $opt['layout'] . '
 
     <?php snippet('brand/menu-bar') ?>
 
-    <main class="feed feed--home" id="main">
+    <main class="feed feed--home feed--width-<?= $opt['width'] ?>" id="main">
 
       <div class="feed__header" id="feed">
         <h2 class="feed__title">Wove latest</h2>

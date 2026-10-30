@@ -11,6 +11,7 @@ $groups = [
   'layout'  => ['Layout', ['grid' => 'Grid', 'masonry' => 'Masonry']],
   'heights' => ['Images', ['own' => 'Own shape', 'set' => 'Varied heights']],
   'card'    => ['Cards', ['framed' => 'Framed', 'open' => 'Open', 'tinted' => 'Tinted', 'compact' => 'Compact']],
+  'width'   => ['Width', ['full' => 'Full width', 'centred' => 'Centred']],
 ];
 $link = fn ($key, $value) => url() . '/?' . http_build_query(array_merge($opt, [$key => $value])) . '#feed';
 ?>

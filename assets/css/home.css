@@ -1394,3 +1394,7 @@ html:has(.home) { font-size: clamp(16px, 1.1111vw, 28px); }
   [data-slide], .hi-ticker__line { transition: none; }
 }
 .feed-cards.pc-grid--cols-2.pc-grid--card-compact:not(.pc-grid--masonry) { column-gap: var(--space-32); }
+
+/* Feed width option (?width=centred, 2026-10-30): the feed in one
+   centred column, as on the service and impact area pages */
+.feed--width-centred > * { max-width: var(--width-column); margin-inline: auto; }
